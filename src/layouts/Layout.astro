@@ -1,0 +1,31 @@
+---
+interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    
+    <link rel="icon" id="dynamic-favicon" href="/favicon.svg" type="image/svg+xml">
+
+    <link rel="stylesheet" href="https://use.typekit.net/dmw4nxz.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style is:global>
+        @import '../styles/style.css';
+    </style>
+</head>
+<body>
+    <slot />
+    
+    <script is:inline src="/src/scripts/main.js"></script>
+</body>
+</html>

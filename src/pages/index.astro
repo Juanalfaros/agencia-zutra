@@ -1,0 +1,716 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout 
+	title="Zutra — Marketing para los que van a todas" 
+	description="Agencia Sutra: audacia creativa + maestría técnica. Estrategia, ejecución impecable y KPIs claros para dominar la conversación y mover métricas reales."
+>
+	<a href="#main" class="skip-link">Saltar al contenido</a>
+
+	<header id="header" class="header">
+		<div class="container">
+			<div class="header__inner">
+				<a href="#" aria-label="Inicio Zutra" class="header__logo-link">
+					<svg viewBox="0 0 490.29 150.07" class="header__logo-svg" role="img" aria-label="Zutra">
+						<path fill="var(--color-accent)" d="M451.7,36.45h-177.06V0h-42.02v36.45h-39.39c-9.07,0-16.41,7.35-16.41,16.41v59.05c0,4.74-3.84,8.58-8.58,8.58h-6.86c-13.02,0-23.58-10.56-23.58-23.58v-42.2c0-10.08-8.17-18.26-18.26-18.26h-23.76v.07c-.62-.04-1.24-.07-1.88-.07H4.07v12.59c0,9.15,7.42,16.57,16.57,16.57h38.53c1.5,0,2.14.43,2.14,1.07,0,.43-.64,1.07-1.72,1.93L10.5,106.12c-6.65,5.14-10.5,10.93-10.5,22.08,0,13.51,7.93,21.87,18.65,21.87h122.1s.03,0,.05,0h54.46c15.01,0,23.58-6.43,23.58-23.58v-60.03h13.78v45.02c0,27.87,19.29,38.59,42.88,38.59h72.15v-54.03c0-19.29,6.43-30.01,25.73-30.01h15.65l46.39.04c7.93,0,12.86,3.65,12.86,11.15v1.67h-51.88c-21.44,0-27.87,13.72-27.87,35.16,0,23.58,6.43,36.02,27.87,36.02h70.32c15.01,0,23.58-8.58,23.58-23.58v-51.45c0-23.58-15.01-38.59-38.59-38.59ZM55.31,118.77c0-.64.64-1.5,1.71-2.36l38.75-29.67v18.31c0,5.1.86,10,2.43,14.58h-40.96c-1.72,0-1.93-.22-1.93-.86ZM300.36,120.06c-19.29,0-25.73-10.72-25.73-27.87v-25.73h32.83c-1.22,4.96-1.85,10.64-1.85,17.15v36.45h-5.26ZM448.27,113.62c0,6.43-2.14,8.57-8.57,8.57h-21.65c-4.93,0-7.5-4.29-7.5-8.15,0-5.14,3.64-8.57,7.93-8.57h29.8v8.15Z"/>
+					</svg>
+				</a>
+
+				<nav class="header__nav--desktop" aria-label="Principal">
+					<a href="#servicios">Servicios</a>
+					<a href="#metodo">Método</a>
+					<a href="#planes">Planes</a>
+					<a href="#quienes-somos">Quiénes somos</a>
+					<a href="#faqs">FAQs</a>
+				</nav>
+
+				<div id="header-cta-container" class="header__cta-container">
+					<a id="cta-header-main" href="#contacto" data-track="cta_header_click" data-loc="header" class="button button--primary">
+						Auditoría gratuita
+					</a>
+				</div>
+
+				<button id="menu-btn" class="header__menu-btn" aria-label="Abrir menú" aria-expanded="false" aria-controls="m-nav">
+					<i class="ph-bold ph-list"></i>
+				</button>
+			</div>
+		</div>
+
+		<nav id="m-nav" class="header__nav--mobile" aria-hidden="true">
+			<div class="header__nav--mobile-inner">
+				<a href="#servicios">Servicios</a>
+				<a href="#metodo">Método</a>
+				<a href="#planes">Planes</a>
+				<a href="#quienes-somos">Quiénes somos</a>
+				<a href="#faqs">FAQs</a>
+				<a href="#contacto" class="button button--primary" data-track="cta_header_mobile_click" data-loc="mnav">Auditoría gratuita</a>
+			</div>
+		</nav>
+	</header>
+
+	<main id="main">
+		<section id="hero" class="hero-carousel">
+			<div class="hero-carousel__slides-container">
+				<div class="hero-carousel__slide active" data-slide-index="0">
+					<div class="container hero-carousel__slide-inner">
+						<div class="hero-carousel__text-content">
+							<h1 class="hero__title reveal">Contenido que <span class="accent-text">engancha y vende.</span></h1>
+							<p class="hero__subtitle reveal" style="transition-delay:.08s">
+								Estrategia, calendario y producción de contenido valiente que genera demanda, domina la conversación y mueve KPIs reales.
+							</p>
+							<div class="hero__actions reveal" style="transition-delay:.12s">
+								<a href="#servicios" class="button button--primary">Ver servicio de contenido</a>
+							</div>
+						</div>
+						<div class="hero-carousel__image-content reveal" style="transition-delay:.16s">
+							<div class="hero-carousel__image-wrapper">
+								<svg class="hero-carousel__blob-background" viewBox="0 0 390.49 363.11">
+									<path fill="var(--color-accent)" d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"/>
+								</svg>
+								<img src="/img/hero/produccion.png" alt="Persona creando contenido de video con un smartphone" class="hero-carousel__photo" loading="eager" decoding="auto">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="hero-carousel__slide" data-slide-index="1">
+					<div class="container hero-carousel__slide-inner">
+						<div class="hero-carousel__text-content">
+							<h1 class="hero__title">Leads calificados <span class="accent-text">en 30 días.</span></h1>
+							<p class="hero__subtitle">
+								Lanzamos una oferta irresistible con una landing optimizada y pauta precisa para llenar tu pipeline rápidamente. Vamos a todas.
+							</p>
+							<div class="hero__actions">
+								<a href="#servicios" class="button button--primary">Lanzar mi sprint</a>
+							</div>
+						</div>
+						<div class="hero-carousel__image-content">
+							<div class="hero-carousel__image-wrapper">
+								<svg class="hero-carousel__blob-background" viewBox="0 0 390.49 363.11">
+									<path fill="var(--color-accent)" d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"/>
+								</svg>
+								<img src="/img/hero/landing.png" alt="Equipo analizando un dashboard de resultados en una laptop" class="hero-carousel__photo" loading="lazy" decoding="async">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="hero-carousel__slide" data-slide-index="2">
+					<div class="container hero-carousel__slide-inner">
+						<div class="hero-carousel__text-content">
+							<h1 class="hero__title">Diseño valiente, <span class="accent-text">hecho para vender.</span></h1>
+							<p class="hero__subtitle">
+								Creamos una identidad visual memorable, desde el logo hasta las plantillas para redes sociales, con un foco claro en la conversión.
+							</p>
+							<div class="hero__actions">
+								<a href="#servicios" class="button button--primary">Crear mi identidad</a>
+							</div>
+						</div>
+						<div class="hero-carousel__image-content">
+							<div class="hero-carousel__image-wrapper">
+								<svg class="hero-carousel__blob-background" viewBox="0 0 390.49 363.11">
+									<path fill="var(--color-accent)" d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"/>
+								</svg>
+								<img src="/img/hero/logo.png" alt="Diseñadora trabajando en una tableta gráfica" class="hero-carousel__photo" loading="lazy" decoding="async">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<button class="hero-carousel__nav-button hero-carousel__nav-button--prev" aria-label="Slide anterior">
+				<i class="ph-bold ph-caret-left"></i>
+			</button>
+			<button class="hero-carousel__nav-button hero-carousel__nav-button--next" aria-label="Siguiente slide">
+				<i class="ph-bold ph-caret-right"></i>
+			</button>
+			
+			<div class="hero-carousel__pagination">
+				<button class="hero-carousel__dot active" data-slide-to="0" aria-label="Ir al slide 1"></button>
+				<button class="hero-carousel__dot" data-slide-to="1" aria-label="Ir al slide 2"></button>
+				<button class="hero-carousel__dot" data-slide-to="2" aria-label="Ir al slide 3"></button>
+			</div>
+		</section>
+
+		<section id="experiencia" class="section">
+			<div class="container">
+				<div class="section-header">
+					<h2 class="section-title">Experiencia previa verificada</h2>
+					<p class="section-subtitle">Trabajo real del equipo antes de fundar Zutra. <strong>Sin humo</strong>, solo aportes y resultados.</p>
+				</div>
+				<div class="logos-container">
+					<img src="https://dummyimage.com/140x40/1a1a1a/aaaaaa&text=Logo+1" alt="Marca/Cliente 1 (experiencia previa)" class="logo" width="140" height="40" loading="lazy" decoding="async">
+					<img src="https://dummyimage.com/140x40/1a1a1a/aaaaaa&text=Logo+2" alt="Marca/Cliente 2 (experiencia previa)" class="logo" width="140" height="40" loading="lazy" decoding="async">
+					<img src="https://dummyimage.com/140x40/1a1a1a/aaaaaa&text=Logo+3" alt="Marca/Cliente 3 (experiencia previa)" class="logo" width="140" height="40" loading="lazy" decoding="async">
+					<img src="https://dummyimage.com/140x40/1a1a1a/aaaaaa&text=Logo+4" alt="Marca/Cliente 4 (experiencia previa)" class="logo" width="140" height="40" loading="lazy" decoding="async">
+				</div>
+				<p class="disclaimer-text">
+					*Las marcas exhibidas corresponden a trabajos realizados por Camilo Bustamante y Juan Alfaro en otras agencias o como freelancers, antes de Zutra. No constituyen testimonios ni garantías de resultados para Zutra.
+				</p>
+			</div>
+		</section>
+
+		<section id="servicios" class="section section--accent-bg">
+			<div class="container">
+				<div class="section-header">
+					<h2 class="section-title">Servicios para dominar tu mercado</h2>
+				</div>
+				<div id="servicios-grid" class="services-grid">
+					<article class="service-card" data-service="plataforma">
+						<div class="card__header">
+							<h3 class="card__title">Plataforma de lanzamiento</h3>
+							<span class="card__badge">FUNDACIONAL</span>
+						</div>
+						<p class="card__description">De cero a presencia que <em>convierte</em>.</p>
+						<ul class="card__list">
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Brand kit con criterio comercial</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Web (corporativa o e-commerce) lista para crecer</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>SEO base + analítica y tracking</li>
+						</ul>
+						<div class="card__result">Resultado: <strong>capta, mide y mejora</strong> desde el día 1.</div>
+						<div class="card__price"><span class="price__amount">Desde $850.000</span> <span class="price__meta">CLP</span></div>
+					</article>
+					<article class="service-card" data-service="identidad">
+						<div class="card__header">
+							<h3 class="card__title">Identidad & diseño</h3>
+							<span class="card__badge">CREATIVO</span>
+						</div>
+						<p class="card__description">Estética valiente, hecha para vender.</p>
+						<ul class="card__list">
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Logo + manual accionable</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Plantillas sociales que rinden</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Piezas impresas/digitales con foco en KPIs</li>
+						</ul>
+						<div class="card__result">Resultado: <strong>reconocimiento y coherencia</strong> en cada punto de contacto.</div>
+						<div class="card__price"><span class="price__amount">Desde $350.000</span> <span class="price__meta">CLP</span></div>
+					</article>
+					<article class="service-card" data-service="organico">
+						<div class="card__header">
+							<h3 class="card__title">Contenido orgánico</h3>
+							<span class="card__badge">CRECIMIENTO</span>
+						</div>
+						<p class="card__description">Contenido que <em>engancha</em> y empuja demanda.</p>
+						<ul class="card__list">
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Estrategia + calendario con hipótesis</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Video corto, carruseles y copies valientes</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Diseño y publicación con aprendizaje continuo</li>
+						</ul>
+						<div class="card__result">Resultado: <strong>engagement que convierte</strong>.</div>
+						<div class="card__price"><span class="price__amount">Desde $450.000</span> <span class="price__meta">CLP / mes</span></div>
+					</article>
+					<article class="service-card" data-service="sprint">
+						<div class="card__header">
+							<h3 class="card__title">Sprint de leads (30 días)</h3>
+							<span class="card__badge">ALTO IMPACTO</span>
+						</div>
+						<p class="card__description">Oferta clara + pauta + landing CRO. <strong>Vamos a todas</strong>.</p>
+						<ul class="card__list">
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Landing con pruebas A/B</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Creatividades valientes + ads</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Tracking, optimización y reporte final</li>
+						</ul>
+						<div class="card__result">Resultado: <strong>pipeline medible</strong> en 30 días.</div>
+						<div class="card__price"><span class="price__amount">Desde $550.000</span> <span class="price__meta">CLP + pauta</span></div>
+					</article>
+					<article class="service-card" data-service="web">
+						<div class="card__header">
+							<h3 class="card__title">Soporte web evolutivo</h3>
+							<span class="card__badge">CONTINUO</span>
+						</div>
+						<p class="card__description">Velocidad con criterio: seguro, rápido y listo para vender.</p>
+						<ul class="card__list">
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Actualizaciones y contenidos sin fricción</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Promos, cupones y soporte a campañas</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Monitoreo de seguridad y performance</li>
+						</ul>
+						<div class="card__result">Resultado: <strong>menos freno, más ventas</strong>.</div>
+						<div class="card__price"><span class="price__amount">Desde $200.000</span> <span class="price__meta">CLP / mes</span></div>
+					</article>
+					<article class="service-card" data-service="automatizacion">
+						<div class="card__header">
+							<h3 class="card__title">Auditoría de automatización</h3>
+							<span class="card__badge">EFICIENCIA</span>
+						</div>
+						<p class="card__description">Menos horas, más output. <strong>Técnica con maestría</strong>.</p>
+						<ul class="card__list">
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Mapeo de procesos y cuellos de botella</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Diseño de solución y automatización</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Implementación + training para el equipo</li>
+						</ul>
+						<div class="card__result">Resultado: <strong>costos abajo, entrega arriba</strong>.</div>
+						<div class="card__price"><span class="price__amount">Desde $750.000</span> <span class="price__meta">CLP</span></div>
+					</article>
+				</div>
+				<div class="section-cta">
+					<a href="#contacto" data-track="cta_mid_click" data-loc="servicios" class="button button--primary button--icon-right">
+						Hagamos que pase <i class="ph-bold ph-arrow-right"></i>
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<section id="metodo" class="section">
+			<div class="container">
+				<div class="section-header">
+					<h2 class="section-title">Riesgo calculado. Datos a la vista.</h2>
+					<p class="section-subtitle">Diagnóstico → estrategia → ejecución → aprendizaje. <strong>Iteramos hasta ganar</strong>.</p>
+				</div>
+				<div class="method-grid">
+					<article class="method-card">
+						<div class="card__header-icon"><i class="ph-bold ph-clipboard-text"></i><h3 class="card__title">Auditoría que aclara</h3></div>
+						<p class="card__text">Hallazgos accionables, prioridades y responsables. Te queda un plan, incluso si no seguimos.</p>
+					</article>
+					<article class="method-card">
+						<div class="card__header-icon"><i class="ph-bold ph-traffic-cone"></i><h3 class="card__title">KPIs en piedra</h3></div>
+						<p class="card__text">Métricas desde el día 1 y tableros compartidos para decidir rápido. Transparencia radical.</p>
+					</article>
+					<article class="method-card">
+						<div class="card__header-icon"><i class="ph-bold ph-lightning"></i><h3 class="card__title">Iteración Sutra</h3></div>
+						<p class="card__text">Ciclos cortos de prueba y aprendizaje. Lo que funciona, se escala; lo que no, se mejora.</p>
+					</article>
+				</div>
+				<div class="guarantee-box">
+					<p class="guarantee-box__text">🔒 <strong>Garantía de claridad:</strong> si la auditoría no te entrega claridad y siguientes pasos concretos, no seguimos. Sin permanencia.</p>
+					<a href="#contacto" data-track="cta_garantia_click" data-loc="metodo" class="button button--primary">Diagnostiquemos mi embudo</a>
+				</div>
+			</div>
+		</section>
+
+		<section id="casos" class="section">
+			<div class="container">
+				<div class="section-header">
+					<h2 class="section-title">Casos del equipo (antes de Zutra)</h2>
+				</div>
+				<div class="cases-grid">
+					<article class="case-card">
+						<img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1200&auto=format&fit=crop" alt="Lanzamiento de oferta inmobiliaria" class="case-card__image" width="1200" height="900" loading="lazy" decoding="async">
+						<a href="#contacto" aria-label="Quiero un caso como este" class="case-card__overlay-link"></a>
+						<div class="case-card__content">
+							<div class="case-card__tags">
+								<span class="tag tag--primary">Rol: Camilo — Director de Arte</span>
+								<span class="tag tag--secondary">Contexto: Equipo Interno</span>
+							</div>
+							<h3 class="case-card__title">Tübinger</h3>
+							<p class="case-card__description">Concepto valiente, lineamientos y guiones para pauta que movió leads calificados.</p>
+						</div>
+					</article>
+					<article class="case-card">
+						<img src="https://images.unsplash.com/photo-1550133730-695473e544be?q=80&w=1200&auto=format&fit=crop" alt="E-commerce fitness" class="case-card__image" width="1200" height="900" loading="lazy" decoding="async">
+						<a href="#contacto" aria-label="Quiero un caso como este" class="case-card__overlay-link"></a>
+						<div class="case-card__content">
+							<div class="case-card__tags">
+								<span class="tag tag--primary">Rol: Juan — Dirección de Arte y Creativa</span>
+								<span class="tag tag--secondary">Contexto: Agencia MediaDream</span>
+							</div>
+							<h3 class="case-card__title">Flipeame!</h3>
+							<p class="case-card__description">Branding estratégico, Diseño UI/UX.</p>
+						</div>
+					</article>
+					<article class="case-card">
+						<img src="https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=1200&auto=format&fit=crop" alt="UGC para marca de consumo" class="case-card__image" width="1200" height="900" loading="lazy" decoding="async">
+						<a href="#contacto" aria-label="Quiero un caso como este" class="case-card__overlay-link"></a>
+						<div class="case-card__content">
+							<div class="case-card__tags">
+								<span class="tag tag--primary">Rol: Juan - Director Compercial</span>
+								<span class="tag tag--secondary">Contexto: Artífices Studio</span>
+							</div>
+							<h3 class="case-card__title">Plan De Marketing Inmersivo</h3>
+							<p class="case-card__description">Sistema de contenidos y guidelines para <em>engagement</em> sostenido.</p>
+						</div>
+					</article>
+				</div>
+				<p class="disclaimer-text">
+					*Los casos muestran trabajo personal de los fundadores previo a Zutra. Si deseas referencias, podemos conectar con líderes que supervisaron estas tareas.
+				</p>
+			</div>
+		</section>
+
+		<section id="planes" class="section section--accent-bg-alt">
+			<div class="container">
+				<div class="section-header">
+					<h2 class="section-title">Elige cómo empezamos</h2>
+					<p class="section-subtitle">Sprints cerrados o acompañamiento mensual. <strong>Sin permanencia forzada</strong>.</p>
+				</div>
+				<div class="plans-grid">
+					<div class="plan-card">
+						<div class="header-plancard">
+							<h3 class="plan-card__title">Sprint Sutra de Leads</h3>
+							<p class="plan-card__meta">30 días · entrega cerrada</p>
+							<p class="plan-card__price">$550.000 <span class="price__meta">+ pauta</span></p>
+						</div>
+						
+						<ul class="plan-card__list">
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Landing CRO con hipótesis claras</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Ads valientes + tracking fino</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Reporte final y siguientes pasos</li>
+						</ul>
+						<a href="#contacto" data-track="plan_click" data-plan="sprint" class="plan-card__cta button button--primary">Quiero 30 días de leads</a>
+					</div>
+					<div class="plan-card plan-card--recommended">
+						<span class="plan-card__badge">RECOMENDADO</span>
+						<h3 class="plan-card__title">Crecimiento Mensual</h3>
+						<p class="plan-card__meta">Contenido + optimización continua</p>
+						<p class="plan-card__price">$450.000 <span class="price__meta">/ mes</span></p>
+						<ul class="plan-card__list">
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Estrategia, calendario y producción</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Publicación con pruebas y aprendizajes</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Reportes quincenales con decisiones</li>
+						</ul>
+						<a href="#contacto" data-track="plan_click" data-plan="mensual" class="plan-card__cta button button--primary">Quiero mi plan de crecimiento</a>
+					</div>
+					<div class="plan-card">
+						<h3 class="plan-card__title">Soporte Web</h3>
+						<p class="plan-card__meta">Mantenimiento y mejoras</p>
+						<p class="plan-card__price">$200.000 <span class="price__meta">/ mes</span></p>
+						<ul class="plan-card__list">
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Actualizaciones y fixes sin fricción</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Optimización de velocidad real</li>
+							<li class="card__list-item"><i class="ph-fill ph-check-circle"></i>Soporte técnico para campañas</li>
+						</ul>
+						<a href="#contacto" data-track="plan_click" data-plan="soporte" class="plan-card__cta button button--primary">Agendar</a>
+					</div>
+				</div>
+				<div class="plans-table-wrapper">
+					<table class="plans-table">
+						<thead>
+							<tr>
+								<th>Incluye</th>
+								<th>Sprint de Leads</th>
+								<th>Crecimiento Mensual</th>
+								<th>Soporte Web</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr><td data-label="Incluye">Definición KPIs</td><td data-label="Sprint de Leads">✔</td><td data-label="Crecimiento Mensual">✔</td><td data-label="Soporte Web">—</td></tr>
+							<tr><td data-label="Incluye">Producción creativa</td><td data-label="Sprint de Leads">✔ (ads)</td><td data-label="Crecimiento Mensual">✔ (orgánico)</td><td data-label="Soporte Web">—</td></tr>
+							<tr><td data-label="Incluye">Optimización continua</td><td data-label="Sprint de Leads">—</td><td data-label="Crecimiento Mensual">✔</td><td data-label="Soporte Web">✔ (web)</td></tr>
+							<tr><td data-label="Incluye">Reporte</td><td data-label="Sprint de Leads">Final</td><td data-label="Crecimiento Mensual">Quincenal</td><td data-label="Soporte Web">Mensual</td></tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</section>
+
+		<section id="quienes-somos" class="section">
+			<div class="container">
+				<div class="section-header">
+					<h2 class="section-title">Quiénes somos</h2>
+					<p class="section-subtitle">Identidad operativa: <strong>audacia con plan</strong> + <strong>maestría técnica</strong>.</p>
+				</div>
+				<div class="chips-container">
+					<span class="chip chip--primary"><i class="ph-bold ph-flag"></i>Sin permanencia</span>
+					<span class="chip"><i class="ph-bold ph-list-checks"></i>KPIs por escrito</span>
+					<span class="chip"><i class="ph-bold ph-charts"></i>Tableros compartidos</span>
+					<span class="chip"><i class="ph-bold ph-handshake"></i>Entrega accionable</span>
+				</div>
+				<div class="tabs-container" role="tablist" aria-label="Contenido de Quiénes somos">
+					<button class="tab-button" role="tab" aria-selected="false" aria-controls="qs-tab-manifiesto" id="qs-btn-manifiesto" data-target="qs-tab-manifiesto">Manifiesto</button>
+					<button class="tab-button" role="tab" aria-selected="false" aria-controls="qs-tab-roles" id="qs-btn-roles" data-target="qs-tab-roles">Fundadores</button>
+					<button class="tab-button active" role="tab" aria-selected="true" aria-controls="qs-tab-metodo" id="qs-btn-metodo" data-target="qs-tab-metodo">Cómo trabajamos</button>
+				</div>
+				<div id="qs-tab-metodo" role="tabpanel" aria-labelledby="qs-btn-metodo" class="tab-panel active">
+					<div class="panel-container">
+						<div class="panel-grid">
+							<article class="panel-card">
+								<div class="panel-card__header">
+									<div class="panel-card__number">1</div>
+									<h3 class="panel-card__title">Diagnóstico + KPIs</h3>
+								</div>
+								<p class="panel-card__text">Aterrizamos problema, hipótesis y métricas. Te queda un plan claro.</p>
+							</article>
+							<article class="panel-card">
+								<div class="panel-card__header">
+									<div class="panel-card__number">2</div>
+									<h3 class="panel-card__title">Ejecución con foco</h3>
+								</div>
+								<p class="panel-card__text">Creatividades + tech listo para medir: ads, contenido y web.</p>
+							</article>
+							<article class="panel-card">
+								<div class="panel-card__header">
+									<div class="panel-card__number">3</div>
+									<h3 class="panel-card__title">Aprender y escalar</h3>
+								</div>
+								<p class="panel-card__text">Reportes breves, decisiones claras. Lo que funciona, se escala.</p>
+							</article>
+						</div>
+						<div class="panel__cta-container">
+							<a href="#metodo" class="panel__cta-link">Ver método en detalle <i class="ph-bold ph-arrow-up-right"></i></a>
+						</div>
+					</div>
+				</div>
+				<div id="qs-tab-manifiesto" role="tabpanel" aria-labelledby="qs-btn-manifiesto" class="tab-panel hidden">
+					<div class="panel-container">
+						<div class="panel-grid--two-col">
+							<div>
+								<h3 class="panel__sub-title"><i class="ph-bold ph-fire"></i> ZUTRA: ir a todas, con cabeza</h3>
+								<ul class="panel__list">
+									<li><i class="ph-bold ph-target"></i>Audacia con hipótesis: arriesgamos donde hay retorno esperado.</li>
+									<li><i class="ph-bold ph-flask"></i>Aprendizaje continuo: ciclos cortos → decisión → escala.</li>
+									<li><i class="ph-bold ph-lock-key-open"></i>Transparencia radical: métricas y avances a la vista.</li>
+									<li><i class="ph-bold ph-user-focus"></i>Responsables claros: quién hace qué y cuándo.</li>
+								</ul>
+							</div>
+							<div>
+								<h3 class="panel__sub-title"><i class="ph-bold ph-shield-check"></i> Lo que no somos</h3>
+								<ul class="panel__list">
+									<li><i class="ph-bold ph-x-circle"></i>No vendemos humo ni “likes” sin impacto de negocio.</li>
+									<li><i class="ph-bold ph-x-circle"></i>No improvisamos la técnica: performance y tracking primero.</li>
+									<li><i class="ph-bold ph-x-circle"></i>No contratos amarrados: seguimos solo si aporta.</li>
+								</ul>
+							</div>
+						</div>
+						<div class="panel__cta-container">
+							<a href="#contacto" class="button button--primary button--icon-right">
+								Conversemos 20’ <i class="ph-bold ph-arrow-right"></i>
+							</a>
+						</div>
+					</div>
+				</div>
+				<div id="qs-tab-roles" role="tabpanel" aria-labelledby="qs-btn-roles" class="tab-panel hidden">
+					<div class="panel-container">
+						<div class="panel-grid--two-col">
+							<article class="founder-card">
+								<div class="founder-card__image-wrapper">
+									<div class="founder-card__blob">
+										<svg viewBox="0 0 390.49 363.11">
+											<path fill="var(--color-accent)" d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"/>
+										</svg>
+									</div>
+									<img src="/img/fundadores/camilo-bustamante.png" alt="Camilo Bustamante" class="founder-card__image" width="900" height="1200" loading="lazy" decoding="async">
+								</div>
+								<div class="founder-card__text-wrapper">
+									<h3 class="founder-card__title">Camilo Bustamante</h3>
+									<p class="founder-card__subtitle">Co-fundador · Estratega Creativo</p>
+									<ul class="founder-card__list">
+										<li><i class="ph-bold ph-quotes"></i>Concepto y narrativa que venden.</li>
+										<li><i class="ph-bold ph-video"></i>Sistemas de contenido: UGC, guiones de ads, parrillas.</li>
+										<li><i class="ph-bold ph-paint-brush-broad"></i>Dirección creativa y guidelines accionables.</li>
+									</ul>
+								</div>
+							</article>
+							<article class="founder-card">
+								<div class="founder-card__image-wrapper">
+									<div class="founder-card__blob">
+										<svg viewBox="0 0 390.49 363.11">
+											<path fill="var(--color-accent)" d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"/>
+										</svg>
+									</div>
+									<img src="/img/fundadores/juan-alfaro.png" alt="Juan Alfaro Serrano" class="founder-card__image" width="900" height="1200" loading="lazy" decoding="async">
+								</div>
+								<div class="founder-card__text-wrapper">
+									<h3 class="founder-card__title">Juan Alfaro Serrano</h3>
+									<p class="founder-card__subtitle">Co-fundador · Director Técnico</p>
+									<ul class="founder-card__list">
+										<li><i class="ph-bold ph-circuitry"></i>Arquitectura web y performance real.</li>
+										<li><i class="ph-bold ph-activity"></i>Tracking/analytics, CRO y experimentos.</li>
+										<li><i class="ph-bold ph-arrows-left-right"></i>Automatización y flujos n8n orientados a KPIs.</li>
+									</ul>
+								</div>
+							</article>
+						</div>
+						<p class="panel__footer-text">Creatividad con criterio + ejecución impecable. <strong>Equipo, no proveedor.</strong></p>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<section id="manifiesto" class="section">
+			<div class="container">
+				<div class="section-header">
+					<h2 class="section-title">Principios Sutra (resumen)</h2>
+					<p class="section-subtitle">Destilado operativo del manifiesto para el día a día.</p>
+				</div>
+				<div class="manifesto-grid">
+					<article class="manifesto-card">
+						<div class="card__header-icon"><i class="ph-bold ph-target"></i><h3 class="card__title">Métricas > ego</h3></div>
+						<p class="card__text">Si no mueve KPIs, es decoración. Decidimos con datos.</p>
+					</article>
+					<article class="manifesto-card">
+						<div class="card__header-icon"><i class="ph-bold ph-flask"></i><h3 class="card__title">Audacia con plan</h3></div>
+						<p class="card__text">Riesgo calculado, hipótesis claras y control de impacto.</p>
+					</article>
+					<article class="manifesto-card">
+						<div class="card__header-icon"><i class="ph-bold ph-lock-key-open"></i><h3 class="card__title">Transparencia radical</h3></div>
+						<p class="card__text">Tableros compartidos, límites claros y comunicación directa.</p>
+					</article>
+					<article class="manifesto-card">
+						<div class="card__header-icon"><i class="ph-bold ph-rocket-launch"></i><h3 class="card__title">Velocidad con criterio</h3></div>
+						<p class="card__text">Ir rápido, sí; con cuidados técnicos y foco.</p>
+					</article>
+					<article class="manifesto-card">
+						<div class="card__header-icon"><i class="ph-bold ph-users-three"></i><h3 class="card__title">Equipo, no proveedor</h3></div>
+						<p class="card__text">Nos involucramos y peleamos por tus ideas como propias.</p>
+					</article>
+					<article class="manifesto-card">
+						<div class="card__header-icon"><i class="ph-bold ph-circuitry"></i><h3 class="card__title">Maestría técnica</h3></div>
+						<p class="card__text">Ejecución impecable en diseño, pauta y automatización.</p>
+					</article>
+				</div>
+			</div>
+		</section>
+
+		<section id="faqs" class="section">
+			<div class="container">
+				<div class="section-header">
+					<h2 class="section-title">Preguntas frecuentes</h2>
+					<p class="section-subtitle">Lo esencial antes de empezar. <strong>Sin medias tintas</strong>.</p>
+				</div>
+				<div class="faq-container">
+					<details class="faq-item">
+						<summary class="faq-item__summary">
+							<span class="faq-item__question">Si Zutra es nueva, ¿por qué debería confiar en ustedes?</span>
+							<i class="ph-bold ph-caret-down faq-item__icon"></i>
+						</summary>
+						<div class="faq-item__answer">
+							<p>Entendemos la duda. Ser "nuevos" como agencia es nuestra mayor fortaleza. Significa que no hay burocracia, ni capas de ejecutivos de cuenta. Trabajas directamente con los fundadores, cuya experiencia combinada en agencias y como freelancers está demostrada en los casos de éxito.</p>
+							<p>En lugar de promesas vacías, te ofrecemos:</p>
+							<ul>
+								<li><strong>Transparencia radical:</strong> KPIs definidos por escrito y tableros de resultados en tiempo real que puedes consultar cuando quieras.</li>
+								<li><strong>Prueba sin riesgo:</strong> Nuestra auditoría inicial te entrega un plan de acción concreto y valioso, sin costo ni compromiso de permanencia.</li>
+								<li><strong>Piel en el juego:</strong> Nuestro crecimiento depende de tus resultados. Estamos obligados a ir a todas para que ganes, porque así ganamos nosotros.</li>
+							</ul>
+						</div>
+					</details>
+
+					<details class="faq-item">
+						<summary class="faq-item__summary">
+							<span class="faq-item__question">¿Qué los hace realmente diferentes a otras agencias?</span>
+							<i class="ph-bold ph-caret-down faq-item__icon"></i>
+						</summary>
+						<div class="faq-item__answer">
+							<p>No somos una agencia tradicional. Somos un equipo de ejecución de alto nivel. La diferencia Zutra se basa en cuatro pilares:</p>
+							<ol>
+								<li><strong>Fundadores en la trinchera:</strong> No delegamos tu estrategia a un junior. Camilo (estrategia creativa) y Juan (dirección técnica) están directamente involucrados en cada proyecto.</li>
+								<li><strong>Doble expertise (Audacia + Técnica):</strong> Combinamos ideas creativas valientes que captan la atención con una ejecución técnica impecable en pauta, web y analítica. Una no sirve sin la otra.</li>
+								<li><strong>Velocidad pragmática:</strong> Operamos en ciclos cortos (sprints) para aprender y optimizar rápido. Menos reuniones, más resultados.</li>
+								<li><strong>Foco en métricas de negocio:</strong> Nos obsesionan los KPIs que impactan tu línea de fondo (ventas, leads calificados, CAC, ROAS), no las métricas de vanidad.</li>
+							</ol>
+						</div>
+					</details>
+
+					<details class="faq-item">
+						<summary class="faq-item__summary">
+							<span class="faq-item__question">¿Para qué tipo de empresa es ideal Zutra?</span>
+							<i class="ph-bold ph-caret-down faq-item__icon"></i>
+						</summary>
+						<div class="faq-item__answer">
+							<p>Somos el mejor partner para empresas y startups que ya tienen un producto o servicio validado y están listas para escalar de forma agresiva. Si buscas un equipo que funcione como una extensión del tuyo, que cuestione el status quo y que se mueva rápido, somos para ti.</p>
+							<p>No somos la mejor opción para quienes recién comienzan de cero o solo buscan un servicio de community management básico para "tener presencia". Nos enfocamos en sistemas de marketing que generan demanda y ventas medibles.</p>
+						</div>
+					</details>
+
+					<details class="faq-item">
+						<summary class="faq-item__summary">
+							<span class="faq-item__question">¿Cómo se mide el éxito y con qué frecuencia vemos reportes?</span>
+							<i class="ph-bold ph-caret-down faq-item__icon"></i>
+						</summary>
+						<div class="faq-item__answer">
+							<p>El éxito se define en conjunto en nuestra sesión de kickoff, alineando tus objetivos de negocio con KPIs de marketing claros (ej: Costo por Lead, Tasa de Conversión, ROAS). Estos se plasman en un documento y en un tablero de control compartido.</p>
+							<p>Olvídate de los reportes en PDF de 50 páginas. Creemos en la comunicación continua a través de reportes quincenales o mensuales (según el plan) que son breves, visuales y enfocados en dos cosas: <strong>1. Resultados vs. Objetivos</strong> y <strong>2. Decisiones y próximos pasos</strong>. Lo que funciona se escala; lo que no, se ajusta o se elimina.</p>
+						</div>
+					</details>
+
+					<details class="faq-item">
+						<summary class="faq-item__summary">
+							<span class="faq-item__question">¿Hay contratos de permanencia mínima?</span>
+							<i class="ph-bold ph-caret-down faq-item__icon"></i>
+						</summary>
+						<div class="faq-item__answer">
+							<p>Categóricamente no. Creemos que la única razón para que te quedes con nosotros es porque estás viendo resultados que justifican la inversión. Los Sprints son proyectos con una entrega definida, y los planes mensuales se pueden cancelar en cualquier momento con 15 días de aviso. Queremos clientes que elijan estar, no que estén obligados por un contrato.</p>
+						</div>
+					</details>
+
+					<details class="faq-item">
+						<summary class="faq-item__summary">
+							<span class="faq-item__question">¿Trabajan con clientes fuera de Santiago?</span>
+							<i class="ph-bold ph-caret-down faq-item__icon"></i>
+						</summary>
+						<div class="faq-item__answer">
+							<p>Sí, el 100% de nuestra operación está diseñada para ser remota y eficiente, lo que nos permite trabajar con clientes en cualquier parte de Chile o del mundo. Usamos herramientas como Slack para comunicación diaria, tableros en Notion/Miro para la gestión de proyectos y videollamadas para sesiones estratégicas.</p>
+							<p>Para proyectos que requieran producción audiovisual presencial, podemos viajar o coordinar con equipos locales de confianza, siempre con total transparencia en los costos.</p>
+						</div>
+					</details>
+				</div>
+			</div>
+		</section>
+
+		<section id="contacto" class="section">
+			<div class="container">
+				<div class="section-header">
+					<h2 class="section-title">¿Listos para ir a todas?</h2>
+					<p class="section-subtitle">Agenda tu auditoría gratuita. Si no te entregamos claridad y próximos pasos accionables, no seguimos. <strong>Así de simple</strong>.</p>
+				</div>
+				<div class="form-wrapper">
+					<form id="contact-form" class="contact-form" novalidate>
+						<div class="form-group">
+							<label for="name" class="form-label">Nombre completo</label>
+							<input id="name" name="name" type="text" autocomplete="name" required class="form-input">
+							<p id="err-name" class="form-error hidden">Ingresa tu nombre.</p>
+						</div>
+						<div class="form-group">
+							<label for="email" class="form-label">Correo electrónico</label>
+							<input id="email" name="email" type="email" inputmode="email" autocomplete="email" required class="form-input">
+							<p id="err-email" class="form-error hidden">Ingresa un correo válido.</p>
+						</div>
+						<div class="form-group">
+							<label for="message" class="form-label">Cuéntanos del proyecto</label>
+							<textarea id="message" name="message" rows="4" required class="form-input"></textarea>
+							<p id="err-message" class="form-error hidden">Escribe un mensaje.</p>
+						</div>
+						<div class="form-consent-group">
+							<input id="consent" name="consent" type="checkbox" required>
+							<label for="consent" class="form-consent-label">Acepto ser contactad@ respecto a mi solicitud.</label>
+						</div>
+						<p id="err-consent" class="form-error hidden">Debes aceptar para continuar.</p>
+						<button id="submit-button" type="submit" data-track="cta_contacto_submit" class="button button--primary button--full-width">Vamos a todas</button>
+					</form>
+					<div id="form-status" class="form-status" role="status" aria-live="polite"></div>
+					<p class="contact-email-text">O escríbenos a <a class="contact-email-link" href="mailto:hola@zutra.cl">hola@zutra.cl</a></p>
+				</div>
+			</div>
+		</section>
+	</main>
+
+	<div class="sticky-cta">
+		<a href="#contacto" data-track="cta_mobile_sticky" class="button button--primary button--full-width">Auditoría gratuita</a>
+	</div>
+
+	<footer class="footer">
+		<div class="container">
+			<div class="footer__inner">
+				<p class="footer__copy">&copy; <span id="year">2025</span> Zutra · Puente Alto, CL</p>
+				<div class="footer__socials">
+					<a href="#" aria-label="Twitter" class="footer__social-link"><i class="ph-bold ph-twitter-logo"></i></a>
+					<a href="#" aria-label="Instagram" class="footer__social-link"><i class="ph-bold ph-instagram-logo"></i></a>
+					<a href="#" aria-label="LinkedIn" class="footer__social-link"><i class="ph-bold ph-linkedin-logo"></i></a>
+				</div>
+			</div>
+		</div>
+	</footer>
+
+	<script type="application/ld+json" is:inline>
+	{
+		"@context":"https://schema.org",
+		"@type":"Organization",
+		"name":"Zutra",
+		"url":"https://www.zutra.cl/",
+		"logo":"https://www.zutra.cl/og-image.jpg",
+		"founders":[{"@type":"Person","name":"Camilo Bustamante"},{"@type":"Person","name":"Juan Alfaro"}],
+		"address":{"@type":"PostalAddress","addressLocality":"Puente Alto","addressRegion":"RM","addressCountry":"CL"},
+		"sameAs":[]
+	}
+	</script>
+	<script type="application/ld+json" is:inline>
+	{
+		"@context":"https://schema.org",
+		"@type":"FAQPage",
+		"mainEntity":[
+			{"@type":"Question","name":"Si Zutra es nueva, ¿por qué confiar?","acceptedAnswer":{"@type":"Answer","text":"Mostramos trabajo real previo de los fundadores (rol, contexto, aportes), fijamos KPIs por escrito y trabajamos con tableros compartidos. La auditoría entrega valor inmediato y no exige permanencia."}},
+			{"@type":"Question","name":"¿Trabajan fuera de Santiago?","acceptedAnswer":{"@type":"Answer","text":"Sí. Operamos remoto con sesiones en vivo y tableros compartidos. Producciones presenciales según ciudad."}},
+			{"@type":"Question","name":"¿Hay permanencia mínima?","acceptedAnswer":{"@type":"Answer","text":"No. Sprints cerrados y planes mensuales cancelables con 15 días de aviso."}},
+			{"@type":"Question","name":"¿Cómo medimos éxito?","acceptedAnswer":{"@type":"Answer","text":"Definimos métricas al inicio (leads, CAC, ROAS, tráfico orgánico) y reportamos en ciclos quincenales o mensuales. Lo que funciona, se escala."}}
+		]
+	}
+	</script>
+</Layout>
