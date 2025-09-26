@@ -1,12 +1,15 @@
 /* src/styles/components/hero-carousel.css */
+
 .hero-carousel {
   position: relative;
   overflow: hidden;
-  height: calc(100vh - 4rem);
-  max-height: 65rem;
   display: flex;
   align-items: center;
-  padding: 6rem 0;
+  /* --- CAMBIOS CLAVE PARA MÓVIL --- */
+  height: auto; /* La altura ahora se adapta al contenido */
+  padding: 4rem 0; /* Menos padding vertical */
+  margin-top: 4rem; /* Espacio para el header fijo */
+  min-height: calc(90vh - 4rem); /* Asegura que no sea demasiado pequeño */
 }
 
 .hero-carousel__slides-container {
@@ -40,26 +43,47 @@
 .hero-carousel__text-content {
   order: 2; /* Texto abajo en móvil */
 }
+
 .hero__title {
-  font-size: 2.25rem; font-weight: 800;
-  line-height: 1.1; letter-spacing: -0.025em; margin: 0;
+  /* --- CAMBIO CLAVE PARA MÓVIL --- */
+  font-size: 2rem; /* Título ligeramente más pequeño */
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  margin: 0;
 }
-.accent-text { color: var(--color-accent); }
-.hero__subtitle { margin-top: 1rem; font-size: 1.125rem; color: var(--color-muted); max-width: 45ch; margin-inline: auto; }
-.hero__actions { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+
+.accent-text {
+  color: var(--color-accent);
+}
+
+.hero__subtitle {
+  margin-top: 1rem;
+  font-size: 1.125rem;
+  color: var(--color-muted);
+  max-width: 45ch;
+  margin-inline: auto;
+}
+
+.hero__actions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
 
 .hero-carousel__image-content {
   order: 1; /* Imagen arriba en móvil */
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 300px;
 }
 
 .hero-carousel__image-wrapper {
   position: relative;
   width: 100%;
-  max-width: 300px;
+  max-width: 280px; /* Imagen un poco más pequeña */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -83,51 +107,21 @@
   height: auto;
   object-fit: cover;
   border-radius: 12px;
-  filter: grayscale(0);
-  scale: 1;
-  transition: scale 0.3s ease-in-out, filter 0.3s ease-in-out;
-}
-
-.hero-carousel__photo:hover {
-  filter: grayscale(1);
-  scale: 1.05;
 }
 
 .hero-carousel__nav-button {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  background-color: hsla(0, 0%, 100%, 0.1);
-  border: 1px solid var(--color-line);
-  color: var(--color-secondary);
-  border-radius: 50%;
-  width: 2.75rem;
-  height: 2.75rem;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 1.5rem;
-  transition: background-color 0.2s, border-color 0.2s;
+  display: none; /* Oculto en móvil por defecto */
 }
-
-.hero-carousel__nav-button:hover {
-  background-color: hsla(0, 0%, 100%, 0.2);
-  border-color: var(--color-accent);
-}
-
-.hero-carousel__nav-button--prev { left: 1.5rem; }
-.hero-carousel__nav-button--next { right: 1.5rem; }
 
 .hero-carousel__pagination {
   position: absolute;
-  bottom: 2rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
   display: flex;
   gap: 0.75rem;
+  /* --- CAMBIO CLAVE PARA MÓVIL --- */
+  bottom: 5.5rem; /* Sube la paginación para no chocar con el CTA fijo */
 }
 
 .hero-carousel__dot {
@@ -141,7 +135,9 @@
   transition: background-color 0.3s, transform 0.3s;
 }
 
-.hero-carousel__dot:hover { background-color: var(--color-muted); }
+.hero-carousel__dot:hover {
+  background-color: var(--color-muted);
+}
 .hero-carousel__dot.active {
   background-color: var(--color-accent);
   transform: scale(1.2);
