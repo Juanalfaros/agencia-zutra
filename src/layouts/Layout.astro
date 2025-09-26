@@ -6,11 +6,11 @@ interface Props {
 
 const { title, description } = Astro.props;
 
-// ✅ Importa el CSS en el frontmatter (bundling + HMR)
+// ✅ El CSS sí se queda aquí
 import '@/styles/main.css';
 
-// ✅ Importa el script para obtener su URL resuelta
-import mainJsUrl from '@/scripts/main.js?url';
+// ❌ El import de JS se va de aquí
+// import '@/scripts/main.js'; 
 ---
 <!DOCTYPE html>
 <html lang="es">
@@ -28,7 +28,8 @@ import mainJsUrl from '@/scripts/main.js?url';
 <body>
   <slot />
 
-  <!-- ✅ Usa la URL importada y resuelta -->
-  <script type="module" src={mainJsUrl}></script>
+  <script>
+    import '/src/scripts/main.js';
+  </script>
 </body>
 </html>
