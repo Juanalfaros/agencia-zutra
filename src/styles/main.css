@@ -1,0 +1,18 @@
+/* src/styles/main.css */
+
+/* 1. Base y utilidades globales */
+@import './global.css';
+
+/* 2. Estilos de componentes reutilizables */
+@import './components/buttons.css';
+@import './components/cards.css';
+@import './components/layout.css';
+
+/* 3. Estilos de componentes específicos */
+@import './components/header.css';
+@import './components/hero-carousel.css';
+@import './components/forms.css';
+@import './components/footer.css';
+
+/* 4. Media Queries para responsividad (siempre al final) */
+@import './responsive.css';
