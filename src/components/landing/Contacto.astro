@@ -1,0 +1,89 @@
+---
+// src/components/landing/Contacto.astro
+---
+<section id="contacto" class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">¿Listos para ir a todas?</h2>
+      <p class="section-subtitle">
+        Agenda tu auditoría gratuita. Si no te entregamos claridad y
+        próximos pasos accionables, no seguimos. <strong
+          >Así de simple</strong
+        >.
+      </p>
+    </div>
+    <div class="form-wrapper">
+      <form id="contact-form" class="contact-form" novalidate>
+        <div class="form-group">
+          <label for="name" class="form-label">Nombre completo</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            required
+            class="form-input"
+          />
+          <p id="err-name" class="form-error hidden">Ingresa tu nombre.</p>
+        </div>
+        <div class="form-group">
+          <label for="email" class="form-label">Correo electrónico</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+            required
+            class="form-input"
+          />
+          <p id="err-email" class="form-error hidden">
+            Ingresa un correo válido.
+          </p>
+        </div>
+        <div class="form-group">
+          <label for="message" class="form-label"
+            >Cuéntanos del proyecto</label
+          >
+          <textarea
+            id="message"
+            name="message"
+            rows="4"
+            required
+            class="form-input"></textarea>
+          <p id="err-message" class="form-error hidden">
+            Escribe un mensaje.
+          </p>
+        </div>
+        <div class="form-consent-group">
+          <input id="consent" name="consent" type="checkbox" required />
+          <label for="consent" class="form-consent-label"
+            >Acepto ser contactad@ respecto a mi solicitud.</label
+          >
+        </div>
+        <p id="err-consent" class="form-error hidden">
+          Debes aceptar para continuar.
+        </p>
+        <button
+          id="submit-button"
+          type="submit"
+          data-track="cta_contacto_submit"
+          class="button button--primary button--full-width"
+          >Vamos a todas</button
+        >
+      </form>
+      <div
+        id="form-status"
+        class="form-status"
+        role="status"
+        aria-live="polite"
+      >
+      </div>
+      <p class="contact-email-text">
+        O escríbenos a <a
+          class="contact-email-link"
+          href="mailto:hola@zutra.cl">hola@zutra.agency</a>
+      </p>
+    </div>
+  </div>
+</section>

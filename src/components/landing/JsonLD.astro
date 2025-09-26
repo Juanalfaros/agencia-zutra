@@ -1,0 +1,63 @@
+---
+// src/components/landing/JsonLD.astro
+---
+<script type="application/ld+json" is:inline>
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Zutra",
+    "url": "https://www.zutra.cl/",
+    "logo": "https://www.zutra.cl/og-image.jpg",
+    "founders": [
+      { "@type": "Person", "name": "Camilo Bustamante" },
+      { "@type": "Person", "name": "Juan Alfaro" }
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Puente Alto",
+      "addressRegion": "RM",
+      "addressCountry": "CL"
+    },
+    "sameAs": []
+  }
+</script>
+<script type="application/ld+json" is:inline>
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Si Zutra es nueva, ¿por qué confiar?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Mostramos trabajo real previo de los fundadores (rol, contexto, aportes), fijamos KPIs por escrito y trabajamos con tableros compartidos. La auditoría entrega valor inmediato y no exige permanencia."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Trabajan fuera de Santiago?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Sí. Operamos remoto con sesiones en vivo y tableros compartidos. Producciones presenciales según ciudad."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Hay permanencia mínima?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. Sprints cerrados y planes mensuales cancelables con 15 días de aviso."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "¿Cómo medimos éxito?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Definimos métricas al inicio (leads, CAC, ROAS, tráfico orgánico) y reportamos en ciclos quincenales o mensuales. Lo que funciona, se escala."
+        }
+      }
+    ]
+  }
+</script>

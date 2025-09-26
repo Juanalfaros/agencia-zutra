@@ -336,9 +336,9 @@ html[data-theme="light"] .header { background-color: hsla(0, 0%, 98%, 0.75); }
 /* --- Experiencia Section --- */
 .logos-container {
   margin-top: 2rem; display: flex; flex-wrap: wrap;
-  align-items: center; justify-content: center; gap: 2rem; opacity: 0.9;
+  align-items: center; justify-content: center; gap: 3rem; opacity: 0.9;
 }
-.logo { height: 2.25rem; object-fit: contain; }
+.logo { max-height: 4rem; max-width:12rem; object-fit: contain; }
 
 /* --- Cards Genéricas & Servicios --- */
 .services-grid, .method-grid, .manifesto-grid, .cases-grid, .plans-grid {
@@ -625,4 +625,86 @@ html[data-theme="light"] .panel-card { background-color: hsla(0,0%,0%,0.03); }
   .plans-grid { grid-template-columns: repeat(3, 1fr); }
   .founder-card { grid-template-columns: 4fr 5fr; gap: 3rem; }
   .founder-card__title { font-size: 1.875rem; }
+}
+
+/* =========================================
+   Resultados Section (Versión 2)
+   ========================================= */
+.results-grid-v2 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.result-card-v2 {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.result-card-v2:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--box-shadow-glow);
+}
+
+.card-v2__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.card-v2__header i {
+    font-size: 1.5rem;
+    color: var(--color-accent);
+}
+
+.card-v2__project {
+    margin: 0;
+    font-weight: 700;
+    color: var(--color-secondary);
+}
+
+.card-v2__achievement {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin: 0 0 0.75rem 0;
+    color: var(--color-secondary);
+}
+
+.card-v2__context {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--color-muted);
+    margin: 0;
+    flex-grow: 1;
+}
+
+.card-v2__footer {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-line);
+}
+
+.card-v2__attribution {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    font-style: italic;
+}
+
+@media (min-width: 768px) {
+    .results-grid-v2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+     .card-v2__achievement {
+        font-size: 2rem;
+    }
 }
