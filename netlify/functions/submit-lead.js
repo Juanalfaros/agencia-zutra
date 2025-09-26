@@ -28,7 +28,7 @@ export const handler = async (event) => {
           MENSAJE: message,
         },
         // ¡MUY IMPORTANTE! Cambia el número por el ID de tu lista en Brevo
-        listIds: [2] 
+        listIds: [4] 
       }),
     });
 
