@@ -79,4 +79,4 @@
 .tag--primary { background-color: var(--color-accent); color: var(--color-primary); }
 .tag--secondary { border: 1px solid var(--color-line); }
 .case-card__title { margin-top: 0.75rem; font-size: 1.125rem; font-weight: 700; }
-.case-card__description { margin-top: 0.5rem; font-size: 0.875rem; color: var(--color-gray-300); }
+.case-card__description { font-size: 0.875rem; color: var(--color-gray-300); line-height: 1.5; }
