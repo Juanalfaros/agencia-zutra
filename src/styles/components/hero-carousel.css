@@ -9,7 +9,8 @@
   height: auto; /* La altura ahora se adapta al contenido */
   padding: 4rem 0; /* Menos padding vertical */
   margin-top: 4rem; /* Espacio para el header fijo */
-  min-height: calc(90vh - 4rem); /* Asegura que no sea demasiado pequeño */
+  height: calc(90vh - 4rem); /* Asegura que no sea demasiado pequeño */
+  max-height: 70rem;
 }
 
 .hero-carousel__slides-container {
@@ -142,3 +143,30 @@
   background-color: var(--color-accent);
   transform: scale(1.2);
 }
+
+.hero-carousel__nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background-color: hsla(0, 0%, 100%, 0.1);
+  border: 1px solid var(--color-line);
+  color: var(--color-secondary);
+  border-radius: 50%;
+  width: 2.75rem;
+  height: 2.75rem;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.hero-carousel__nav-button:hover {
+  background-color: hsla(0, 0%, 100%, 0.2);
+  border-color: var(--color-accent);
+}
+
+.hero-carousel__nav-button--prev { left: 1.5rem; }
+.hero-carousel__nav-button--next { right: 1.5rem; }

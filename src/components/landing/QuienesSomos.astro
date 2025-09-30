@@ -1,264 +1,125 @@
----
-// src/components/landing/QuienesSomos.astro
----
 <section id="quienes-somos" class="section">
-  <div class="container">
-    <div class="section-header">
-      <h2 class="section-title">Quiénes somos</h2>
-      <p class="section-subtitle">
-        Identidad operativa: <strong>audacia con plan</strong> + <strong
-          >maestría técnica</strong
-        >.
-      </p>
-    </div>
-    <div class="chips-container">
-      <span class="chip chip--primary"
-        ><i class="ph-bold ph-flag"></i>Sin permanencia</span
-      >
-      <span class="chip"
-        ><i class="ph-bold ph-list-checks"></i>KPIs por escrito</span
-      >
-      <span class="chip"
-        ><i class="ph-bold ph-charts"></i>Tableros compartidos</span
-      >
-      <span class="chip"
-        ><i class="ph-bold ph-handshake"></i>Entrega accionable</span
-      >
-    </div>
-    <div
-      class="tabs-container"
-      role="tablist"
-      aria-label="Contenido de Quiénes somos"
-    >
-      <button
-        class="tab-button"
-        role="tab"
-        aria-selected="false"
-        aria-controls="qs-tab-manifiesto"
-        id="qs-btn-manifiesto"
-        data-target="qs-tab-manifiesto">Manifiesto</button
-      >
-      <button
-        class="tab-button active"
-        role="tab"
-        aria-selected="true"
-        aria-controls="qs-tab-roles"
-        id="qs-btn-roles"
-        data-target="qs-tab-roles">Fundadores</button
-      >
-      <button
-        class="tab-button"
-        role="tab"
-        aria-selected="false"
-        aria-controls="qs-tab-metodo"
-        id="qs-btn-metodo"
-        data-target="qs-tab-metodo">Cómo trabajamos</button
-      >
-    </div>
-    <div
-      id="qs-tab-metodo"
-      role="tabpanel"
-      aria-labelledby="qs-btn-metodo"
-      class="tab-panel hidden"
-    >
-      <div class="panel-container">
-        <div class="panel-grid">
-          <article class="panel-card">
-            <div class="panel-card__header">
-              <div class="panel-card__number">1</div>
-              <h3 class="panel-card__title">Diagnóstico + KPIs</h3>
-            </div>
-            <p class="panel-card__text">
-              Aterrizamos problema, hipótesis y métricas. Te queda un plan
-              claro.
-            </p>
-          </article>
-          <article class="panel-card">
-            <div class="panel-card__header">
-              <div class="panel-card__number">2</div>
-              <h3 class="panel-card__title">Ejecución con foco</h3>
-            </div>
-            <p class="panel-card__text">
-              Creatividades + tech listo para medir: ads, contenido y web.
-            </p>
-          </article>
-          <article class="panel-card">
-            <div class="panel-card__header">
-              <div class="panel-card__number">3</div>
-              <h3 class="panel-card__title">Aprender y escalar</h3>
-            </div>
-            <p class="panel-card__text">
-              Reportes breves, decisiones claras. Lo que funciona, se
-              escala.
-            </p>
-          </article>
-        </div>
-        <div class="panel__cta-container">
-          <a href="#metodo" class="panel__cta-link"
-            >Ver método en detalle <i class="ph-bold ph-arrow-up-right"
-            ></i></a
-          >
-        </div>
-      </div>
-    </div>
-    <div
-      id="qs-tab-manifiesto"
-      role="tabpanel"
-      aria-labelledby="qs-btn-manifiesto"
-      class="tab-panel hidden"
-    >
-      <div class="panel-container">
-        <div class="panel-grid--two-col">
-          <div>
-            <h3 class="panel__sub-title">
-              <i class="ph-bold ph-fire"></i> ZUTRA: ir a todas, con cabeza
-            </h3>
-            <ul class="panel__list">
-              <li>
-                <i class="ph-bold ph-target"></i>Audacia con hipótesis:
-                arriesgamos donde hay retorno esperado.
-              </li>
-              <li>
-                <i class="ph-bold ph-flask"></i>Aprendizaje continuo: ciclos
-                cortos → decisión → escala.
-              </li>
-              <li>
-                <i class="ph-bold ph-lock-key-open"></i>Transparencia
-                radical: métricas y avances a la vista.
-              </li>
-              <li>
-                <i class="ph-bold ph-user-focus"></i>Responsables claros:
-                quién hace qué y cuándo.
-              </li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="panel__sub-title">
-              <i class="ph-bold ph-shield-check"></i> Lo que no somos
-            </h3>
-            <ul class="panel__list">
-              <li>
-                <i class="ph-bold ph-x-circle"></i>No vendemos humo ni
-                “likes” sin impacto de negocio.
-              </li>
-              <li>
-                <i class="ph-bold ph-x-circle"></i>No improvisamos la
-                técnica: performance y tracking primero.
-              </li>
-              <li>
-                <i class="ph-bold ph-x-circle"></i>No contratos amarrados:
-                seguimos solo si aporta.
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="panel__cta-container">
-          <a
-            href="#contacto"
-            class="button button--primary button--icon-right"
-          >
-            Conversemos 20’ <i class="ph-bold ph-arrow-right"></i>
-          </a>
-        </div>
-      </div>
-    </div>
-    <div
-      id="qs-tab-roles"
-      role="tabpanel"
-      aria-labelledby="qs-btn-roles"
-      class="tab-panel active"
-    >
-      <div class="panel-container">
-        <div class="panel-grid--two-col">
-          <article class="founder-card">
-            <div class="founder-card__image-wrapper">
-              <div class="founder-card__blob">
-                <svg viewBox="0 0 390.49 363.11">
-                  <path
-                    fill="var(--color-accent)"
-                    d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"
-                  ></path>
-                </svg>
-              </div>
-              <img
-                src="/img/fundadores/camilo-bustamante.webp"
-                alt="Camilo Bustamante"
-                class="founder-card__image"
-                width="900"
-                height="1200"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <div class="founder-card__text-wrapper">
-              <h3 class="founder-card__title">Camilo Bustamante</h3>
-              <p class="founder-card__subtitle">
-                Co-fundador · Estratega Creativo
-              </p>
-              <ul class="founder-card__list">
-                <li>
-                  <i class="ph-bold ph-quotes"></i>Concepto y narrativa que
-                  venden.
-                </li>
-                <li>
-                  <i class="ph-bold ph-video"></i>Sistemas de contenido:
-                  UGC, guiones de ads, parrillas.
-                </li>
-                <li>
-                  <i class="ph-bold ph-paint-brush-broad"></i>Dirección
-                  creativa y guidelines accionables.
-                </li>
-              </ul>
-            </div>
-          </article>
-          <article class="founder-card">
-            <div class="founder-card__image-wrapper">
-              <div class="founder-card__blob">
-                <svg viewBox="0 0 390.49 363.11">
-                  <path
-                    fill="var(--color-accent)"
-                    d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"
-                  ></path>
-                </svg>
-              </div>
-              <img
-                src="/img/fundadores/juan-alfaro.webp"
-                alt="Juan Alfaro Serrano"
-                class="founder-card__image"
-                width="900"
-                height="1200"
-                loading="lazy"
-                decoding="async"
-              />
-            </div>
-            <div class="founder-card__text-wrapper">
-              <h3 class="founder-card__title">Juan Alfaro Serrano</h3>
-              <p class="founder-card__subtitle">
-                Co-fundador · Director Técnico
-              </p>
-              <ul class="founder-card__list">
-                <li>
-                  <i class="ph-bold ph-circuitry"></i>Arquitectura web y
-                  performance real.
-                </li>
-                <li>
-                  <i class="ph-bold ph-activity"></i>Tracking/analytics, CRO
-                  y experimentos.
-                </li>
-                <li>
-                  <i class="ph-bold ph-arrows-left-right"></i>Automatización
-                  y flujos n8n orientados a KPIs.
-                </li>
-              </ul>
-            </div>
-          </article>
-        </div>
-        <p class="panel__footer-text">
-          Creatividad con criterio + ejecución impecable. <strong
-            >Equipo, no proveedor.</strong
-          >
-        </p>
-      </div>
-    </div>
-  </div>
+	<div class="container">
+		<div class="section-header">
+			<h2 class="section-title">Quiénes somos</h2>
+			<p class="section-subtitle">Identidad operativa: <strong>audacia con plan</strong> + <strong>maestría técnica</strong>.</p>
+		</div>
+
+		<div class="chips-container">
+			<span class="chip chip--primary"><i class="ph-bold ph-flag"></i>Sin permanencia</span>
+			<span class="chip"><i class="ph-bold ph-list-checks"></i>KPIs por escrito</span>
+			<span class="chip"><i class="ph-bold ph-charts"></i>Tableros compartidos</span>
+			<span class="chip"><i class="ph-bold ph-handshake"></i>Entrega accionable</span>
+		</div>
+
+		<div class="tabs-container" role="tablist" aria-label="Contenido de Quiénes somos">
+			<button class="tab-button" role="tab" aria-selected="false" aria-controls="qs-tab-manifiesto" id="qs-btn-manifiesto" data-target="qs-tab-manifiesto">Manifiesto</button>
+			<button class="tab-button active" role="tab" aria-selected="true" aria-controls="qs-tab-roles" id="qs-btn-roles" data-target="qs-tab-roles">Fundadores</button>
+			<button class="tab-button" role="tab" aria-selected="false" aria-controls="qs-tab-metodo" id="qs-btn-metodo" data-target="qs-tab-metodo">Cómo trabajamos</button>
+		</div>
+
+		<div id="qs-tab-metodo" role="tabpanel" aria-labelledby="qs-btn-metodo" class="tab-panel hidden">
+			<div class="panel-container">
+				<div class="panel-grid">
+					<article class="panel-card">
+						<div class="panel-card__header">
+							<div class="panel-card__number">1</div>
+							<h3 class="panel-card__title">Diagnóstico + KPIs</h3>
+						</div>
+						<p class="panel-card__text">Aterrizamos problema, hipótesis y métricas. Te queda un plan claro.</p>
+					</article>
+					<article class="panel-card">
+						<div class="panel-card__header">
+							<div class="panel-card__number">2</div>
+							<h3 class="panel-card__title">Ejecución con foco</h3>
+						</div>
+						<p class="panel-card__text">Creatividades + tech listo para medir: ads, contenido y web.</p>
+					</article>
+					<article class="panel-card">
+						<div class="panel-card__header">
+							<div class="panel-card__number">3</div>
+							<h3 class="panel-card__title">Aprender y escalar</h3>
+						</div>
+						<p class="panel-card__text">Reportes breves, decisiones claras. Lo que funciona, se escala.</p>
+					</article>
+				</div>
+				<div class="panel__cta-container">
+					<a href="#metodo" class="panel__cta-link">Ver método en detalle <i class="ph-bold ph-arrow-up-right"></i></a>
+				</div>
+			</div>
+		</div>
+
+		<div id="qs-tab-manifiesto" role="tabpanel" aria-labelledby="qs-btn-manifiesto" class="tab-panel hidden">
+			<div class="panel-container">
+				<div class="panel-grid--two-col">
+					<div>
+						<h3 class="panel__sub-title"><i class="ph-bold ph-fire"></i> ZUTRA: ir a todas, con cabeza</h3>
+						<ul class="panel__list">
+							<li><i class="ph-bold ph-target"></i>Audacia con hipótesis: arriesgamos donde hay retorno esperado.</li>
+							<li><i class="ph-bold ph-flask"></i>Aprendizaje continuo: ciclos cortos → decisión → escala.</li>
+							<li><i class="ph-bold ph-lock-key-open"></i>Transparencia radical: métricas y avances a la vista.</li>
+							<li><i class="ph-bold ph-user-focus"></i>Responsables claros: quién hace qué y cuándo.</li>
+						</ul>
+					</div>
+					<div>
+						<h3 class="panel__sub-title"><i class="ph-bold ph-shield-check"></i> Lo que no somos</h3>
+						<ul class="panel__list">
+							<li><i class="ph-bold ph-x-circle"></i>No vendemos humo ni “likes” sin impacto de negocio.</li>
+							<li><i class="ph-bold ph-x-circle"></i>No improvisamos la técnica: performance y tracking primero.</li>
+							<li><i class="ph-bold ph-x-circle"></i>No contratos amarrados: seguimos solo si aporta.</li>
+						</ul>
+					</div>
+				</div>
+				<div class="panel__cta-container">
+					<a href="#contacto" class="button button--primary button--icon-right">Conversemos 20’ <i class="ph-bold ph-arrow-right"></i></a>
+				</div>
+			</div>
+		</div>
+
+		<div id="qs-tab-roles" role="tabpanel" aria-labelledby="qs-btn-roles" class="tab-panel active">
+			<div class="panel-container">
+				<div class="panel-grid--two-col">
+					<article class="founder-card">
+						<div class="founder-card__image-wrapper">
+							<div class="founder-card__blob">
+								<svg viewBox="0 0 390.49 363.11">
+									<path fill="var(--color-accent)" d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"></path>
+								</svg>
+							</div>
+							<img src="/img/fundadores/camilo-bustamante.webp" alt="Camilo Bustamante" class="founder-card__image" width="900" height="1200" loading="lazy" decoding="async" />
+						</div>
+						<div class="founder-card__text-wrapper">
+							<h3 class="founder-card__title">Camilo Bustamante</h3>
+							<p class="founder-card__subtitle">Co-fundador · Estratega Creativo</p>
+							<ul class="founder-card__list">
+								<li><i class="ph-bold ph-quotes"></i>Concepto y narrativa que venden.</li>
+								<li><i class="ph-bold ph-video"></i>Sistemas de contenido: UGC, guiones de ads, parrillas.</li>
+								<li><i class="ph-bold ph-paint-brush-broad"></i>Dirección creativa y guidelines accionables.</li>
+							</ul>
+						</div>
+					</article>
+					<article class="founder-card">
+						<div class="founder-card__image-wrapper">
+							<div class="founder-card__blob">
+								<svg viewBox="0 0 390.49 363.11">
+									<path fill="var(--color-accent)" d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"></path>
+								</svg>
+							</div>
+							<img src="/img/fundadores/juan-alfaro.webp" alt="Juan Alfaro S." class="founder-card__image" width="900" height="1200" loading="lazy" decoding="async" />
+						</div>
+						<div class="founder-card__text-wrapper">
+							<h3 class="founder-card__title">Juan Alfaro S.</h3>
+							<p class="founder-card__subtitle">Co-fundador · Brand Manager</p>
+							<ul class="founder-card__list">
+								<li><i class="ph-bold ph-circuitry"></i>Arquitectura web y performance real.</li>
+								<li><i class="ph-bold ph-activity"></i>Tracking/analytics, CRO y experimentos.</li>
+								<li><i class="ph-bold ph-arrows-left-right"></i>Automatización y flujos n8n orientados a KPIs.</li>
+							</ul>
+						</div>
+					</article>
+				</div>
+				<p class="panel__footer-text">Creatividad con criterio + ejecución impecable. <strong>Equipo, no proveedor.</strong></p>
+			</div>
+		</div>
+	</div>
 </section>
