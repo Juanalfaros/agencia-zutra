@@ -12,31 +12,6 @@
   .header__nav--desktop, .header__cta-container { display: flex; align-items: center; gap: 2rem; }
   .header__menu-btn { display: none; }
   
-  /* --- CAMBIOS CLAVE PARA DESKTOP --- */
-  .hero-carousel {
-    height: calc(100vh - 4rem); /* Vuelve a ocupar toda la altura */
-    padding: 4rem 0;
-    margin-top: 0; /* Quitamos el margen superior */
-  }
-
-  .hero-carousel__slide-inner {
-    grid-template-columns: 1fr 1fr;
-    text-align: left;
-    gap: 3rem;
-  }
-  .hero-carousel__text-content { order: 1; }
-  .hero-carousel__image-content { order: 2; }
-  .hero-carousel__image-wrapper { max-width: 450px; }
-  .hero__title { font-size: 3rem; } /* Título grande de nuevo */
-  .hero__subtitle { margin-inline: 0; }
-  .hero__actions { justify-content: flex-start; }
-  .hero-carousel__nav-button { display: inline-flex; } /* Muestra las flechas */
-
-  .hero-carousel__pagination {
-    bottom: 2rem; /* Vuelve a su posición original */
-  }
-  /* --- FIN DE CAMBIOS --- */
-
   .services-grid { grid-template-columns: repeat(2, 1fr); }
   .method-grid, .manifesto-grid { grid-template-columns: repeat(3, 1fr); }
   .cases-grid { grid-template-columns: repeat(2, 1fr); }

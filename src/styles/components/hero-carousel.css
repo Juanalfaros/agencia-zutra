@@ -1,16 +1,22 @@
-/* src/styles/components/hero-carousel.css */
+/* --- Estilos para: src/styles/components/hero-carousel.css --- */
+
+/* ======================================================================== */
+/* Base (Mobile First) */
+/* ======================================================================== */
 
 .hero-carousel {
+  --header-offset: 4rem; /* Variable para la altura del header fijo */
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
-  /* --- CAMBIOS CLAVE PARA MÓVIL --- */
-  height: auto; /* La altura ahora se adapta al contenido */
-  padding: 4rem 0; /* Menos padding vertical */
-  margin-top: 4rem; /* Espacio para el header fijo */
-  height: calc(90vh - 4rem); /* Asegura que no sea demasiado pequeño */
-  max-height: 70rem;
+  width: 100%;
+  margin-top: var(--header-offset);
+  padding: 4rem 0;
+  /* Altura dinámica con un mínimo y máximo para evitar colapsos o excesos */
+  min-height: calc(90vh - var(--header-offset));
+  max-height: 800px;
+  height: auto; /* Permite que el contenido defina la altura */
 }
 
 .hero-carousel__slides-container {
@@ -46,8 +52,7 @@
 }
 
 .hero__title {
-  /* --- CAMBIO CLAVE PARA MÓVIL --- */
-  font-size: 2rem; /* Título ligeramente más pequeño */
+  font-size: clamp(2rem, 8vw, 2.5rem); /* Tipografía fluida y adaptable */
   font-weight: 800;
   line-height: 1.1;
   letter-spacing: -0.025em;
@@ -59,11 +64,10 @@
 }
 
 .hero__subtitle {
-  margin-top: 1rem;
+  margin: 1rem auto 0;
   font-size: 1.125rem;
   color: var(--color-muted);
   max-width: 45ch;
-  margin-inline: auto;
 }
 
 .hero__actions {
@@ -76,18 +80,13 @@
 
 .hero-carousel__image-content {
   order: 1; /* Imagen arriba en móvil */
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .hero-carousel__image-wrapper {
   position: relative;
   width: 100%;
-  max-width: 280px; /* Imagen un poco más pequeña */
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  max-width: 280px; /* Tamaño de imagen para móvil */
+  margin: 0 auto;
 }
 
 .hero-carousel__blob-background {
@@ -96,7 +95,6 @@
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
-  height: auto;
   z-index: 1;
   opacity: 0.9;
 }
@@ -110,19 +108,16 @@
   border-radius: 12px;
 }
 
-.hero-carousel__nav-button {
-  display: none; /* Oculto en móvil por defecto */
-}
+/* --- Paginación y Navegación --- */
 
 .hero-carousel__pagination {
   position: absolute;
+  bottom: 5.5rem; /* Sube para no chocar con CTA fijo en móvil */
   left: 50%;
   transform: translateX(-50%);
   z-index: 10;
   display: flex;
   gap: 0.75rem;
-  /* --- CAMBIO CLAVE PARA MÓVIL --- */
-  bottom: 5.5rem; /* Sube la paginación para no chocar con el CTA fijo */
 }
 
 .hero-carousel__dot {
@@ -139,6 +134,7 @@
 .hero-carousel__dot:hover {
   background-color: var(--color-muted);
 }
+
 .hero-carousel__dot.active {
   background-color: var(--color-accent);
   transform: scale(1.2);
@@ -155,7 +151,7 @@
   border-radius: 50%;
   width: 2.75rem;
   height: 2.75rem;
-  display: none;
+  display: none; /* Ocultas en móvil por defecto */
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -168,5 +164,62 @@
   border-color: var(--color-accent);
 }
 
-.hero-carousel__nav-button--prev { left: 1.5rem; }
-.hero-carousel__nav-button--next { right: 1.5rem; }
+.hero-carousel__nav-button--prev {
+  left: 1.5rem;
+}
+
+.hero-carousel__nav-button--next {
+  right: 1.5rem;
+}
+
+
+/* ======================================================================== */
+/* Tablet y superiores (md breakpoint: 768px) */
+/* ======================================================================== */
+
+@media (min-width: 768px) {
+  .hero-carousel {
+    margin-top: 0;
+    min-height: 90vh; /* Ocupa casi toda la altura visible */
+    height: 100%;     /* Permite que el contenedor se estire a su altura completa */
+    max-height: 850px;/* Limita la altura máxima en pantallas muy altas */
+  }
+
+  .hero-carousel__slide-inner {
+    grid-template-columns: 1fr 1fr;
+    text-align: left;
+    gap: 3rem;
+  }
+
+  .hero-carousel__text-content {
+    order: 1; /* El texto vuelve a la izquierda */
+  }
+
+  .hero-carousel__image-content {
+    order: 2; /* La imagen vuelve a la derecha */
+  }
+
+  .hero__title {
+    font-size: clamp(3rem, 10vw, 3.5rem); /* Título más grande y fluido */
+  }
+
+  .hero__subtitle {
+    margin-inline: 0; /* Resetea el margen automático */
+  }
+  
+  .hero__actions {
+    justify-content: flex-start; /* Alinea los botones a la izquierda */
+  }
+
+  .hero-carousel__image-wrapper {
+    max-width: 450px; /* Imagen más grande para desktop */
+  }
+
+  .hero-carousel__nav-button {
+    display: inline-flex; /* Muestra las flechas de navegación */
+  }
+
+  .hero-carousel__pagination {
+    bottom: 2rem; /* Vuelve a su posición original, más abajo */
+  }
+}

@@ -7,8 +7,8 @@ import Hero from "../components/landing/Hero.astro";
 import Experiencia from "../components/landing/Experiencia.astro";
 import Metodo from "../components/landing/Metodo.astro";
 import Resultados from "../components/landing/Resultados.astro";
-import Servicios from "../components/landing/Servicios.astro";
 import Planes from "../components/landing/Planes.astro";
+import Servicios from "../components/landing/Servicios.astro";
 import QuienesSomos from "../components/landing/QuienesSomos.astro";
 import Casos from "../components/landing/Casos.astro";
 import Faqs from "../components/landing/Faqs.astro";
@@ -20,21 +20,36 @@ import JsonLD from "../components/landing/JsonLD.astro";
 
 <Layout
   title="Zutra — Marketing para los que van a todas"
-  description="Agencia Sutra: audacia creativa + maestría técnica. Estrategia, ejecución impecable y KPIs claros para dominar la conversación y mover métricas reales."
+  description="Agencia Zutra: audacia creativa + maestría técnica. Estrategia, ejecución impecable y KPIs claros para dominar la conversación y mover métricas reales."
 >
   <a href="#main" class="skip-link">Saltar al contenido</a>
 
   <Header />
 
   <main id="main">
+    {/* 1. El Gancho: ¿Qué problema solucionan? */}
     <Hero />
-    <Experiencia />
+    
+    {/* 2. El Método: ¿Cómo lo hacen y por qué son diferentes? */}
     <Metodo />
+
+    {/* 3. La Solución: ¿Qué ofrecen exactamente? */}
+    
+        <Planes />
+        <Servicios />
+
+
+    {/* 4. La Prueba: ¿Pueden demostrarlo? (Prueba social consolidada) */}
     <Resultados />
-    <Servicios />
-    <Planes />
+    <Experiencia />
+
+    {/* 5. Las Caras: ¿Quién está detrás de esto? */}
     <QuienesSomos />
+
+    {/* 6. Muestra Visual: Portfolio de trabajos */}
     <Casos />
+
+    {/* 7. Resolver Dudas y Convertir (El Cierre) */}
     <Faqs />
     <Contacto />
   </main>
