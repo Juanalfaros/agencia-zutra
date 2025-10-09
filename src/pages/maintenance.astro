@@ -1,0 +1,100 @@
+---
+// src/pages/maintenance.astro
+---
+
+<html lang="es">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Zutra | Agencia de Marketing Digital</title>
+		
+		<link
+			rel="icon"
+			id="dynamic-favicon"
+			href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100.79%2093.73%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3A%23EFD319%3B%7D.cls-2%7Bfill%3A%23fff8e0%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Cg%3E%3Cpath%20class%3D%22cls-1%22%20d%3D%22M74.68%2C42.11l-24.86%2C19.05c-.57.44-.9.89-.9%2C1.23s.1.44%2C1%2C.44h49.93c.64-4.63.93-9.92.93-15.97C100.79%2C7.58%2C88.36%2C0%2C50.4%2C0S0%2C7.58%2C0%2C46.86s12.43%2C46.87%2C50.4%2C46.87c23.86%2C0%2C37.64-3.01%2C44.58-14.99H29.78c-5.6%2C0-9.75-4.37-9.75-11.42%2C0-5.82%2C2.02-8.86%2C5.48-11.54l25.65-19.59c.56-.45.89-.79.89-1.01%252C0-.34-.34-.56-1.11-.56h-20.12c-4.78%2C0-8.66-3.88-8.66-8.66v-6.57h46.92c6.5%2C0%2C10.98%2C3.81%2C10.98%2C10.87%2C0%2C6.61-2.7%2C9.74-5.38%2C11.86Z%22%2F%3E%3Cpath%20class%3D%22cls-2%22%20d%3D%22M99.86%2C62.83c-.89%2C6.55-2.48%2C11.76-4.89%2C15.91H29.78c-5.6%2C0-9.75-4.37-9-75-11.42%2C0-5.82%2C2.02-8.86%2C5.48-11.54l25.65-19.59c.56-.45.89-.79.89-1.01%252C0-.34-.34-.56-1.11-.56h-20.12c-4.78%2C0-8.66-3.88-8.66-8.66v-6.57h46.92c6.5%2C0%2C10.98%2C3.81%2C10.98%2C10.87%2C0%2C6.61-2.7%2C9.74-5.38%2C11.86l-24.86%2C19.05c-.57.44-.9.89-.9%2C1.23s.1.44%2C1%2C.44h49.93Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"
+			type="image/svg+xml"
+		/>
+		
+		<link rel="stylesheet" href="https://use.typekit.net/dmw4nxz.css" />
+		<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css" />
+
+		<style is:global>
+			@import '../styles/main.css';
+
+			body.maintenance-page {
+				display: grid;
+				place-items: center;
+				min-height: 100vh;
+				padding: 2rem;
+				text-align: center;
+			}
+			.maintenance-container {
+				max-width: 38rem; 
+			}
+			.maintenance-logo {
+				height: 2rem; 
+				width: auto;
+				margin: 0 auto 2.5rem;
+			}
+			.philosophy-wrapper {
+				margin: 1.5rem 0 2.5rem;
+			}
+			.philosophy-text {
+				font-size: 1.25rem;
+				font-style: italic;
+				color: var(--color-muted);
+                line-height: 1.6;
+			}
+			.philosophy-author {
+				margin-top: 0.75rem;
+				font-size: 1rem;
+				color: var(--color-secondary);
+				font-weight: 500;
+			}
+			.maintenance-socials {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 1.25rem;
+				font-size: 1.5rem;
+				margin-bottom: 2rem;
+			}
+			.maintenance-socials a {
+				color: var(--color-muted);
+				transition: color 0.2s;
+			}
+			.maintenance-socials a:hover {
+				color: var(--color-accent);
+			}
+		</style>
+	</head>
+
+	<body class="maintenance-page">
+		<main class="maintenance-container">
+			<svg viewBox="0 0 490.29 150.07" class="maintenance-logo" role="img" aria-label="Zutra">
+				<path fill="var(--color-accent)" d="M451.7,36.45h-177.06V0h-42.02v36.45h-39.39c-9.07,0-16.41,7.35-16.41,16.41v59.05c0,4.74-3.84,8.58-8.58,8.58h-6.86c-13.02,0-23.58-10.56-23.58-23.58v-42.2c0-10.08-8.17-18.26-18.26-18.26h-23.76v.07c-.62-.04-1.24-.07-1.88-.07H4.07v12.59c0,9.15,7.42,16.57,16.57,16.57h38.53c1.5,0,2.14.43,2.14,1.07,0,.43-.64,1.07-1.72,1.93L10.5,106.12c-6.65,5.14-10.5,10.93-10.5,22.08,0,13.51,7.93,21.87,18.65,21.87h122.1s.03,0,.05,0h54.46c15.01,0,23.58-6.43,23.58-23.58v-60.03h13.78v45.02c0,27.87,19.29,38.59,42.88,38.59h72.15v-54.03c0-19.29,6.43-30.01,25.73-30.01h15.65l46.39.04c7.93,0,12.86,3.65,12.86,11.15v1.67h-51.88c-21.44,0-27.87,13.72-27.87,35.16,0,23.58,6.43,36.02,27.87,36.02h70.32c15.01,0,23.58-8.58,23.58-23.58v-51.45c0-23.58-15.01-38.59-38.59-38.59ZM55.31,118.77c0-.64.64-1.5,1.71-2.36l38.75-29.67v18.31c0,5.1.86,10,2.43,14.58h-40.96c-1.72,0-1.93-.22-1.93-.86ZM300.36,120.06c-19.29,0-25.73-10.72-25.73-27.87v-25.73h32.83c-1.22,4.96-1.85,10.64-1.85,17.15v36.45h-5.26ZM448.27,113.62c0,6.43-2.14,8.57-8.57,8.57h-21.65c-4.93,0-7.5-4.29-7.5-8.15,0-5.14,3.64-8.57,7.93-8.57h29.8v8.15Z"></path>
+			</svg>
+			
+			<h1 class="section-title">Zutra: Agencia de Marketing Digital y Estrategia Creativa</h1>
+
+			<div class="philosophy-wrapper">
+				<p class="philosophy-text">"Los detalles hacen la perfección, y la perfección no es un detalle."</p>
+				<p class="philosophy-author">— Leonardo da Vinci</p>
+			</div>
+
+            <div class="maintenance-socials">
+                <a href="https://www.tiktok.com/@tuagenciazutra" aria-label="TikTok" target="_blank" rel="noopener noreferrer"><i class="ph-bold ph-tiktok-logo"></i></a>
+                <a href="https://www.instagram.com/@tuagenciazutra/" aria-label="Instagram" target="_blank" rel="noopener noreferrer"><i class="ph-bold ph-instagram-logo"></i></a>
+            </div>
+            
+            <a href="mailto:hola@zutra.agency" class="button button--primary">
+                Contactar por correo
+            </a>
+		</main>
+
+		<script>
+			import { setRandomTheme } from '../scripts/utils/theme.js';
+			setRandomTheme();
+		</script>
+	</body>
+</html>

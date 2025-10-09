@@ -1,0 +1,10 @@
+# netlify.toml
+
+# Regla para interceptar todo el tráfico y mostrar la página de mantenimiento.
+# Esto es una REESCRITURA (rewrite), no una redirección.
+# La URL en el navegador del usuario no cambiará.
+
+[[redirects]]
+  from = "/*"
+  to = "/maintenance.html"
+  status = 200
