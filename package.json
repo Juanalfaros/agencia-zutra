@@ -9,8 +9,16 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^5.2.0",
-    "astro": "^4.5.12"
+    "@astrojs/check": "^0.9.6",
+    "@astrojs/cloudflare": "^12.6.12",
+    "@astrojs/sitemap": "^3.7.0",
+    "@iconify-json/logos": "^1.2.10",
+    "@iconify-json/ph": "^1.2.2",
+    "@iconify-json/simple-icons": "^1.2.69",
+    "@phosphor-icons/web": "^2.1.2",
+    "astro": "^5.17.1",
+    "astro-icon": "^1.1.5",
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
     "@types/node": "^20.11.28"

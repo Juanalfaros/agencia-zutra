@@ -1,0 +1,221 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/common/Header.astro";
+import Footer from "@/components/common/Footer.astro";
+import { services } from "@/data/servicios";
+
+export async function getStaticPaths() {
+    const allTags = [...new Set(services.flatMap((s) => s.tags))];
+
+    // Creates a URL-friendly slug for the tag
+    const slugify = (text: string) =>
+        text
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w-]/g, "");
+
+    return allTags.map((tag) => ({
+        params: { tag: slugify(tag) },
+        props: { tag, tagName: tag },
+    }));
+}
+
+const { tagName } = Astro.props;
+
+// Re-slugify to match (in a real app we might want to store tag objects with IDs)
+const slugify = (text: string) =>
+    text
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+        .replace(/[^\w-]/g, "");
+const currentSlug = slugify(tagName);
+
+const tagServices = services
+    .filter((s) => s.tags.some((t) => slugify(t) === currentSlug))
+    .sort((a, b) => a.order - b.order);
+---
+
+<Layout
+    title={`Servicios de ${tagName} | Agencia Zutra`}
+    description={`Explora nuestros servicios relacionados con ${tagName}.`}
+>
+    <Header />
+
+    <main class="page-content">
+        <div class="container text-center">
+            <span class="eyebrow">Etiqueta</span>
+            <h1 class="page-title">{tagName}</h1>
+            <p class="page-subtitle">Servicios que incluyen esta capacidad.</p>
+        </div>
+
+        <div class="container container--wide mt-5">
+            <div class="services-grid">
+                {
+                    tagServices.map((service) => (
+                        <a
+                            href={`/servicios/${service.slug}`}
+                            class="service-card-link"
+                        >
+                            <article class="service-card">
+                                <div class="card-top">
+                                    <div class="card-meta">
+                                        <span class="card-badge">
+                                            {service.badge}
+                                        </span>
+                                        {service.priceAmount && (
+                                            <span class="card-price-sm">
+                                                {service.priceAmount}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <h3 class="card-title">{service.title}</h3>
+                                    <p class="card-desc">
+                                        {service.description}
+                                    </p>
+                                </div>
+                                <div class="card-bottom">
+                                    <span class="btn-text">
+                                        Ver solución{" "}
+                                        <i class="ph-duotone ph-arrow-right" />
+                                    </span>
+                                </div>
+                            </article>
+                        </a>
+                    ))
+                }
+            </div>
+        </div>
+
+        <div class="container text-center mt-5">
+            <a href="/servicios" class="back-link"
+                ><i class="ph-duotone ph-arrow-left"></i> Ver todos los servicios</a
+            >
+        </div>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .page-content {
+        padding-top: 6rem;
+        padding-bottom: 4rem;
+    }
+    .text-center {
+        text-align: center;
+    }
+    .container--wide {
+        max-width: 1400px;
+    }
+    .mt-5 {
+        margin-top: 3rem;
+    }
+
+    .eyebrow {
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--color-accent);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .page-title {
+        font-size: 3rem;
+        font-weight: 900;
+        margin-bottom: 1rem;
+        color: var(--color-secondary);
+    }
+
+    .page-subtitle {
+        color: var(--color-muted);
+        font-size: 1.1rem;
+    }
+
+    /* Grid & Cards */
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+    .service-card-link {
+        display: block;
+        transition: transform 0.3s ease;
+    }
+    .service-card-link:hover {
+        transform: translateY(-5px);
+    }
+
+    .service-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: border-color 0.3s;
+    }
+    .service-card-link:hover .service-card {
+        border-color: var(--color-accent);
+    }
+
+    .card-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+    }
+    .card-badge {
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--color-accent);
+        border: 1px solid var(--color-accent);
+        padding: 0.2rem 0.6rem;
+        border-radius: var(--radius-full);
+    }
+    .card-price-sm {
+        font-size: 0.85rem;
+        color: var(--color-muted);
+        font-weight: 600;
+    }
+    .card-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin-bottom: 0.75rem;
+        line-height: 1.2;
+        color: var(--color-secondary);
+    }
+    .card-desc {
+        color: var(--color-gray-300);
+        margin-bottom: 2rem;
+        line-height: 1.5;
+    }
+    .card-bottom {
+        border-top: 1px solid var(--color-line);
+        padding-top: 1.5rem;
+    }
+    .btn-text {
+        font-weight: 700;
+        color: var(--color-accent);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--color-muted);
+        font-weight: 600;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+    .back-link:hover {
+        opacity: 1;
+        color: var(--color-secondary);
+    }
+</style>

@@ -1,0 +1,1060 @@
+---
+// src/pages/blog/[slug].astro
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/common/Header.astro";
+import Footer from "@/components/common/Footer.astro";
+import BlogCard from "@/components/blog/BlogCard.astro";
+import { blogPosts, categories } from "../../data/blog";
+
+export async function getStaticPaths() {
+    return blogPosts.map((post) => ({
+        params: { slug: post.slug },
+        props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+
+// Artículos relacionados
+const relatedPosts = blogPosts
+    .filter((p) => p.category === post.category && p.id !== post.id)
+    .slice(0, 3);
+
+if (relatedPosts.length < 3) {
+    const others = blogPosts
+        .filter((p) => p.category !== post.category && p.id !== post.id)
+        .slice(0, 3 - relatedPosts.length);
+    relatedPosts.push(...others);
+}
+
+const categoryName =
+    categories.find((c) => c.id === post.category)?.name || post.category;
+
+// SEO Data
+const seoMeta = {
+    title: post.seo?.title || `${post.title} | Blog ZUTRA`,
+    description: post.seo?.description || post.excerpt,
+    image: post.seo?.image || post.image,
+    keywords: post.seo?.keywords?.join(", ") || "",
+};
+---
+
+<Layout
+    title={seoMeta.title}
+    description={seoMeta.description}
+    image={seoMeta.image}
+    keywords={seoMeta.keywords}
+    type="article"
+>
+    <meta
+        property="article:published_time"
+        content={post.publishDate}
+        slot="head"
+    />
+    {
+        post.updatedDate && (
+            <meta
+                property="article:modified_time"
+                content={post.updatedDate}
+                slot="head"
+            />
+        )
+    }
+    <div id="reading-progress" class="reading-progress"></div>
+
+    <Header />
+
+    <article class="post-detail">
+        <header class="post-header">
+            <div class="container container--narrow">
+                <div class="header-top animate-fade-up">
+                    <a href="/blog" class="back-link">
+                        <i class="ph-duotone ph-arrow-left"></i>
+                        <span>Volver al blog</span>
+                    </a>
+                    <span class="category-badge">{categoryName}</span>
+                </div>
+
+                <h1
+                    class="post-title animate-fade-up"
+                    style="animation-delay: 0.1s;"
+                >
+                    {post.title}
+                </h1>
+
+                <div
+                    class="post-meta animate-fade-up"
+                    style="animation-delay: 0.2s;"
+                >
+                    <div class="author-block">
+                        <img
+                            src={post.author.avatar}
+                            alt={post.author.name}
+                            class="author-avatar"
+                        />
+                        <div class="author-info">
+                            <span class="author-name">{post.author.name}</span>
+                            <div class="meta-separator">
+                                <span class="author-role"
+                                    >{post.author.role}</span
+                                >
+                                <span class="dot">•</span>
+                                <span class="date"
+                                    >Publicado: {post.publishDate}</span
+                                >
+                                {
+                                    post.updatedDate && (
+                                        <>
+                                            <span class="dot">•</span>
+                                            <span class="updated-date">
+                                                Actualizado: {post.updatedDate}
+                                            </span>
+                                        </>
+                                    )
+                                }
+                                <span class="dot">•</span>
+                                <span class="reading-time"
+                                    >{post.readingTime} de lectura</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="post-hero animate-fade-up" style="animation-delay: 0.3s;">
+            <div class="container">
+                <div class="hero-wrapper">
+                    <img
+                        src={post.image}
+                        alt={post.title}
+                        class="hero-image"
+                        transition:name={`image-${post.slug}`}
+                    />
+                </div>
+            </div>
+        </div>
+
+        <div class="main-layout container">
+            <aside
+                class="share-sidebar animate-fade-up"
+                style="animation-delay: 0.4s;"
+            >
+                <div class="sticky-share">
+                    <div class="toc-container">
+                        <span class="toc-label">Contenido</span>
+                        <nav id="toc" class="toc-nav">
+                            <!-- Inyectado vía JS -->
+                        </nav>
+                    </div>
+
+                    <div class="share-group">
+                        <button
+                            class="share-btn"
+                            aria-label="LinkedIn"
+                            title="Compartir en LinkedIn"
+                            ><i class="ph-duotone ph-linkedin-logo"></i></button
+                        >
+                        <button
+                            class="share-btn"
+                            aria-label="X"
+                            title="Compartir en X"
+                            ><i class="ph-duotone ph-x-logo"></i></button
+                        >
+                        <button
+                            class="share-btn copy-link-btn"
+                            aria-label="Copiar Link"
+                            title="Copiar enlace"
+                            ><i class="ph-duotone ph-link"></i></button
+                        >
+                    </div>
+                </div>
+            </aside>
+
+            <div
+                class="post-content animate-fade-up"
+                style="animation-delay: 0.4s;"
+            >
+                <div class="content-wrapper prose" set:html={post.content} />
+
+                {
+                    post.cta && (
+                        <div
+                            class={`post-cta-block cta--${post.cta.variant || "accent"}`}
+                        >
+                            <div class="cta-content">
+                                <h3>{post.cta.title}</h3>
+                                <p>{post.cta.description}</p>
+                            </div>
+                            <a href={post.cta.buttonLink} class="btn btn--cta">
+                                {post.cta.buttonText}
+                                <i class="ph-duotone ph-arrow-right" />
+                            </a>
+                        </div>
+                    )
+                }
+
+                <div class="author-bio-card">
+                    <img
+                        src={post.author.avatar}
+                        alt={post.author.name}
+                        class="bio-avatar"
+                    />
+                    <div class="bio-content">
+                        <div class="bio-header">
+                            <div>
+                                <h4 class="bio-name">{post.author.name}</h4>
+                                <span class="bio-role">{post.author.role}</span>
+                            </div>
+                            <div class="bio-social">
+                                {
+                                    post.author.social?.linkedin && (
+                                        <a
+                                            href={post.author.social.linkedin}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            aria-label="LinkedIn"
+                                        >
+                                            <i class="ph-duotone ph-linkedin-logo" />
+                                        </a>
+                                    )
+                                }
+                                {
+                                    post.author.social?.instagram && (
+                                        <a
+                                            href={post.author.social.instagram}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            aria-label="Instagram"
+                                        >
+                                            <i class="ph-duotone ph-instagram-logo" />
+                                        </a>
+                                    )
+                                }
+                            </div>
+                        </div>
+                        <p class="bio-text">{post.author.bio}</p>
+                    </div>
+                </div>
+
+                <div class="post-footer">
+                    <div class="post-tags">
+                        <span class="tags-label"
+                            ><i class="ph-duotone ph-hash"></i> Etiquetas:</span
+                        >
+                        {
+                            post.tags.map((tag) => (
+                                <a href={`/blog/tag/${tag}`} class="tag-link">
+                                    {tag}
+                                </a>
+                            ))
+                        }
+                    </div>
+
+                    <div class="mobile-share">
+                        <p>¿Te gustó? Compártelo:</p>
+                        <div class="share-buttons">
+                            <button class="share-btn" aria-label="LinkedIn"
+                                ><i class="ph-duotone ph-linkedin-logo"
+                                ></i></button
+                            >
+                            <button class="share-btn" aria-label="X"
+                                ><i class="ph-duotone ph-x-logo"></i></button
+                            >
+                            <button
+                                class="share-btn copy-link-btn"
+                                aria-label="Copiar Link"
+                                ><i class="ph-duotone ph-link"></i></button
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {
+            relatedPosts.length > 0 && (
+                <section class="related-posts">
+                    <div class="container">
+                        <div class="section-header">
+                            <h2 class="related-title">Sigue leyendo</h2>
+                            <a href="/blog" class="view-all">
+                                Ver todo <i class="ph-duotone ph-arrow-right" />
+                            </a>
+                        </div>
+                        <div class="related-grid">
+                            {relatedPosts.map((p) => (
+                                <BlogCard post={p} />
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )
+        }
+    </article>
+
+    <Footer />
+</Layout>
+
+<script>
+    // Generar Table of Contents (TOC) dinámicamente
+    function generateTOC() {
+        const content = document.querySelector(".content-wrapper");
+        const toc = document.querySelector("#toc");
+        if (!content || !toc) return;
+
+        const headings = content.querySelectorAll("h2");
+        if (headings.length === 0) {
+            document.querySelector(".toc-container")?.remove();
+            return;
+        }
+
+        const list = document.createElement("ul");
+        headings.forEach((heading, index) => {
+            // Asegurar que el heading tenga un ID para el ancla
+            const id = `section-${index}`;
+            heading.id = id;
+
+            const listItem = document.createElement("li");
+            const link = document.createElement("a");
+            link.href = `#${id}`;
+            link.textContent = heading.textContent;
+            link.className = "toc-link";
+
+            listItem.appendChild(link);
+            list.appendChild(listItem);
+        });
+
+        toc.appendChild(list);
+
+        // Observer para resaltar el link activo
+        const observerOptions = {
+            rootMargin: "-100px 0px -70% 0px",
+            threshold: 0,
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                const id = entry.target.getAttribute("id");
+                const link = document.querySelector(`.toc-link[href="#${id}"]`);
+                if (entry.isIntersecting) {
+                    document
+                        .querySelectorAll(".toc-link")
+                        .forEach((l) => l.classList.remove("is-active"));
+                    link?.classList.add("is-active");
+                }
+            });
+        }, observerOptions);
+
+        headings.forEach((h) => observer.observe(h));
+    }
+
+    generateTOC();
+
+    // Lógica simple para la barra de progreso
+    window.addEventListener("scroll", () => {
+        const winScroll =
+            document.body.scrollTop || document.documentElement.scrollTop;
+        const height =
+            document.documentElement.scrollHeight -
+            document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        const bar = document.getElementById("reading-progress");
+        if (bar) bar.style.width = scrolled + "%";
+    });
+
+    // Micro-interacción: Copiar link
+    document.querySelectorAll(".copy-link-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            navigator.clipboard.writeText(window.location.href);
+            const icon = btn.querySelector("i");
+
+            if (icon) {
+                const originalClass = icon.className;
+                icon.className = "ph-duotone ph-check";
+                setTimeout(() => {
+                    icon.className = originalClass;
+                }, 2000);
+            }
+
+            // @ts-ignore
+            if (window.zToast) {
+                // @ts-ignore
+                window.zToast.success(
+                    "Enlace copiado al portapapeles",
+                    "¡Éxito!",
+                );
+            }
+        });
+    });
+</script>
+
+<style>
+    /* --- Layout & Estructura --- */
+    .post-detail {
+        padding-top: 6rem;
+        /* Quitamos overflow-x: hidden para no romper el position: sticky */
+    }
+
+    .container--narrow {
+        max-width: 840px; /* Un poco más ancho para mejor lectura */
+        margin: 0 auto;
+    }
+
+    .main-layout {
+        display: grid;
+        grid-template-columns: 1fr min(840px, 100%) 1fr;
+        gap: 3rem;
+        position: relative;
+        /* Quitamos align-items: start para que las columnas estiren a la altura total */
+    }
+
+    .post-content {
+        grid-column: 2;
+    }
+
+    /* --- Barra de Progreso --- */
+    .reading-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 0%;
+        height: 3px;
+        background: var(--color-accent);
+        z-index: 1001;
+        transition: width 0.15s ease-out;
+        box-shadow: 0 0 10px rgba(var(--color-accent-rgb), 0.5);
+    }
+
+    ::selection {
+        background-color: var(--color-accent);
+        color: var(--color-on-accent, #000);
+    }
+
+    /* --- Header del Post --- */
+    .post-header {
+        padding: 2rem 0 3rem;
+        text-align: center; /* Centrado editorial */
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--color-muted);
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition:
+            color 0.2s,
+            transform 0.2s;
+    }
+
+    .back-link:hover {
+        color: var(--color-secondary);
+        transform: translateX(-4px);
+    }
+
+    .category-badge {
+        background: var(--color-accent-subtle);
+        color: var(--color-accent);
+        border: 1px solid var(--color-accent);
+        padding: 0.35rem 1rem;
+        border-radius: var(--radius-full);
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .post-title {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 900;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        margin-bottom: 2rem;
+        color: var(--color-secondary);
+        text-wrap: balance; /* Clave para títulos hermosos */
+    }
+
+    /* --- Meta Data & Autor --- */
+    .post-meta {
+        display: flex;
+        justify-content: center;
+        border-top: 1px solid var(--color-line);
+        border-bottom: 1px solid var(--color-line);
+        padding: 1.5rem 0;
+    }
+
+    .author-block {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-align: left;
+    }
+
+    .author-avatar {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .author-name {
+        display: block;
+        font-weight: 800;
+        color: var(--color-secondary);
+        font-size: 1rem;
+        line-height: 1.2;
+    }
+
+    .meta-separator {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--color-muted);
+        margin-top: 0.2rem;
+    }
+
+    .dot {
+        font-size: 0.6rem;
+        opacity: 0.5;
+    }
+
+    /* --- Hero Image --- */
+    .post-hero {
+        margin-bottom: 5rem;
+    }
+
+    .hero-wrapper {
+        position: relative;
+        border-radius: var(--radius-2xl);
+        /* Efecto de aislamiento */
+        isolation: isolate;
+    }
+
+    .hero-image {
+        width: 100%;
+        aspect-ratio: 21 / 9;
+        object-fit: cover;
+        border-radius: var(--radius-xl);
+        position: relative;
+        z-index: 2;
+        border: 1px solid var(--color-line);
+    }
+
+    .hero-wrapper:hover .hero-image {
+        /* Efectos eliminados por petición del usuario */
+    }
+
+    /* --- Sidebar Sticky (Desktop) --- */
+    .share-sidebar {
+        grid-column: 1;
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-start; /* Asegura que el contenido sticky empiece arriba */
+    }
+
+    .sticky-share {
+        position: sticky;
+        top: 8rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+        height: fit-content;
+    }
+
+    .share-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        color: var(--color-muted);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    /* --- Botones --- */
+    .share-btn {
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 50%;
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        color: var(--color-muted);
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .share-btn:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 3px;
+    }
+
+    .share-btn:hover {
+        border-color: var(--color-accent);
+        color: var(--color-on-accent, #fff);
+        background: var(--color-accent);
+        transform: translateY(-3px) scale(1.1);
+        box-shadow: 0 5px 15px rgba(var(--color-accent-rgb), 0.3);
+    }
+
+    /* --- Contenido Editorial Rico --- */
+    .content-wrapper {
+        /* Hereda .prose de global.css, aquí solo ajustes de espaciado */
+        margin-bottom: 4rem;
+    }
+
+    /* Estilos específicos que no están en global.css */
+    .content-wrapper :global(blockquote) {
+        border-left: 4px solid var(--color-accent);
+        position: relative;
+        padding: 2.5rem 3rem;
+        margin: 4rem 0;
+        font-size: 1.5rem;
+        font-weight: 500;
+        line-height: 1.5;
+        font-style: italic;
+        background: var(--color-subtle);
+        border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+        color: var(--color-secondary);
+    }
+
+    .content-wrapper :global(blockquote::before) {
+        content: "\201C";
+        position: absolute;
+        top: 0rem;
+        left: 0.5rem;
+        font-size: 5rem;
+        color: var(--color-accent);
+        opacity: 0.2;
+        font-family: serif;
+        line-height: 1;
+    }
+
+    .content-wrapper :global(img) {
+        border-radius: var(--radius-xl);
+        margin: 3rem 0;
+        width: 100%;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .content-wrapper :global(a) {
+        color: var(--color-accent);
+        text-decoration: underline;
+        text-underline-offset: 4px;
+        text-decoration-thickness: 2px;
+        transition: all 0.2s;
+    }
+
+    .content-wrapper :global(a:hover) {
+        color: var(--color-secondary);
+        text-decoration-color: var(--color-secondary);
+    }
+
+    /* --- Footer del Post --- */
+    .post-footer {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--color-line);
+    }
+
+    .post-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+    }
+
+    .tags-label {
+        font-weight: 700;
+        font-size: 0.9rem;
+        color: var(--color-secondary);
+        margin-right: 0.5rem;
+    }
+
+    .tag-link {
+        background: var(--color-subtle);
+        color: var(--color-secondary);
+        padding: 0.25rem 0.85rem;
+        border-radius: var(--radius-md);
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s;
+    }
+
+    .tag-link:focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+
+    .tag-link:hover {
+        background: var(--color-accent);
+        color: var(--color-on-accent, #000);
+        transform: translateY(-2px) scale(1.05);
+        border-color: var(--color-accent);
+    }
+
+    .mobile-share {
+        display: none; /* Oculto en desktop */
+        margin-top: 3rem;
+        background: var(--color-subtle);
+        padding: 2.5rem 1.5rem;
+        border-radius: var(--radius-xl);
+        text-align: center;
+        border: 1px solid var(--color-line);
+    }
+
+    :global([data-theme="dark"]) .mobile-share {
+        background: color-mix(in srgb, var(--color-surface), transparent 40%);
+    }
+
+    .mobile-share p {
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        color: var(--color-secondary);
+    }
+
+    .mobile-share .share-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+
+    /* --- Related Posts --- */
+    .related-posts {
+        padding: 6rem 0;
+        background: var(--color-subtle);
+        margin-top: 4rem;
+        border-top: 1px solid var(--color-line);
+    }
+
+    :global([data-theme="light"]) .related-posts {
+        background: #f9fafb;
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 3rem;
+    }
+
+    .related-title {
+        font-size: 2rem;
+        font-weight: 800;
+    }
+
+    .view-all {
+        font-weight: 700;
+        color: var(--color-accent);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .related-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2.5rem;
+    }
+
+    /* --- Animaciones --- */
+    .animate-fade-up {
+        opacity: 0;
+        animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* --- TOC & Sidebar Radical Redesign (Minimalist Editorial) --- */
+    .toc-container {
+        width: 100%;
+        margin-bottom: 3rem;
+        text-align: left;
+    }
+
+    .toc-label {
+        display: block;
+        font-family: var(--font-sans);
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--color-muted);
+        margin-bottom: 1.5rem;
+    }
+
+    .toc-nav {
+        position: relative;
+    }
+
+    /* Usamos :global porque estos elementos se inyectan vía JS */
+    .toc-nav :global(ul) {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        border-left: 1px solid var(--color-line);
+    }
+
+    .toc-nav :global(.toc-link) {
+        font-family: var(--font-blog);
+        font-size: 0.9rem;
+        color: var(--color-muted);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        line-height: 1.3;
+        padding: 0.5rem 0 0.5rem 1.25rem;
+        display: block;
+        position: relative;
+        left: -1px; /* Alínea con el borde */
+        border-left: 2px solid transparent;
+    }
+
+    .toc-nav :global(.toc-link:hover) {
+        color: var(--color-secondary);
+        border-left-color: var(--color-line);
+    }
+
+    .toc-nav :global(.toc-link.is-active) {
+        color: var(--color-accent);
+        font-weight: 700;
+        border-left-color: var(--color-accent);
+    }
+
+    .share-group {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        border-top: 1px solid var(--color-line);
+        padding-top: 2rem;
+    }
+
+    /* --- Dynamic CTA Block (Editorial Elegance) --- */
+    .post-cta-block {
+        margin: 5rem 0;
+        padding: 2.5rem 3.5rem;
+        border-radius: var(--radius-xl);
+        background: var(--color-accent-subtle);
+        border: 1px solid var(--color-line);
+        border-left: 4px solid var(--color-accent);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 3rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .post-cta-block:hover {
+        border-color: var(--color-accent);
+        background: var(--color-surface);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    }
+
+    .cta--primary {
+        border-left-color: var(--color-secondary);
+    }
+
+    .cta-content h3 {
+        font-family: var(--font-sans);
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+        color: var(--color-secondary);
+    }
+
+    .cta-content p {
+        font-family: var(--font-blog);
+        font-size: 1.05rem;
+        opacity: 0.8;
+        margin: 0 !important;
+        font-weight: 400;
+        line-height: 1.5;
+        color: var(--color-muted);
+    }
+
+    .btn--cta {
+        flex-shrink: 0;
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        padding: 0.85rem 1.75rem;
+        border-radius: var(--radius-md);
+        font-family: var(--font-sans);
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.05em;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .cta--primary .btn--cta {
+        background: var(--color-secondary);
+        color: var(--color-primary);
+    }
+
+    .btn--cta:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(var(--color-accent-rgb), 0.3);
+    }
+
+    /* --- Author Bio Card (Global Alignment) --- */
+    .author-bio-card {
+        margin-top: 8rem;
+        padding: 4rem;
+        background: var(--color-secondary-subtle);
+        border-radius: var(--radius-2xl);
+        display: flex;
+        gap: 4rem;
+        align-items: flex-start;
+        border: 1px solid var(--color-line);
+    }
+
+    .bio-avatar {
+        width: 8rem;
+        height: 8rem;
+        border-radius: var(--radius-full);
+        object-fit: cover;
+        border: 2px solid var(--color-line);
+        flex-shrink: 0;
+        transition: transform 0.5s ease;
+    }
+
+    .author-bio-card:hover .bio-avatar {
+        transform: scale(1.05);
+        border-color: var(--color-accent);
+    }
+
+    .bio-content {
+        flex: 1;
+    }
+
+    .bio-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+    }
+
+    .bio-name {
+        font-family: var(--font-sans);
+        font-size: 2rem;
+        font-weight: 900;
+        color: var(--color-secondary);
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+
+    .bio-role {
+        font-family: var(--font-sans);
+        font-size: 0.8rem;
+        color: var(--color-muted);
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    .bio-social {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .bio-social a {
+        font-size: 1.75rem;
+        color: var(--color-muted);
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .bio-social a:hover {
+        color: var(--color-accent);
+        transform: translateY(-3px) scale(1.1);
+    }
+
+    .bio-text {
+        font-family: var(--font-blog);
+        font-size: 1.125rem;
+        line-height: 1.7;
+        color: var(--color-muted);
+        margin: 0 !important;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 1024px) {
+        .main-layout {
+            display: block; /* Quitar sidebar en tablets/móviles */
+        }
+
+        .share-sidebar {
+            display: none;
+        }
+
+        .mobile-share {
+            display: block;
+        }
+
+        .hero-image {
+            aspect-ratio: 16/9;
+        }
+
+        .content-wrapper {
+            font-size: 1.1rem;
+        }
+
+        .post-title {
+            font-size: 2.5rem;
+        }
+
+        .post-cta-block {
+            flex-direction: column;
+            text-align: center;
+            padding: 2.5rem;
+        }
+
+        .author-bio-card {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 2.5rem;
+        }
+
+        .bio-header {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+    }
+</style>

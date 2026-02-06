@@ -1,0 +1,96 @@
+---
+// src/pages/blog/tag/[tag].astro
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/common/Header.astro";
+import Footer from "@/components/common/Footer.astro";
+import BlogCard from "@/components/blog/BlogCard.astro";
+import BlogSearch from "@/components/blog/BlogSearch.astro";
+import { blogPosts } from "../../../data/blog";
+
+export async function getStaticPaths() {
+    const allTags = [...new Set(blogPosts.flatMap((post) => post.tags))];
+    return allTags.map((tag) => ({
+        params: { tag: tag },
+        props: { tag: tag },
+    }));
+}
+
+const { tag } = Astro.props;
+const posts = blogPosts.filter((post) => post.tags.includes(tag));
+
+const title = `Etiqueta: #${tag} | Blog ZUTRA`;
+const description = `Artículos etiquetados con #${tag} en el blog de ZUTRA.`;
+---
+
+<Layout title={title} description={description}>
+    <Header />
+
+    <main class="blog-archive">
+        <section class="blog-hero">
+            <div class="container">
+                <span class="section-label">Etiqueta</span>
+                <h1 class="blog-hero__title">#{tag}</h1>
+                <p class="blog-hero__subtitle">
+                    Explorando temas relacionados con {tag.toLowerCase()}.
+                </p>
+            </div>
+        </section>
+
+        <section class="blog-content">
+            <div class="container">
+                <BlogSearch />
+
+                <div class="posts-grid">
+                    {posts.map((post) => <BlogCard post={post} />)}
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    /* Reuse styles from index.astro for consistency */
+    .blog-archive {
+        padding-top: 5rem;
+    }
+    .blog-hero {
+        padding: 6rem 0 4rem;
+        text-align: center;
+    }
+    .section-label {
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--color-accent);
+        margin-bottom: 1rem;
+        display: block;
+    }
+    .blog-hero__title {
+        font-size: clamp(2.5rem, 8vw, 4.5rem);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+    }
+    .blog-hero__subtitle {
+        font-size: 1.25rem;
+        color: var(--color-muted);
+        max-width: 35ch;
+        margin: 0 auto;
+    }
+    .blog-content {
+        padding-bottom: 8rem;
+    }
+    .posts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    @media (max-width: 640px) {
+        .posts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

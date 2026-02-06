@@ -1,0 +1,17 @@
+{
+    "name": "Zutra Agencia",
+    "short_name": "Zutra",
+    "description": "Agencia de Growth & Tech - La Estética Valiente",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0a0a0a",
+    "theme_color": "#FF3B3F",
+    "icons": [
+        {
+            "src": "/favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        }
+    ]
+}

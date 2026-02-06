@@ -1,0 +1,188 @@
+---
+// src/components/landing/ToggleTheme.astro
+---
+
+<button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+    <div class="sun-icon">
+        <i class="ph-duotone ph-sun"></i>
+    </div>
+    <div class="moon-icon">
+        <i class="ph-duotone ph-moon"></i>
+    </div>
+</button>
+
+<script>
+    const getTheme = () => {
+        if (
+            typeof localStorage !== "undefined" &&
+            localStorage.getItem("theme")
+        ) {
+            return localStorage.getItem("theme");
+        }
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+    };
+
+    const setTheme = (theme: string) => {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+    };
+
+    // Función de inicialización que corre en cada navegación
+    const initThemeToggle = () => {
+        const themeToggle = document.getElementById("theme-toggle");
+        if (themeToggle) {
+            // Remover listeners anteriores para evitar duplicados
+            const newToggle = themeToggle.cloneNode(true) as HTMLButtonElement;
+            themeToggle.replaceWith(newToggle);
+
+            newToggle.addEventListener("click", async (event: MouseEvent) => {
+                const x = event.clientX ?? window.innerWidth / 2;
+                const y = event.clientY ?? window.innerHeight / 2;
+
+                const currentTheme =
+                    document.documentElement.getAttribute("data-theme") ||
+                    getTheme();
+                const newTheme = currentTheme === "light" ? "dark" : "light";
+
+                // @ts-ignore
+                if (
+                    !document.startViewTransition ||
+                    window.matchMedia("(prefers-reduced-motion: reduce)")
+                        .matches
+                ) {
+                    setTheme(newTheme);
+                    return;
+                }
+
+                // @ts-ignore
+                const transition = document.startViewTransition(() => {
+                    setTheme(newTheme);
+                });
+
+                try {
+                    await transition.ready;
+
+                    const endRadius = Math.hypot(
+                        Math.max(x, window.innerWidth - x),
+                        Math.max(y, window.innerHeight - y),
+                    );
+
+                    document.documentElement.animate(
+                        {
+                            clipPath: [
+                                `circle(0px at ${x}px ${y}px)`,
+                                `circle(${endRadius}px at ${x}px ${y}px)`,
+                            ],
+                        },
+                        {
+                            duration: 500,
+                            easing: "ease-in-out",
+                            pseudoElement: "::view-transition-new(root)",
+                        },
+                    );
+                } finally {
+                    await transition.finished;
+                }
+            });
+        }
+    };
+
+    // Usar DOMContentLoaded para la carga inicial y astro:page-load para View Transitions si se usa
+    document.addEventListener("DOMContentLoaded", initThemeToggle);
+    document.addEventListener("astro:page-load", initThemeToggle);
+
+    // Listener para cambio de preferencia de sistema
+    window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", (e) => {
+            if (!localStorage.getItem("theme")) {
+                setTheme(e.matches ? "dark" : "light");
+            }
+        });
+</script>
+
+<style>
+    .theme-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-full);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--color-secondary);
+        border: 1px solid var(--color-line);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        position: relative;
+        font-size: 22px;
+        padding: 0;
+    }
+
+    /* Estilos cuando está dentro de un header transparente */
+    :global(.header:not(.scrolled)) .theme-toggle {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Estilos cuando el header tiene scroll */
+    :global(.header.scrolled) .theme-toggle {
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+    }
+
+    .theme-toggle:hover {
+        transform: translateY(-2px);
+        background: var(--color-accent);
+        border-color: var(--color-accent);
+    }
+
+    .theme-toggle:active {
+        transform: scale(0.95);
+    }
+
+    .sun-icon,
+    .moon-icon {
+        position: absolute;
+        display: flex;
+        transition:
+            transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+            opacity 0.3s ease,
+            color 0.2s ease;
+    }
+
+    /* Animación extra al pasar el mouse sobre el botón cuando el icono está activo */
+    .theme-toggle:hover .sun-icon {
+        transform: scale(1.1) rotate(15deg);
+    }
+    .theme-toggle:hover .moon-icon {
+        transform: scale(1.1) rotate(-15deg);
+    }
+
+    :global([data-theme="light"]) .sun-icon {
+        opacity: 0;
+        transform: rotate(90deg) scale(0) !important;
+    }
+    :global([data-theme="light"]) .moon-icon {
+        opacity: 1;
+        transform: rotate(0) scale(1);
+    }
+
+    :global([data-theme="dark"]) .sun-icon {
+        opacity: 1;
+        transform: rotate(0) scale(1);
+    }
+    :global([data-theme="dark"]) .moon-icon {
+        opacity: 0;
+        transform: rotate(-90deg) scale(0) !important;
+    }
+
+    @media (max-width: 768px) {
+        .theme-toggle {
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+        }
+    }
+</style>

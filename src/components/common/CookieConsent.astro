@@ -1,0 +1,466 @@
+---
+// src/components/common/CookieConsent.astro
+---
+
+<div
+    id="cookie-consent-banner"
+    class="cookie-banner hidden"
+    role="dialog"
+    aria-live="polite"
+    aria-label="Consentimiento de cookies"
+>
+    <div class="cookie-container">
+        <div class="cookie-header">
+            <div class="cookie-title">
+                <i
+                    class="ph-duotone ph-cookie"
+                    style="font-size: 1.5rem; color: var(--color-accent);"></i>
+                <span>Privacidad & Cookies</span>
+            </div>
+            <p class="cookie-desc">
+                Usamos cookies para mejorar tu experiencia y analizar nuestro
+                tráfico. Puedes elegir qué categorías permitir.
+            </p>
+        </div>
+
+        <div class="cookie-actions">
+            <button
+                id="btn-reject-all"
+                class="button button--ghost button--small">Rechazar</button
+            >
+            <button id="btn-settings" class="button button--ghost button--small"
+                >Configurar</button
+            >
+            <button
+                id="btn-accept-all"
+                class="button button--primary button--small"
+                >Aceptar todo</button
+            >
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Configuración -->
+<div id="cookie-settings-modal" class="cookie-modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Configuración de Privacidad</h3>
+            <button
+                id="btn-close-modal"
+                class="modal-close"
+                aria-label="Cerrar"
+            >
+                <i class="ph-duotone ph-x"></i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div class="setting-item">
+                <div class="setting-info">
+                    <span class="setting-name">Esenciales</span>
+                    <p class="setting-desc">
+                        Necesarias para el funcionamiento básico del sitio. No
+                        pueden desactivarse.
+                    </p>
+                </div>
+                <div class="setting-toggle">
+                    <input
+                        type="checkbox"
+                        checked
+                        disabled
+                        id="check-essential"
+                    />
+                    <label for="check-essential" class="toggle-slider disabled"
+                    ></label>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <span class="setting-name">Analíticas</span>
+                    <p class="setting-desc">
+                        Nos ayudan a entender cómo interactúas con la web
+                        (Google Analytics).
+                    </p>
+                </div>
+                <div class="setting-toggle">
+                    <input type="checkbox" id="check-analytics" />
+                    <label for="check-analytics" class="toggle-slider"></label>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <span class="setting-name">Marketing & Publicidad</span>
+                    <p class="setting-desc">
+                        Usadas para mostrar anuncios relevantes y medir campañas
+                        (Meta Ads, etc).
+                    </p>
+                </div>
+                <div class="setting-toggle">
+                    <input type="checkbox" id="check-marketing" />
+                    <label for="check-marketing" class="toggle-slider"></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button
+                id="btn-reject-all-modal"
+                class="button button--ghost"
+                style="flex: 1;">Rechazar todo</button
+            >
+            <button
+                id="btn-save-settings"
+                class="button button--primary"
+                style="flex: 1;">Guardar</button
+            >
+        </div>
+    </div>
+</div>
+
+<script is:inline>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+        window.dataLayer.push(arguments);
+    }
+
+    // Default denied
+    gtag("consent", "default", {
+        ad_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+        analytics_storage: "denied",
+        wait_for_update: 500,
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const banner = document.getElementById("cookie-consent-banner");
+        const modal = document.getElementById("cookie-settings-modal");
+
+        const btnSettings = document.getElementById("btn-settings");
+        const btnAcceptAll = document.getElementById("btn-accept-all");
+        const btnRejectAll = document.getElementById("btn-reject-all");
+        const btnRejectAllModal = document.getElementById(
+            "btn-reject-all-modal",
+        );
+        const btnCloseModal = document.getElementById("btn-close-modal");
+        const btnSaveSettings = document.getElementById("btn-save-settings");
+        const overlay = modal.querySelector(".modal-overlay");
+
+        const checkAnalytics = document.getElementById("check-analytics");
+        const checkMarketing = document.getElementById("check-marketing");
+
+        const savedConsent = localStorage.getItem("zutra_consent_v2");
+
+        if (savedConsent) {
+            const consent = JSON.parse(savedConsent);
+            applyConsent(consent);
+        } else {
+            setTimeout(() => banner.classList.remove("hidden"), 1000);
+        }
+
+        // Handlers
+        btnSettings.addEventListener("click", () => {
+            modal.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        });
+
+        btnAcceptAll.addEventListener("click", () => {
+            const consent = { analytics: true, marketing: true };
+            saveAndApply(consent);
+        });
+
+        btnRejectAll.addEventListener("click", () => {
+            const consent = { analytics: false, marketing: false };
+            saveAndApply(consent);
+        });
+
+        btnRejectAllModal.addEventListener("click", () => {
+            const consent = { analytics: false, marketing: false };
+            saveAndApply(consent);
+            closeModal();
+        });
+
+        const closeModal = () => {
+            modal.classList.add("hidden");
+            document.body.style.overflow = "";
+        };
+
+        btnCloseModal.addEventListener("click", closeModal);
+        overlay.addEventListener("click", closeModal);
+
+        btnSaveSettings.addEventListener("click", () => {
+            const consent = {
+                analytics: checkAnalytics.checked,
+                marketing: checkMarketing.checked,
+            };
+            saveAndApply(consent);
+            closeModal();
+        });
+
+        function saveAndApply(consent) {
+            localStorage.setItem("zutra_consent_v2", JSON.stringify(consent));
+            applyConsent(consent);
+            banner.classList.add("hidden");
+
+            if (window.zToast) {
+                window.zToast.success(
+                    "Tus preferencias de privacidad han sido actualizadas.",
+                    "Privacidad",
+                );
+            }
+        }
+
+        function applyConsent(consent) {
+            gtag("consent", "update", {
+                analytics_storage: consent.analytics ? "granted" : "denied",
+                ad_storage: consent.marketing ? "granted" : "denied",
+                ad_user_data: consent.marketing ? "granted" : "denied",
+                ad_personalization: consent.marketing ? "granted" : "denied",
+            });
+
+            window.dataLayer.push({
+                event: "consent_updated",
+                consent_analytics: consent.analytics,
+                consent_marketing: consent.marketing,
+            });
+        }
+    });
+</script>
+
+<style>
+    .cookie-banner {
+        position: fixed;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        right: 1.5rem;
+        z-index: 999;
+        background: var(--color-surface-subtle);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-xl);
+        padding: 1.5rem;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        max-width: 35rem;
+        animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    :global([data-theme="light"]) .cookie-banner {
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    }
+
+    .cookie-banner.hidden {
+        display: none;
+    }
+
+    .cookie-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+    }
+
+    .cookie-title {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: var(--color-secondary);
+        margin-bottom: 0.5rem;
+    }
+
+    .cookie-desc {
+        font-size: 0.9rem;
+        color: var(--color-muted);
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .cookie-actions {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: flex-end;
+    }
+
+    /* Modal Styles */
+    .cookie-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+    }
+
+    .cookie-modal.hidden {
+        display: none;
+    }
+
+    .modal-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+    }
+
+    :global([data-theme="light"]) .modal-overlay {
+        background: rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-content {
+        position: relative;
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-xl);
+        width: 100%;
+        max-width: 30rem;
+        padding: 2rem;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    :global([data-theme="light"]) .modal-content {
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .modal-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        color: var(--color-muted);
+        cursor: pointer;
+        font-size: 1.25rem;
+        padding: 0.5rem;
+        transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+        color: var(--color-secondary);
+    }
+
+    .modal-body {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .setting-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+
+    .setting-info {
+        flex: 1;
+    }
+
+    .setting-name {
+        display: block;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        color: var(--color-secondary);
+    }
+
+    .setting-desc {
+        font-size: 0.85rem;
+        color: var(--color-muted);
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    /* Custom Toggle Switch */
+    .setting-toggle {
+        position: relative;
+        width: 3rem;
+        height: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .setting-toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .toggle-slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background-color: var(--color-line);
+        transition: 0.4s;
+        border-radius: var(--radius-full);
+    }
+
+    .toggle-slider:before {
+        position: absolute;
+        content: "";
+        height: 1.1rem;
+        width: 1.1rem;
+        left: 0.2rem;
+        bottom: 0.2rem;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+        background-color: var(--color-accent);
+    }
+
+    input:checked + .toggle-slider:before {
+        transform: translateX(1.5rem);
+    }
+
+    .toggle-slider.disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    .modal-footer {
+        display: flex;
+        gap: 1rem;
+    }
+
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 640px) {
+        .cookie-banner {
+            bottom: 0.5rem;
+            left: 0.5rem;
+            right: 0.5rem;
+        }
+        .cookie-actions {
+            flex-direction: column;
+        }
+        .cookie-actions .button {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>

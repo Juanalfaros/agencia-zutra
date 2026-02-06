@@ -1,0 +1,131 @@
+---
+import { methodSteps } from "../../data/metodo";
+---
+
+<section id="metodo" class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Riesgo calculado. Datos a la vista.</h2>
+      <p class="section-subtitle">
+        Diagnóstico → estrategia → ejecución → aprendizaje. <strong
+          >Iteramos hasta ganar</strong
+        >.
+      </p>
+    </div>
+    <div class="method-grid">
+      {
+        methodSteps.map((step) => (
+          <article class="method-card">
+            <div class="card__header-icon">
+              <i class={step.icon} />
+              <h3 class="card__title">{step.title}</h3>
+            </div>
+            <p class="card__text">{step.text}</p>
+          </article>
+        ))
+      }
+    </div>
+    <div class="guarantee-box">
+      <p class="guarantee-box__text">
+        <i
+          class="ph-duotone ph-lock"
+          style="color: var(--color-accent); font-size: 1.25rem;"></i>
+        <strong>Garantía de claridad:</strong> Si nuestra sesión de diagnóstico inicial
+        no te aporta una visión clara y <br />accionable de tus próximos pasos,
+        no avanzamos. Así de simple.
+      </p>
+      <a
+        href="#contacto"
+        data-track="cta_garantia_click"
+        data-loc="metodo"
+        class="button button--primary">Diagnostiquemos mi embudo</a
+      >
+    </div>
+  </div>
+</section>
+
+<style>
+  .method-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .method-card {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.3s ease;
+  }
+
+  .method-card:hover {
+    border-color: var(--color-accent);
+  }
+
+  .card__header-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .card__header-icon i {
+    font-size: 1.5rem;
+    color: var(--color-accent);
+  }
+
+  .card__title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--color-secondary);
+  }
+
+  .card__text {
+    font-size: 0.95rem;
+    color: var(--color-gray-300);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .guarantee-box {
+    margin-top: 3rem;
+    background-color: var(--color-subtle);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .guarantee-box::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: var(--color-accent);
+  }
+
+  .guarantee-box__text {
+    font-size: 1.125rem;
+    margin: 0 0 1.5rem 0;
+    line-height: 1.5;
+    color: var(--color-secondary);
+  }
+
+  .guarantee-box__text strong {
+    color: var(--color-accent);
+  }
+
+  @media (min-width: 768px) {
+    .method-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

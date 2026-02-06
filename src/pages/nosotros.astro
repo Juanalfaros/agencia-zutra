@@ -1,0 +1,474 @@
+---
+// src/pages/nosotros.astro
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/common/Header.astro";
+import Footer from "../components/common/Footer.astro";
+import JsonLD from "../components/common/JsonLD.astro";
+import { founders } from "../data/quienes-somos";
+import { Image } from "astro:assets";
+---
+
+<Layout
+    title="Nosotros — La Estética Valiente | Zutra"
+    description="Conoce la filosofía, el manifiesto y el equipo detrás de Zutra. No somos una agencia tradicional, somos tu equipo de crecimiento con enfoque en ejecución y KPIs claros."
+>
+    <Header />
+
+    <main id="main">
+        {/* Hero Manifiesto */}
+        <section class="section manifesto-hero">
+            <div class="container container--narrow">
+                <span class="manifesto-badge reveal">Nuestro Manifiesto</span>
+                <h1 class="manifesto-text reveal">
+                    Lo blando no <span class="highlight">convierte</span>. <br
+                    />
+                    Lo tibio no <span class="highlight">escala</span>. <br />
+                    La pauta sin plan es <span class="highlight">quema</span>.
+                </h1>
+                <p class="manifesto-intro reveal">
+                    Zutra nació para los que van a todas. Para los que entienden
+                    que el marketing no es "hacer ruido", sino **mover la aguja
+                    del negocio**. Nos alejamos de la estética genérica para
+                    abrazar una identidad valiente: técnica, audaz y obsesionada
+                    con el retorno.
+                </p>
+            </div>
+        </section>
+
+        {/* La Diferencia */}
+        <section class="section philosophy">
+            <div class="container">
+                <div class="philosophy-grid">
+                    <div class="phi-content">
+                        <h2 class="section-title">¿Por qué Zutra?</h2>
+                        <div class="phi-items">
+                            <div class="phi-item reveal">
+                                <i class="ph-duotone ph-lightning"></i>
+                                <div>
+                                    <h3>Ejecución Obsesiva</h3>
+                                    <p>
+                                        Menos reuniones, más lanzamientos. Nos
+                                        movemos en ciclos cortos de 14 días para
+                                        que veas avance real, no solo reportes
+                                        de intención.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="phi-item reveal">
+                                <i class="ph-duotone ph-code"></i>
+                                <div>
+                                    <h3>Maestría Técnica</h3>
+                                    <p>
+                                        No tercerizamos la ejecución web ni el
+                                        tracking. Construimos nuestras propias
+                                        herramientas e infraestructuras para
+                                        asegurar que cada click se mida y cada
+                                        página vuele.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="phi-item reveal">
+                                <i class="ph-duotone ph-target"></i>
+                                <div>
+                                    <h3>Foco en el Bottom Line</h3>
+                                    <p>
+                                        Los "likes" no pagan nóminas.
+                                        Optimizamos para conversiones, leads
+                                        calificados y ventas. Hablamos el
+                                        lenguaje de tu negocio, no el de las
+                                        vanidades digitales.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="phi-visual reveal">
+                        <div class="phi-box">
+                            <span class="phi-tag">VALIENTE</span>
+                            <p class="phi-quote">
+                                "El riesgo más grande es no arriesgar nada en
+                                una campaña que nadie recordará."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {/* Los Fundadores - Expandido */}
+        <section class="section team-extended">
+            <div class="container">
+                <h2 class="section-title text-center">
+                    Las mentes detrás del plan
+                </h2>
+                <div class="team-grid">
+                    {
+                        founders.map((founder, index) => (
+                            <div
+                                class={`founder-detail reveal ${index % 2 !== 0 ? "founder-detail--reverse" : ""}`}
+                            >
+                                <div class="founder-image-container">
+                                    <div class="founder-card__blob">
+                                        <svg viewBox="0 0 390.49 363.11">
+                                            <path
+                                                fill="var(--color-accent)"
+                                                d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <Image
+                                        src={founder.image}
+                                        alt={founder.name}
+                                        width={600}
+                                        height={800}
+                                        class="founder-large-img"
+                                    />
+                                </div>
+                                <div class="founder-info">
+                                    <span class="founder-role-tag">
+                                        {founder.role}
+                                    </span>
+                                    <h3 class="founder-name-large">
+                                        {founder.name}
+                                    </h3>
+                                    <p class="founder-bio">
+                                        {index === 0
+                                            ? "Con más de 8 años en la industria creativa, Camilo ha liderado la narrativa de marcas que hoy dominan su sector. Su enfoque no es solo estético, sino psicológico: entender qué detiene el scroll y qué motiva el click."
+                                            : "Proveniente del mundo del desarrollo y la analítica avanzada, Juan une el diseño con la precisión técnica. Su misión es que nada en Zutra sea una 'caja negra': cada peso invertido en pauta debe ser rastreable hasta una acción de valor."}
+                                    </p>
+                                    <div class="founder-expertise">
+                                        <h4>Especialidades:</h4>
+                                        <ul class="expertise-list">
+                                            {founder.bullets.map((bullet) => (
+                                                <li>
+                                                    <i class="ph-bold ph-check" />{" "}
+                                                    {bullet}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    }
+                </div>
+            </div>
+        </section>
+
+        {/* CTA Final */}
+        <section class="section final-cta">
+            <div class="container text-center">
+                <h2 class="cta-title">¿Listo para un marketing de verdad?</h2>
+                <p class="cta-subtitle">
+                    No buscamos clientes, buscamos partners para escalar
+                    proyectos con sentido.
+                </p>
+                <a href="#contacto" class="button button--primary button--large"
+                    >Trabajemos juntos</a
+                >
+            </div>
+        </section>
+    </main>
+
+    <Footer />
+    <JsonLD />
+</Layout>
+
+<style>
+    .manifesto-hero {
+        padding: clamp(6rem, 12vh, 10rem) 0 5rem;
+        background: var(
+            --color-surface-subtle,
+            color-mix(in srgb, var(--color-surface), transparent 80%)
+        );
+    }
+
+    .manifesto-badge {
+        display: inline-block;
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-full);
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 2.5rem;
+    }
+
+    .manifesto-text {
+        font-size: clamp(2rem, 6vw, 4rem);
+        font-weight: 900;
+        line-height: 1.1;
+        color: var(--color-secondary);
+        letter-spacing: -0.04em;
+        margin-bottom: 2.5rem;
+    }
+
+    .highlight {
+        color: var(--color-accent);
+        -webkit-text-stroke: 1px var(--color-accent);
+        text-shadow: none;
+    }
+
+    .manifesto-intro {
+        font-size: 1.15rem;
+        line-height: 1.7;
+        color: var(--color-muted);
+        max-width: 650px;
+    }
+
+    /* Philosophy Section */
+    .philosophy {
+        background: var(--color-secondary-subtle);
+        border-top: 1px solid var(--color-line);
+        border-bottom: 1px solid var(--color-line);
+    }
+
+    .philosophy-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 4rem;
+        align-items: center;
+    }
+
+    .phi-items {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+        margin-top: 3rem;
+    }
+
+    .phi-item {
+        display: flex;
+        gap: 1.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .phi-item:hover {
+        transform: translateX(10px);
+    }
+
+    .phi-item i {
+        font-size: 2rem;
+        color: var(--color-accent);
+        flex-shrink: 0;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .phi-item:hover i {
+        transform: scale(1.2) rotate(10deg);
+    }
+
+    .phi-item h3 {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        color: var(--color-secondary);
+    }
+
+    .phi-item p {
+        color: var(--color-muted);
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .phi-box {
+        background: var(--color-accent);
+        padding: 3rem;
+        border-radius: var(--radius-2xl);
+        position: relative;
+        transform: rotate(2deg);
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        cursor: default;
+    }
+
+    .phi-box:hover {
+        transform: rotate(0deg) scale(1.02);
+        box-shadow: 0 20px 40px var(--color-accent-subtle);
+    }
+
+    .phi-tag {
+        position: absolute;
+        top: -1rem;
+        left: 2rem;
+        background: var(--color-secondary);
+        color: var(--color-surface);
+        padding: 0.4rem 1rem;
+        font-weight: 900;
+        font-size: 0.75rem;
+        border-radius: var(--radius-sm);
+    }
+
+    .phi-quote {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--color-on-accent);
+        margin: 0;
+        line-height: 1.3;
+    }
+
+    /* Team Extended */
+    .team-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 4.5rem;
+        margin-top: 3.5rem;
+    }
+
+    .founder-detail {
+        display: grid;
+        grid-template-columns: 0.8fr 1.2fr;
+        gap: 3rem;
+        align-items: center;
+    }
+
+    .founder-detail--reverse {
+        direction: rtl;
+    }
+
+    .founder-detail--reverse .founder-info {
+        direction: ltr;
+    }
+
+    .founder-image-container {
+        position: relative;
+        padding: 1.5rem;
+    }
+
+    .founder-large-img {
+        width: 100%;
+        height: auto;
+        border-radius: var(--radius-xl);
+        position: relative;
+        z-index: 2;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .founder-detail:hover .founder-large-img {
+        transform: scale(1.02) translateY(-5px);
+    }
+
+    .founder-card__blob {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        opacity: 0.8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .founder-card__blob svg {
+        width: 110%;
+        height: auto;
+        transform: scale(1.15);
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .founder-detail:hover .founder-card__blob svg {
+        transform: scale(1.25) rotate(5deg);
+    }
+
+    .founder-role-tag {
+        font-size: 0.875rem;
+        font-weight: 800;
+        color: var(--color-accent);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        display: block;
+        margin-bottom: 1rem;
+    }
+
+    .founder-name-large {
+        font-size: 2.25rem;
+        font-weight: 900;
+        color: var(--color-secondary);
+        margin-bottom: 1.25rem;
+    }
+
+    .founder-bio {
+        font-size: 1.15rem;
+        line-height: 1.7;
+        color: var(--color-muted);
+        margin-bottom: 2rem;
+    }
+
+    .founder-expertise h4 {
+        font-size: 1rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: var(--color-secondary);
+    }
+
+    .expertise-list {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        gap: 0.75rem;
+    }
+
+    .expertise-list li {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        font-size: 1rem;
+        color: var(--color-muted);
+    }
+
+    .expertise-list i {
+        color: var(--color-accent);
+        font-size: 0.8rem;
+    }
+
+    /* CTA Final */
+    .final-cta {
+        padding: 8rem 0;
+        border-top: 1px solid var(--color-line);
+    }
+
+    .cta-title {
+        font-size: 2.25rem;
+        font-weight: 900;
+        margin-bottom: 1.25rem;
+        color: var(--color-secondary);
+    }
+
+    .cta-subtitle {
+        font-size: 1.25rem;
+        color: var(--color-muted);
+        margin-bottom: 3rem;
+    }
+
+    @media (max-width: 1024px) {
+        .philosophy-grid,
+        .founder-detail {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+
+        .phi-visual {
+            order: -1;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .founder-detail--reverse {
+            direction: ltr;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .founder-name-large {
+            font-size: 2.25rem;
+        }
+
+        .manifesto-text {
+            font-size: 2.75rem;
+        }
+
+        .cta-title {
+            font-size: 2.25rem;
+        }
+    }
+</style>

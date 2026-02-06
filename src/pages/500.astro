@@ -1,0 +1,132 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/common/Header.astro";
+import Footer from "../components/common/Footer.astro";
+
+const title = "500 - Error de servidor | Zutra";
+const description =
+    "Hubo un problema técnico en nuestros servidores. Estamos trabajando para solucionarlo.";
+---
+
+<Layout title={title} description={description}>
+    <Header />
+
+    <main class="error-page">
+        <div class="container container--narrow">
+            <div class="error-content">
+                <div class="error-badge">Error 500</div>
+                <h1 class="error-title">
+                    Algo salió <span class="text-accent">realmente mal.</span>
+                </h1>
+                <p class="error-text">
+                    Nuestro sitema ha tenido un fallo técnico inesperado. No
+                    eres tú, somos nosotros. Ya estamos trabajando en arreglarlo
+                    para que puedas seguir navegando.
+                </p>
+
+                <div class="error-actions">
+                    <a href="/" class="button button--primary">
+                        Intentar de nuevo
+                    </a>
+                    <a href="/#contacto" class="button button--secondary">
+                        Contactar soporte
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fondo decorativo -->
+        <div class="error-bg">
+            <div class="number">500</div>
+        </div>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .error-page {
+        position: relative;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 8rem 0;
+    }
+
+    .container--narrow {
+        max-width: 650px;
+        z-index: 2;
+    }
+
+    .error-content {
+        text-align: center;
+    }
+
+    .error-badge {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        background: var(--color-accent-subtle);
+        color: var(--color-accent);
+            var(--color-accent-subtle);
+        border-radius: var(--radius-full);
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 2rem;
+    }
+
+    .error-title {
+        font-size: clamp(3rem, 10vw, 5rem);
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 2rem;
+        color: var(--color-secondary);
+    }
+
+    .text-accent {
+        color: var(--color-accent);
+    }
+
+    .error-text {
+        font-size: 1.25rem;
+        color: var(--color-muted);
+        line-height: 1.6;
+        margin-bottom: 3rem;
+    }
+
+    .error-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Fondo Dinámico */
+    .error-bg {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .number {
+        font-size: 30vw;
+        font-weight: 900;
+        color: var(--color-secondary);
+        opacity: 0.03;
+        user-select: none;
+        letter-spacing: -0.05em;
+    }
+
+    @media (max-width: 640px) {
+        .error-actions .button {
+            width: 100%;
+        }
+    }
+</style>

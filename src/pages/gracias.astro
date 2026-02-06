@@ -1,0 +1,233 @@
+---
+// src/pages/gracias.astro
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/common/Header.astro";
+import Footer from "../components/common/Footer.astro";
+import JsonLD from "../components/common/JsonLD.astro";
+---
+
+<Layout
+    title="¡Gracias! — Zutra"
+    description="Confirmación de recepción de mensaje. En breve nos pondremos en contacto contigo para dar el siguiente paso."
+>
+    <Header />
+
+    <main id="main" class="thanks-page">
+        <section class="section thanks-hero">
+            <div class="container container--narrow">
+                <div class="thanks-content">
+                    <div class="success-icon">
+                        <i class="ph-duotone ph-check-circle"></i>
+                    </div>
+                    <h1 class="thanks-title">¡Mensaje recibido!</h1>
+                    <p class="thanks-subtitle">
+                        Has dado el primer paso hacia una estrategia más
+                        valiente. Hemos recibido tu información y nuestro equipo
+                        la está revisando ahora mismo.
+                    </p>
+
+                    <div class="next-steps">
+                        <h2 class="steps-title">¿Qué sigue ahora?</h2>
+                        <div class="steps-grid">
+                            <div class="step-item">
+                                <span class="step-num">01</span>
+                                <div>
+                                    <h3 class="step-label">Análisis inicial</h3>
+                                    <p class="step-desc">
+                                        Revisamos tu sitio y presencia actual
+                                        para llegar preparados a la sesión.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-num">02</span>
+                                <div>
+                                    <h3 class="step-label">Contacto directo</h3>
+                                    <p class="step-desc">
+                                        Te escribiremos por WhatsApp o correo en
+                                        menos de 24 horas hábiles.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-num">03</span>
+                                <div>
+                                    <h3 class="step-label">
+                                        Sesión estratégica
+                                    </h3>
+                                    <p class="step-desc">
+                                        Agendamos 20 minutos para definir tu
+                                        hoja de ruta hacia resultados reales.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="thanks-actions">
+                        <p class="actions-text">
+                            Mientras tanto, puedes seguir explorando:
+                        </p>
+                        <div class="actions-group">
+                            <a href="/" class="button button--primary"
+                                >Volver al inicio</a
+                            >
+                            <a href="/blog" class="button button--ghost"
+                                >Leer el blog</a
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <Footer />
+    <JsonLD />
+</Layout>
+
+<style>
+    .thanks-page {
+        padding-top: calc(var(--header-height) + 2rem);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .thanks-hero {
+        padding: 4rem 0;
+        text-align: center;
+    }
+
+    .container--narrow {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .success-icon {
+        font-size: 5rem;
+        color: var(--color-accent);
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: center;
+        animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .thanks-title {
+        font-size: clamp(2.5rem, 8vw, 4rem);
+        font-weight: 900;
+        line-height: 1.1;
+        color: var(--color-secondary);
+        margin-bottom: 1.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    .thanks-subtitle {
+        font-size: 1.25rem;
+        color: var(--color-muted);
+        line-height: 1.6;
+        max-width: 600px;
+        margin: 0 auto 4rem;
+    }
+
+    .next-steps {
+        text-align: left;
+        background: var(--color-surface-subtle);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-2xl);
+        padding: 3rem;
+        margin-bottom: 4rem;
+    }
+
+    .steps-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--color-secondary);
+        margin-bottom: 2.5rem;
+        text-align: center;
+    }
+
+    .steps-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .step-item {
+        display: flex;
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+
+    .step-num {
+        font-size: 0.875rem;
+        font-weight: 900;
+        color: var(--color-accent);
+        background: var(--color-accent-subtle);
+        width: 2.5rem;
+        height: 2.5rem;
+        display: grid;
+        place-items: center;
+        border-radius: var(--radius-md);
+        flex-shrink: 0;
+    }
+
+    .step-label {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--color-secondary);
+        margin-bottom: 0.25rem;
+    }
+
+    .step-desc {
+        font-size: 0.95rem;
+        color: var(--color-muted);
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    .thanks-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .actions-text {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--color-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin: 0;
+    }
+
+    .actions-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    @keyframes scaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.5);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @media (max-width: 640px) {
+        .next-steps {
+            padding: 2rem 1.5rem;
+        }
+
+        .thanks-title {
+            font-size: 2.5rem;
+        }
+    }
+</style>

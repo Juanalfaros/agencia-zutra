@@ -1,5 +1,6 @@
 // src/scripts/main.js
 
+import { toast } from './utils/toast.js';
 import { initContactForm } from './forms/contactForm.js';
 import { initAnimations } from './ui/animations.js';
 import { initCarousel } from './ui/carousel.js';

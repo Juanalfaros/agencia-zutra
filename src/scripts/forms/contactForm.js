@@ -1,10 +1,9 @@
-// src/scripts/forms/contactForm.js
+import { toast } from '../utils/toast';
 
 export function initContactForm() {
   const form = document.getElementById('contact-form');
   if (!form) return;
 
-  const statusDiv = document.getElementById('form-status');
   const submitBtn = document.getElementById('submit-button');
   const fields = {
     name: document.getElementById('name'),
@@ -33,11 +32,11 @@ export function initContactForm() {
     if (!ok) return;
 
     submitBtn.disabled = true;
-    statusDiv.textContent = 'Enviando…';
-    statusDiv.className = 'form-status form-status--sending';
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.textContent = 'Enviando...';
 
     try {
-      const response = await fetch('/.netlify/functions/submit-lead', {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -46,22 +45,26 @@ export function initContactForm() {
           message: fields.message.value,
         }),
       });
-      
+
       if (!response.ok) {
         throw new Error('Hubo un problema al enviar el formulario.');
       }
 
-      statusDiv.textContent = '¡Gracias! Te respondemos pronto.';
-      statusDiv.className = 'form-status form-status--success';
+      toast.success('Tu mensaje ha sido enviado con éxito. Serás redireccionado en breve.', '¡Mensaje Enviado!');
       form.reset();
-  
+
+      // Pequeño delay para dejar que el usuario vea el toast si es necesario, 
+      // aunque en una landing de conversión el redirect suele ser inmediato o muy rápido.
+      setTimeout(() => {
+        window.location.href = '/gracias';
+      }, 1500);
+
     } catch (error) {
-      statusDiv.textContent = 'Error al enviar. Intenta de nuevo.';
-      statusDiv.className = 'form-status form-status--error';
+      toast.error('No pudimos enviar tu mensaje. Por favor, intenta de nuevo o escríbenos a hola@zutra.agency.', 'Error al enviar');
       console.error(error);
     } finally {
       submitBtn.disabled = false;
-      setTimeout(() => { statusDiv.textContent = ''; statusDiv.className = 'form-status'; }, 4000);
+      submitBtn.textContent = originalBtnText;
     }
   });
 }

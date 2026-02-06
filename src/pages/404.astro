@@ -1,0 +1,132 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/common/Header.astro";
+import Footer from "../components/common/Footer.astro";
+
+const title = "404 - Página no encontrada | Zutra";
+const description =
+    "Parece que te has perdido en el espacio digital. Vuelve al inicio o contacta con nosotros.";
+---
+
+<Layout title={title} description={description}>
+    <Header />
+
+    <main class="error-page">
+        <div class="container container--narrow">
+            <div class="error-content">
+                <div class="error-badge">Error 404</div>
+                <h1 class="error-title">
+                    Te has perdido en <span class="text-accent">el vacío.</span>
+                </h1>
+                <p class="error-text">
+                    La página que buscas no existe o ha sido movida a otra
+                    dimensión digital. No te preocupes, el camino de vuelta es
+                    fácil.
+                </p>
+
+                <div class="error-actions">
+                    <a href="/" class="button button--primary">
+                        Volver al inicio
+                    </a>
+                    <a href="/#contacto" class="button button--secondary">
+                        Informar del error
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fondo decorativo -->
+        <div class="error-bg">
+            <div class="number">404</div>
+        </div>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .error-page {
+        position: relative;
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        padding: 8rem 0;
+    }
+
+    .container--narrow {
+        max-width: 600px;
+        z-index: 2;
+    }
+
+    .error-content {
+        text-align: center;
+    }
+
+    .error-badge {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        background: var(--color-error-subtle);
+        color: var(--color-red-400);
+            var(--color-error-subtle);
+        border-radius: var(--radius-full);
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 2rem;
+    }
+
+    .error-title {
+        font-size: clamp(3rem, 10vw, 5rem);
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 2rem;
+        color: var(--color-secondary);
+    }
+
+    .text-accent {
+        color: var(--color-accent);
+    }
+
+    .error-text {
+        font-size: 1.25rem;
+        color: var(--color-muted);
+        line-height: 1.6;
+        margin-bottom: 3rem;
+    }
+
+    .error-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Fondo Dinámico */
+    .error-bg {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    .number {
+        font-size: 30vw;
+        font-weight: 900;
+        color: var(--color-secondary);
+        opacity: 0.03;
+        user-select: none;
+        letter-spacing: -0.05em;
+    }
+
+    @media (max-width: 640px) {
+        .error-actions .button {
+            width: 100%;
+        }
+    }
+</style>

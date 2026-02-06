@@ -1,0 +1,23 @@
+# Zutra - La Estética Valiente
+
+Zutra es una agencia de Growth Marketing y Tecnología con base en Chile, enfocada en ejecución técnica impecable y resultados de negocio (KPIs).
+
+## Enfoque (La Estética Valiente)
+- **Ejecución Obsesiva**: Ciclos cortos de 14 días (sprints), menos burocracia, más lanzamientos.
+- **Maestría Técnica**: Desarrollo nativo, optimización de performance (Astro), y tracking avanzado.
+- **Foco en el Bottom Line**: Orientación a conversiones y retornos reales, no métricas de vanidad.
+
+## Servicios Principales
+1. **Growth Marketing & Performance**: Estrategia de medios, Meta Ads, Google Ads.
+2. **Desarrollo Web Headless**: Sitios de alto performance con Astro y Cloudflare.
+3. **Automatización & CRM**: Integración de flujos de correo, CRM (Brevo) y agendamiento (Cal.com).
+4. **Identidad & Branding**: Diseño de marcas con carácter y sistemas visuales escalables.
+
+## Equipo
+- **Camilo Bustamante**: Director Creativo & Estrategia.
+- **Juan Alfaro**: Tech Lead & Operaciones.
+
+## Contacto
+- Web: https://www.zutra.cl
+- WhatsApp: +56 9 3217 5218
+- Correo: hola@zutra.cl

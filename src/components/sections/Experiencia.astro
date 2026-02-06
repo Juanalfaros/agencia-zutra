@@ -1,0 +1,105 @@
+---
+import { experienceLogos } from "../../data/experiencia";
+import { Image } from "astro:assets";
+---
+
+<section id="experiencia" class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Experiencia previa verificada</h2>
+      <p class="section-subtitle">
+        Trabajo real del equipo antes de fundar Zutra. <strong>Sin humo</strong
+        >, solo aportes y resultados.
+      </p>
+    </div>
+    <div class="logos-container">
+      {
+        experienceLogos.map((logo) => (
+          <div class="logo-wrapper">
+            <Image
+              src={logo.darkSrc}
+              alt={`Logo de ${logo.alt} (experiencia previa)`}
+              class="logo logo--dark"
+              loading="lazy"
+              decoding="async"
+            />
+            <Image
+              src={logo.lightSrc}
+              alt={`Logo de ${logo.alt} (experiencia previa)`}
+              class="logo logo--light"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        ))
+      }
+    </div>
+    <p class="disclaimer-text">
+      *Las marcas exhibidas corresponden a trabajos realizados por Camilo
+      Bustamante y Juan Alfaro en otras agencias o como freelancers, antes de
+      Zutra. <br />No constituyen testimonios ni garantías de resultados para
+      Zutra.
+    </p>
+  </div>
+</section>
+
+<style>
+  .logos-container {
+    margin-top: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    opacity: 0.8;
+  }
+
+  .logo {
+    max-height: 3.5rem;
+    max-width: 10rem;
+    object-fit: contain;
+    filter: grayscale(1);
+    opacity: 0.7;
+    transition:
+      filter 0.3s ease,
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+
+  .logo:hover {
+    filter: grayscale(0);
+    opacity: 1;
+    transform: scale(1.05);
+  }
+
+  /* Theme Toggle Logic */
+  .logo--light {
+    display: none;
+  }
+
+  :global([data-theme="light"]) .logo--light {
+    display: block;
+  }
+
+  :global([data-theme="light"]) .logo--dark {
+    display: none;
+  }
+
+  .disclaimer-text {
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 640px) {
+    .logos-container {
+      gap: 2rem;
+    }
+    .logo {
+      max-height: 2.5rem;
+      max-width: 8rem;
+    }
+  }
+</style>

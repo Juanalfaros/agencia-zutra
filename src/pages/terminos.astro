@@ -1,0 +1,193 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/common/Header.astro";
+import Footer from "../components/common/Footer.astro";
+
+const title = "Términos y Condiciones | Zutra";
+const description =
+    "Condiciones de uso y contratación de servicios de Agencia Zutra.";
+---
+
+<Layout title={title} description={description}>
+    <Header />
+
+    <main class="legal-page section">
+        <div class="container container--narrow">
+            <div class="legal-header">
+                <div class="section-badge">Legales</div>
+                <h1 class="legal-title">
+                    Términos y <span class="text-accent">Condiciones</span>
+                </h1>
+                <p class="legal-date">
+                    Última actualización: 06 de febrero, 2026
+                </p>
+            </div>
+
+            <div class="prose legal-content">
+                <section>
+                    <h2>1. Relación Contractual</h2>
+                    <p>
+                        Los presentes términos y condiciones regulan el acceso y
+                        uso de los servicios prestados por <strong>Zutra</strong
+                        > (en adelante, "la Agencia"). Al contratar nuestros servicios
+                        o navegar por este sitio web, usted acepta cumplir con lo
+                        dispuesto en este documento.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>2. Prestación de Servicios</h2>
+                    <p>
+                        La Agencia se compromete a prestar los servicios de
+                        marketing digital, diseño, desarrollo web y estrategia
+                        creativa según lo acordado en las propuestas comerciales
+                        individuales aceptadas por el Cliente.
+                    </p>
+                    <p>
+                        Cada proyecto está sujeto a un cronograma y alcance
+                        específico que será detallado en el contrato de
+                        servicios correspondiente.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>3. Propiedad Intelectual</h2>
+                    <p>
+                        Toda la propiedad intelectual de los entregables finales
+                        (diseños, código, estrategias) será transferida al
+                        Cliente una vez realizado el pago total del proyecto,
+                        salvo que se especifique lo contrario en el contrato
+                        individual.
+                    </p>
+                    <p>
+                        La Agencia conserva el derecho de exhibir los trabajos
+                        realizados en su portafolio y canales de comunicación
+                        con fines promocionales, respetando siempre la
+                        confidencialidad de datos sensibles.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>4. Pagos y Tarifas</h2>
+                    <p>
+                        Los precios de los servicios están expresados en Pesos
+                        Chilenos (CLP) o Dólares Americanos (USD) según el
+                        mercado. Las condiciones de pago estándar requieren un
+                        adelanto para el inicio de cualquier proyecto.
+                    </p>
+                    <p>
+                        El retraso en los pagos puede conllevar la suspensión
+                        temporal de los servicios o la entrega de activos
+                        digitales.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>5. Limitación de Responsabilidad</h2>
+                    <p>
+                        Si bien la Agencia aplica las mejores prácticas de la
+                        industria, no puede garantizar resultados específicos de
+                        facturación o ROI, ya que estos dependen de múltiples
+                        factores externos al control de la Agencia (cambios en
+                        algoritmos de terceros, fluctuaciones del mercado,
+                        etc.).
+                    </p>
+                </section>
+
+                <section>
+                    <h2>6. Modificaciones</h2>
+                    <p>
+                        Zutra se reserva el derecho de modificar estos términos
+                        en cualquier momento. Las modificaciones entrarán en
+                        vigor inmediatamente después de su publicación en este
+                        sitio web.
+                    </p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .legal-page {
+        padding-top: clamp(8rem, 15vw, 12rem);
+        padding-bottom: 8rem;
+    }
+
+    .container--narrow {
+        max-width: 800px;
+    }
+
+    .legal-header {
+        margin-bottom: 4rem;
+        text-align: center;
+    }
+
+    .section-badge {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        background: var(--color-accent-subtle);
+        color: var(--color-accent);
+        border: 1px solid var(--color-accent-subtle);
+        border-radius: var(--radius-full);
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 1.5rem;
+    }
+
+    .legal-title {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+        color: var(--color-secondary);
+    }
+
+    .text-accent {
+        color: var(--color-accent);
+    }
+
+    .legal-date {
+        color: var(--color-muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .legal-content {
+        background: var(--color-surface-subtle);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--color-line);
+        padding: clamp(2rem, 5vw, 4rem);
+        border-radius: var(--radius-2xl);
+    }
+
+    .legal-content section {
+        margin-bottom: 3rem;
+    }
+
+    .legal-content section:last-child {
+        margin-bottom: 0;
+    }
+
+    .legal-content h2 {
+        font-size: 1.5rem;
+        color: var(--color-secondary);
+        margin-bottom: 1.25rem;
+        font-weight: 800;
+    }
+
+    .legal-content p {
+        color: var(--color-muted);
+        line-height: 1.7;
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
+    }
+
+    .legal-content strong {
+        color: var(--color-secondary);
+    }
+</style>

@@ -2,34 +2,96 @@
 interface Props {
   title: string;
   description: string;
+  image?: string;
+  type?: string;
+  keywords?: string;
 }
 
-const { title, description } = Astro.props;
+import SEO from "@/components/common/SEO.astro";
+import JsonLD from "@/components/common/JsonLD.astro";
+import CookieConsent from "@/components/common/CookieConsent.astro";
+import "@/styles/main.css";
+import "@phosphor-icons/web/regular";
+import "@phosphor-icons/web/bold";
+import "@phosphor-icons/web/duotone";
+import "@phosphor-icons/web/fill";
+import "@phosphor-icons/web/light";
+import "@phosphor-icons/web/thin";
 
-// ✅ El CSS sí se queda aquí
-import '@/styles/main.css';
+const { title, description, image, type, keywords } = Astro.props;
 
-// ❌ El import de JS se va de aquí
-// import '@/scripts/main.js'; 
+const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content={description} />
-  <title>{title}</title>
+  <head>
+    <SEO 
+      title={title} 
+      description={description} 
+      image={image} 
+      type={type} 
+      keywords={keywords} 
+    />
+    <JsonLD />
+    
+    {/* GTM Script - Solo si existe ID */}
 
-  <link rel="icon" id="dynamic-favicon" href="/favicon.svg" type="image/svg+xml" />
+    {/* GTM Script - Solo si existe ID */}
+    { GTM_ID && (
+      <script is:inline define:vars={{ GTM_ID }}>
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer',GTM_ID);
+      </script>
+    )}
 
-  <link rel="stylesheet" href="https://use.typekit.net/dmw4nxz.css" />
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
-</head>
-<body>
-  <slot />
+    <!-- Critical Theme Script -->
+    <script is:inline>
+      const getTheme = () => {
+        if (
+          typeof localStorage !== "undefined" &&
+          localStorage.getItem("theme")
+        ) {
+          return localStorage.getItem("theme");
+        }
+        return window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      };
+      document.documentElement.setAttribute("data-theme", getTheme());
+    </script>
 
-  <script>
-    import '/src/scripts/main.js';
-  </script>
-</body>
+    <link
+      rel="icon"
+      id="dynamic-favicon"
+      href="/favicon.svg"
+      type="image/svg+xml"
+    />
+
+    <link rel="stylesheet" href="https://use.typekit.net/dmw4nxz.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+    <!-- GTM NoScript -->
+    { GTM_ID && (
+      <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    )}
+
+    <slot />
+    
+    <div id="bg-master" class="bg-master">
+      <div class="bg-layer topo-layer"></div>
+      <div class="bg-layer topo-layer-2"></div>
+    </div>
+
+    <CookieConsent />
+
+    <script>
+      import "/src/scripts/main.js";
+    </script>
+  </body>
 </html>

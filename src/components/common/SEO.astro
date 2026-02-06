@@ -1,0 +1,61 @@
+---
+// src/components/common/SEO.astro
+
+interface Props {
+    title?: string;
+    description?: string;
+    image?: string;
+    canonicalURL?: URL | string;
+    keywords?: string;
+    type?: string;
+}
+
+const {
+    title = "Zutra — La Estética Valiente | Agencia de Growth & Tech",
+    description = "Zutra es una agencia de growth marketing y tecnología obsesionada con el performance. Diseño audaz, ejecución técnica y KPIs que mueven el negocio.",
+    image = "/og-image.jpg", // Asegúrate de tener esta imagen en la carpeta public
+    canonicalURL = new URL(Astro.url.pathname, Astro.site),
+    keywords = "growth marketing, diseño web, performance, meta ads, astro agency, desarrollo chile",
+    type = "website",
+} = Astro.props;
+
+const siteName = "Zutra";
+const twitterHandle = "@zutra_cl"; // O el que corresponda
+---
+
+<!-- Global Metadata -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+<link rel="manifest" href="/manifest.webmanifest" />
+<meta name="generator" content={Astro.generator} />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalURL} />
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+{keywords && <meta name="keywords" content={keywords} />}
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={type} />
+<meta property="og:url" content={Astro.url} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={new URL(image, Astro.url)} />
+<meta property="og:site_name" content={siteName} />
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={Astro.url} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={new URL(image, Astro.url)} />
+{twitterHandle && <meta property="twitter:site" content={twitterHandle} />}
+
+<!-- Theme Color -->
+<meta name="theme-color" content="#FF3B3F" />
+<!-- Cambiar al color de acento de Zutra -->

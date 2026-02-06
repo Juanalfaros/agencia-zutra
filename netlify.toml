@@ -1,6 +1,0 @@
-# netlify.toml - VERSIÓN FINAL CORREGIDA
-
-[[redirects]]
-  from = "/*"
-  to = "/mantencion/" # Apuntamos al directorio, Netlify servirá el index.html
-  status = 200

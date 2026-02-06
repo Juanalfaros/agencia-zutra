@@ -1,0 +1,319 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Header from "../../../components/common/Header.astro";
+import Footer from "../../../components/common/Footer.astro";
+import StickyCTA from "../../../components/common/StickyCTA.astro";
+import { cases, allIndustries, allServices } from "../../../data/casos";
+import { Image } from "astro:assets";
+import { slugify } from "../../../scripts/utils/slugify";
+
+export async function getStaticPaths() {
+    const industries = allIndustries.map((tag: string) => ({
+        params: { tag: slugify(tag) },
+        props: { tag, type: "Industria" },
+    }));
+
+    const services = allServices.map((tag: string) => ({
+        params: { tag: slugify(tag) },
+        props: { tag, type: "Servicio" },
+    }));
+
+    return [...industries, ...services];
+}
+
+const { tag, type } = Astro.props;
+
+// Filtrar casos que coincidan con el tag (ya sea en industry o services)
+const filteredCases = cases.filter(
+    (c: any) =>
+        slugify(c.industry) === slugify(tag) ||
+        c.services.some((s: string) => slugify(s) === slugify(tag)),
+);
+---
+
+<Layout
+    title={`${tag} — Portfolio Zutra`}
+    description={`Proyectos de ${type}: ${tag}. Resultados reales y diseño de alto impacto.`}
+>
+    <Header />
+
+    <main class="taxonomy-page">
+        <section class="taxonomy-hero">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="/portfolio" class="back-link"
+                        ><i class="ph-duotone ph-arrow-left"></i> Volver al Portfolio</a
+                    >
+                </div>
+                <span class="taxonomy-label">{type}</span>
+                <h1 class="taxonomy-title">{tag}</h1>
+                <p class="taxonomy-count">
+                    {filteredCases.length} proyecto{
+                        filteredCases.length !== 1 ? "s" : ""
+                    }
+                </p>
+            </div>
+        </section>
+
+        <section class="portfolio-grid-section">
+            <div class="container">
+                <div class="portfolio-grid">
+                    {
+                        filteredCases.map((project: any) => (
+                            <a
+                                href={`/portfolio/${project.slug}`}
+                                class="project-card"
+                            >
+                                <div class="project-image-wrapper">
+                                    <Image
+                                        src={project.image}
+                                        alt={project.title}
+                                        width={800}
+                                        height={600}
+                                        class="project-image"
+                                    />
+                                    <div class="project-overlay">
+                                        <span class="view-project-btn">
+                                            Ver Caso{" "}
+                                            <i class="ph-duotone ph-arrow-right" />
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="project-content">
+                                    <div class="project-meta">
+                                        <span class="project-industry">
+                                            {project.industry}
+                                        </span>
+                                        <span class="project-year">
+                                            {project.year}
+                                        </span>
+                                    </div>
+                                    <h3 class="project-title">
+                                        {project.title}
+                                    </h3>
+                                    <p class="project-desc">
+                                        {project.description}
+                                    </p>
+                                    <div class="project-tags">
+                                        {project.techStack
+                                            .slice(0, 3)
+                                            .map((t: string) => (
+                                                <span class="tech-tag">
+                                                    {t}
+                                                </span>
+                                            ))}
+                                    </div>
+                                </div>
+                            </a>
+                        ))
+                    }
+                </div>
+            </div>
+        </section>
+
+        <StickyCTA />
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .taxonomy-page {
+        padding-top: 5rem;
+    }
+
+    .taxonomy-hero {
+        padding: 4rem 0 2rem;
+        text-align: center;
+        background-color: var(--color-subtle);
+        border-bottom: 1px solid var(--color-line);
+    }
+
+    .breadcrumb {
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--color-muted);
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover {
+        color: var(--color-accent);
+    }
+
+    .taxonomy-label {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background-color: rgba(var(--color-accent-rgb), 0.1);
+        background: var(--color-accent-subtle);
+        color: var(--color-accent);
+        border-radius: var(--radius-2xl);
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 1rem;
+    }
+
+    .taxonomy-title {
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        font-weight: 800;
+        color: var(--color-secondary);
+        margin: 0 0 0.5rem;
+        text-transform: capitalize;
+    }
+
+    .taxonomy-count {
+        color: var(--color-muted);
+        font-size: 1.125rem;
+    }
+
+    .portfolio-grid-section {
+        padding: 4rem 0 6rem;
+    }
+
+    .portfolio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2.5rem;
+    }
+
+    /* Reutilizamos estilos de card del index, idealmente esto debería ser un componente */
+    .project-card {
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        group: project-card;
+    }
+
+    .project-image-wrapper {
+        position: relative;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        aspect-ratio: 4/3;
+        background-color: var(--color-subtle);
+        border: 1px solid var(--color-line);
+    }
+
+    .project-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .project-card:hover .project-image {
+        transform: scale(1.05);
+    }
+
+    .project-overlay {
+        position: absolute;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .project-card:hover .project-overlay {
+        opacity: 1;
+    }
+
+    .view-project-btn {
+        background-color: var(--color-surface);
+        color: var(--color-secondary);
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-2xl);
+        font-weight: 700;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        transform: translateY(10px);
+        transition: transform 0.3s ease;
+    }
+
+    .project-card:hover .view-project-btn {
+        transform: translateY(0);
+    }
+
+    .project-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .project-meta {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.825rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .project-industry {
+        color: var(--color-accent);
+    }
+
+    .project-year {
+        color: var(--color-muted);
+    }
+
+    .project-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--color-secondary);
+        margin: 0.25rem 0 0.75rem;
+        transition: color 0.2s;
+    }
+
+    .project-card:hover .project-title {
+        color: var(--color-accent);
+    }
+
+    .project-desc {
+        font-size: 0.95rem;
+        color: var(--color-gray-300);
+        line-height: 1.5;
+        margin-bottom: 1.25rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .project-tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .tech-tag {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+        background-color: var(--color-subtle);
+        border-radius: var(--radius-sm);
+        color: var(--color-muted);
+        font-weight: 500;
+    }
+
+    @media (max-width: 640px) {
+        .taxonomy-title {
+            font-size: 2.25rem;
+        }
+        .portfolio-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

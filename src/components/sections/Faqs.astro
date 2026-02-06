@@ -1,0 +1,111 @@
+---
+import { faqs } from "../../data/faqs";
+
+const sortedFaqs = faqs.sort((a, b) => a.order - b.order);
+---
+
+<section id="faqs" class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Preguntas frecuentes</h2>
+      <p class="section-subtitle">
+        Lo esencial antes de empezar. <strong>Sin medias tintas</strong>.
+      </p>
+    </div>
+    <div class="faq-container">
+      {
+        sortedFaqs.map((faq) => (
+          <details class="faq-item">
+            <summary class="faq-item__summary">
+              <span class="faq-item__question">{faq.question}</span>
+              <i class="ph-duotone ph-caret-down faq-item__icon" />
+            </summary>
+            <div class="faq-item__answer" set:html={faq.answer} />
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq-container {
+    max-width: 800px;
+    margin: 3rem auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .faq-item {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+  }
+
+  .faq-item[open] {
+    border-color: var(--color-accent);
+  }
+
+  .faq-item__summary {
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 700;
+    color: var(--color-secondary);
+  }
+
+  .faq-item__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item__question {
+    font-size: 1.125rem;
+    line-height: 1.4;
+    padding-right: 1.5rem;
+  }
+
+  .faq-item__icon {
+    font-size: 1.25rem;
+    color: var(--color-accent);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .faq-item[open] .faq-item__icon {
+    transform: rotate(180deg);
+  }
+
+  .faq-item__answer {
+    padding: 0 1.5rem 1.5rem;
+    color: var(--color-gray-300);
+    line-height: 1.6;
+    font-size: 1rem;
+  }
+
+  .faq-item__answer :global(p) {
+    margin-bottom: 1rem;
+  }
+
+  .faq-item__answer :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .faq-item__answer :global(ul),
+  .faq-item__answer :global(ol) {
+    margin-bottom: 1rem;
+    padding-left: 1.25rem;
+  }
+
+  .faq-item__answer :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .faq-item__answer :global(strong) {
+    color: var(--color-accent);
+  }
+</style>

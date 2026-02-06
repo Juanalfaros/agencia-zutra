@@ -1,0 +1,106 @@
+---
+// src/pages/blog/index.astro
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/common/Header.astro";
+import Footer from "@/components/common/Footer.astro";
+import BlogCard from "@/components/blog/BlogCard.astro";
+import BlogSearch from "@/components/blog/BlogSearch.astro";
+import { blogPosts } from "../../data/blog";
+
+const featuredPost = blogPosts.find((post) => post.featured) || blogPosts[0];
+const regularPosts = blogPosts.filter((post) => post.id !== featuredPost.id);
+
+const title = "Blog Valiente | ZUTRA Agency";
+const description =
+    "Ideas, estrategias y diseño para marcas que no temen ser diferentes. El blog de ZUTRA.";
+---
+
+<Layout title={title} description={description}>
+    <Header />
+
+    <main class="blog-archive">
+        <section class="blog-hero">
+            <div class="container">
+                <h1 class="blog-hero__title">
+                    Ideas <span class="accent-text">sin censura.</span>
+                </h1>
+                <p class="blog-hero__subtitle">
+                    Estrategias de diseño y growth marketing para quienes buscan
+                    dominar la conversación, no solo participar en ella.
+                </p>
+            </div>
+        </section>
+
+        <section class="blog-content">
+            <div class="container">
+                <BlogSearch />
+
+                <div class="featured-section">
+                    <h2 class="section-label">Destacado</h2>
+                    <BlogCard post={featuredPost} featured={true} />
+                </div>
+
+                <div class="posts-grid">
+                    {regularPosts.map((post) => <BlogCard post={post} />)}
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .blog-archive {
+        padding-top: 5rem;
+    }
+
+    .blog-hero {
+        padding: 6rem 0 4rem;
+        text-align: center;
+    }
+
+    .blog-hero__title {
+        font-size: clamp(2.5rem, 8vw, 4.5rem);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+    }
+
+    .blog-hero__subtitle {
+        font-size: 1.25rem;
+        color: var(--color-muted);
+        max-width: 35ch;
+        margin: 0 auto;
+    }
+
+    .blog-content {
+        padding-bottom: 8rem;
+    }
+
+    .section-label {
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--color-accent);
+        margin-bottom: 1.5rem;
+        display: block;
+    }
+
+    .featured-section {
+        margin-bottom: 4rem;
+    }
+
+    .posts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    @media (max-width: 640px) {
+        .posts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

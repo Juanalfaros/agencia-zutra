@@ -1,0 +1,100 @@
+/* src/styles/components/toasts.css */
+
+.toaster-container {
+    position: fixed;
+    top: 6rem;
+    /* Debajo del header */
+    right: 1.5rem;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    pointer-events: none;
+    max-width: 24rem;
+    width: calc(100% - 3rem);
+}
+
+.toast {
+    pointer-events: auto;
+    background: color-mix(in srgb, var(--color-surface), transparent 15%);
+    border: 1px solid var(--color-line);
+    color: var(--color-secondary);
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+    transform: translateX(2rem);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+
+
+.toast--active {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.toast--removing {
+    transform: scale(0.9);
+    opacity: 0;
+}
+
+.toast__icon {
+    flex-shrink: 0;
+    font-size: 1.5rem;
+    margin-top: -0.125rem;
+}
+
+.toast__content {
+    flex: 1;
+}
+
+.toast__title {
+    display: block;
+    font-weight: 800;
+    font-size: 0.95rem;
+    margin-bottom: 0.125rem;
+}
+
+.toast__message {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    line-height: 1.4;
+}
+
+/* Tipos */
+.toast--success .toast__icon {
+    color: #10b981;
+}
+
+.toast--error .toast__icon {
+    color: #f43f5e;
+}
+
+.toast--info .toast__icon {
+    color: var(--color-accent);
+}
+
+.toast--warning .toast__icon {
+    color: #f59e0b;
+}
+
+@media (max-width: 640px) {
+    .toaster-container {
+        top: auto;
+        bottom: 2rem;
+        right: 1.5rem;
+        left: 1.5rem;
+        width: auto;
+    }
+
+    .toast {
+        transform: translateY(2rem);
+    }
+
+    .toast--active {
+        transform: translateY(0);
+    }
+}

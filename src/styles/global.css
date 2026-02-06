@@ -1,7 +1,23 @@
 /* src/styles/global.css */
 
+/* View Transitions Theme Fix */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 999;
+}
+
 /* --- Variables y Configuración Base --- */
 :root {
+  scrollbar-gutter: stable;
   --color-primary: #080501;
   --color-surface: #101010;
   --color-subtle: #151515;
@@ -9,13 +25,65 @@
   --color-secondary: #FFF8E0;
   --color-muted: #D1D1D1;
   --color-gray-300: #D1D5DB;
-  --color-accent: #EFD319;
-  --color-accent-hover: #FACC15;
+  --accent-main: #EFD319;
+  --color-accent-rgb: 239, 211, 25;
+  --accent-hover: #FACC15;
+  --color-accent: var(--accent-main);
+  --color-accent-hover: var(--accent-hover);
+  --color-on-accent: #080501;
   --color-red-400: #F87171;
   --color-green-500: #22C55E;
   --color-blue-400: #60A5FA;
+
+  /* --- Global Mix Variants & Utilities --- */
+  --color-accent-subtle: color-mix(in srgb, var(--color-accent), transparent 92%);
+  --color-primary-subtle: color-mix(in srgb, var(--color-primary), transparent 92%);
+  --color-secondary-subtle: color-mix(in srgb, var(--color-secondary), transparent 92%);
+  --color-on-accent-subtle: color-mix(in srgb, var(--color-on-accent), transparent 90%);
+  --color-surface-subtle: color-mix(in srgb, var(--color-surface), transparent 10%);
+  --color-error-subtle: color-mix(in srgb, var(--color-red-400), transparent 92%);
+
   --font-sans: 'magistral', ui-sans-serif, system-ui, sans-serif;
-  --box-shadow-glow: 0 0 40px -10px hsla(var(--accent-hsl, 53, 86%, 54%), 0.25);
+  --font-blog: 'Outfit', sans-serif;
+  /* --- Border Radius System --- */
+  --radius-sm: 0.25rem;
+  /* 4px */
+  --radius-md: 0.5rem;
+  /* 8px */
+  --radius-lg: 1rem;
+  /* 16px */
+  --radius-xl: 1.5rem;
+  /* 24px */
+  --radius-2xl: 2rem;
+  /* 32px */
+  --radius-full: 9999px;
+  /* Pill/Circle */
+}
+
+/* ... (Theme styles) ... */
+
+/* --- Estilos de Blog (Prose) --- */
+.prose {
+  font-family: var(--font-blog);
+  line-height: 1.7;
+}
+
+.prose p,
+.prose ul,
+.prose ol {
+  font-size: 1.125rem;
+  /* 18px for better readability */
+  color: var(--color-gray-300);
+}
+
+.prose strong {
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+.prose headings {
+  font-family: var(--font-sans);
+  /* Keep headings in brand font */
 }
 
 html[data-theme="light"] {
@@ -26,23 +94,30 @@ html[data-theme="light"] {
   --color-line: #E5E7EB;
   --color-muted: #4B5563;
   --color-gray-300: #4B5563;
+  /* Oscurecemos el color dinámico para mejor contraste sobre blanco */
+  --color-accent: color-mix(in srgb, var(--accent-main), black 18%);
+  --color-accent-hover: color-mix(in srgb, var(--accent-hover), black 18%);
 }
 
 /* --- Estilos Base --- */
-html {
+html,
+body {
   scroll-behavior: smooth;
+  background-color: transparent !important;
+  /* Force transparency so fixed bg-master shows */
+  margin: 0;
 }
 
 body {
-  background-color: var(--color-primary);
   color: var(--color-secondary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  margin: 0;
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -57,7 +132,12 @@ img {
   display: block;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   text-wrap: balance;
   line-height: 1.2;
 }
@@ -72,27 +152,73 @@ h1, h2, h3, h4, h5, h6 {
   padding-right: 1.5rem;
 }
 
+.section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  border-top: 1px solid var(--color-line);
+}
+
+/* Sections are now transparent by default */
+
+
+.section-header {
+  text-align: center;
+  max-width: 48rem;
+  margin: 0 auto 2.5rem;
+}
+
+.section-title {
+  font-size: 1.875rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  margin: 0;
+  color: var(--color-secondary);
+}
+
+.section-subtitle {
+  color: var(--color-muted);
+  margin-top: 0.5rem;
+  font-size: 1.125rem;
+}
+
+.section-cta {
+  display: flex;
+  justify-content: center;
+  padding-top: 3rem;
+}
+
 .hidden {
   display: none !important;
 }
 
 /* --- Accesibilidad y Animaciones --- */
 .skip-link {
-  position: absolute; top: -50px; left: 0;
-  background: var(--color-accent); color: var(--color-primary);
-  padding: 8px 12px; font-weight: 700; z-index: 9999;
+  position: absolute;
+  top: -50px;
+  left: 0;
+  background: var(--color-accent);
+  color: var(--color-primary);
+  padding: 8px 12px;
+  font-weight: 700;
+  z-index: 9999;
   transition: top 0.2s;
 }
-.skip-link:focus { top: 0; }
+
+.skip-link:focus {
+  top: 0;
+}
 
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -101,17 +227,42 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .reveal {
-  opacity: 0; transform: translateY(16px);
+  opacity: 0;
+  transform: translateY(16px);
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
-.reveal.show { opacity: 1; transform: none; }
 
-[id] { scroll-margin-top: 96px; }
+.reveal.show {
+  opacity: 1;
+  transform: none;
+}
+
+[id] {
+  scroll-margin-top: 96px;
+}
 
 /* --- Scrollbar --- */
-::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-track { background: #111; }
-::-webkit-scrollbar-thumb { background: #3a3a3a; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background: #555; }
-html[data-theme="light"] ::-webkit-scrollbar-track { background: #eee; }
-html[data-theme="light"] ::-webkit-scrollbar-thumb { background: #cfcfcf; }
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #3a3a3a;
+  border-radius: var(--radius-md);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+html[data-theme="light"] ::-webkit-scrollbar-track {
+  background: #eee;
+}
+
+html[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #cfcfcf;
+}

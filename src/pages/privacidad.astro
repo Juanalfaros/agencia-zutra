@@ -1,0 +1,189 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/common/Header.astro";
+import Footer from "../components/common/Footer.astro";
+
+const title = "Política de Privacidad | Zutra";
+const description =
+    "Información sobre cómo tratamos y protegemos tus datos personales en Agencia Zutra.";
+---
+
+<Layout title={title} description={description}>
+    <Header />
+
+    <main class="legal-page section">
+        <div class="container container--narrow">
+            <div class="legal-header">
+                <div class="section-badge">Privacidad</div>
+                <h1 class="legal-title">
+                    Política de <span class="text-accent">Privacidad</span>
+                </h1>
+                <p class="legal-date">
+                    Última actualización: 06 de febrero, 2026
+                </p>
+            </div>
+
+            <div class="prose legal-content">
+                <section>
+                    <h2>1. Información que Recopilamos</h2>
+                    <p>
+                        En Zutra, recopilamos información personal necesaria
+                        para la prestación de nuestros servicios y la
+                        comunicación con nuestros clientes. Esto incluye:
+                    </p>
+                    <ul>
+                        <li>Datos de contacto (nombre, email, teléfono).</li>
+                        <li>Información sobre tu empresa o proyecto.</li>
+                        <li>
+                            Datos técnicos de navegación a través de cookies
+                            (ver Política de Cookies).
+                        </li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>2. Uso de la Información</h2>
+                    <p>Utilizamos tus datos para:</p>
+                    <ul>
+                        <li>
+                            Gestionar tus solicitudes de contacto y
+                            presupuestos.
+                        </li>
+                        <li>
+                            Mejorar la experiencia de usuario en nuestro sitio
+                            web.
+                        </li>
+                        <li>
+                            Cumplir con obligaciones legales y contractuales.
+                        </li>
+                        <li>
+                            Enviar información relevante sobre nuestros
+                            servicios (solo si has dado tu consentimiento).
+                        </li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>3. Protección de Datos</h2>
+                    <p>
+                        Implementamos medidas técnicas y organizativas para
+                        proteger tus datos personales contra acceso no
+                        autorizado, pérdida o alteración. No vendemos ni cedemos
+                        tus datos a terceros con fines comerciales ajenos a la
+                        prestación de nuestros servicios.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>4. Tus Derechos</h2>
+                    <p>
+                        Tienes derecho a acceder, rectificar o solicitar la
+                        eliminación de tus datos personales en cualquier
+                        momento. Para ejercer estos derechos, puedes escribirnos
+                        a <strong>hola@zutra.agency</strong>.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>5. Cookies y Tecnologías de Seguimiento</h2>
+                    <p>
+                        Este sitio utiliza cookies para analizar el tráfico y
+                        personalizar la experiencia. Puedes gestionar tus
+                        preferencias a través de nuestro banner de cookies o la
+                        configuración de tu navegador.
+                    </p>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .legal-page {
+        padding-top: clamp(8rem, 15vw, 12rem);
+        padding-bottom: 8rem;
+    }
+
+    .container--narrow {
+        max-width: 800px;
+    }
+
+    .legal-header {
+        margin-bottom: 4rem;
+        text-align: center;
+    }
+
+    .section-badge {
+        display: inline-block;
+        padding: 0.4rem 1rem;
+        background: var(--color-accent-subtle);
+        color: var(--color-accent);
+        border: 1px solid var(--color-accent-subtle);
+        border-radius: var(--radius-full);
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 1.5rem;
+    }
+
+    .legal-title {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 1rem;
+        color: var(--color-secondary);
+    }
+
+    .text-accent {
+        color: var(--color-accent);
+    }
+
+    .legal-date {
+        color: var(--color-muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .legal-content {
+        background: var(--color-surface-subtle);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--color-line);
+        padding: clamp(2rem, 5vw, 4rem);
+        border-radius: var(--radius-2xl);
+    }
+
+    .legal-content section {
+        margin-bottom: 3rem;
+    }
+
+    .legal-content section:last-child {
+        margin-bottom: 0;
+    }
+
+    .legal-content h2 {
+        font-size: 1.5rem;
+        color: var(--color-secondary);
+        margin-bottom: 1.25rem;
+        font-weight: 800;
+    }
+
+    .legal-content p,
+    .legal-content li {
+        color: var(--color-muted);
+        line-height: 1.7;
+        margin-bottom: 1rem;
+        font-size: 1.05rem;
+    }
+
+    .legal-content ul {
+        margin-bottom: 2rem;
+        padding-left: 1.5rem;
+    }
+
+    .legal-content strong {
+        color: var(--color-secondary);
+    }
+</style>

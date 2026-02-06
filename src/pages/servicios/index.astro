@@ -1,0 +1,308 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/common/Header.astro";
+import Footer from "@/components/common/Footer.astro";
+import { services, categories } from "@/data/servicios";
+
+// Group services by category for a structured view
+const servicesByCategory = categories.map((cat) => ({
+    ...cat,
+    items: services
+        .filter((s) => s.category === cat.id)
+        .sort((a, b) => a.order - b.order),
+}));
+---
+
+<Layout
+    title="Servicios | Agencia Zutra"
+    description="Soluciones de marketing digital, diseño y tecnología para empresas que buscan crecimiento agresivo y resultados medibles."
+>
+    <Header />
+
+    <main class="page-content">
+        <section class="services-hero">
+            <div class="container text-center">
+                <h1 class="hero-title animate-fade-up">
+                    Arquitectura de Crecimiento
+                </h1>
+                <p class="hero-subtitle animate-fade-up delay-1">
+                    No vendemos 'horas hombre'. Vendemos sistemas, activos y
+                    resultados. Elige el módulo que tu negocio necesita para
+                    escalar.
+                </p>
+            </div>
+        </section>
+
+        <div class="container container--wide">
+            {
+                servicesByCategory.map((category) => (
+                    <section class="category-section animate-fade-up delay-2">
+                        <div class="category-header">
+                            <h2 class="category-title">{category.label}</h2>
+                            <div class="category-line" />
+                        </div>
+
+                        <div class="services-grid">
+                            {category.items.map((service) => (
+                                <a
+                                    href={`/servicios/${service.slug}`}
+                                    class="service-card-link"
+                                >
+                                    <article class="service-card">
+                                        <div class="card-top">
+                                            <div class="card-meta">
+                                                <span class="card-badge">
+                                                    {service.badge}
+                                                </span>
+                                                {service.priceAmount && (
+                                                    <span class="card-price-sm">
+                                                        {service.priceAmount}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <h3 class="card-title">
+                                                {service.title}
+                                            </h3>
+                                            <p class="card-desc">
+                                                {service.description}
+                                            </p>
+                                        </div>
+                                        <div class="card-bottom">
+                                            <span class="btn-text">
+                                                Ver detalles{" "}
+                                                <i class="ph-duotone ph-arrow-right" />
+                                            </span>
+                                        </div>
+                                    </article>
+                                </a>
+                            ))}
+                        </div>
+                    </section>
+                ))
+            }
+        </div>
+
+        <section class="cta-section">
+            <div class="container">
+                <div class="cta-box">
+                    <h2>¿No sabes por dónde empezar?</h2>
+                    <p>
+                        Agenda una auditoría gratuita y descubramos el camino
+                        más corto a tus objetivos.
+                    </p>
+                    <a href="/#contacto" class="button button--primary"
+                        >Hablemos ahora</a
+                    >
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .page-content {
+        padding-top: 6rem;
+        padding-bottom: 4rem;
+    }
+
+    .services-hero {
+        padding: 4rem 0 6rem;
+    }
+
+    .text-center {
+        text-align: center;
+        margin: 0 auto;
+        max-width: 800px;
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        line-height: 1.1;
+        color: var(--color-secondary);
+    }
+
+    .hero-subtitle {
+        font-size: 1.25rem;
+        color: var(--color-muted);
+        line-height: 1.6;
+        text-wrap: balance;
+    }
+
+    .container--wide {
+        max-width: 1400px;
+    }
+
+    .category-section {
+        margin-bottom: 6rem;
+    }
+
+    .category-header {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .category-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--color-secondary);
+        white-space: nowrap;
+    }
+
+    .category-line {
+        height: 1px;
+        background: var(--color-line);
+        width: 100%;
+        opacity: 0.5;
+    }
+
+    .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    .service-card-link {
+        display: block;
+        transition: transform 0.3s ease;
+    }
+
+    .service-card-link:hover {
+        transform: translateY(-5px);
+    }
+
+    .service-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition:
+            border-color 0.3s,
+            box-shadow 0.3s;
+    }
+
+    .service-card-link:hover .service-card {
+        border-color: var(--color-accent);
+        box-shadow: 0 10px 30px -10px rgba(var(--color-accent-rgb), 0.2);
+    }
+
+    .card-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+
+    .card-badge {
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--color-accent);
+        border: 1px solid var(--color-accent);
+        padding: 0.2rem 0.6rem;
+        border-radius: var(--radius-full);
+    }
+
+    .card-price-sm {
+        font-size: 0.85rem;
+        color: var(--color-muted);
+        font-weight: 600;
+    }
+
+    .card-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin-bottom: 0.75rem;
+        line-height: 1.2;
+        color: var(--color-secondary);
+    }
+
+    .card-desc {
+        color: var(--color-gray-300);
+        margin-bottom: 2rem;
+        line-height: 1.5;
+    }
+
+    .card-bottom {
+        border-top: 1px solid var(--color-line);
+        padding-top: 1.5rem;
+    }
+
+    .btn-text {
+        font-weight: 700;
+        color: var(--color-accent);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .cta-section {
+        padding: 4rem 0;
+        text-align: center;
+    }
+
+    .cta-box {
+        background: var(--color-subtle);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-xl);
+        padding: 3rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    .cta-box h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .cta-box p {
+        font-size: 1.1rem;
+        color: var(--color-muted);
+        margin: 0;
+    }
+
+    /* Animation Utilities */
+    .animate-fade-up {
+        opacity: 0;
+        animation: fadeUp 0.6s ease-out forwards;
+    }
+
+    .delay-1 {
+        animation-delay: 0.1s;
+    }
+    .delay-2 {
+        animation-delay: 0.2s;
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .services-grid {
+            grid-template-columns: 1fr;
+        }
+        .hero-title {
+            font-size: 2.5rem;
+        }
+    }
+</style>

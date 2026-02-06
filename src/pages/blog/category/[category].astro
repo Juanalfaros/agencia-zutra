@@ -1,0 +1,132 @@
+---
+// src/pages/blog/category/[category].astro
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/common/Header.astro";
+import Footer from "@/components/common/Footer.astro";
+import BlogCard from "@/components/blog/BlogCard.astro";
+import BlogSearch from "@/components/blog/BlogSearch.astro";
+import { blogPosts, categories } from "../../../data/blog";
+
+export async function getStaticPaths() {
+    return categories.map((cat) => ({
+        params: { category: cat.slug },
+        props: { category: cat },
+    }));
+}
+
+const { category } = Astro.props;
+const posts = blogPosts.filter((post) => post.category === category.id);
+
+const title = `Categoría: ${category.name} | Blog ZUTRA`;
+const description = `Explora todos los artículos sobre ${category.name} en el blog de ZUTRA.`;
+---
+
+<Layout title={title} description={description}>
+    <Header />
+
+    <main class="blog-archive">
+        <section class="blog-hero">
+            <div class="container">
+                <span class="section-label">Categoría</span>
+                <h1 class="blog-hero__title">{category.name}</h1>
+                <p class="blog-hero__subtitle">
+                    Artículos y estrategias enfocados en el mundo de {
+                        category.name.toLowerCase()
+                    }.
+                </p>
+            </div>
+        </section>
+
+        <section class="blog-content">
+            <div class="container">
+                <BlogSearch />
+
+                <div class="posts-grid">
+                    {
+                        posts.length > 0 ? (
+                            posts.map((post) => <BlogCard post={post} />)
+                        ) : (
+                            <div class="no-posts">
+                                <i class="ph-duotone ph-ghost" />
+                                <p>
+                                    Próximamente más contenido valiente en esta
+                                    categoría.
+                                </p>
+                                <a href="/blog" class="button button--primary">
+                                    Ver todos los posts
+                                </a>
+                            </div>
+                        )
+                    }
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    /* Reuse styles from index.astro for consistency */
+    .blog-archive {
+        padding-top: 5rem;
+    }
+    .blog-hero {
+        padding: 6rem 0 4rem;
+        text-align: center;
+    }
+    .section-label {
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--color-accent);
+        margin-bottom: 1rem;
+        display: block;
+    }
+    .blog-hero__title {
+        font-size: clamp(2.5rem, 8vw, 4.5rem);
+        font-weight: 900;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+    }
+    .blog-hero__subtitle {
+        font-size: 1.25rem;
+        color: var(--color-muted);
+        max-width: 35ch;
+        margin: 0 auto;
+    }
+    .blog-content {
+        padding-bottom: 8rem;
+    }
+    .posts-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+
+    .no-posts {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 6rem 2rem;
+        background: var(--color-subtle);
+        border-radius: var(--radius-2xl);
+        border: 1px dashed var(--color-line);
+    }
+
+    .no-posts i {
+        font-size: 4rem;
+        color: var(--color-muted);
+        margin-bottom: 1.5rem;
+    }
+    .no-posts p {
+        font-size: 1.1rem;
+        color: var(--color-muted);
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 640px) {
+        .posts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

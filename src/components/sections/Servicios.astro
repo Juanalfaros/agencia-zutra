@@ -1,0 +1,176 @@
+---
+import { services } from "../../data/servicios";
+
+const sortedServices = services.sort((a, b) => a.order - b.order);
+---
+
+<section id="servicios" class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Servicios para dominar tu mercado</h2>
+    </div>
+    <div id="servicios-grid" class="services-grid">
+      {
+        sortedServices.map((service) => (
+          <article class="service-card" data-service={service.id}>
+            <div class="card__header">
+              <h3 class="card__title">{service.title}</h3>
+              {service.badge && (
+                <span class="card__badge">{service.badge}</span>
+              )}
+            </div>
+            <p class="card__description">{service.description}</p>
+            <ul class="card__list">
+              {service.details.map((detail: string) => (
+                <li class="card__list-item">
+                  <i class="ph-duotone ph-check-circle" /> {detail}
+                </li>
+              ))}
+            </ul>
+            {service.result && <div class="card__result">{service.result}</div>}
+            {service.priceAmount && (
+              <div class="card__price">
+                <span class="price__amount">{service.priceAmount}</span>
+                <span class="price__meta">{service.priceMeta}</span>
+              </div>
+            )}
+          </article>
+        ))
+      }
+    </div>
+    <div class="section-cta">
+      <a
+        href="#contacto"
+        data-track="cta_mid_click"
+        data-loc="servicios"
+        class="button button--primary button--icon-right"
+      >
+        Hagamos que pase <i class="ph-duotone ph-arrow-right"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .service-card {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    padding: 2.25rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: all 0.3s ease;
+  }
+
+  .service-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-accent);
+  }
+
+  .card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .card__title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: var(--color-secondary);
+  }
+
+  .card__badge {
+    background-color: var(--color-accent);
+    color: var(--color-on-accent);
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.05em;
+    text-wrap: nowrap;
+  }
+
+  .card__description {
+    font-size: 0.95rem;
+    color: var(--color-muted);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .card__list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-grow: 1;
+  }
+
+  .card__list-item {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--color-secondary);
+    line-height: 1.4;
+  }
+
+  .card__list-item i {
+    color: var(--color-accent);
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .card__result {
+    padding: 1rem;
+    background-color: var(--color-accent-subtle);
+    border-radius: var(--radius-md);
+    border: 1px dashed color-mix(in srgb, var(--color-accent), transparent 70%);
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+
+  .card__price {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-line);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .price__amount {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--color-secondary);
+  }
+
+  .price__meta {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    font-weight: 500;
+  }
+
+  .section-cta {
+    margin-top: 4rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  @media (max-width: 640px) {
+    .service-card {
+      padding: 1.5rem;
+    }
+  }
+</style>

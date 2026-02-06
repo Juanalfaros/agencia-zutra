@@ -1,0 +1,755 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/common/Header.astro";
+import Footer from "@/components/common/Footer.astro";
+import { services, categories } from "@/data/servicios";
+
+export async function getStaticPaths() {
+    return services.map((service) => ({
+        params: { slug: service.slug },
+        props: { service },
+    }));
+}
+
+const { service } = Astro.props;
+const categoryLabel =
+    categories.find((c) => c.id === service.category)?.label ||
+    service.category;
+---
+
+<Layout
+    title={`${service.title} | Agencia Zutra`}
+    description={service.description}
+>
+    <Header />
+
+    <main class="page-services-detail">
+        {/* --- HERO SECTION: Impacto Visual Puro --- */}
+        <section class="service-hero">
+            <div class="hero-bg-grid"></div>
+
+            <div class="container">
+                <div class="hero-layout animate-fade-up">
+                    <div class="hero-header">
+                        <div class="hero-meta">
+                            <span class="category-pill">
+                                <i class="ph-duotone ph-circles-three-plus"></i>
+                                {categoryLabel}
+                            </span>
+                            {
+                                service.badge && (
+                                    <span class="badge-pill pulse-badge">
+                                        {service.badge}
+                                    </span>
+                                )
+                            }
+                        </div>
+                        <h1 class="hero-title">{service.title}</h1>
+                    </div>
+                    <p class="hero-lead">{service.description}</p>
+                </div>
+            </div>
+        </section>
+
+        {/* --- CORE GRID: Narrativa vs Conversión --- */}
+        <div class="content-body">
+            <div class="container">
+                <div class="service-grid">
+                    {/* COLUMNA IZQUIERDA: La "Carne" del servicio */}
+                    <div class="content-column animate-fade-up delay-1">
+                        {/* 1. Descripción Larga (Prose) */}
+                        <section class="section-block">
+                            <h3 class="block-label">
+                                El Problema & La Solución
+                            </h3>
+                            <div class="prose-wrapper">
+                                <div
+                                    class="prose"
+                                    set:html={service.longDescription}
+                                />
+                            </div>
+                        </section>
+
+                        <hr class="divider" />
+
+                        {/* 2. Scope of Work (Features) */}
+                        <section class="section-block">
+                            <div class="block-header">
+                                <h2>Scope of Work</h2>
+                                <p>Desglose operativo de la ejecución.</p>
+                            </div>
+
+                            <div class="features-list">
+                                {
+                                    service.features.map((feature) => (
+                                        <article class="feature-row">
+                                            <div class="feature-icon-box">
+                                                <i class="ph-duotone ph-check-circle" />
+                                            </div>
+                                            <div class="feature-content">
+                                                <h3 class="feature-title">
+                                                    {feature.title}
+                                                </h3>
+                                                <p class="feature-desc">
+                                                    {feature.description}
+                                                </p>
+                                            </div>
+                                        </article>
+                                    ))
+                                }
+                            </div>
+                        </section>
+                    </div>
+
+                    {/* COLUMNA DERECHA: Sticky Sidebar (La Venta) */}
+                    <aside class="sidebar-column animate-fade-up delay-2">
+                        <div class="sticky-wrapper">
+                            {/* Card de Inversión */}
+                            <div class="investment-card">
+                                <div class="card-content">
+                                    <span class="sidebar-label"
+                                        >Resumen de Inversión</span
+                                    >
+
+                                    <div class="price-block">
+                                        <span class="price-currency">Desde</span
+                                        >
+                                        <div class="price-value">
+                                            {service.priceAmount}
+                                        </div>
+                                        <span class="price-meta"
+                                            >{service.priceMeta}</span
+                                        >
+                                    </div>
+
+                                    {
+                                        service.result && (
+                                            <div class="promise-box">
+                                                <i class="ph-duotone ph-trophy" />
+                                                <p>{service.result}</p>
+                                            </div>
+                                        )
+                                    }
+
+                                    <div class="cta-wrapper">
+                                        <a
+                                            href="#contacto"
+                                            class="button button--primary button--full"
+                                        >
+                                            Solicitar Cotización <i
+                                                class="ph-bold ph-arrow-right"
+                                            ></i>
+                                        </a>
+                                        <p class="microcopy">
+                                            <span class="dot-live"></span> Disponibilidad
+                                            inmediata
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Impact Box V2 (Estilo Técnico) */}
+                            <div class="impact-box-v2">
+                                <div class="impact-header">
+                                    <i class="ph-duotone ph-chart-line-up"></i>
+                                    <h3 class="sidebar-subtitle">
+                                        Impacto Directo
+                                    </h3>
+                                </div>
+                                <div class="impact-grid">
+                                    {
+                                        service.benefits.map(
+                                            (benefit, index) => (
+                                                <div class="impact-item">
+                                                    <div class="impact-number">
+                                                        0{index + 1}
+                                                    </div>
+                                                    <p class="impact-text">
+                                                        {benefit}
+                                                    </p>
+                                                    <i class="ph-bold ph-check check-icon" />
+                                                </div>
+                                            ),
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+
+        {/* --- CTA FINAL: Command Module --- */}
+        <section class="final-cta-v2">
+            <div class="container">
+                <div class="cta-module">
+                    <div class="cta-grid">
+                        <div class="cta-narrative">
+                            <span class="cta-tag">¿Siguiente paso?</span>
+                            <h2 class="cta-heading">
+                                Deja de competir.<br />
+                                <span class="text-accent"
+                                    >Empieza a dominar.</span
+                                >
+                            </h2>
+                            <p class="cta-sub">
+                                Tienes la visión. Nosotros tenemos la ejecución
+                                técnica y creativa para construirla. Sin
+                                intermediarios, sin burocracia.
+                            </p>
+                        </div>
+                        <div class="cta-action-area">
+                            <a
+                                href="/#contacto"
+                                class="button button--accent-outline button--xl"
+                            >
+                                Iniciar Proyecto <i
+                                    class="ph-bold ph-arrow-up-right"></i>
+                            </a>
+                            <div class="tech-support-line">
+                                <i class="ph-duotone ph-headset"></i>
+                                <span
+                                    >Soporte directo con ingeniería y diseño.</span
+                                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    /* ------------------------------
+       CONFIG & LAYOUT
+    ------------------------------ */
+    :root {
+        --sidebar-width: 400px;
+        --hero-pt: 8rem;
+    }
+
+    .page-services-detail {
+        overflow-x: hidden;
+    }
+
+    /* ------------------------------
+       HERO SECTION (Bold & Clean)
+    ------------------------------ */
+    .service-hero {
+        position: relative;
+        padding: var(--hero-pt) 0 4rem;
+        border-bottom: 1px solid var(--color-line);
+    }
+
+    .hero-bg-grid {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background-size: 60px 60px;
+        background-image:
+            linear-gradient(to right, var(--color-line) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
+        opacity: 0.15;
+        mask-image: linear-gradient(to bottom, black 20%, transparent 100%);
+    }
+
+    .hero-layout {
+        position: relative;
+        z-index: 1;
+        max-width: 1000px;
+    }
+
+    .hero-meta {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .category-pill,
+    .badge-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        padding: 0.4rem 1rem;
+        border-radius: var(--radius-md);
+        letter-spacing: 0.05em;
+    }
+
+    .category-pill {
+        background: var(--color-subtle);
+        border: 1px solid var(--color-line);
+        color: var(--color-muted);
+    }
+
+    .badge-pill {
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        font-weight: 800;
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        margin-bottom: 1.5rem;
+        color: var(--color-secondary);
+        text-wrap: balance;
+    }
+
+    .hero-lead {
+        font-size: clamp(1.1rem, 2vw, 1.4rem);
+        color: var(--color-gray-300);
+        max-width: 75ch;
+        line-height: 1.5;
+        opacity: 0.9;
+    }
+
+    /* ------------------------------
+       GRID SYSTEM
+    ------------------------------ */
+    .content-body {
+        padding: 4rem 0;
+    }
+
+    .service-grid {
+        display: grid;
+        gap: 3rem;
+    }
+
+    @media (min-width: 1024px) {
+        .service-grid {
+            grid-template-columns: 1fr var(--sidebar-width);
+            gap: 4rem;
+            align-items: start;
+        }
+    }
+
+    /* ------------------------------
+       LEFT COLUMN (Content)
+    ------------------------------ */
+    .block-label {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--color-accent);
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        opacity: 0.8;
+    }
+
+    .section-block {
+        margin-bottom: 4rem;
+    }
+
+    .prose-wrapper {
+        font-size: 1.15rem;
+    }
+
+    .divider {
+        border: 0;
+        height: 1px;
+        background: var(--color-line);
+        margin: 3rem 0;
+        opacity: 0.6;
+    }
+
+    /* Features List Refined */
+    .block-header h2 {
+        font-size: 2rem;
+        color: var(--color-secondary);
+        margin-bottom: 0.5rem;
+    }
+    .block-header p {
+        color: var(--color-muted);
+        margin-bottom: 2rem;
+    }
+
+    .features-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .feature-row {
+        display: flex;
+        gap: 1.25rem;
+        padding: 1.5rem;
+        background: var(--color-subtle);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-lg);
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .feature-row:hover {
+        transform: translateX(5px);
+        border-color: var(--color-accent);
+    }
+
+    .feature-icon-box {
+        color: var(--color-accent);
+        font-size: 1.5rem;
+        padding-top: 0.2rem;
+    }
+
+    .feature-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--color-secondary);
+        margin: 0 0 0.4rem 0;
+    }
+
+    .feature-desc {
+        font-size: 0.95rem;
+        color: var(--color-muted);
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    /* ------------------------------
+       RIGHT COLUMN (Sticky Sidebar)
+    ------------------------------ */
+    .sticky-wrapper {
+        position: sticky;
+        top: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    /* Investment Card */
+    .investment-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-xl);
+        padding: 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .sidebar-label {
+        display: block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--color-muted);
+        margin-bottom: 1rem;
+        letter-spacing: 0.05em;
+    }
+
+    .price-block {
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--color-line);
+    }
+
+    .price-currency {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--color-muted);
+    }
+
+    .price-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--color-secondary);
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        margin: 0.2rem 0;
+    }
+
+    .price-meta {
+        font-size: 0.9rem;
+        color: var(--color-accent);
+        font-weight: 500;
+    }
+
+    .promise-box {
+        display: flex;
+        gap: 0.75rem;
+        background: var(--color-accent-subtle);
+        border: 1px solid var(--color-accent-subtle);
+        padding: 1rem;
+        border-radius: var(--radius-lg);
+        margin-bottom: 1.5rem;
+    }
+    .promise-box i {
+        color: var(--color-accent);
+        font-size: 1.25rem;
+    }
+    .promise-box p {
+        margin: 0;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        color: var(--color-gray-300);
+    }
+
+    .button--full {
+        width: 100%;
+        justify-content: center;
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        font-weight: 700;
+        padding: 1rem;
+        border-radius: var(--radius-lg);
+        transition: filter 0.2s;
+    }
+    .button--full:hover {
+        filter: brightness(1.1);
+    }
+
+    .microcopy {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        color: var(--color-muted);
+        margin: 0.75rem 0 0 0;
+        opacity: 0.8;
+    }
+
+    .dot-live {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        background-color: var(--color-green-500);
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+
+    /* Impact Box V2 */
+    .impact-box-v2 {
+        padding: 0 0.5rem;
+    }
+
+    .impact-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px dashed var(--color-line);
+    }
+
+    .impact-header i {
+        color: var(--color-accent);
+        font-size: 1.25rem;
+    }
+
+    .sidebar-subtitle {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-secondary);
+        margin: 0;
+        font-weight: 700;
+    }
+
+    .impact-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .impact-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--color-subtle);
+        border: 1px solid transparent;
+        border-radius: var(--radius-lg);
+        transition: all 0.2s ease;
+    }
+
+    .impact-item:hover {
+        background: var(--color-surface);
+        border-color: var(--color-line);
+        transform: translateX(4px);
+    }
+
+    .impact-number {
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--color-accent);
+        opacity: 0.5;
+        margin-top: 3px;
+    }
+
+    .impact-text {
+        font-size: 0.95rem;
+        color: var(--color-gray-300);
+        line-height: 1.4;
+        margin: 0;
+        flex: 1;
+    }
+
+    .check-icon {
+        color: var(--color-accent);
+        font-size: 1rem;
+        opacity: 0;
+        transform: scale(0.8);
+        transition: all 0.2s ease;
+    }
+
+    .impact-item:hover .check-icon {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* ------------------------------
+       FINAL CTA (Command Module)
+    ------------------------------ */
+    .final-cta-v2 {
+        position: relative;
+        margin-top: 6rem;
+        padding: 6rem 0;
+        /* background-color: var(--color-primary); */
+        border-top: 1px solid var(--color-line);
+        overflow: hidden;
+    }
+
+    /* .cta-noise {
+        position: absolute;
+        inset: 0;
+        opacity: 0.05;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        pointer-events: none;
+        mix-blend-mode: overlay;
+    } */
+
+    .cta-module {
+        position: relative;
+        z-index: 2;
+    }
+
+    .cta-grid {
+        display: grid;
+        gap: 3rem;
+        align-items: center;
+    }
+
+    @media (min-width: 900px) {
+        .cta-grid {
+            grid-template-columns: 1.5fr 1fr;
+            gap: 5rem;
+        }
+        .cta-action-area {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+    }
+
+    .cta-tag {
+        display: inline-block;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--color-accent);
+        margin-bottom: 1rem;
+        border: 1px solid var(--color-accent);
+        padding: 0.3rem 0.6rem;
+        border-radius: var(--radius-md);
+    }
+
+    .cta-heading {
+        font-size: clamp(2.5rem, 5vw, 4rem);
+        line-height: 1;
+        font-weight: 900;
+        color: var(--color-secondary);
+        margin-bottom: 1.5rem;
+    }
+
+    .text-accent {
+        color: var(--color-accent);
+    }
+
+    .cta-sub {
+        font-size: 1.2rem;
+        color: var(--color-muted);
+        max-width: 50ch;
+        line-height: 1.6;
+    }
+
+    .button--accent-outline {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        background: transparent;
+        border: 2px solid var(--color-accent);
+        color: var(--color-accent);
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        border-radius: var(--radius-lg);
+    }
+
+    .button--accent-outline:hover {
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        transform: translateY(-2px);
+    }
+
+    .button--xl {
+        font-size: 1.25rem;
+        padding: 1.25rem 2.5rem;
+    }
+
+    .tech-support-line {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        color: var(--color-gray-300);
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+
+    .tech-support-line i {
+        color: var(--color-accent);
+        font-size: 1.2rem;
+    }
+
+    /* ------------------------------
+       ANIMATIONS
+    ------------------------------ */
+    .animate-fade-up {
+        opacity: 0;
+        animation: fadeUp 0.6s ease-out forwards;
+    }
+    .delay-1 {
+        animation-delay: 0.1s;
+    }
+    .delay-2 {
+        animation-delay: 0.2s;
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
