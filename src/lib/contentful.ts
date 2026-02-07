@@ -11,6 +11,14 @@ import type { Entry, Asset, EntryCollection } from "contentful";
 function readEnv(key: string): string {
   // En Cloudflare Pages, las variables están en process.env
   const fromProcess = (globalThis as any)?.process?.env?.[key];
+
+  // Debug: Log validation (only once per key check to avoid spam, or finding a better place)
+  // Check if we are in a build environment (CI)
+  if (key === "CONTENTFUL_SPACE_ID" && !fromProcess) {
+    console.log("DEBUG: process.env keys available:", Object.keys((globalThis as any)?.process?.env || {}));
+    console.log("DEBUG: Looking for:", key);
+  }
+
   if (typeof fromProcess === "string" && fromProcess.length > 0)
     return fromProcess;
 
