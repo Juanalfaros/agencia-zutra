@@ -1,1 +1,0 @@
-console.log("El archivo de prueba funciona!");

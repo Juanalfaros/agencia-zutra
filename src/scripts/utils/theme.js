@@ -17,7 +17,15 @@ const updateFavicon = (color) => {
   faviconLink.href = `data:image/svg+xml,${encodedSvg}`;
 };
 
+const hexToRgb = (hex) => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ?
+    `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` :
+    '0, 0, 0';
+};
+
 export function setRandomTheme() {
+  console.log('Zutra: Initializing random theme...');
   const palettes = [
     { main: '#EFD319', hover: '#FACC15', onAccent: '#080501' }, // Amarillo
     { main: '#19EFB5', hover: '#15C999', onAccent: '#080501' }, // Verde Menta
@@ -26,11 +34,19 @@ export function setRandomTheme() {
   ];
 
   const randomPalette = palettes[Math.floor(Math.random() * palettes.length)];
+  console.log('Zutra: Selected palette:', randomPalette.main);
 
   const root = document.documentElement;
-  // Seteamos variables base para que el CSS pueda manipularlas según el tema
+  // Seteamos todas las variantes para asegurar compatibilidad
   root.style.setProperty('--accent-main', randomPalette.main);
   root.style.setProperty('--accent-hover', randomPalette.hover);
+  root.style.setProperty('--color-accent', randomPalette.main);
+  root.style.setProperty('--color-accent-hover', randomPalette.hover);
   root.style.setProperty('--color-on-accent', randomPalette.onAccent);
+
+  // RGB para componentes que usan transparencias
+  const rgb = hexToRgb(randomPalette.main);
+  root.style.setProperty('--color-accent-rgb', rgb);
+
   updateFavicon(randomPalette.main);
 }
