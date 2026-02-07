@@ -14,11 +14,9 @@ function readEnv(key: string): string {
   const fromProcess = env[key];
 
   // Debug logging
-  if (key === "CONTENTFUL_SPACE_ID" && !fromProcess) {
-    console.log(`DEBUG: node:process.env.${key} is missing/empty`);
-    // Optional: Print all keys to debug
-    // console.log("DEBUG: Available keys:", Object.keys(env)); 
-  }
+  // if (key === "CONTENTFUL_SPACE_ID" && !fromProcess) {
+  //   console.log(`DEBUG: node:process.env.${key} is missing/empty`);
+  // }
 
   if (typeof fromProcess === "string" && fromProcess.length > 0)
     return fromProcess;
