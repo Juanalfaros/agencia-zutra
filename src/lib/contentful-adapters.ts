@@ -12,6 +12,7 @@ import type { HeroSlide } from '@/data/hero';
 import type { Service } from '@/data/legacy/servicios';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 import type { Document } from '@contentful/rich-text-types';
+import { globalCTAs } from "@/data/legacy/blog";
 
 /**
  * Adapt Contentful Asset to local image format
@@ -135,7 +136,7 @@ export function adaptBlogPost(entry: Entry<any, undefined, string>): Post {
             description: typeof fields.seoDescription === 'string' ? fields.seoDescription : undefined,
             keywords: Array.isArray(fields.seoKeywords) ? fields.seoKeywords.filter((k): k is string => typeof k === 'string') : undefined,
         },
-        cta: typeof fields.ctaId === 'string' ? { id: fields.ctaId } as any : undefined,
+        cta: typeof fields.ctaId === 'string' ? globalCTAs[fields.ctaId as keyof typeof globalCTAs] : undefined,
     };
 }
 
