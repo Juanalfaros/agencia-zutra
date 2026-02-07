@@ -2,7 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/common/Header.astro";
 import Footer from "@/components/common/Footer.astro";
-import { services, categories } from "@/data/servicios";
+import { services, categories } from "../../../data/legacy/servicios";
 
 export async function getStaticPaths() {
     return categories.map((cat) => ({

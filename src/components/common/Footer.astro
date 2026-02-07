@@ -1,8 +1,9 @@
 ---
 import Logo from "./Logo.astro";
 import { socialMedia } from "../../data/socialmedia";
-import { services } from "../../data/servicios";
-import { cases } from "../../data/casos";
+import { blogPosts } from "@/data/legacy/blog";
+import { cases } from "@/data/legacy/casos";
+import { services } from "@/data/legacy/servicios";
 
 // Seleccionamos algunos servicios y casos para mostrar en el footer
 const footerServices = services.slice(0, 4);
@@ -21,7 +22,10 @@ const currentYear = new Date().getFullYear();
             <Logo class="footer-logo" />
           </a>
           <p class="footer-bio">
-            Impulsamos negocios con <strong>código moderno</strong>, <strong>diseño con carácter</strong> y <strong>sistemas que venden</strong>. Sin humo, solo ejecución técnica desde Chile para el mundo.
+            Impulsamos negocios con <strong>código moderno</strong>, <strong
+              >diseño con carácter</strong
+            > y <strong>sistemas que venden</strong>. Sin humo, solo ejecución
+            técnica desde Chile para el mundo.
           </p>
           <div class="footer-socials">
             {

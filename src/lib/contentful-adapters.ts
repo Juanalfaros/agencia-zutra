@@ -6,10 +6,10 @@
  */
 
 import type { Entry, Asset } from 'contentful';
-import type { Post, Author } from '@/data/blog';
-import type { ZutraCaseStudy } from '@/types/project-types';
+import type { Post, Author } from "@/data/legacy/blog";
+import type { ZutraCaseStudy } from "@/types/project-types";
 import type { HeroSlide } from '@/data/hero';
-import type { Service } from '@/data/servicios';
+import type { Service } from '@/data/legacy/servicios';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 import type { Document } from '@contentful/rich-text-types';
 

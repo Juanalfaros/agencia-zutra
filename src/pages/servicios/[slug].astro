@@ -4,7 +4,7 @@ import Header from "@/components/common/Header.astro";
 import Footer from "@/components/common/Footer.astro";
 import { getEntries } from "@/lib/contentful";
 import { adaptService } from "@/lib/contentful-adapters";
-import { categories } from "@/data/servicios";
+import { services, categories } from "../../data/legacy/servicios";
 
 export async function getStaticPaths() {
     const entries = await getEntries("service", {

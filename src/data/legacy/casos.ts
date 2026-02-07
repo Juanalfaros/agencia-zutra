@@ -1,37 +1,37 @@
 
 // Importaciones de imágenes - Ajusta según tu estructura
-import comprendemeImg from '../assets/img/casos/comprendeme.webp';
-import comprendemeGallery1 from '../assets/img/casos/comprendeme-gallery-1.webp';
-import comprendemeGallery2 from '../assets/img/casos/comprendeme-gallery-2.webp';
-import comprendemeGallery3 from '../assets/img/casos/comprendeme-gallery-3.webp';
+import comprendemeImg from '../../assets/img/casos/comprendeme.webp';
+import comprendemeGallery1 from '../../assets/img/casos/comprendeme-gallery-1.webp';
+import comprendemeGallery2 from '../../assets/img/casos/comprendeme-gallery-2.webp';
+import comprendemeGallery3 from '../../assets/img/casos/comprendeme-gallery-3.webp';
 
-import cordoneriaChikeImg from '../assets/img/casos/cordoneria-chike.webp';
-import cordoneriaGallery1 from '../assets/img/casos/cordoneria-gallery-1.webp';
-import cordoneriaGallery2 from '../assets/img/casos/cordoneria-gallery-2.webp';
+import cordoneriaChikeImg from '../../assets/img/casos/cordoneria-chike.webp';
+import cordoneriaGallery1 from '../../assets/img/casos/cordoneria-gallery-1.webp';
+import cordoneriaGallery2 from '../../assets/img/casos/cordoneria-gallery-2.webp';
 
-import feomalofeoImg from '../assets/img/casos/feomalofeo.webp';
-import feomalofeoGallery1 from '../assets/img/casos/feomalofeo-gallery-1.webp';
-import feomalofeoGallery2 from '../assets/img/casos/feomalofeo-gallery-2.webp';
+import feomalofeoImg from '../../assets/img/casos/feomalofeo.webp';
+import feomalofeoGallery1 from '../../assets/img/casos/feomalofeo-gallery-1.webp';
+import feomalofeoGallery2 from '../../assets/img/casos/feomalofeo-gallery-2.webp';
 
-import flipeameImg from '../assets/img/casos/flipeame.webp';
-import flipeameGallery1 from '../assets/img/casos/flipeame-gallery-1.webp';
-import flipeameGallery2 from '../assets/img/casos/flipeame-gallery-2.webp';
-import flipeameGallery3 from '../assets/img/casos/flipeame-gallery-3.webp';
+import flipeameImg from '../../assets/img/casos/flipeame.webp';
+import flipeameGallery1 from '../../assets/img/casos/flipeame-gallery-1.webp';
+import flipeameGallery2 from '../../assets/img/casos/flipeame-gallery-2.webp';
+import flipeameGallery3 from '../../assets/img/casos/flipeame-gallery-3.webp';
 
-import tubingerImg from '../assets/img/casos/tubinger.webp';
-import tubingerGallery1 from '../assets/img/casos/tubinger-gallery-1.webp';
-import tubingerGallery2 from '../assets/img/casos/tubinger-gallery-2.webp';
+import tubingerImg from '../../assets/img/casos/tubinger.webp';
+import tubingerGallery1 from '../../assets/img/casos/tubinger-gallery-1.webp';
+import tubingerGallery2 from '../../assets/img/casos/tubinger-gallery-2.webp';
 
-import vibrandoKineImg from '../assets/img/casos/vibrando-kine.webp';
-import vibrandoGallery1 from '../assets/img/casos/vibrando-gallery-1.webp';
+import vibrandoKineImg from '../../assets/img/casos/vibrando-kine.webp';
+import vibrandoGallery1 from '../../assets/img/casos/vibrando-gallery-1.webp';
 
-import iejImg from '../assets/img/casos/iej.webp';
-import iejGallery1 from '../assets/img/casos/iej-gallery-1.webp';
-import iejGallery2 from '../assets/img/casos/iej-gallery-2.webp';
+import iejImg from '../../assets/img/casos/iej.webp';
+import iejGallery1 from '../../assets/img/casos/iej-gallery-1.webp';
+import iejGallery2 from '../../assets/img/casos/iej-gallery-2.webp';
 
-import isinovaImg from '../assets/img/casos/isinova.webp';
-import isinovaGallery1 from '../assets/img/casos/isinova-gallery-1.webp';
-import isinovaGallery2 from '../assets/img/casos/isinova-gallery-2.webp';
+import isinovaImg from '../../assets/img/casos/isinova.webp';
+import isinovaGallery1 from '../../assets/img/casos/isinova-gallery-1.webp';
+import isinovaGallery2 from '../../assets/img/casos/isinova-gallery-2.webp';
 
 import type {
     ZutraCaseStudy

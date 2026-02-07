@@ -5,7 +5,7 @@ import Header from "@/components/common/Header.astro";
 import Footer from "@/components/common/Footer.astro";
 import BlogCard from "@/components/blog/BlogCard.astro";
 import BlogSearch from "@/components/blog/BlogSearch.astro";
-import { blogPosts } from "../../../data/blog";
+import { blogPosts } from "../../../data/legacy/blog";
 
 export async function getStaticPaths() {
     const allTags = [...new Set(blogPosts.flatMap((post) => post.tags))];

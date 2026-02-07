@@ -7,7 +7,7 @@ import BlogCard from "@/components/blog/BlogCard.astro";
 import BlogSearch from "@/components/blog/BlogSearch.astro";
 import { getEntries } from "@/lib/contentful";
 import { adaptBlogPost } from "@/lib/contentful-adapters";
-import type { Post } from "@/data/blog";
+import type { Post } from "@/data/legacy/blog";
 
 // Fetch blog posts from Contentful
 const entries = await getEntries("blogPost", {

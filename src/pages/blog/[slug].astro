@@ -9,8 +9,8 @@ export const prerender = true; // Still prerender for production
 
 import { getEntries, getEntriesByField } from "@/lib/contentful";
 import { adaptBlogPost } from "@/lib/contentful-adapters";
-import type { Post } from "@/data/blog";
-import { categories } from "../../data/blog";
+import type { Post } from "@/data/legacy/blog";
+import { categories } from "../../data/legacy/blog";
 
 export async function getStaticPaths() {
     // Fetch all published blog posts for build

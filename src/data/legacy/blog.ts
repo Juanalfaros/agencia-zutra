@@ -1,5 +1,5 @@
 // src/data/blog.ts
-import { founders } from "./founders";
+import { founders } from "../founders";
 import type { ImageMetadata } from "astro";
 
 export interface Author {
