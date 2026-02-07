@@ -139,6 +139,7 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
 
     {isPreviewEnabled && (
       <script>
+        // @ts-ignore
         import { ContentfulLivePreview } from '@contentful/live-preview';
         
         ContentfulLivePreview.init({
