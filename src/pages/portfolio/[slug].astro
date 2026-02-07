@@ -19,15 +19,25 @@ import { adaptPortfolioCase } from "@/lib/contentful-adapters";
 import type { ZutraCaseStudy } from "@/types/project-types";
 
 export async function getStaticPaths() {
-    const entries = await getEntries("portfolioCase", {
-        order: "fields.order",
-    });
-    const portfolioCases = entries.items.map(adaptPortfolioCase);
+    try {
+        const entries = await getEntries("portfolioCase", {
+            order: "fields.order",
+        });
+        const portfolioCases = entries.items.map(adaptPortfolioCase);
 
-    return portfolioCases.map((project: ZutraCaseStudy) => ({
-        params: { slug: project.slug },
-        props: { project, allProjects: portfolioCases },
-    }));
+        // If no cases available, return empty paths array
+        if (portfolioCases.length === 0) {
+            return [];
+        }
+
+        return portfolioCases.map((project: ZutraCaseStudy) => ({
+            params: { slug: project.slug },
+            props: { project, allProjects: portfolioCases },
+        }));
+    } catch (error) {
+        console.warn("No portfolio cases available for static paths generation");
+        return [];
+    }
 }
 
 const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";

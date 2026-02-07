@@ -15,11 +15,15 @@ const entries = await getEntries("blogPost", {
 });
 const blogPosts: Post[] = entries.items.map(adaptBlogPost);
 
-const featuredPost =
-    blogPosts.find((post: Post) => post.featured) || blogPosts[0];
-const regularPosts = blogPosts.filter(
-    (post: Post) => post.id !== featuredPost.id,
-);
+// Handle case when no posts are available (Contentful not configured)
+const hasPosts = blogPosts.length > 0;
+
+const featuredPost = hasPosts 
+    ? (blogPosts.find((post: Post) => post.featured) || blogPosts[0])
+    : null;
+const regularPosts = hasPosts 
+    ? blogPosts.filter((post: Post) => post.id !== featuredPost?.id)
+    : [];
 
 const title = "Blog Valiente | ZUTRA Agency";
 const description =
@@ -48,11 +52,21 @@ const description =
 
                 <div class="featured-section">
                     <h2 class="section-label">Destacado</h2>
-                    <BlogCard post={featuredPost} featured={true} />
+                    {featuredPost ? <BlogCard post={featuredPost} featured={true} /> : (
+                        <div class="no-posts">
+                            <p>No hay artículos disponibles en este momento.</p>
+                        </div>
+                    )}
                 </div>
 
                 <div class="posts-grid">
-                    {regularPosts.map((post) => <BlogCard post={post} />)}
+                    {regularPosts.length > 0 ? (
+                        regularPosts.map((post) => <BlogCard post={post} />)
+                    ) : hasPosts ? (
+                        <div class="no-posts">
+                            <p>No hay más artículos disponibles.</p>
+                        </div>
+                    ) : null}
                 </div>
             </div>
         </section>
@@ -107,6 +121,13 @@ const description =
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
         gap: 2rem;
+    }
+
+    .no-posts {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--color-muted);
+        font-size: 1.1rem;
     }
 
     @media (max-width: 640px) {

@@ -13,12 +13,18 @@ const entries = await getEntries("service", {
 });
 const services = entries.items.map(adaptService);
 
+// Handle case when no services are available (Contentful not configured)
+const hasServices = services.length > 0;
+
 // Group services by category for a structured view
-const servicesByCategory = categories.map((cat) => ({
+const servicesByCategory = hasServices ? categories.map((cat) => ({
     ...cat,
     items: services
         .filter((s: any) => s.category === cat.id)
         .sort((a: any, b: any) => (a.order || 99) - (b.order || 99)),
+})) : categories.map((cat) => ({
+    ...cat,
+    items: [],
 }));
 ---
 
@@ -43,7 +49,7 @@ const servicesByCategory = categories.map((cat) => ({
         </section>
 
         <div class="container container--wide">
-            {
+            {hasServices ? (
                 servicesByCategory.map((category) => (
                     <section class="category-section animate-fade-up delay-2">
                         <div class="category-header">
@@ -88,7 +94,11 @@ const servicesByCategory = categories.map((cat) => ({
                         </div>
                     </section>
                 ))
-            }
+            ) : (
+                <div class="no-services">
+                    <p>No hay servicios disponibles en este momento.</p>
+                </div>
+            )}
         </div>
 
         <section class="cta-section">
@@ -143,6 +153,13 @@ const servicesByCategory = categories.map((cat) => ({
 
     .container--wide {
         max-width: 1400px;
+    }
+
+    .no-services {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--color-muted);
+        font-size: 1.1rem;
     }
 
     .category-section {

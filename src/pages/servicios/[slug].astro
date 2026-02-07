@@ -7,15 +7,25 @@ import { adaptService } from "@/lib/contentful-adapters";
 import { services, categories } from "../../data/legacy/servicios";
 
 export async function getStaticPaths() {
-    const entries = await getEntries("service", {
-        order: "fields.order",
-    });
-    const services = entries.items.map(adaptService);
+    try {
+        const entries = await getEntries("service", {
+            order: "fields.order",
+        });
+        const services = entries.items.map(adaptService);
 
-    return services.map((service: any) => ({
-        params: { slug: service.slug },
-        props: { service },
-    }));
+        // If no services available, return empty paths array
+        if (services.length === 0) {
+            return [];
+        }
+
+        return services.map((service: any) => ({
+            params: { slug: service.slug },
+            props: { service },
+        }));
+    } catch (error) {
+        console.warn("No services available for static paths generation");
+        return [];
+    }
 }
 
 const { service } = Astro.props as { service: any };

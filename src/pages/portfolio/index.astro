@@ -17,8 +17,11 @@ const entries = await getEntries("portfolioCase", {
 });
 const cases = entries.items.map(adaptPortfolioCase);
 
+// Handle case when no cases are available (Contentful not configured)
+const hasCases = cases.length > 0;
+
 // Derive unique industries
-const allIndustries = [...new Set(cases.map((c) => c.industry))].sort();
+const allIndustries = hasCases ? [...new Set(cases.map((c) => c.industry))].sort() : [];
 
 const title = "Portfolio — Agencia Zutra";
 const description =
@@ -44,7 +47,7 @@ const description =
                     <!-- Placeholder para futuros filtros dinámicos -->
                     <span class="filter-label">Explora por industria:</span>
                     <div class="filter-tags">
-                        {
+                        {hasCases ? (
                             (allIndustries as string[])
                                 .slice(0, 4)
                                 .map((ind: string) => (
@@ -55,7 +58,9 @@ const description =
                                         {ind}
                                     </a>
                                 ))
-                        }
+                        ) : (
+                            <span class="no-cases">No hay industrias disponibles</span>
+                        )}
                     </div>
                 </div>
             </div>
@@ -64,7 +69,7 @@ const description =
         <section class="portfolio-grid-section">
             <div class="container">
                 <div class="portfolio-grid">
-                    {
+                    {hasCases ? (
                         cases.map((project: ZutraCaseStudy) => (
                             <a
                                 href={`/portfolio/${project.slug}`}
@@ -116,7 +121,11 @@ const description =
                                 </div>
                             </a>
                         ))
-                    }
+                    ) : (
+                        <div class="no-cases">
+                            <p>No hay casos de estudio disponibles en este momento.</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </section>
@@ -152,6 +161,14 @@ const description =
 
     .text-accent {
         color: var(--color-accent);
+    }
+
+    .no-cases {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--color-muted);
+        font-size: 1.1rem;
+        grid-column: 1 / -1;
     }
 
     .portfolio-subtitle {

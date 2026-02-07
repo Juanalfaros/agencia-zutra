@@ -13,16 +13,26 @@ import type { Post } from "@/data/legacy/blog";
 import { categories } from "../../data/legacy/blog";
 
 export async function getStaticPaths() {
-    // Fetch all published blog posts for build
-    const entries = await getEntries("blogPost", {
-        order: "-fields.publishDate",
-    });
-    const blogPosts = entries.items.map(adaptBlogPost);
+    try {
+        // Fetch all published blog posts for build
+        const entries = await getEntries("blogPost", {
+            order: "-fields.publishDate",
+        });
+        const blogPosts = entries.items.map(adaptBlogPost);
 
-    return blogPosts.map((post: Post) => ({
-        params: { slug: post.slug },
-        props: { post, allPosts: blogPosts },
-    }));
+        // If no posts available, return empty paths array
+        if (blogPosts.length === 0) {
+            return [];
+        }
+
+        return blogPosts.map((post: Post) => ({
+            params: { slug: post.slug },
+            props: { post, allPosts: blogPosts },
+        }));
+    } catch (error) {
+        console.warn("No blog posts available for static paths generation");
+        return [];
+    }
 }
 
 const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
