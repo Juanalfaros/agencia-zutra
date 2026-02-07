@@ -9,13 +9,15 @@ import { createClient, type EntrySkeletonType } from "contentful";
 import type { Entry, Asset, EntryCollection } from "contentful";
 
 function readEnv(key: string): string {
-  const fromImportMeta = (import.meta as any)?.env?.[key];
-  if (typeof fromImportMeta === "string" && fromImportMeta.length > 0)
-    return fromImportMeta;
-
+  // En Cloudflare Pages, las variables están en process.env
   const fromProcess = (globalThis as any)?.process?.env?.[key];
   if (typeof fromProcess === "string" && fromProcess.length > 0)
     return fromProcess;
+
+  // Fallback a import.meta.env para desarrollo local
+  const fromImportMeta = (import.meta as any)?.env?.[key];
+  if (typeof fromImportMeta === "string" && fromImportMeta.length > 0)
+    return fromImportMeta;
 
   return "";
 }
