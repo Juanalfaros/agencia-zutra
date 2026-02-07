@@ -9,6 +9,7 @@ export function initMobileNav() {
 
   if (menuBtn && mobileNav) {
     const openMenu = () => {
+      console.log('Opening mobile menu');
       mobileNav.classList.add('active');
       body.classList.add('menu-open');
       menuBtn.setAttribute('aria-expanded', 'true');

@@ -10,7 +10,7 @@ import { initTabs } from './ui/tabs.js';
 import { updateFooterYear } from './utils/footerYear.js';
 import { setRandomTheme } from './utils/theme.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+const init = () => {
   // Inicializa todos los módulos
   setRandomTheme();
   initMobileNav();
@@ -20,4 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
   initTabs();
   initContactForm();
   initCarousel();
-});
+};
+
+// Safe initialization for modules
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
