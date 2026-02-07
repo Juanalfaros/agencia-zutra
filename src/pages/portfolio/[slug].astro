@@ -1,231 +1,84 @@
 ---
+export const prerender = true;
 import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/common/Header.astro";
 import Footer from "../../components/common/Footer.astro";
 import StickyCTA from "../../components/common/StickyCTA.astro";
-import { cases } from "../../data/casos";
-import { Image } from "astro:assets";
-import { slugify } from "../../scripts/utils/slugify";
-import { Icon } from "astro-icon/components";
-import { getTechIcon } from "../../data/techIcons";
+import CaseNavigation from "../../components/portfolio/CaseNavigation.astro";
+import CaseHero from "../../components/portfolio/CaseHero.astro";
+import CaseKeyInfo from "../../components/portfolio/CaseKeyInfo.astro";
+import CaseChallenge from "../../components/portfolio/CaseChallenge.astro";
+import CaseStrategy from "../../components/portfolio/CaseStrategy.astro";
+import CaseExecution from "../../components/portfolio/CaseExecution.astro";
+import CaseResults from "../../components/portfolio/CaseResults.astro";
+import CaseFeatures from "../../components/portfolio/CaseFeatures.astro";
+import CaseClosure from "../../components/portfolio/CaseClosure.astro";
+import NextProjectNav from "../../components/portfolio/NextProjectNav.astro";
+import { getEntries, getEntriesByField } from "@/lib/contentful";
+import { adaptPortfolioCase } from "@/lib/contentful-adapters";
+import type { ZutraCaseStudy } from "@/types/project-types";
 
 export async function getStaticPaths() {
-    return cases.map((project) => ({
+    const entries = await getEntries("portfolioCase", {
+        order: "fields.order",
+    });
+    const portfolioCases = entries.items.map(adaptPortfolioCase);
+
+    return portfolioCases.map((project: ZutraCaseStudy) => ({
         params: { slug: project.slug },
-        props: { project },
+        props: { project, allProjects: portfolioCases },
     }));
 }
 
-const { project } = Astro.props;
+const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+let { project, allProjects } = Astro.props as {
+    project: ZutraCaseStudy;
+    allProjects: ZutraCaseStudy[];
+};
+
+if (isPreview) {
+    const slug = Astro.params.slug;
+    const entries = await getEntriesByField(
+        "portfolioCase",
+        "slug",
+        slug,
+        true,
+    );
+    if (entries.items.length > 0) {
+        project = adaptPortfolioCase(entries.items[0]);
+    }
+
+    const allEntries = await getEntries(
+        "portfolioCase",
+        { order: "fields.order" },
+        true,
+    );
+    allProjects = allEntries.items.map(adaptPortfolioCase);
+}
 
 // Find next project for navigation
-const currentIndex = cases.findIndex((c) => c.id === project.id);
-const nextProject = cases[(currentIndex + 1) % cases.length];
+const currentIndex = allProjects.findIndex((c) => c.id === project.id);
+const nextProject = allProjects[(currentIndex + 1) % allProjects.length];
 ---
 
 <Layout
     title={`${project.title} — Portfolio Zutra`}
     description={project.description}
-    image={project.image.src}
+    image={project.featuredImage.src.src}
 >
     <Header />
 
     <main class="case-study">
-        {/* Hero Section */}
-        <section class="case-hero">
-            <div class="container">
-                <div class="hero-meta">
-                    <a
-                        href={`/portfolio/tag/${slugify(project.industry)}`}
-                        class="industry-badge">{project.industry}</a
-                    >
-                    <span class="hero-year">{project.year}</span>
-                </div>
-                <h1 class="hero-title">{project.title}</h1>
-
-                <div class="hero-image-wrapper">
-                    <Image
-                        src={project.image}
-                        alt={project.title}
-                        width={1200}
-                        height={675}
-                        class="hero-image"
-                        loading="eager"
-                    />
-                </div>
-            </div>
-        </section>
-
-        {/* Intro Grid */}
-        <section class="case-intro">
-            <div class="container">
-                <div class="intro-grid">
-                    <div class="intro-main">
-                        <h2 class="section-heading">El Desafío</h2>
-                        <p class="text-body">{project.challenge}</p>
-                    </div>
-                    <div class="intro-sidebar">
-                        <div class="meta-group">
-                            <h3 class="meta-label">Servicios</h3>
-                            <ul class="meta-list">
-                                {
-                                    project.services.map((s) => (
-                                        <li>
-                                            <a
-                                                href={`/portfolio/tag/${slugify(s)}`}
-                                            >
-                                                {s}
-                                            </a>
-                                        </li>
-                                    ))
-                                }
-                            </ul>
-                        </div>
-                        <div class="meta-group">
-                            <h3 class="meta-label">Rol</h3>
-                            <p>{project.role}</p>
-                        </div>
-                        {
-                            project.websiteUrl && (
-                                <div class="meta-group">
-                                    <h3 class="meta-label">Sitio Web</h3>
-                                    <a
-                                        href={project.websiteUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        class="website-link"
-                                    >
-                                        Visitar sitio{" "}
-                                        <i class="ph-duotone ph-arrow-up-right" />
-                                    </a>
-                                </div>
-                            )
-                        }
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {/* Solution Section */}
-        <section class="case-solution">
-            <div class="container">
-                <div class="solution-content">
-                    <h2 class="section-heading">La Solución</h2>
-                    <p class="text-body">{project.solution}</p>
-                </div>
-
-                {/* Tech Stack Chips */}
-                <div class="tech-stack-container">
-                    <h3 class="meta-label">Tech Stack</h3>
-                    <div class="tech-grid">
-                        {
-                            project.techStack.map((tech) => (
-                                <span class="tech-chip">
-                                    <Icon
-                                        name={getTechIcon(tech)}
-                                        class="tech-icon"
-                                    />
-                                    {tech}
-                                </span>
-                            ))
-                        }
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {/* Metrics or Testimonial */}
-        {
-            (project.metrics || project.testimonial) && (
-                <section class="case-results">
-                    <div class="container">
-                        {project.metrics && (
-                            <div class="metrics-grid">
-                                {project.metrics.map((metric) => (
-                                    <div class="metric-card">
-                                        <span class="metric-value">
-                                            {metric.value}
-                                        </span>
-                                        <span class="metric-label">
-                                            {metric.label}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-
-                        {project.testimonial && (
-                            <div class="testimonial-box">
-                                <blockquote class="testimonial-quote">
-                                    "{project.testimonial.text}"
-                                </blockquote>
-                                <div class="testimonial-author">
-                                    <span class="author-name">
-                                        {project.testimonial.author}
-                                    </span>
-                                    <span class="author-role">
-                                        {project.testimonial.role}
-                                    </span>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </section>
-            )
-        }
-
-        {
-            /* Gallery Grid (Placeholder logic with single image repeated for demo) */
-        }
-        <section class="case-gallery">
-            <div class="container">
-                <div class="gallery-grid">
-                    {
-                        /* En un caso real, map(project.gallery). Usamos la imagen principal como demo para llenar */
-                    }
-                    <div class="gallery-item large">
-                        <Image
-                            src={project.image}
-                            alt="Detalle del proyecto"
-                            width={1000}
-                            height={600}
-                        />
-                    </div>
-                    <div class="gallery-item">
-                        <Image
-                            src={project.image}
-                            alt="Detalle UI"
-                            width={600}
-                            height={600}
-                        />
-                    </div>
-                    <div class="gallery-item">
-                        <Image
-                            src={project.image}
-                            alt="Detalle Branding"
-                            width={600}
-                            height={600}
-                        />
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {/* Next Project Nav */}
-        <div class="next-project-nav">
-            <div class="container">
-                <a
-                    href={`/portfolio/${nextProject.slug}`}
-                    class="next-project-link"
-                >
-                    <span class="next-label">Siguiente Proyecto</span>
-                    <span class="next-title"
-                        >{nextProject.title}
-                        <i class="ph-duotone ph-arrow-right"></i></span
-                    >
-                </a>
-            </div>
-        </div>
+        <CaseNavigation />
+        <CaseHero project={project} />
+        <CaseKeyInfo project={project} />
+        <CaseChallenge project={project} />
+        <CaseStrategy project={project} />
+        <CaseExecution project={project} />
+        <CaseResults project={project} />
+        <CaseFeatures project={project} />
+        <CaseClosure project={project} />
+        <NextProjectNav nextProject={nextProject} />
     </main>
 
     <StickyCTA />
@@ -233,292 +86,7 @@ const nextProject = cases[(currentIndex + 1) % cases.length];
 </Layout>
 
 <style>
-    .case-hero {
-        padding-top: 8rem;
-        padding-bottom: 4rem;
-        text-align: center;
-    }
-
-    .hero-meta {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        font-size: 0.875rem;
-        letter-spacing: 0.05em;
-    }
-
-    .industry-badge {
-        background: var(--color-accent-subtle);
-        color: var(--color-accent);
-        padding: 0.4rem 1rem;
-        border-radius: var(--radius-full);
-    }
-
-    .hero-year {
-        color: var(--color-muted);
-    }
-
-    .hero-title {
-        font-size: clamp(2.5rem, 5vw, 4.5rem);
-        line-height: 1.1;
-        font-weight: 800;
-        color: var(--color-secondary);
-        max-width: 900px;
-        margin: 0 auto 3rem;
-    }
-
-    .hero-image-wrapper {
-        position: relative;
-        border-radius: var(--radius-xl);
-        overflow: hidden;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        margin-top: 2rem;
-    }
-
-    .hero-image {
-        width: 100%;
-        height: auto;
-        display: block;
-    }
-
-    /* Intro & Content Layout */
-    .section-heading {
-        font-size: 1.75rem;
-        font-weight: 800;
-        color: var(--color-accent);
-        margin-bottom: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 0.02em;
-    }
-
-    .text-body {
-        font-size: 1.125rem;
-        line-height: 1.7;
-        color: var(--color-gray-300);
-    }
-
-    .case-intro {
-        padding: 5rem 0;
-        border-bottom: 1px solid var(--color-line);
-    }
-
-    .intro-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 3rem;
-    }
-
-    .intro-sidebar {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-        padding: 2rem;
-        background-color: var(--color-subtle);
-        border-radius: var(--radius-lg);
-    }
-
-    .meta-label {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--color-muted);
-        margin-bottom: 0.5rem;
-        font-weight: 700;
-    }
-
-    .meta-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        color: var(--color-secondary);
-        font-weight: 600;
-    }
-
-    .website-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: var(--color-accent);
-        font-weight: 700;
-        text-decoration: none;
-    }
-
-    .website-link:hover {
-        text-decoration: underline;
-    }
-
-    /* Solution */
-    .case-solution {
-        padding: 5rem 0;
-    }
-
-    .solution-content {
-        max-width: 800px;
-        margin-bottom: 3rem;
-    }
-
-    .tech-grid {
-        display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-    }
-
-    .tech-chip {
-        padding: 0.5rem 0.8rem;
-        border: 1px solid var(--color-line);
-        border-radius: var(--radius-md);
-        font-weight: 600;
-        color: var(--color-secondary);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.9rem;
-        background-color: var(--color-surface);
-        transition: all 0.2s ease;
-    }
-
-    .tech-chip:hover {
-        border-color: var(--color-accent);
-        transform: translateY(-2px);
-    }
-
-    .tech-icon {
-        font-size: 1.25rem;
-        color: var(--color-accent);
-    }
-
-    /* Results */
-    .case-results {
-        padding: 4rem 0;
-        background-color: var(--color-subtle);
-        margin: 2rem 0;
-    }
-
-    .metrics-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 2rem;
-        text-align: center;
-        margin-bottom: 3rem;
-    }
-
-    .metric-value {
-        display: block;
-        font-size: 3rem;
-        font-weight: 800;
-        color: var(--color-accent);
-    }
-
-    .metric-label {
-        font-size: 0.9rem;
-        font-weight: 700;
-        color: var(--color-secondary);
-    }
-
-    .testimonial-box {
-        max-width: 800px;
-        margin: 0 auto;
-        text-align: center;
-        position: relative;
-    }
-
-    .testimonial-quote {
-        font-size: 1.5rem;
-        font-style: italic;
-        color: var(--color-secondary);
-        margin-bottom: 1.5rem;
-        line-height: 1.4;
-    }
-
-    .author-name {
-        display: block;
-        font-weight: 800;
-        color: var(--color-accent);
-    }
-
-    .author-role {
-        font-size: 0.875rem;
-        color: var(--color-muted);
-    }
-
-    /* Gallery */
-    .case-gallery {
-        padding: 4rem 0;
-    }
-
-    .gallery-grid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .gallery-item img {
-        width: 100%;
-        height: auto;
-        border-radius: var(--radius-lg);
-        display: block;
-    }
-
-    /* Next Project */
-    .next-project-nav {
-        border-top: 1px solid var(--color-line);
-        padding: 4rem 0;
-        text-align: right;
-    }
-
-    .next-project-link {
-        display: inline-block;
-        text-decoration: none;
-        transition: transform 0.3s ease;
-    }
-
-    .next-project-link:hover {
-        transform: translateX(10px);
-    }
-
-    .next-label {
-        display: block;
-        font-size: 0.875rem;
-        color: var(--color-muted);
-        margin-bottom: 0.5rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .next-title {
-        font-size: 2rem;
-        font-weight: 800;
-        color: var(--color-secondary);
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        justify-content: flex-end;
-    }
-
-    .next-title i {
-        color: var(--color-accent);
-    }
-
-    @media (min-width: 768px) {
-        .intro-grid {
-            grid-template-columns: 2fr 1fr;
-        }
-
-        .gallery-grid {
-            grid-template-columns: 2fr 1fr;
-            grid-template-rows: repeat(2, auto);
-        }
-
-        .gallery-item.large {
-            grid-column: 1 / 2;
-            grid-row: 1 / 3;
-        }
+    .case-study {
+        padding-top: 5rem;
     }
 </style>

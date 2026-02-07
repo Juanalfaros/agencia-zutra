@@ -2,16 +2,23 @@
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/common/Header.astro";
 import Footer from "@/components/common/Footer.astro";
-import { services, categories } from "@/data/servicios";
+import { getEntries } from "@/lib/contentful";
+import { adaptService } from "@/lib/contentful-adapters";
+import { categories } from "@/data/servicios";
 
 export async function getStaticPaths() {
-    return services.map((service) => ({
+    const entries = await getEntries("service", {
+        order: "fields.order",
+    });
+    const services = entries.items.map(adaptService);
+
+    return services.map((service: any) => ({
         params: { slug: service.slug },
         props: { service },
     }));
 }
 
-const { service } = Astro.props;
+const { service } = Astro.props as { service: any };
 const categoryLabel =
     categories.find((c) => c.id === service.category)?.label ||
     service.category;
@@ -81,7 +88,7 @@ const categoryLabel =
 
                             <div class="features-list">
                                 {
-                                    service.features.map((feature) => (
+                                    service.features.map((feature: any) => (
                                         <article class="feature-row">
                                             <div class="feature-icon-box">
                                                 <i class="ph-duotone ph-check-circle" />
@@ -159,7 +166,10 @@ const categoryLabel =
                                 <div class="impact-grid">
                                     {
                                         service.benefits.map(
-                                            (benefit, index) => (
+                                            (
+                                                benefit: string,
+                                                index: number,
+                                            ) => (
                                                 <div class="impact-item">
                                                     <div class="impact-number">
                                                         0{index + 1}

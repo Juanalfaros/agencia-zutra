@@ -1,0 +1,250 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/common/Header.astro";
+import Footer from "../components/common/Footer.astro";
+import BookingForm from "../components/sections/BookingForm.astro";
+
+const title = "Agendar Cita | Zutra Prototype";
+---
+
+<Layout
+    title={title}
+    description="Prototipo del sistema de agendamiento estratégico de Zutra Agencia."
+>
+    <Header />
+
+    <main class="schedule-page section">
+        <div class="container container--narrow">
+            <div class="schedule-intro text-center">
+                <div class="section-badge">Próximamente</div>
+                <h1 class="main-title">
+                    Agenda una <span class="text-accent">Estrategia</span>
+                </h1>
+                <p class="section-description">
+                    Estamos preparando una experiencia de agendamiento
+                    personalizada. Haz clic abajo para ver el prototipo del
+                    modal con el nuevo formulario.
+                </p>
+
+                <button
+                    id="open-schedule-modal"
+                    class="button button--primary button--lg"
+                >
+                    <span>Probar Agendamiento</span>
+                    <i class="ph-bold ph-calendar"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Prototype -->
+        <div id="schedule-modal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <button id="close-schedule-modal" class="modal-close">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+
+                <div class="modal-body">
+                    <BookingForm />
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <Footer />
+</Layout>
+
+<style>
+    .schedule-page {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        padding-top: 10rem;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .main-title {
+        font-size: clamp(2.5rem, 8vw, 4.5rem);
+        font-weight: 900;
+        line-height: 1;
+        margin-bottom: 1.5rem;
+        color: var(--color-secondary);
+    }
+
+    .section-description {
+        font-size: 1.25rem;
+        color: var(--color-muted);
+        max-width: 600px;
+        margin: 0 auto 3rem;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(12px);
+        display: flex;
+        align-items: center; /* Centered by default */
+        justify-content: center;
+        z-index: 9999;
+        padding: 1rem;
+        overflow-y: auto;
+        transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+        display: none;
+    }
+
+    .modal-content {
+        background: var(--color-surface);
+        width: 100%;
+        max-width: 940px;
+        margin: auto; /* Ensure it stays in view while centered */
+        border-radius: var(--radius-2xl);
+        border: 1px solid var(--color-line);
+        position: relative;
+        padding: 1.25rem;
+        box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.6);
+        animation: modalIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @media (max-width: 640px) {
+        .modal-overlay {
+            align-items: flex-start; /* Better for mobile tall content */
+            padding: 0; /* Full screen feel on mobile */
+        }
+
+        .modal-content {
+            margin: 0;
+            border-radius: 0;
+            min-height: 100vh;
+            padding: 3rem 1rem 2rem;
+            border: none;
+        }
+
+        .modal-close {
+            top: 1rem;
+            right: 1rem;
+        }
+    }
+
+    @keyframes modalIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: var(--color-subtle);
+        border: none;
+        color: var(--color-secondary);
+        width: 36px;
+        height: 36px;
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .modal-close:hover {
+        background: var(--color-accent);
+        color: white;
+        transform: rotate(90deg);
+    }
+
+    .modal-header {
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .modal-title {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--color-secondary);
+        margin-bottom: 0.5rem;
+    }
+
+    .modal-subtitle {
+        color: var(--color-muted);
+        font-size: 0.95rem;
+    }
+
+    .placeholder-booking {
+        background: var(--color-subtle);
+        border: 2px dashed var(--color-line);
+        border-radius: var(--radius-xl);
+        padding: 4rem 2rem;
+        text-align: center;
+        color: var(--color-muted);
+    }
+
+    .placeholder-booking i {
+        font-size: 3rem;
+        color: var(--color-accent);
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .modal-footer {
+        margin-top: 2rem;
+    }
+
+    .button--full {
+        width: 100%;
+        justify-content: center;
+    }
+</style>
+
+<script>
+    function initModal() {
+        const modal = document.getElementById("schedule-modal");
+        const openBtn = document.getElementById("open-schedule-modal");
+        const closeBtn = document.getElementById("close-schedule-modal");
+
+        if (!modal || !openBtn || !closeBtn) return;
+
+        openBtn.addEventListener("click", () => {
+            modal.classList.remove("hidden");
+            document.body.style.overflow = "hidden";
+        });
+
+        const closeModal = () => {
+            modal.classList.add("hidden");
+            document.body.style.overflow = "";
+        };
+
+        closeBtn.addEventListener("click", closeModal);
+
+        // Cerrar al hacer click fuera
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        // Cerrar con Escape
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+                closeModal();
+            }
+        });
+    }
+
+    // Ejecutar en carga inicial y tras navegación de Astro
+    initModal();
+    document.addEventListener("astro:after-swap", initModal);
+</script>

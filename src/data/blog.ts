@@ -1,10 +1,12 @@
 // src/data/blog.ts
+import { founders } from "./founders";
+import type { ImageMetadata } from "astro";
 
 export interface Author {
     id: string;
     name: string;
     role: string;
-    avatar: string;
+    avatar: ImageMetadata | string;  // Supports local metadata or remote URLs
     bio: string;
     social?: {
         linkedin?: string;
@@ -47,27 +49,23 @@ export interface Post {
     cta?: CTA;
 }
 
+// Convert founders to authors format for blog
 export const authors: Record<string, Author> = {
     juan: {
-        id: "juan",
-        name: "Juan Alfaro",
-        role: "Director Creativo",
-        avatar: "https://i.pravatar.cc/150?u=juan",
-        bio: "Estratega visual y apasionado por el diseño que realmente convierte. Con más de 10 años de experiencia ayudando a marcas a destacar en entornos digitales saturados.",
-        social: {
-            linkedin: "https://linkedin.com/in/juanalfaro",
-            instagram: "https://instagram.com/juan.zutra"
-        }
+        id: founders[1].id,
+        name: founders[1].name,
+        role: founders[1].role,
+        avatar: founders[1].avatar,
+        bio: founders[1].bio,
+        social: founders[1].social
     },
     camilo: {
-        id: "camilo",
-        name: "Camilo Bustamante",
-        role: "Growth Director",
-        avatar: "https://i.pravatar.cc/150?u=camilo",
-        bio: "Obsesionado con los datos y el retorno de inversión. Especialista en escalar negocios B2B mediante sistemas de adquisición de leads de alta precisión.",
-        social: {
-            linkedin: "https://linkedin.com/in/camilobustamante"
-        }
+        id: founders[0].id,
+        name: founders[0].name,
+        role: founders[0].role,
+        avatar: founders[0].avatar,
+        bio: founders[0].bio,
+        social: founders[0].social
     }
 };
 
@@ -75,26 +73,35 @@ export const globalCTAs: Record<string, CTA> = {
     audit: {
         id: "audit",
         title: "¿Tu web está perdiendo dinero?",
-        description: "Agenda una auditoría gratuita de 15 minutos y descubre los puntos de fuga de tu funnel actual.",
+        description: "Agenda una auditoría gratuita de 15 minutos. Sin ventas agresivas, solo análisis técnico honesto.",
         buttonText: "Agendar Auditoría Gratis",
         buttonLink: "/#contacto",
         variant: "accent"
     },
     sprint: {
         id: "sprint",
-        title: "Consigue leads en 30 días",
-        description: "Lanzamos tu oferta con una landing optimizada y pauta precisa. Sin vueltas, solo resultados.",
-        buttonText: "Empezar Sprint",
+        title: "Inyecta leads en 30 días",
+        description: "Lanzamos tu oferta con una landing optimizada y pauta precisa. Sin vueltas, solo ejecución.",
+        buttonText: "Ver Sprint de Leads",
         buttonLink: "/servicios/sprint-leads",
         variant: "primary"
+    },
+    partner: {
+        id: "partner",
+        title: "Deja de sufrir con tu web",
+        description: "Convierte a Zutra en tu departamento digital externo. Soporte, diseño y paz mental mes a mes.",
+        buttonText: "Ser Partner Digital",
+        buttonLink: "/#contacto",
+        variant: "secondary"
     }
 };
 
 export const categories = [
-    { id: "diseno", name: "Diseño", slug: "diseno" },
-    { id: "growth", name: "Growth Marketing", slug: "growth" },
-    { id: "negocios", name: "Negocios", slug: "negocios" },
-    { id: "tecnologia", name: "Tecnología", slug: "tecnologia" }
+    { id: "diseno", name: "Diseño & Branding", slug: "diseno" },
+    { id: "growth", name: "Estrategia de Growth", slug: "growth" },
+    { id: "automatizacion", name: "Automatización", slug: "automatizacion" },
+    { id: "tecnologia", name: "Tecnología Web", slug: "tecnologia" },
+    { id: "social-media", name: "Social Media", slug: "social-media" }
 ];
 
 export const blogPosts: Post[] = [
@@ -105,9 +112,9 @@ export const blogPosts: Post[] = [
         excerpt: "En la era de la homogeneización corporativa, el mimetismo es suicidio comercial. Descubre cómo el Efecto Von Restorff y la fricción cognitiva intencional pueden disparar tu ROI y salvarte de la irrelevancia.",
         content: `
             <h2>La epidemia de la homogeneización corporativa</h2>
-            <p>Vivimos en una era extraña. Si abres 10 pestañas de startups SaaS, fintechs o agencias de marketing ahora mismo, te reto a encontrar 3 diferencias sustanciales sin leer el logo. Verás el mismo azul "confianza", la misma tipografía Sans-Serif inofensiva (probablemente Inter o Roboto) y esas ilustraciones planas de personajes con brazos largos y cabezas pequeñas (el infame estilo <em>Corporate Memphis</em>).</p>
+            <p>Vivimos en una era extraña. Si abres 10 pestañas de startups SaaS, fintechs o agencias de marketing ahora mismo, te reto a encontrar 3 diferencias sustanciales sin leer el logo. Verás el mismo azul "confianza", la misma tipografía Sans-Serif inofensiva y esas ilustraciones planas de personajes con brazos largos (el infame estilo <em>Corporate Memphis</em>).</p>
             <p>Nos han vendido la mentira de que para vender hay que encajar. Que el minimalismo es sinónimo de profesionalismo. Pero los datos dicen otra cosa: <strong>en un mar de uniformidad, el mimetismo es suicidio comercial.</strong></p>
-            <img src="https://dummyimage.com/800x400/222/fff&text=Grafico:+El+Costo+de+ser+Invisible" alt="Gráfico mostrando barras grises uniformes y una barra neón destacada" style="width:100%; height:auto; margin: 2rem 0; border-radius: 8px;">
+            
             
             <h2>El problema del "Valle de lo Genérico"</h2>
             <p>El cerebro humano es una máquina diseñada para ignorar lo predecible. Es un mecanismo de supervivencia y eficiencia energética. Si tu sitio web se ve igual que el de tu competencia, el cerebro de tu cliente potencial lo etiqueta como "ruido de fondo" y lo filtra antes de que siquiera lea tu propuesta de valor.</p>
@@ -122,17 +129,17 @@ export const blogPosts: Post[] = [
                 <li><strong>Paletas de Color con Opinión:</strong> El azul es seguro. El púrpura eléctrico combinado con verde oliva es una declaración de intenciones.</li>
                 <li><strong>Layouts Asimétricos:</strong> La cuadrícula de 12 columnas es útil, pero romperla crea dinamismo. Los ojos se cansan de la lectura en F estricta.</li>
             </ul>
-            <img src="https://dummyimage.com/800x400/000/fff&text=Comparacion+A/B:+Generico+vs+Disruptivo" alt="Comparación visual entre una web aburrida y una disruptiva" style="width:100%; height:auto; margin: 2rem 0; border-radius: 8px;">
+             
 
             <h2>Caso de Estudio: Cómo la diferenciación visual aumenta el ROI</h2>
-            <p>En ZUTRA, realizamos un experimento con una marca de servicios financieros (un sector notoriamente aburrido). Probamos una estética bancaria tradicional contra una estética brutalista con tipografía monoespaciada y amarillo industrial.</p>
-            <p><strong>Los resultados tras 30 días fueron demoledores:</strong></p>
+            <p>En ZUTRA, hemos visto cómo cambiar una estética bancaria tradicional por una estética brutalista con tipografía monoespaciada y colores industriales puede cambiar el juego.</p>
+            <p><strong>Resultados típicos tras un rebranding valiente:</strong></p>
             <ul>
-                <li>La versión valiente tuvo una tasa de rebote 22% menor.</li>
-                <li>El tiempo en página aumentó en 45 segundos.</li>
-                <li>La conversión a lead cualificado subió un 18%.</li>
+                <li>Reducción de la tasa de rebote por simple curiosidad visual.</li>
+                <li>Aumento del tiempo en página (la gente se queda a ver "qué es esto").</li>
+                <li>Mayor recordación de marca (Top of Mind) sin gastar más en ads.</li>
             </ul>
-            <p>¿Por qué? Porque la versión valiente no parecía un banco. Parecía una empresa de tecnología financiera avanzada. El diseño cambió la percepción del valor del producto <em>antes</em> de que el usuario leyera una sola palabra.</p>
+            <p>¿Por qué? Porque la versión valiente no parece "otra empresa más". Parece una empresa líder. El diseño cambió la percepción del valor del producto <em>antes</em> de que el usuario leyera una sola palabra.</p>
             
             <h2>Conclusión: El miedo es tu competencia</h2>
             <p>Mirar a tu competencia para decidir tu diseño es como mirar por el retrovisor para conducir hacia adelante. El mercado está saturado. La atención es la moneda más cara del mundo.</p>
@@ -162,7 +169,7 @@ export const blogPosts: Post[] = [
             <h2>Basta de métricas de vanidad y "Hacks" mágicos</h2>
             <p>Olvídate de bailar en TikTok si vendes software B2B. Y por el amor de Dios, olvídate de las métricas de vanidad. Hay una epidemia en el mundo del marketing digital: empresas celebrando "likes" e "impresiones" mientras tienen problemas severos de flujo de caja.</p>
             <p>Si tu reporte mensual está lleno de gráficos verdes sobre alcance, pero tu equipo de ventas está jugando al solitario porque no tienen a quién llamar, <strong>tienes un problema de Growth, no de Marketing.</strong> El verdadero Growth no es magia, ni es suerte. Es ingeniería inversa. Es matemáticas.</p>
-            <img src="https://dummyimage.com/800x400/111/eee&text=Diagrama:+Embudo+de+Alta+Velocidad" alt="Diagrama de flujo de un embudo de ventas agresivo" style="width:100%; height:auto; margin: 2rem 0; border-radius: 8px;">
+            
 
             <h2>La Mentira de la "Parte Alta del Embudo"</h2>
             <p>La mayoría de las agencias te dirán que necesitas "conciencia de marca" (Brand Awareness) antes de vender. Te pedirán 6 meses de presupuesto para "calentar a la audiencia". <strong>Eso es humo.</strong> Si tienes una oferta sólida y un mercado con dolor, puedes generar ventas en la primera semana.</p>
@@ -175,7 +182,7 @@ export const blogPosts: Post[] = [
             <h3>Semana 1: La Oferta y el Ángulo (Los Cimientos)</h3>
             <p>Nadie compra "consultoría". La gente compra <strong>la transformación del estado A al estado B</strong>. Antes de gastar en ads, reescribe tu oferta. No vendas características, vende el resultado final y el tiempo que ahorras.</p>
             <p>Auditamos tu Landing Page: Si tu web habla de "Nuestra Misión", bórrala. Tu web debe hablar del problema del usuario. Cada píxel debe empujar hacia el botón de "Agendar".</p>
-            <img src="https://dummyimage.com/800x400/aa0000/fff&text=Heatmap:+Zonas+Calientes+de+Conversion" alt="Mapa de calor mostrando interacción en botones de llamada a la acción" style="width:100%; height:auto; margin: 2rem 0; border-radius: 8px;">
+             
 
             <h3>Semana 2: Pauta Quirúrgica y el "Filtro Anti-Curiosos"</h3>
             <p>Aquí lanzamos campañas buscando <strong>intención</strong>, no tráfico. Usamos el "Filtro Anti-Curiosos". En lugar de pedir solo el email, añadimos preguntas difíciles: <em>¿Cuál es tu facturación? ¿Cuándo estás listo para invertir?</em></p>
@@ -186,7 +193,7 @@ export const blogPosts: Post[] = [
             
             <h3>Semana 4: Optimización y Escalamiento</h3>
             <p>Al llegar al día 22, tendrás datos. Sabrás qué anuncio trae curiosos y cuál trae compradores. <strong>Corta lo que no funciona sin piedad y dobla la apuesta en lo que sí.</strong></p>
-            <img src="https://dummyimage.com/800x400/004400/fff&text=Grafico:+Follow-ups+vs+Tasa+de+Cierre" alt="Gráfico lineal mostrando el aumento de cierres con el seguimiento" style="width:100%; height:auto; margin: 2rem 0; border-radius: 8px;">
+            
 
             <h2>Conclusión: La métrica que importa es el dinero en el banco</h2>
             <p>Deja de obsesionarte con el Costo por Click (CPC). Empieza a obsesionarte con el <strong>CAC (Costo de Adquisición de Cliente)</strong> y el <strong>LTV (Valor de Vida del Cliente)</strong>.</p>
@@ -215,7 +222,7 @@ export const blogPosts: Post[] = [
             <h2>La falacia del "Sitio Web Corporativo"</h2>
             <p>Hay una tragedia silenciosa ocurriendo en los servidores de todo el mundo. Miles de empresas gastan millones en sitios web que son, esencialmente, obras de arte muertas. Se ven bien, tienen animaciones suaves y fotos de oficinas luminosas, pero tienen un defecto fatal: <strong>no sirven para nada.</strong></p>
             <p>Si tu sitio web existe solo para confirmar que tu empresa es real cuando alguien te busca en Google, tienes un pisapapeles digital de $850.000 (o más). En ZUTRA, no construimos "webs", construimos <strong>Plataformas de Lanzamiento</strong>.</p>
-            <img src="https://dummyimage.com/800x400/000/fff&text=Diferencia:+Folleto+vs+Maquina+de+Ventas" alt="Gráfico comparativo entre una web estática y una plataforma de conversión" style="width:100%; height:auto; margin: 2rem 0; border-radius: 8px;">
+             
 
             <h2>El pecado capital: Diseñar sin Datos</h2>
             <p>La mayoría de las agencias te venden diseño. "Mira qué bonito este slider", te dicen. Pero el slider es la herramienta de conversión menos efectiva de la historia. Nadie ve la tercera diapositiva.</p>
@@ -232,7 +239,7 @@ export const blogPosts: Post[] = [
             
             <h3>El Brand Kit con Criterio Comercial</h3>
             <p>No se trata solo del logo. Se trata de consistencia. Cuando un usuario llega desde un anuncio de Instagram a tu web, ¿siente que está en el mismo lugar? La disonancia cognitiva mata la venta. Nuestro enfoque integra tu identidad visual con la usabilidad para reducir la fricción a cero.</p>
-            <img src="https://dummyimage.com/800x400/333/eee&text=Flujo:+De+Anuncio+a+Landing+Page" alt="Diagrama de flujo de usuario sin fricción visual" style="width:100%; height:auto; margin: 2rem 0; border-radius: 8px;">
+            
 
             <h2>Conclusión: Construye para crecer, no para mostrar</h2>
             <p>Si estás a punto de invertir en tu presencia digital, detente. No pidas un diseño web. Pide una herramienta de negocio. Pide una plataforma que capte, mida y mejore.</p>
@@ -243,7 +250,13 @@ export const blogPosts: Post[] = [
         author: authors.juan,
         category: "tecnologia",
         tags: ["desarrollo-web", "cro", "analitica", "seo-tecnico"],
-        readingTime: "9 min"
+        readingTime: "9 min",
+        seo: {
+            title: "Tu Web es un Cadáver Digital: Revívela para Vender",
+            description: "Por qué la mayoría de los sitios corporativos fallan en convertir y cómo transformarlos en activos de alto rendimiento.",
+            keywords: ["desarrollo web", "conversión web", "plataforma digital", "SEO técnico"]
+        },
+        cta: globalCTAs.audit
     },
     {
         id: "4",
@@ -255,7 +268,7 @@ export const blogPosts: Post[] = [
             <p>Te han mentido. Los gurús te dijeron: "Tienes que publicar todos los días para vencer al algoritmo". Y ahí estás tú (o tu pobre Community Manager), diseñando un post genérico sobre el "Día Internacional de la Pizza" para una empresa de logística.</p>
             <p>Esto no es marketing. Es ruido. Y el ruido es el enemigo de la venta.</p>
             <p>En ZUTRA hemos visto cuentas con 50.000 seguidores que no generan ni una venta al mes, y cuentas con 800 seguidores que facturan millones. La diferencia no es la cantidad de contenido, es la <strong>intención del contenido</strong>.</p>
-            <img src="https://dummyimage.com/800x400/aa0000/fff&text=Grafico:+Seguidores+vs+Facturacion" alt="Gráfico mostrando que más seguidores no siempre es más dinero" style="width:100%; height:auto; margin: 2rem 0; border-radius: 8px;">
+            
 
             <h2>Estrategia de Contenido Orgánico: Empujar Demanda vs. Entretener</h2>
             <p>Si tu contenido solo entretiene, atraes a espectadores. Si tu contenido educa y desafía, atraes a compradores. Nuestra metodología de <strong>Crecimiento Orgánico</strong> se basa en tres pilares que no tienen nada que ver con hacerse viral:</p>
@@ -269,7 +282,7 @@ export const blogPosts: Post[] = [
 
             <h3>3. Video Corto y Carruseles de Valor (No de Relleno)</h3>
             <p>El formato importa, pero el fondo manda. Un carrusel debe ser una mini-clase magistral. Un Reel debe entregar una píldora de valor en 15 segundos. Si el usuario no siente que aprendió algo, has perdido su atención para siempre.</p>
-            <img src="https://dummyimage.com/800x400/222/00ff00&text=Estructura+de+un+Post+que+Vende" alt="Anatomía de una publicación de alta conversión" style="width:100%; height:auto; margin: 2rem 0; border-radius: 8px;">
+            
 
             <h2>Aprendizaje Continuo: El ciclo de mejora</h2>
             <p>Publicar es solo la mitad del trabajo. La otra mitad es analizar. ¿Qué post trajo visitas al perfil? ¿Cuál generó DMs preguntando precio? Nuestro servicio no es "hacer posts", es gestionar una <strong>máquina de aprendizaje de audiencia</strong>.</p>
@@ -284,7 +297,13 @@ export const blogPosts: Post[] = [
         author: authors.camilo,
         category: "social-media",
         tags: ["content-marketing", "instagram-b2b", "linkedin", "estrategia-organica"],
-        readingTime: "10 min"
+        readingTime: "10 min",
+        seo: {
+            title: "La Trampa del Calendario de Contenidos: Vende, No Entretengas",
+            description: "Por qué publicar diariamente contenido de relleno daña tu marca y cómo crear una estrategia de contenido que genere demanda real.",
+            keywords: ["estrategia de contenidos", "instagram B2B", "marketing orgánico", "copywriting"]
+        },
+        cta: globalCTAs.audit
     },
     {
         id: "5",
@@ -295,7 +314,7 @@ export const blogPosts: Post[] = [
             <h2>El cuello de botella eres tú (y tus procesos manuales)</h2>
             <p>El sueño de todo fundador es escalar. Pero cuando intentan crecer, se topan con una pared: la operatividad. "Necesito contratar a otra persona para gestionar los leads", piensas. <strong>Error.</strong></p>
             <p>Probablemente no necesitas más gente. Necesitas mejores robots. En la economía actual, la eficiencia no es un lujo, es la única forma de proteger tus márgenes.</p>
-            <img src="https://dummyimage.com/800x400/444/fff&text=Costos:+Humano+vs+Automatizacion" alt="Comparativa de costos operativos manuales vs automatizados" style="width:100%; height:auto; margin: 2rem 0; border-radius: 8px;">
+             
 
             <h2>La Auditoría de Automatización: Cirugía para tu negocio</h2>
             <p>La mayoría de las empresas operan con procesos "Frankenstein": parches pegados sobre parches. Nuestro servicio de <strong>Auditoría de Automatización</strong> entra en las entrañas de tu operación para encontrar dónde estás perdiendo dinero.</p>
@@ -316,7 +335,7 @@ export const blogPosts: Post[] = [
                 <li><strong>Training de Equipo:</strong> La tecnología no sirve si tu equipo le tiene miedo. Les enseñamos a ser "pilotos" de la automatización, no obreros del dato.</li>
             </ol>
             <blockquote>"Automatizar no es despedir humanos. Es liberar a los humanos para que hagan trabajo creativo y estratégico, mientras los bots hacen el trabajo aburrido."</blockquote>
-            <img src="https://dummyimage.com/800x400/003366/fff&text=Workflow:+De+Caos+a+Orden" alt="Diagrama de un flujo de trabajo automatizado limpio" style="width:100%; height:auto; margin: 2rem 0; border-radius: 8px;">
+            
 
             <h2>Resultado: Costos abajo, entrega arriba</h2>
             <p>Imagina un mundo donde un cliente compra, recibe su factura, se le da acceso al producto y se le agenda una reunión de onboarding... todo mientras tú duermes.</p>
@@ -327,7 +346,13 @@ export const blogPosts: Post[] = [
         author: authors.juan,
         category: "automatizacion",
         tags: ["productividad", "zapier", "make", "no-code", "operaciones"],
-        readingTime: "11 min"
+        readingTime: "11 min",
+        seo: {
+            title: "Escalar sin Contratar: Guía de Automatización",
+            description: "Cómo utilizar la automatización para eliminar tareas repetitivas, reducir costos operativos y escalar tu negocio sin aumentar la nómina.",
+            keywords: ["automatización de procesos", "eficiencia operativa", "no-code", "escalar negocio"]
+        },
+        cta: globalCTAs.audit
     },
     {
         id: "6",
@@ -338,7 +363,7 @@ export const blogPosts: Post[] = [
             <h2>Lanzar la web es solo el principio (Lo siento)</h2>
             <p>Existe la creencia popular de que el desarrollo web termina el día del lanzamiento. Haces la fiesta, cortas la cinta digital y te olvidas. 6 meses después, te preguntas por qué las ventas han bajado.</p>
             <p>Bienvenido al <strong>"Efecto Rotura"</strong>. Internet cambia cada día. Google actualiza sus algoritmos, los navegadores cambian sus protocolos de seguridad, y los plugins se vuelven obsoletos. Una web que no evoluciona, involuciona.</p>
-            <img src="https://dummyimage.com/800x400/550000/fff&text=Velocidad+de+Carga+vs+Rebote" alt="Gráfico de correlación entre segundos de carga y tasa de abandono" style="width:100%; height:auto; margin: 2rem 0; border-radius: 8px;">
+            
 
             <h2>Velocidad con Criterio: Segundos que cuestan millones</h2>
             <p>Amazon calculó que 1 segundo de retraso en la carga les costaría 1.6 billones de dólares al año. Tú no eres Amazon, pero la proporción es la misma. Si tu web tarda 4 segundos en cargar en móvil, has perdido al 40% de tu tráfico antes de que vean tu logo.</p>
@@ -355,7 +380,7 @@ export const blogPosts: Post[] = [
             <h3>Menos freno, más ventas</h3>
             <p>Imagina que lanzas una campaña de Ads perfecta. El copy es genial, la segmentación es divina. El usuario hace clic... y la web da un error 404 o tarda una eternidad en cargar. Has quemado tu dinero.</p>
             <blockquote>"El soporte web es tu póliza de seguro contra el desperdicio de presupuesto publicitario."</blockquote>
-            <img src="https://dummyimage.com/800x400/000/00ff00&text=Soporte+Evolutivo+en+Accion" alt="Visualización de mantenimiento preventivo web" style="width:100%; height:auto; margin: 2rem 0; border-radius: 8px;">
+             
 
             <h2>Conclusión: Tu web debe estar lista para vender hoy, y mañana también</h2>
             <p>Lo barato sale caro. Ahorrar en mantenimiento web es como no cambiarle el aceite a tu Ferrari. Eventualmente, el motor va a explotar.</p>
@@ -366,6 +391,12 @@ export const blogPosts: Post[] = [
         author: authors.camilo,
         category: "tecnologia",
         tags: ["web-performance", "seguridad-web", "seo", "mantenimiento"],
-        readingTime: "8 min"
+        readingTime: "8 min",
+        seo: {
+            title: "El Efecto Rotura: Por qué necesitas Soporte Web Evolutivo",
+            description: "La importancia del mantenimiento web constante para evitar la pérdida de ventas por lentitud, fallos de seguridad y obsolescencia.",
+            keywords: ["mantenimiento web", "velocidad de carga", "seguridad web", "soporte técnico"]
+        },
+        cta: globalCTAs.partner
     }
 ];

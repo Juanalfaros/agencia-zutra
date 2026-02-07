@@ -1,0 +1,341 @@
+---
+import { founders } from "../../data/founders";
+import { Image } from "astro:assets";
+---
+
+<section class="section team-extended" aria-labelledby="team-title">
+    <div class="container">
+        <header class="team-header">
+            <h2 id="team-title" class="section-title text-center">
+                Las mentes detrás del plan
+            </h2>
+            <p class="team-subtitle text-center">
+                Estrategia, diseño y tecnología en el mismo equipo. Menos teoría,
+                más ejecución.
+            </p>
+        </header>
+        <ul class="team-grid team-grid--d" role="list">
+            {
+                founders.map((founder) => (
+                    <li class="team-item">
+                        <article class="team-card reveal">
+                            <div class="team-card__image">
+                                <div class="team-card__image-bg" aria-hidden="true"></div>
+                                <div class="team-card__image-inner">
+                                    <Image
+                                        src={founder.image}
+                                        alt={founder.name}
+                                        width={420}
+                                        height={520}
+                                        class="team-img"
+                                    />
+                                </div>
+                            </div>
+                            <div class="team-card__content">
+                                <p class="team-card__role">{founder.role}</p>
+                                <h3 class="team-card__name">{founder.name}</h3>
+                                <p class="team-card__bio">{founder.bio}</p>
+                                <div class="team-card__expertise">
+                                    <h4>Especialidades</h4>
+                                    <ul>
+                                        {founder.bullets.map((bullet: string) => (
+                                            <li>
+                                                <i class="ph-bold ph-check-circle" aria-hidden="true"></i>
+                                                {bullet}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                {founder.social && (
+                                    <nav class="team-card__social" aria-label={`Redes sociales de ${founder.name}`}>
+                                        {founder.social.linkedin && (
+                                            <a href={founder.social.linkedin} target="_blank" rel="noopener noreferrer" aria-label={`LinkedIn de ${founder.name}`}>
+                                                <i class="ph-duotone ph-linkedin-logo" aria-hidden="true"></i>
+                                            </a>
+                                        )}
+                                        {founder.social.instagram && (
+                                            <a href={founder.social.instagram} target="_blank" rel="noopener noreferrer" aria-label={`Instagram de ${founder.name}`}>
+                                                <i class="ph-duotone ph-instagram-logo" aria-hidden="true"></i>
+                                            </a>
+                                        )}
+                                    </nav>
+                                )}
+                            </div>
+                        </article>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+</section>
+
+<style>
+    .team-header {
+        max-width: 980px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .team-subtitle {
+        margin: 0.75rem auto 0;
+        max-width: 62ch;
+        color: var(--color-muted);
+        line-height: 1.6;
+        font-size: 1rem;
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+        gap: 2rem;
+        margin-top: 3rem;
+        max-width: 980px;
+        margin-left: auto;
+        margin-right: auto;
+        list-style: none;
+        padding: 0;
+        margin-bottom: 0;
+    }
+
+    .team-item {
+        margin: 0;
+        padding: 0;
+    }
+
+    .team-card {
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        corner-shape: squircle;
+        border-radius: 32px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        display: grid;
+        grid-template-rows: auto 1fr;
+    }
+
+    .team-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--color-accent-subtle);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .team-card__image {
+        position: relative;
+        width: 100%;
+        height: clamp(220px, 28vw, 300px);
+        overflow: hidden;
+        background: linear-gradient(135deg, var(--color-subtle) 0%, var(--color-surface) 100%);
+        display: grid;
+        place-items: center;
+        padding: 1rem 1.25rem 0.75rem;
+    }
+
+    .team-card__image-bg {
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(60% 60% at 50% 45%,
+                color-mix(in srgb, var(--color-accent), transparent 82%) 0%,
+                transparent 70%
+            ),
+            radial-gradient(60% 60% at 60% 70%,
+                color-mix(in srgb, var(--color-secondary), transparent 88%) 0%,
+                transparent 70%
+            );
+        opacity: 1;
+        transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: none;
+    }
+
+    .team-card:hover .team-card__image-bg {
+        opacity: 0.9;
+    }
+
+    .team-card__image-inner {
+        position: relative;
+        width: min(240px, 68%);
+        height: 100%;
+        display: grid;
+        place-items: end center;
+        z-index: 1;
+    }
+
+    .team-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center bottom;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        transform: translateY(4px);
+        -webkit-filter: grayscale(1) contrast(1.05);
+        filter: grayscale(1) contrast(1.05) drop-shadow(0 18px 28px rgba(0, 0, 0, 0.18));
+    }
+
+    .team-card:hover .team-img {
+        transform: translateY(2px) scale(1.02);
+        filter: grayscale(1) contrast(1.08) drop-shadow(0 22px 34px rgba(0, 0, 0, 0.22));
+    }
+
+    .team-card__content {
+        padding: 1.25rem 1.5rem 1.5rem;
+    }
+
+    .team-card__role {
+        display: inline-block;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: var(--color-accent);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.75rem;
+        margin-top: 0;
+    }
+
+    .team-card__name {
+        font-size: 1.75rem;
+        font-weight: 900;
+        color: var(--color-secondary);
+        margin-bottom: 0.75rem;
+        line-height: 1.2;
+    }
+
+    .team-card__bio {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: var(--color-muted);
+        margin-bottom: 1.25rem;
+    }
+
+    .team-card__expertise h4 {
+        font-size: 0.875rem;
+        font-weight: 800;
+        color: var(--color-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 1rem;
+    }
+
+    .team-card__expertise ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .team-card__expertise li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        font-size: 0.9rem;
+        color: var(--color-muted);
+        line-height: 1.5;
+    }
+
+    .team-card__expertise li i {
+        color: var(--color-accent);
+        font-size: 1.25rem;
+        flex-shrink: 0;
+        margin-top: 0.125rem;
+    }
+
+    .team-card__social {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--color-line);
+    }
+
+    .team-card__social a {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--color-subtle);
+        border: 1px solid var(--color-line);
+        border-radius: 12px;
+        color: var(--color-muted);
+        transition: all 0.3s ease;
+    }
+
+    .team-card__social a:hover {
+        background: var(--color-accent-subtle);
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+        transform: translateY(-2px);
+    }
+
+    .team-card__social i {
+        font-size: 1.25rem;
+    }
+
+    .team-grid--d {
+        max-width: 980px;
+        margin-top: 6rem;
+    }
+
+    .team-grid--d .team-card {
+        overflow: visible;
+        border-radius: 28px;
+    }
+
+    .team-grid--d .team-card__image {
+        height: 180px;
+        overflow: visible;
+        padding: 0;
+        background: transparent;
+    }
+
+    .team-grid--d .team-card__image-bg {
+        inset: 0.75rem;
+        border-radius: 24px;
+        opacity: 0;
+        background: transparent;
+        border: 0;
+    }
+
+    .team-grid--d .team-card__image-inner {
+        width: min(253px, 72%);
+        position: absolute;
+        left: 50%;
+        bottom: -56px;
+        transform: translateX(-50%);
+        height: 299px;
+    }
+
+    .team-grid--d .team-card__content {
+        padding: 3.85rem 1.5rem 1.5rem;
+    }
+
+    @media (max-width: 860px) {
+        .team-grid--d .team-card {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr;
+        }
+
+        .team-grid--d .team-card__image {
+            height: 260px;
+            padding: 0.9rem 1.1rem 0.7rem;
+            background: linear-gradient(135deg, var(--color-subtle) 0%, var(--color-surface) 100%);
+        }
+
+        .team-grid--d .team-card__content {
+            padding: 1.25rem 1.5rem 1.5rem;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .team-grid--d .team-card__image-inner {
+            height: 276px;
+            bottom: -50px;
+        }
+
+        .team-grid--d .team-card__content {
+            padding-top: 3.55rem;
+        }
+    }
+</style>

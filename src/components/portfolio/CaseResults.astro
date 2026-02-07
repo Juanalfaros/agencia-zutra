@@ -1,0 +1,312 @@
+---
+import type { ZutraCaseStudy } from "@/types/project-types";
+
+interface Props {
+    project: ZutraCaseStudy;
+}
+
+const { project } = Astro.props;
+---
+
+<section class="case-results">
+    <div class="container">
+        <h2 class="section-title">Resultados e Impacto</h2>
+
+        {
+            project.metrics && project.metrics.length > 0 && (
+                <div class="metrics-grid">
+                    {project.metrics.map((metric: any) => (
+                        <div class="metric-card">
+                            <span class="metric-value">{metric.value}</span>
+                            <span class="metric-label">{metric.label}</span>
+                            {metric.description && (
+                                <p class="metric-desc">{metric.description}</p>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )
+        }
+
+        {
+            (project.businessImpact || project.performanceMetrics) && (
+                <div class="detailed-metrics">
+                    {project.businessImpact && (
+                        <div class="impact-category">
+                            <h3 class="subsection-title">Impacto de Negocio</h3>
+                            <div class="impact-grid">
+                                {project.businessImpact.revenue && (
+                                    <div class="impact-item">
+                                        <span>Ventas/Ingresos</span>{" "}
+                                        <strong>
+                                            {project.businessImpact.revenue}
+                                        </strong>
+                                    </div>
+                                )}
+                                {project.businessImpact.roi && (
+                                    <div class="impact-item">
+                                        <span>ROI</span>{" "}
+                                        <strong>
+                                            {project.businessImpact.roi}
+                                        </strong>
+                                    </div>
+                                )}
+                                {project.businessImpact
+                                    .customerSatisfaction && (
+                                    <div class="impact-item">
+                                        <span>Satisfacción</span>{" "}
+                                        <strong>
+                                            {
+                                                project.businessImpact
+                                                    .customerSatisfaction
+                                            }
+                                        </strong>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                    {project.performanceMetrics && (
+                        <div class="impact-category">
+                            <h3 class="subsection-title">
+                                Rendimiento Técnico
+                            </h3>
+                            <div class="impact-grid">
+                                {project.performanceMetrics.pageSpeed && (
+                                    <div class="impact-item">
+                                        <span>Page Speed</span>{" "}
+                                        <strong>
+                                            {
+                                                project.performanceMetrics
+                                                    .pageSpeed
+                                            }
+                                        </strong>
+                                    </div>
+                                )}
+                                {project.performanceMetrics.lighthouse && (
+                                    <div class="impact-item">
+                                        <span>Lighthouse Score</span>{" "}
+                                        <strong>
+                                            {
+                                                project.performanceMetrics
+                                                    .lighthouse
+                                            }
+                                        </strong>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            )
+        }
+
+        {
+            project.testimonial && (
+                <div class="testimonial-card">
+                    <i class="ph ph-quotes quote-icon" />
+                    <p class="testimonial-text">{project.testimonial.text}</p>
+                    <div class="testimonial-footer">
+                        {project.testimonial.avatar && (
+                            <img
+                                src={project.testimonial.avatar}
+                                alt={project.testimonial.author}
+                                class="author-avatar"
+                            />
+                        )}
+                        <div class="author-info">
+                            <span class="author-name">
+                                {project.testimonial.author}
+                            </span>
+                            <span class="author-role">
+                                {project.testimonial.role}{" "}
+                                {project.testimonial.company
+                                    ? `en ${project.testimonial.company}`
+                                    : ""}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+    </div>
+</section>
+
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .section-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        margin-bottom: 3rem;
+        color: var(--color-secondary);
+        letter-spacing: -0.02em;
+    }
+
+    .subsection-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--color-accent);
+        display: block;
+    }
+
+    .case-results {
+        padding: 8rem 0;
+        background: var(--color-primary);
+    }
+
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 2.5rem;
+        margin: 4rem 0;
+    }
+
+    .metric-card {
+        padding: 3rem 2rem;
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-2xl);
+        text-align: center;
+        transition: transform 0.3s;
+    }
+
+    .metric-card:hover {
+        transform: translateY(-8px);
+    }
+
+    .metric-value {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--color-accent);
+        display: block;
+        line-height: 1;
+        margin-bottom: 0.75rem;
+    }
+
+    .metric-label {
+        font-size: 1rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--color-secondary);
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .metric-desc {
+        font-size: 0.9rem;
+        color: var(--color-muted);
+        line-height: 1.4;
+    }
+
+    .detailed-metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 4rem;
+        margin: 6rem 0;
+    }
+
+    .impact-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .impact-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 1.25rem;
+        border-bottom: 1px solid var(--color-line);
+        font-size: 1.125rem;
+    }
+
+    .impact-item span {
+        color: var(--color-muted);
+    }
+
+    .impact-item strong {
+        color: var(--color-accent);
+        font-weight: 800;
+    }
+
+    .testimonial-card {
+        background: var(--color-subtle);
+        padding: 6rem;
+        border-radius: var(--radius-3xl);
+        position: relative;
+        margin-top: 6rem;
+        text-align: center;
+    }
+
+    .quote-icon {
+        font-size: 4rem;
+        color: var(--color-accent);
+        opacity: 0.2;
+        margin-bottom: 2rem;
+    }
+
+    .testimonial-text {
+        font-size: 2rem;
+        font-weight: 600;
+        line-height: 1.4;
+        margin-bottom: 3.5rem;
+        color: var(--color-secondary);
+    }
+
+    .testimonial-footer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+    }
+
+    .author-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: var(--radius-full);
+        object-fit: cover;
+        border: 3px solid var(--color-accent);
+    }
+
+    .author-info {
+        text-align: left;
+    }
+
+    .author-name {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--color-secondary);
+        display: block;
+    }
+
+    .author-role {
+        font-size: 1rem;
+        color: var(--color-muted);
+    }
+
+    @media (max-width: 1024px) {
+        .testimonial-card {
+            padding: 4rem 2rem;
+        }
+
+        .testimonial-text {
+            font-size: 1.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .metric-value {
+            font-size: 3rem;
+        }
+    }
+</style>

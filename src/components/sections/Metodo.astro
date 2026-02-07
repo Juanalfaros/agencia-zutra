@@ -5,13 +5,14 @@ import { methodSteps } from "../../data/metodo";
 <section id="metodo" class="section">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">Riesgo calculado. Datos a la vista.</h2>
+      <h2 class="section-title">Menos reuniones, más ejecución.</h2>
       <p class="section-subtitle">
-        Diagnóstico → estrategia → ejecución → aprendizaje. <strong
-          >Iteramos hasta ganar</strong
-        >.
+        Eliminamos la grasa de la agencia tradicional. <strong
+          >Somos tu equipo extendido.</strong
+        >
       </p>
     </div>
+
     <div class="method-grid">
       {
         methodSteps.map((step) => (
@@ -25,20 +26,22 @@ import { methodSteps } from "../../data/metodo";
         ))
       }
     </div>
+
     <div class="guarantee-box">
       <p class="guarantee-box__text">
         <i
-          class="ph-duotone ph-lock"
-          style="color: var(--color-accent); font-size: 1.25rem;"></i>
-        <strong>Garantía de claridad:</strong> Si nuestra sesión de diagnóstico inicial
-        no te aporta una visión clara y <br />accionable de tus próximos pasos,
-        no avanzamos. Así de simple.
+          class="ph-duotone ph-handshake"
+          style="color: var(--color-accent); font-size: 1.5rem; vertical-align: middle; margin-right: 0.5rem;"
+        ></i>
+        <strong>Compromiso Zutra:</strong> No te venderemos algo que no necesitas.
+        Si tu negocio requiere una solución simple, te ofreceremos la solución simple.
+        <br />La honestidad técnica es innegociable.
       </p>
       <a
         href="#contacto"
         data-track="cta_garantia_click"
         data-loc="metodo"
-        class="button button--primary">Diagnostiquemos mi embudo</a
+        class="button button--primary">Conversar con los fundadores</a
       >
     </div>
   </div>
@@ -55,72 +58,85 @@ import { methodSteps } from "../../data/metodo";
   .method-card {
     border: 1px solid var(--color-line);
     border-radius: var(--radius-md);
-    padding: 1.5rem;
+    padding: 2rem 1.5rem; /* Un poco más de aire vertical */
     display: flex;
     flex-direction: column;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
+    background-color: var(--color-surface, transparent);
   }
 
   .method-card:hover {
     border-color: var(--color-accent);
+    transform: translateY(-2px);
   }
 
   .card__header-icon {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
   }
 
   .card__header-icon i {
-    font-size: 1.5rem;
+    font-size: 2rem; /* Icono un poco más grande */
     color: var(--color-accent);
   }
 
   .card__title {
     font-size: 1.25rem;
-    font-weight: 700;
+    font-weight: 800; /* Más peso para destacar */
     margin: 0;
-    color: var(--color-secondary);
+    color: var(--color-heading, #fff);
   }
 
   .card__text {
     font-size: 0.95rem;
-    color: var(--color-gray-300);
+    color: var(--color-muted);
     line-height: 1.6;
     margin: 0;
   }
 
   .guarantee-box {
-    margin-top: 3rem;
+    margin-top: 4rem;
     background-color: var(--color-subtle);
     border: 1px solid var(--color-line);
     border-radius: var(--radius-lg);
-    padding: 2rem;
+    padding: 2.5rem 2rem;
     text-align: center;
     position: relative;
     overflow: hidden;
   }
 
+  /* Detalle visual sutil en el top */
   .guarantee-box::before {
     content: "";
     position: absolute;
     top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background-color: var(--color-accent);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30%;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-accent),
+      transparent
+    );
   }
 
   .guarantee-box__text {
-    font-size: 1.125rem;
-    margin: 0 0 1.5rem 0;
-    line-height: 1.5;
+    font-size: 1.1rem;
+    margin: 0 0 2rem 0;
+    line-height: 1.6;
     color: var(--color-secondary);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .guarantee-box__text strong {
     color: var(--color-accent);
+    font-weight: 700;
   }
 
   @media (min-width: 768px) {

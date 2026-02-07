@@ -12,6 +12,7 @@ import { plans, tableRows } from "../../data/planes";
         >.
       </p>
     </div>
+    
     <div class="plans-grid">
       {
         plans.map((plan) => (
@@ -48,14 +49,15 @@ import { plans, tableRows } from "../../data/planes";
         ))
       }
     </div>
+
     <div class="plans-table-wrapper">
       <table class="plans-table">
         <thead>
           <tr>
             <th>Incluye</th>
             <th>Sprint de Leads</th>
-            <th>Crecimiento Mensual</th>
-            <th>Soporte Web</th>
+            <th>Partner Digital</th>
+            <th>Email Revenue</th>
           </tr>
         </thead>
         <tbody>
@@ -63,6 +65,8 @@ import { plans, tableRows } from "../../data/planes";
             tableRows.map((row) => (
               <tr>
                 <td data-label="Incluye">{row.label}</td>
+                
+                {/* Columna Sprint */}
                 <td data-label="Sprint de Leads">
                   {row.sprint === "✔" ? (
                     <i
@@ -81,40 +85,44 @@ import { plans, tableRows } from "../../data/planes";
                     row.sprint
                   )}
                 </td>
-                <td data-label="Crecimiento Mensual">
-                  {row.monthly === "✔" ? (
+
+                {/* Columna Partner (Antes Monthly) */}
+                <td data-label="Partner Digital">
+                  {row.partner === "✔" ? (
                     <i
                       class="ph-duotone ph-check-circle"
                       style="color: var(--color-accent); font-size: 1.25rem;"
                     />
-                  ) : row.monthly.includes("✔") ? (
+                  ) : row.partner.includes("✔") ? (
                     <>
                       <i
                         class="ph-duotone ph-check-circle"
                         style="color: var(--color-accent); font-size: 1rem;"
                       />{" "}
-                      {row.monthly.replace("✔", "").trim()}
+                      {row.partner.replace("✔", "").trim()}
                     </>
                   ) : (
-                    row.monthly
+                    row.partner
                   )}
                 </td>
-                <td data-label="Soporte Web">
-                  {row.support === "✔" ? (
+
+                {/* Columna Email (Antes Support) */}
+                <td data-label="Email Revenue">
+                  {row.email === "✔" ? (
                     <i
                       class="ph-duotone ph-check-circle"
                       style="color: var(--color-accent); font-size: 1.25rem;"
                     />
-                  ) : row.support.includes("✔") ? (
+                  ) : row.email.includes("✔") ? (
                     <>
                       <i
                         class="ph-duotone ph-check-circle"
                         style="color: var(--color-accent); font-size: 1rem;"
                       />{" "}
-                      {row.support.replace("✔", "").trim()}
+                      {row.email.replace("✔", "").trim()}
                     </>
                   ) : (
-                    row.support
+                    row.email
                   )}
                 </td>
               </tr>

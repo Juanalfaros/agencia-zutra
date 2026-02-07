@@ -5,10 +5,21 @@ import Header from "@/components/common/Header.astro";
 import Footer from "@/components/common/Footer.astro";
 import BlogCard from "@/components/blog/BlogCard.astro";
 import BlogSearch from "@/components/blog/BlogSearch.astro";
-import { blogPosts } from "../../data/blog";
+import { getEntries } from "@/lib/contentful";
+import { adaptBlogPost } from "@/lib/contentful-adapters";
+import type { Post } from "@/data/blog";
 
-const featuredPost = blogPosts.find((post) => post.featured) || blogPosts[0];
-const regularPosts = blogPosts.filter((post) => post.id !== featuredPost.id);
+// Fetch blog posts from Contentful
+const entries = await getEntries("blogPost", {
+    order: "-fields.publishDate",
+});
+const blogPosts: Post[] = entries.items.map(adaptBlogPost);
+
+const featuredPost =
+    blogPosts.find((post: Post) => post.featured) || blogPosts[0];
+const regularPosts = blogPosts.filter(
+    (post: Post) => post.id !== featuredPost.id,
+);
 
 const title = "Blog Valiente | ZUTRA Agency";
 const description =

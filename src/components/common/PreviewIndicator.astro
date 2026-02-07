@@ -1,0 +1,72 @@
+---
+import { isPreviewEnabled } from "@/lib/contentful";
+---
+
+{
+    isPreviewEnabled && (
+        <div class="preview-indicator">
+            <div class="indicator-content">
+                <span class="indicator-dot" />
+                <span class="indicator-text">Modo Preview Activo (Drafts)</span>
+            </div>
+        </div>
+    )
+}
+
+<style>
+    .preview-indicator {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        z-index: 9999;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(8px);
+        color: white;
+        padding: 0.75rem 1.25rem;
+        border-radius: 100px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        pointer-events: none;
+        animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .indicator-content {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .indicator-dot {
+        width: 8px;
+        height: 8px;
+        background: #10b981;
+        border-radius: 50%;
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+        }
+    }
+
+    @keyframes slide-up {
+        from {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+</style>

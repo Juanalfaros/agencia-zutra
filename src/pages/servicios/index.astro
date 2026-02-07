@@ -2,14 +2,22 @@
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/common/Header.astro";
 import Footer from "@/components/common/Footer.astro";
-import { services, categories } from "@/data/servicios";
+import { getEntries } from "@/lib/contentful";
+import { adaptService } from "@/lib/contentful-adapters";
+import { categories } from "@/data/servicios";
+
+// Fetch services from Contentful
+const entries = await getEntries("service", {
+    order: "fields.order",
+});
+const services = entries.items.map(adaptService);
 
 // Group services by category for a structured view
 const servicesByCategory = categories.map((cat) => ({
     ...cat,
     items: services
-        .filter((s) => s.category === cat.id)
-        .sort((a, b) => a.order - b.order),
+        .filter((s: any) => s.category === cat.id)
+        .sort((a: any, b: any) => (a.order || 99) - (b.order || 99)),
 }));
 ---
 
@@ -43,7 +51,7 @@ const servicesByCategory = categories.map((cat) => ({
                         </div>
 
                         <div class="services-grid">
-                            {category.items.map((service) => (
+                            {category.items.map((service: any) => (
                                 <a
                                     href={`/servicios/${service.slug}`}
                                     class="service-card-link"

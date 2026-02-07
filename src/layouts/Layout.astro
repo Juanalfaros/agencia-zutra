@@ -10,6 +10,8 @@ interface Props {
 import SEO from "@/components/common/SEO.astro";
 import JsonLD from "@/components/common/JsonLD.astro";
 import CookieConsent from "@/components/common/CookieConsent.astro";
+import PreviewIndicator from "@/components/common/PreviewIndicator.astro";
+import { isPreviewEnabled } from "@/lib/contentful";
 import "@/styles/main.css";
 import "@phosphor-icons/web/regular";
 import "@phosphor-icons/web/bold";
@@ -89,6 +91,19 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
     </div>
 
     <CookieConsent />
+    <PreviewIndicator />
+
+    {isPreviewEnabled && (
+      <script>
+        import { ContentfulLivePreview } from '@contentful/live-preview';
+        
+        ContentfulLivePreview.init({
+          locale: 'es-US',
+          enableInspectorMode: true,
+          enableLiveUpdates: true,
+        });
+      </script>
+    )}
 
     <script>
       import "/src/scripts/main.js";

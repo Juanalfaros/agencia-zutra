@@ -1,0 +1,260 @@
+---
+import { stackAbout, getStackIcon } from "../../data/stackAbout";
+import { Icon } from "astro-icon/components";
+
+const stackItems = stackAbout;
+---
+
+<section class="section stack" aria-labelledby="stack-title">
+    <div class="container">
+        <div class="stack-header">
+            <h2 id="stack-title" class="section-title">Stack tecnológico</h2>
+            <p class="stack-subtitle">
+                Elegimos herramientas modernas y probadas en producción. La tecnología no es
+                decoración: es velocidad, conversiones y operación.
+            </p>
+        </div>
+
+        <div class="stack-marquee" aria-label="Tecnologías y herramientas usadas en nuestros proyectos">
+            <div class="stack-marquee__mask">
+                <div class="stack-marquee__track">
+                    {
+                        [...stackItems, ...stackItems].map((tech) => (
+                            <button class="stack-pill" type="button" data-tooltip={tech} aria-label={tech}>
+                                <Icon name={getStackIcon(tech)} />
+                            </button>
+                        ))
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div id="stack-tooltip" class="stack-tooltip" role="tooltip" aria-hidden="true"></div>
+
+<script is:inline>
+    (() => {
+        const tooltip = document.getElementById("stack-tooltip");
+        if (!tooltip) return;
+
+        const pills = Array.from(document.querySelectorAll(".stack-pill"));
+        if (!pills.length) return;
+
+        let activeEl = null;
+        let raf = 0;
+
+        const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+
+        const hide = () => {
+            if (activeEl) {
+                activeEl.removeAttribute("aria-describedby");
+            }
+            activeEl = null;
+            tooltip.removeAttribute("data-show");
+            tooltip.setAttribute("aria-hidden", "true");
+            tooltip.style.transform = "translate(-9999px, -9999px)";
+        };
+
+        const positionFromRect = (rect) => {
+            const pad = 10;
+            const tooltipRect = tooltip.getBoundingClientRect();
+
+            const x = rect.left + rect.width / 2 - tooltipRect.width / 2;
+            const y = rect.top - tooltipRect.height - 12;
+
+            const maxX = window.innerWidth - tooltipRect.width - pad;
+            const maxY = window.innerHeight - tooltipRect.height - pad;
+
+            const cx = clamp(x, pad, Math.max(pad, maxX));
+            const cy = clamp(y, pad, Math.max(pad, maxY));
+
+            tooltip.style.transform = `translate(${Math.round(cx)}px, ${Math.round(cy)}px)`;
+        };
+
+        const showFor = (el) => {
+            const text = el?.dataset?.tooltip;
+            if (!text) return;
+
+            activeEl = el;
+            activeEl.setAttribute("aria-describedby", "stack-tooltip");
+            tooltip.textContent = text;
+            tooltip.setAttribute("data-show", "true");
+            tooltip.setAttribute("aria-hidden", "false");
+
+            positionFromRect(el.getBoundingClientRect());
+        };
+
+        const scheduleReposition = () => {
+            if (!activeEl) return;
+            if (raf) return;
+            raf = requestAnimationFrame(() => {
+                raf = 0;
+                if (!activeEl) return;
+                positionFromRect(activeEl.getBoundingClientRect());
+            });
+        };
+
+        pills.forEach((el) => {
+            el.addEventListener("mouseenter", () => showFor(el));
+            el.addEventListener("mouseleave", hide);
+            el.addEventListener("focus", () => showFor(el));
+            el.addEventListener("blur", hide);
+            el.addEventListener("mousemove", scheduleReposition);
+        });
+
+        window.addEventListener("scroll", hide, { passive: true });
+        window.addEventListener("resize", scheduleReposition);
+    })();
+</script>
+
+<style>
+    .stack {
+        border-top: 1px solid var(--color-line);
+    }
+
+    .stack-header {
+        max-width: 980px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .stack-subtitle {
+        margin: 0.75rem auto 0;
+        max-width: 70ch;
+        color: var(--color-muted);
+        line-height: 1.6;
+        font-size: 1rem;
+    }
+
+    .stack-marquee {
+        max-width: 980px;
+        margin: 2.75rem auto 0;
+        position: relative;
+        border-radius: 24px;
+        padding: 1rem 0;
+        border: 1px solid var(--color-line);
+        background: color-mix(in srgb, var(--color-surface), var(--color-subtle) 30%);
+    }
+
+    .stack-marquee__mask {
+        overflow-x: hidden;
+        overflow-y: visible;
+        border-radius: 22px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .stack-marquee__mask::before,
+    .stack-marquee__mask::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 64px;
+        pointer-events: none;
+        z-index: 2;
+    }
+
+    .stack-marquee__mask::before {
+        left: 0;
+        background: linear-gradient(90deg, var(--color-surface) 0%, transparent 100%);
+    }
+
+    .stack-marquee__mask::after {
+        right: 0;
+        background: linear-gradient(270deg, var(--color-surface) 0%, transparent 100%);
+    }
+
+    .stack-marquee__track {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: max-content;
+        padding: 0 1rem;
+        animation: stack-marquee-scroll 32s linear infinite;
+        position: relative;
+        z-index: 1;
+    }
+
+    .stack-marquee:hover .stack-marquee__track {
+        animation-play-state: paused;
+    }
+
+    .stack-pill {
+        width: 56px;
+        height: 56px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        border: 1px solid var(--color-line);
+        background: var(--color-surface);
+        position: relative;
+        transition: transform 0.25s ease, border-color 0.25s ease;
+        padding: 0;
+        cursor: pointer;
+        -webkit-appearance: none;
+        appearance: none;
+        font: inherit;
+        line-height: 1;
+    }
+
+    .stack-pill:hover,
+    .stack-pill:focus-visible {
+        transform: translateY(-2px);
+        border-color: var(--color-accent-subtle);
+        outline: none;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent), transparent 70%);
+    }
+
+    .stack-pill::after,
+    .stack-pill::before {
+        content: none;
+    }
+
+    .stack-tooltip {
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translate(-9999px, -9999px);
+        opacity: 0;
+        pointer-events: none;
+        z-index: 9999;
+        padding: 0.35rem 0.55rem;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+        color: var(--color-surface);
+        background: var(--color-secondary);
+        border: 1px solid color-mix(in srgb, var(--color-secondary), transparent 40%);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+        transition: opacity 0.12s ease;
+    }
+
+    .stack-tooltip[data-show="true"] {
+        opacity: 1;
+    }
+
+    .stack-pill i,
+    .stack-pill svg {
+        font-size: 1.25rem;
+        color: var(--color-accent);
+    }
+
+    @keyframes stack-marquee-scroll {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-50%);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .stack-marquee__track {
+            animation: none;
+        }
+    }
+</style>

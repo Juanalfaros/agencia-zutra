@@ -6,18 +6,18 @@ export interface MethodStep {
 
 export const methodSteps: MethodStep[] = [
     {
-        icon: "ph-duotone ph-clipboard-text",
-        title: "Diagnóstico en Vivo",
-        text: "En una sesión de 20 minutos, mapeamos juntos tu embudo, tus métricas y tus metas.",
+        icon: "ph-duotone ph-chats-circle",
+        title: "Trato Directo",
+        text: "Sin intermediarios ni teléfonos descompuestos. Hablas y planificas directamente con quienes van a diseñar y programar tu proyecto.",
     },
     {
-        icon: "ph-duotone ph-traffic-cone",
-        title: "KPIs en piedra",
-        text: "Métricas desde el día 1 y tableros compartidos para decidir rápido. Transparencia radical.",
+        icon: "ph-duotone ph-code",
+        title: "Ejecución Técnica",
+        text: "No usamos plantillas lentas. Desarrollamos con código moderno y diseño estratégico para que tu activo digital sea rápido, seguro y escalable.",
     },
     {
-        icon: "ph-duotone ph-lightning",
-        title: "Iteración ZUTRA",
-        text: "Ciclos cortos de prueba y aprendizaje. Lo que funciona, se escala; lo que no, se mejora.",
+        icon: "ph-duotone ph-arrows-clockwise",
+        title: "Soporte Evolutivo",
+        text: "Una web o una marca no se terminan al lanzarse. Nos convertimos en tu partner digital para mantener, actualizar y mejorar mes a mes.",
     },
 ];

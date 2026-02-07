@@ -1,23 +1,32 @@
-# Zutra - La Estética Valiente
+Zutra - La Estética Valiente
+Zutra es una agencia de Diseño y Tecnología con base en Chile, reestructurada para enfocarse en la ejecución técnica directa y la rentabilidad inmediata, eliminando la burocracia de agencia tradicional.
 
-Zutra es una agencia de Growth Marketing y Tecnología con base en Chile, enfocada en ejecución técnica impecable y resultados de negocio (KPIs).
+Enfoque (La Estética Valiente)
+Trato Directo y Ejecución: Sin intermediarios ni reuniones innecesarias. Hablas directo con quien diseña y programa.
 
-## Enfoque (La Estética Valiente)
-- **Ejecución Obsesiva**: Ciclos cortos de 14 días (sprints), menos burocracia, más lanzamientos.
-- **Maestría Técnica**: Desarrollo nativo, optimización de performance (Astro), y tracking avanzado.
-- **Foco en el Bottom Line**: Orientación a conversiones y retornos reales, no métricas de vanidad.
+Maestría Técnica: Desarrollo web nativo (Astro) y maquetación de email (HTML/MJML) para resultados perfectos.
 
-## Servicios Principales
-1. **Growth Marketing & Performance**: Estrategia de medios, Meta Ads, Google Ads.
-2. **Desarrollo Web Headless**: Sitios de alto performance con Astro y Cloudflare.
-3. **Automatización & CRM**: Integración de flujos de correo, CRM (Brevo) y agendamiento (Cal.com).
-4. **Identidad & Branding**: Diseño de marcas con carácter y sistemas visuales escalables.
+Anti-Vanidad: Priorizamos activos que venden (Web, Mail, Marca) sobre métricas de "likes" o viralidad orgánica sin inversión.
 
-## Equipo
-- **Camilo Bustamante**: Director Creativo & Estrategia.
-- **Juan Alfaro**: Tech Lead & Operaciones.
+Servicios Principales (Por Prioridad)
+Partner Digital (Mantenimiento): El servicio "Core" para estabilidad financiera. Soporte técnico (hosting/seguridad) y bolsa de horas gráfica mensual para operar sin interrupciones.
 
-## Contacto
-- Web: https://www.zutra.cl
-- WhatsApp: +56 9 3217 5218
-- Correo: hola@zutra.cl
+Desarrollo Web & Landings: Sitios corporativos ultrarrápidos y páginas de aterrizaje enfocadas 100% en conversión.
+
+Email Marketing & Automatización: Diseño de newsletters en HTML puro y configuración de flujos automatizados de venta (el canal más rentable).
+
+Identidad & Branding: Creación de logotipos y sistemas visuales con carácter para diferenciación radical.
+
+Kits Visuales para RRSS: Diseño de plantillas y activos para que el cliente gestione sus redes con autonomía (sin gestión diaria de agencia).
+
+Equipo
+Camilo Bustamante: Director Creativo & Estrategia.
+
+Juan Alfaro: Tech Lead & Operaciones.
+
+Contacto
+Web: https://www.zutra.agency
+
+WhatsApp: +56 9 4200 9050
+
+Correo: hola@zutra.agency

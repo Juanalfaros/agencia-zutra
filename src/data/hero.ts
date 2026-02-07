@@ -1,7 +1,7 @@
 import type { ImageMetadata } from 'astro';
-import produccionImg from "../assets/img/hero/produccion.webp";
-import landingImg from "../assets/img/hero/landing.webp";
-import logoImg from "../assets/img/hero/logo.webp";
+import produccionImg from "../assets/img/hero/produccion.webp"; // Usada ahora para Email/Automatización
+import landingImg from "../assets/img/hero/landing.webp";     // Usada para Web/Performance
+import logoImg from "../assets/img/hero/logo.webp";           // Usada para Branding
 
 export interface HeroSlide {
     title: string;
@@ -14,31 +14,31 @@ export interface HeroSlide {
 
 export const heroSlides: HeroSlide[] = [
     {
-        title: 'Contenido que <span class="accent-text">engancha y vende.</span>',
+        title: 'Tu web debe vender, <span class="accent-text">no solo estar.</span>',
         subtitle:
-            "Estrategia, calendario y producción de contenido valiente que genera demanda, domina la conversación y mueve KPIs reales.",
-        buttonText: "Ver servicio de contenido",
+            "Desarrollamos sitios ultrarrápidos y Landing Pages diseñadas para convertir visitas en dinero. Tecnología moderna, cero plantillas lentas.",
+        buttonText: "Ver soluciones web",
         buttonLink: "#servicios",
-        image: produccionImg,
-        imageAlt: "Persona creando contenido de video con un smartphone",
+        image: landingImg, // Perfecta para hablar de web/datos
+        imageAlt: "Dashboard de resultados y analítica web en laptop",
     },
     {
-        title: 'Leads calificados <span class="accent-text">en 30 días.</span>',
+        title: 'El canal más rentable <span class="accent-text">es tuyo.</span>',
         subtitle:
-            "Lanzamos una oferta irresistible con una landing optimizada y pauta precisa para llenar tu pipeline rápidamente. Vamos a todas.",
-        buttonText: "Lanzar mi sprint",
+            "Olvídate del algoritmo. Diseñamos estrategias de Email Marketing y automatizaciones que venden por ti mientras duermes. Directo a la bandeja de entrada.",
+        buttonText: "Automatizar ventas",
         buttonLink: "#servicios",
-        image: landingImg,
-        imageAlt: "Equipo analizando un dashboard de resultados en una laptop",
+        image: produccionImg, // Re-contextualizada: "Llegar al usuario"
+        imageAlt: "Usuario interactuando con contenido digital en smartphone",
     },
     {
         title:
-            'Diseño valiente, <span class="accent-text">hecho para vender.</span>',
+            'Diferenciación radical <span class="accent-text">o ser invisible.</span>',
         subtitle:
-            "Creamos una identidad visual memorable, desde el logo hasta las plantillas para redes sociales, con un foco claro en la conversión.",
+            "Creamos identidades visuales con carácter. Dejamos de lado lo genérico para que tu marca destaque, inspire respeto y pueda cobrar lo que realmente vale.",
         buttonText: "Crear mi identidad",
         buttonLink: "#servicios",
-        image: logoImg,
-        imageAlt: "Diseñadora trabajando en una tableta gráfica",
+        image: logoImg, // Perfecta para branding
+        imageAlt: "Diseñadora trabajando en identidad visual en tableta",
     },
 ];

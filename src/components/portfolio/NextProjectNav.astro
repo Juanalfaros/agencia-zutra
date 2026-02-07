@@ -1,0 +1,78 @@
+---
+import type { ZutraCaseStudy } from "@/types/project-types";
+
+interface Props {
+    nextProject: ZutraCaseStudy;
+}
+
+const { nextProject } = Astro.props;
+---
+
+<section class="next-project-nav">
+    <div class="container">
+        <a href={`/portfolio/${nextProject.slug}`} class="next-project-link">
+            <span class="nav-label">Siguiente Proyecto</span>
+            <span class="next-project-title"
+                >{nextProject.title}
+                <i class="ph ph-arrow-right"></i></span
+            >
+        </a>
+    </div>
+</section>
+
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .next-project-nav {
+        padding: 8rem 0;
+        background: var(--color-surface);
+        color: var(--color-secondary);
+        border-top: 1px solid var(--color-line);
+    }
+
+    .next-project-link {
+        display: block;
+        text-decoration: none;
+        text-align: center;
+        transition: transform 0.3s;
+    }
+
+    .nav-label {
+        font-size: 1rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--color-accent);
+        display: block;
+        margin-bottom: 2rem;
+    }
+
+    .next-project-title {
+        font-size: clamp(2.5rem, 8vw, 6rem);
+        font-weight: 900;
+        color: var(--color-secondary);
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
+    }
+
+    .next-project-title i {
+        transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .next-project-link:hover .next-project-title i {
+        transform: translateX(30px);
+    }
+
+    @media (max-width: 768px) {
+        .next-project-title {
+            font-size: 2.5rem;
+        }
+    }
+</style>

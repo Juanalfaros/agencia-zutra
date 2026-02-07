@@ -1,7 +1,20 @@
 ---
-import { services } from "../../data/servicios";
+import { getEntries } from "@/lib/contentful";
+import { adaptService } from "@/lib/contentful-adapters";
+import type { Service } from "@/data/servicios";
 
-const sortedServices = services.sort((a, b) => a.order - b.order);
+// Check for preview cookie
+const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+
+// Fetch services from Contentful
+const entries = await getEntries(
+  "service",
+  {
+    order: "fields.order",
+  },
+  isPreview,
+);
+const sortedServices = entries.items.map(adaptService);
 ---
 
 <section id="servicios" class="section">
@@ -11,7 +24,7 @@ const sortedServices = services.sort((a, b) => a.order - b.order);
     </div>
     <div id="servicios-grid" class="services-grid">
       {
-        sortedServices.map((service) => (
+        sortedServices.map((service: Service) => (
           <article class="service-card" data-service={service.id}>
             <div class="card__header">
               <h3 class="card__title">{service.title}</h3>

@@ -1,7 +1,14 @@
 ---
 import { Image } from "astro:assets";
+import { getEntries } from "@/lib/contentful";
+import { adaptHeroSlide } from "@/lib/contentful-adapters";
 
-import { heroSlides } from "../../data/hero";
+// Fetch hero slides from Contentful
+const entries = await getEntries("heroSlide", {
+  "fields.active": true,
+  order: "fields.order",
+});
+const heroSlides = entries.items.map(adaptHeroSlide);
 ---
 
 <section id="hero" class="hero-carousel">
@@ -13,6 +20,7 @@ import { heroSlides } from "../../data/hero";
           data-slide-index={index}
         >
           <div class="container hero-carousel__slide-inner">
+            {/* Texto */}
             <div class="hero-carousel__text-content">
               <h1 class="hero__title" set:html={slide.title} />
               <p class="hero__subtitle">{slide.subtitle}</p>
@@ -22,24 +30,31 @@ import { heroSlides } from "../../data/hero";
                 </a>
               </div>
             </div>
+
+            {/* Imagen + Blob */}
             <div class="hero-carousel__image-content">
-              <div class="hero-carousel__image-wrapper">
+              <div class="hero-carousel__composition">
                 <svg
-                  class="hero-carousel__blob-background"
+                  class="hero-carousel__blob"
                   viewBox="0 0 390.49 363.11"
+                  aria-hidden="true"
                 >
                   <path
-                    fill="var(--color-accent)"
+                    fill="currentColor"
                     d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"
                   />
                 </svg>
-                <Image
-                  src={slide.image}
-                  alt={slide.imageAlt}
-                  class="hero-carousel__photo"
-                  loading={index === 0 ? "eager" : "lazy"}
-                  decoding={index === 0 ? "auto" : "async"}
-                />
+                <div class="hero-carousel__image-wrapper">
+                  <Image
+                    src={slide.image}
+                    alt={slide.imageAlt}
+                    class="hero-carousel__photo"
+                    width={600}
+                    height={600}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    decoding={index === 0 ? "auto" : "async"}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -47,20 +62,23 @@ import { heroSlides } from "../../data/hero";
       ))
     }
   </div>
-  <button
-    class="hero-carousel__nav-button hero-carousel__nav-button--prev"
-    aria-label="Slide anterior"><i class="ph ph-caret-left"></i></button
-  >
-  <button
-    class="hero-carousel__nav-button hero-carousel__nav-button--next"
-    aria-label="Siguiente slide"
-    ><i class="ph ph-caret-right"></i></button
-  >
+
+  {/* Controles de Navegación */}
+  <div class="hero-carousel__controls">
+    <button class="nav-button nav-button--prev" aria-label="Slide anterior">
+      <i class="ph ph-caret-left"></i>
+    </button>
+
+    <button class="nav-button nav-button--next" aria-label="Siguiente slide">
+      <i class="ph ph-caret-right"></i>
+    </button>
+  </div>
+
   <div class="hero-carousel__pagination">
     {
       heroSlides.map((_, index) => (
         <button
-          class={`hero-carousel__dot ${index === 0 ? "active" : ""}`}
+          class={`pagination-dot ${index === 0 ? "active" : ""}`}
           data-slide-to={index}
           aria-label={`Ir al slide ${index + 1}`}
         />
@@ -69,34 +87,51 @@ import { heroSlides } from "../../data/hero";
   </div>
 </section>
 
+<script>
+  import { initCarousel } from "../../scripts/ui/carousel";
+
+  // Inicializar el carrusel
+  initCarousel();
+
+  // Re-inicializar cuando Astro cambia de página (soporte para View Transitions)
+  document.addEventListener("astro:page-load", initCarousel);
+</script>
+
 <style>
+  /* --- Variables y Layout General --- */
   .hero-carousel {
-    --header-offset: 4rem;
+    --header-height: 80px;
+    --blob-scale: 1;
+
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
     width: 100%;
-    margin-top: var(--header-offset);
-    padding: 4rem 0;
-    min-height: calc(90vh - var(--header-offset));
-    max-height: 800px;
-    height: auto;
+    margin-top: 0;
+    padding: calc(var(--header-height) + 2rem) 0 4rem;
+    min-height: 100vh;
+    background: var(--color-bg);
   }
 
   .hero-carousel__slides-container {
     display: grid;
     width: 100%;
+    height: 100%;
+    grid-template-areas: "stack";
   }
 
   .hero-carousel__slide {
-    grid-area: 1 / 1;
+    grid-area: stack;
     opacity: 0;
     visibility: hidden;
     transition:
-      opacity 0.6s ease-in-out,
-      transform 0.6s ease-in-out;
-    transform: translateY(1rem);
+      opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+      visibility 0.7s,
+      transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(20px);
+    z-index: 0;
+    width: 100%;
   }
 
   .hero-carousel__slide.active {
@@ -106,191 +141,343 @@ import { heroSlides } from "../../data/hero";
     z-index: 1;
   }
 
+  /* Animación de entrada escalonada para el contenido */
+  .hero-carousel__slide.active .hero__title {
+    animation: slideUpFade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: 0.1s;
+  }
+
+  .hero-carousel__slide.active .hero__subtitle {
+    animation: slideUpFade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: 0.2s;
+  }
+
+  .hero-carousel__slide.active .hero__actions {
+    animation: slideUpFade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: 0.3s;
+  }
+
+  .hero-carousel__slide.active .hero-carousel__composition {
+    animation: scaleIn 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation-delay: 0.15s;
+  }
+
   .hero-carousel__slide-inner {
     display: grid;
     grid-template-columns: 1fr;
     align-items: center;
-    gap: 2rem;
+    gap: 3rem;
     text-align: center;
+    padding-bottom: 2rem;
   }
 
-  .hero-carousel__text-content {
-    order: 2;
-  }
-
+  /* --- Tipografía Mejorada --- */
   .hero__title {
-    font-size: clamp(2rem, 8vw, 2.5rem);
+    font-size: clamp(2.25rem, 7vw, 4.5rem);
     font-weight: 800;
-    line-height: 1.1;
-    letter-spacing: -0.025em;
-    margin: 0;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    margin-bottom: 1.5rem;
     color: var(--color-secondary);
+    opacity: 0;
   }
 
   .hero__title :global(.accent-text) {
     color: var(--color-accent);
-    filter: brightness(0.9);
-  }
-
-  :global([data-theme="dark"]) .hero__title :global(.accent-text) {
-    filter: brightness(1.2);
+    position: relative;
+    display: inline-block;
   }
 
   .hero__subtitle {
-    margin: 1rem auto 0;
-    font-size: 1.125rem;
+    font-size: clamp(1.125rem, 2.2vw, 1.375rem);
     color: var(--color-muted);
-    max-width: 45ch;
+    max-width: 48ch;
+    margin: 0 auto 2.5rem;
+    line-height: 1.65;
+    font-weight: 400;
+    opacity: 0;
   }
 
   .hero__actions {
-    margin-top: 1.5rem;
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
+    gap: 1rem;
     justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0;
   }
 
+  /* --- Composición de Imagen Mejorada --- */
   .hero-carousel__image-content {
-    order: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    order: -1;
   }
 
-  .hero-carousel__image-wrapper {
+  .hero-carousel__composition {
     position: relative;
     width: 100%;
-    max-width: 280px;
-    margin: 0 auto;
+    max-width: 480px;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transform: scale(0.9);
   }
 
-  .hero-carousel__blob-background {
+  /* Blob - Forma orgánica detrás */
+  .hero-carousel__blob {
     position: absolute;
     top: 50%;
     left: 50%;
+    width: 115%;
+    height: auto;
     transform: translate(-50%, -50%);
-    width: 100%;
+    z-index: 0;
+    color: var(--color-accent);
+    opacity: 1;
+    pointer-events: none;
+    animation: blobFloat 12s ease-in-out infinite;
+  }
+
+  .hero-carousel__blob path {
+    fill: currentColor;
+  }
+
+  /* Wrapper de imagen - delante del blob */
+  .hero-carousel__image-wrapper {
+    position: relative;
     z-index: 1;
-    opacity: 0.9;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
   }
 
   .hero-carousel__photo {
-    position: relative;
-    z-index: 2;
-    width: 90%;
+    width: 100%;
+    max-width: 100%;
     height: auto;
-    object-fit: cover;
-    border-radius: var(--radius-lg);
+    object-fit: contain;
+    filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.15));
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hero-carousel__slide.active .hero-carousel__photo {
+    animation: floatImage 6s ease-in-out infinite;
+  }
+
+  /* --- Controles Mejorados --- */
+  .hero-carousel__controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .nav-button {
+    pointer-events: auto;
+    background: var(--color-bg);
+    border: 1.5px solid var(--color-line);
+    color: var(--color-text);
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    opacity: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .nav-button:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .nav-button:active {
+    transform: scale(0.95);
   }
 
   .hero-carousel__pagination {
     position: absolute;
-    bottom: 5.5rem;
+    bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 10;
     display: flex;
-    gap: 0.75rem;
+    gap: 0.625rem;
+    z-index: 10;
   }
 
-  .hero-carousel__dot {
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: var(--radius-full);
+  .pagination-dot {
+    width: 2.5rem;
+    height: 0.25rem;
+    border-radius: 2px;
     background-color: var(--color-line);
     border: none;
     padding: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
-    transition:
-      background-color 0.3s,
-      transform 0.3s;
+    position: relative;
+    overflow: hidden;
   }
 
-  .hero-carousel__dot:hover {
+  .pagination-dot::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: var(--color-accent);
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .pagination-dot:hover {
     background-color: var(--color-muted);
   }
 
-  .hero-carousel__dot.active {
-    background-color: var(--color-accent);
-    transform: scale(1.2);
+  .pagination-dot.active {
+    width: 3.5rem;
   }
 
-  .hero-carousel__nav-button {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    background-color: hsla(0, 0%, 100%, 0.1);
-    border: 1px solid var(--color-line);
-    color: var(--color-secondary);
-    border-radius: var(--radius-full);
-    width: 2.75rem;
-    height: 2.75rem;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1.5rem;
-    transition:
-      background-color 0.2s,
-      border-color 0.2s;
+  .pagination-dot.active::before {
+    width: 100%;
   }
 
-  .hero-carousel__nav-button:hover {
-    background-color: hsla(0, 0%, 100%, 0.2);
-    border-color: var(--color-accent);
+  /* --- Animaciones --- */
+  @keyframes slideUpFade {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
-  .hero-carousel__nav-button--prev {
-    left: 1.5rem;
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
-  .hero-carousel__nav-button--next {
-    right: 1.5rem;
+  @keyframes blobFloat {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    33% {
+      transform: translate(-50%, -48%) scale(1.02) rotate(2deg);
+    }
+    66% {
+      transform: translate(-50%, -52%) scale(0.98) rotate(-2deg);
+    }
   }
 
+  @keyframes floatImage {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* --- Media Queries --- */
   @media (min-width: 768px) {
     .hero-carousel {
-      margin-top: 0;
-      min-height: 90vh;
-      height: 100%;
-      max-height: 850px;
+      padding: calc(var(--header-height) + 3rem) 0 4rem;
     }
 
     .hero-carousel__slide-inner {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.1fr 1fr;
       text-align: left;
-      gap: 3rem;
+      gap: 5rem;
+      padding-bottom: 0;
     }
 
     .hero-carousel__text-content {
-      order: 1;
+      order: unset;
     }
 
     .hero-carousel__image-content {
-      order: 2;
-    }
-
-    .hero__title {
-      font-size: clamp(3rem, 10vw, 3.5rem);
+      order: unset;
     }
 
     .hero__subtitle {
-      margin-inline: 0;
+      margin-left: 0;
+      margin-right: 0;
     }
 
     .hero__actions {
       justify-content: flex-start;
     }
 
-    .hero-carousel__image-wrapper {
-      max-width: 450px;
+    .hero-carousel__composition {
+      max-width: 580px;
     }
 
-    .hero-carousel__nav-button {
-      display: inline-flex;
+    .hero-carousel__controls {
+      padding: 0 3rem;
+    }
+
+    .nav-button {
+      opacity: 0.6;
+      width: 3.5rem;
+      height: 3.5rem;
+      font-size: 1.75rem;
+    }
+
+    .nav-button:hover {
+      opacity: 1;
     }
 
     .hero-carousel__pagination {
-      bottom: 2rem;
+      bottom: 3rem;
     }
+  }
+
+  @media (min-width: 1200px) {
+    .hero-carousel__composition {
+      max-width: 650px;
+    }
+
+    .hero-carousel__slide-inner {
+      gap: 6rem;
+    }
+  }
+
+  /* Ajuste para tema oscuro */
+  :global([data-theme="dark"]) .nav-button {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  :global([data-theme="dark"]) .nav-button:hover {
+    background: rgba(255, 255, 255, 0.1);
   }
 </style>

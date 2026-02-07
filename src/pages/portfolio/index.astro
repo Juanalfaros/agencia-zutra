@@ -3,9 +3,22 @@ import Layout from "../../layouts/Layout.astro";
 import Header from "../../components/common/Header.astro";
 import Footer from "../../components/common/Footer.astro";
 import StickyCTA from "../../components/common/StickyCTA.astro";
-import { cases, allIndustries, allServices } from "../../data/casos";
+import { getEntries } from "@/lib/contentful";
+import { adaptPortfolioCase } from "@/lib/contentful-adapters";
+import type { ZutraCaseStudy } from "@/types/project-types";
 import { Image } from "astro:assets";
 import { slugify } from "../../scripts/utils/slugify";
+import { Icon } from "astro-icon/components";
+import { getTechIcon } from "../../data/techIcons";
+
+// Fetch portfolio cases from Contentful
+const entries = await getEntries("portfolioCase", {
+    order: "fields.order",
+});
+const cases = entries.items.map(adaptPortfolioCase);
+
+// Derive unique industries
+const allIndustries = [...new Set(cases.map((c) => c.industry))].sort();
 
 const title = "Portfolio — Agencia Zutra";
 const description =
@@ -32,14 +45,16 @@ const description =
                     <span class="filter-label">Explora por industria:</span>
                     <div class="filter-tags">
                         {
-                            allIndustries.slice(0, 4).map((ind) => (
-                                <a
-                                    href={`/portfolio/tag/${slugify(ind)}`}
-                                    class="filter-tag"
-                                >
-                                    {ind}
-                                </a>
-                            ))
+                            (allIndustries as string[])
+                                .slice(0, 4)
+                                .map((ind: string) => (
+                                    <a
+                                        href={`/portfolio/tag/${slugify(ind)}`}
+                                        class="filter-tag"
+                                    >
+                                        {ind}
+                                    </a>
+                                ))
                         }
                     </div>
                 </div>
@@ -50,14 +65,14 @@ const description =
             <div class="container">
                 <div class="portfolio-grid">
                     {
-                        cases.map((project) => (
+                        cases.map((project: ZutraCaseStudy) => (
                             <a
                                 href={`/portfolio/${project.slug}`}
                                 class="project-card"
                             >
                                 <div class="project-image-wrapper">
                                     <Image
-                                        src={project.image}
+                                        src={project.featuredImage.src}
                                         alt={project.title}
                                         width={800}
                                         height={600}
@@ -88,8 +103,12 @@ const description =
                                     <div class="project-tags">
                                         {project.techStack
                                             .slice(0, 3)
-                                            .map((tag) => (
+                                            .map((tag: string) => (
                                                 <span class="tech-tag">
+                                                    <Icon
+                                                        name={getTechIcon(tag)}
+                                                        class="tech-tag-icon"
+                                                    />
                                                     {tag}
                                                 </span>
                                             ))}
@@ -288,7 +307,7 @@ const description =
 
     .project-desc {
         font-size: 0.95rem;
-        color: var(--color-gray-300);
+        color: var(--color-muted);
         line-height: 1.5;
         margin-bottom: 1.25rem;
         display: -webkit-box;
@@ -305,11 +324,19 @@ const description =
 
     .tech-tag {
         font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
+        padding: 0.25rem 0.6rem;
         background-color: var(--color-subtle);
         border-radius: var(--radius-sm);
         color: var(--color-muted);
         font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .tech-tag-icon {
+        font-size: 0.9rem;
+        color: var(--color-accent);
     }
 
     @media (max-width: 640px) {

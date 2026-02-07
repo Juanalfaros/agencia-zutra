@@ -15,7 +15,11 @@ export interface Service {
     details: string[]; // Legacy/Quick list
     features: ServiceFeatures[]; // Detailed features
     benefits: string[]; // "What you get"
+    deliverables?: string[];
     result?: string;
+    icon?: string;
+    featuredImage?: any;
+    featured?: boolean;
     priceAmount?: string;
     priceMeta?: string;
     order: number;
@@ -23,288 +27,256 @@ export interface Service {
 
 // Taxonomies for easier filtering
 export const categories = [
-    { id: 'estrategia', label: 'Estrategia & Growth' },
-    { id: 'creatividad', label: 'Creatividad & Diseño' },
-    { id: 'tecnologia', label: 'Tecnología & Operaciones' }
+    { id: 'desarrollo', label: 'Desarrollo & Web' },
+    { id: 'marketing', label: 'Marketing Directo' },
+    { id: 'visual', label: 'Identidad Visual' }
 ];
 
 export const services: Service[] = [
     {
-        id: "plataforma",
-        slug: "plataforma-de-lanzamiento",
-        title: "Plataforma de lanzamiento",
-        badge: "FUNDACIONAL",
-        category: "tecnologia",
-        tags: ["Desarrollo Web", "SEO", "Analytics", "Ecommerce"],
-        description: "De cero a presencia que convierte. Tu base digital sólida.",
+        id: "web-landing",
+        slug: "desarrollo-web-landings",
+        title: "Web Corporativa & Landing Pages",
+        badge: "CORE",
+        category: "desarrollo",
+        tags: ["Astro", "SEO Técnico", "Conversión", "Velocidad"],
+        description: "Sitios rápidos y landings de venta. Sin vueltas, enfocados en convertir.",
         longDescription: `
-            <p>No hacemos webs "bonitas"; construimos <strong>activos digitales de alto rendimiento</strong>. En un ecosistema donde la atención dura milisegundos, tu sitio web no puede ser solo una tarjeta de presentación: debe ser tu mejor vendedor, operativo 24/7.</p>
-            <p>Este servicio es la base fundacional para cualquier negocio que tome en serio su crecimiento. Combinamos arquitectura de información persuasiva, diseño visual agresivo y una infraestructura técnica impecable para asegurar que cada visita tenga la máxima probabilidad de convertirse en cliente.</p>
-            <h3>¿Por qué "Plataforma" y no solo "Web"?</h3>
-            <p>Porque una web aislada no sirve. Entregamos un ecosistema conectado: pixel de seguimiento, eventos de conversión configurados, CRM integrado y velocidad de carga optimizada para Core Web Vitals. Es el portaaviones desde donde despegan todas tus campañas.</p>
+            <p>Tu sitio web no es un adorno, es tu mejor vendedor. En Zutra nos enfocamos en el <strong>rendimiento técnico y la conversión</strong>. Olvídate de sitios pesados que nadie visita; desarrollamos plataformas ligeras, optimizadas para Google (SEO) y diseñadas para que el usuario tome acción.</p>
+            <p>Ya sea una Landing Page para una campaña específica que necesitas sacar en 48 horas, o un sitio corporativo robusto para validar tu empresa, usamos tecnología moderna (Astro, Next.js) para asegurar que cargue al instante y no se rompa con mirarlo.</p>
         `,
         details: [
-            "Brand kit con criterio comercial",
-            "Web (corporativa o e-commerce) lista para crecer",
-            "SEO base + analítica y tracking"
+            "Landing Pages de alta conversión",
+            "Sitios Corporativos autoadministrables",
+            "SEO técnico avanzado desde el día 1"
         ],
         features: [
             {
-                title: "Arquitectura Persuasiva",
-                description: "Diseñamos flujos de navegación pensados para la conversión, no para el ego del diseñador."
+                title: "Desarrollo a Medida (No Plantillas Lentas)",
+                description: "Código limpio y optimizado. Usamos tecnologías modernas para que tu web vuele, no Wordpress pesados llenos de plugins basura."
             },
             {
-                title: "Stack Tecnológico Moderno",
-                description: "Astro, React o Next.js. Nada de plantillas de Wordpress lentas e inseguras que se rompen solas."
+                title: "Landing Pages de Venta",
+                description: "Estructuras diseñadas para vender: título gancho, manejo de objeciones y llamados a la acción claros."
             },
             {
-                title: "Analítica Avanzada",
-                description: "Google Analytics 4 y Tag Manager configurados profesionales para medir lo que importa: dinero, no clicks."
-            },
-            {
-                title: "SEO Técnico Impecable",
-                description: "Estructura semántica, metadatos optimizados y sitemaps listos para indexar desde el día 1."
+                title: "SEO Técnico & Semántico",
+                description: "Dejamos tu sitio listo para que Google lo entienda perfectamente. Estructura de datos, sitemaps y metadatos correctos."
             }
         ],
         benefits: [
-            "Velocidad de carga < 2s para mejorar Quality Score en Ads.",
-            "Autonomía total para editar contenidos básicos.",
-            "Integración nativa con tu CRM o herramientas de email marketing.",
-            "Seguridad robusta sin necesidad de plugins constantes."
+            "Cargas en menos de 1 segundo (Google ama esto).",
+            "Diseño que se adapta perfecto a celulares.",
+            "Independencia técnica: no necesitas llamarnos para cambiar un texto."
         ],
-        result: "Resultado: capta, mide y mejora desde el día 1.",
-        priceAmount: "Desde $850.000",
-        priceMeta: "CLP",
+        result: "Resultado: Una web profesional que vende y posiciona.",
+        priceAmount: "Desde $450.000",
+        priceMeta: "CLP (Pago único)",
         order: 1
     },
     {
-        id: "identidad",
-        slug: "identidad-y-diseno",
-        title: "Identidad & diseño",
-        badge: "CREATIVO",
-        category: "creatividad",
-        tags: ["Branding", "Diseño Gráfico", "UI Kit", "Social Media"],
-        description: "Estética valiente, hecha para vender. Diferenciación radical.",
+        id: "email-marketing",
+        slug: "email-marketing-newsletters",
+        title: "Email Marketing & Newsletters",
+        badge: "RENTABILIDAD",
+        category: "marketing",
+        tags: ["HTML", "Automatización", "Newsletter", "Ventas"],
+        description: "El canal con mayor retorno. Diseño HTML perfecto y automatización.",
         longDescription: `
-            <p>El mercado es ruidoso. <strong>La timidez es un suicidio comercial.</strong> Nuestra filosofía de diseño se basa en la "Diferenciación Radical": creamos identidades visuales que polarizan, que se recuerdan y que comunican autoridad inmediata.</p>
-            <p>No te entregamos un logo y "buena suerte". Te armamos un arsenal visual operativo. Desde la tipografía que grita tu nombre hasta las plantillas de redes sociales que tu equipo usará el lunes por la mañana. Todo está diseñado con un propósito: vender la visión de tu empresa antes de que leas la primera línea de texto.</p>
+            <p>Las redes sociales son prestadas, tu lista de correos es tuya. El <strong>Email Marketing</strong> es, estadísticamente, el canal que más retorno de inversión genera. Pero no sirve de nada si tus correos se ven mal o caen en Spam.</p>
+            <p>En Zutra nos especializamos en la maquetación técnica (HTML/MJML) para asegurar que tu correo se vea perfecto en cualquier dispositivo, y en la configuración de flujos automatizados que venden por ti mientras duermes. Desde newsletters editoriales hasta secuencias de bienvenida y recuperación de carritos.</p>
         `,
         details: [
-            "Logo + manual accionable",
-            "Plantillas sociales que rinden",
-            "Piezas impresas/digitales con foco en KPIs"
+            "Diseño y maquetación HTML (MJML)",
+            "Configuración de plataformas (Brevo/Mailchimp)",
+            "Secuencias automatizadas de venta"
         ],
         features: [
             {
-                title: "Sistema Visual Escalable",
-                description: "No solo un logo, sino un lenguaje visual completo (colores, tipografías, tramas) listo para usar."
+                title: "Maquetación HTML Perfecta",
+                description: "Usamos código (MJML) para garantizar que tu diseño no se rompa en Outlook, Gmail o iPhone. Se ve bien donde sea."
             },
             {
-                title: "Assets Operativos",
-                description: "Plantillas de Instagram, LinkedIn, presentaciones de ventas y firmas de correo. Herramientas, no adornos."
+                title: "Automatización de Flujos",
+                description: "Configuramos secuencias: Bienvenida, Carrito Abandonado, Nutrición de Leads. Vende sin estar presente."
             },
             {
-                title: "Manual de Marca 'Anti-Bullshit'",
-                description: "Reglas claras y directas de cómo usar la marca. Sin teoría del color aburrida, solo ejecución."
-            },
-            {
-                title: "Dirección de Arte",
-                description: "Curaduría de estilo fotográfico e iconografía para que nunca más uses fotos de stock genéricas."
+                title: "Setup de Entregabilidad",
+                description: "Configuramos tus dominios (DKIM, SPF, DMARC) para que tus correos lleguen a la bandeja de entrada, no a Spam."
             }
         ],
         benefits: [
-            "Reconocimiento de marca instantáneo en el scroll infinito.",
-            "Coherencia visual que aumenta la percepción de valor de tus precios.",
-            "Ahorro de tiempo para tu equipo con plantillas listas para usar.",
-            "Diferenciación real vs. competidores genéricos."
+            "Canal de venta directa sin algoritmos de por medio.",
+            "Diseños profesionales que elevan la percepción de tu marca.",
+            "Recuperación de ventas que dabas por perdidas."
         ],
-        result: "Resultado: reconocimiento y coherencia en cada punto de contacto.",
-        priceAmount: "Desde $350.000",
-        priceMeta: "CLP",
+        result: "Resultado: Comunidad fiel y ventas recurrentes.",
+        priceAmount: "Desde $200.000",
+        priceMeta: "CLP / Mensual o por Pack",
         order: 2
     },
     {
-        id: "organico",
-        slug: "contenido-organico",
-        title: "Contenido orgánico",
-        badge: "CRECIMIENTO",
-        category: "estrategia",
-        tags: ["Social Media Management", "Content Marketing", "Copywriting", "Video"],
-        description: "Contenido que engancha y empuja demanda sin pagar ads.",
+        id: "ecommerce",
+        slug: "ecommerce-tiendas-online",
+        title: "E-Commerce & Tiendas Online",
+        badge: "VENTAS",
+        category: "desarrollo",
+        tags: ["Shopify", "Woocommerce", "Pasarelas de Pago", "Catálogos"],
+        description: "Vende productos 24/7. Tiendas robustas y fáciles de gestionar.",
         longDescription: `
-            <p>Publicar por publicar es quemar dinero. Nosotros operamos bajo la metodología de <strong>"Content as a Service"</strong>. Transformamos tu expertise técnico en piezas de contenido digeribles, entretenidas y altamente compartibles.</p>
-            <p>Olvídate del "post del día de la madre". Creamos narrativas que educan a tu mercado, derriban objeciones de venta y posicionan a tu marca como la única opción lógica. Video corto vertical (Reels/TikTok), carruseles educativos de LinkedIn y copy persuasivo: todo enfocado en generar conversaciones de negocio.</p>
+            <p>Tener un e-commerce no es solo subir fotos de productos. Es tener una tienda que inspire confianza, facilite el pago y gestione el stock sin volverte loco. Desarrollamos tiendas online pensadas para la escalabilidad.</p>
+            <p>Nos encargamos de lo difícil: pasarelas de pago chilenas, cálculo de envíos y estructura de categorías, para que tú solo te preocupes de despachar los pedidos.</p>
         `,
         details: [
-            "Estrategia + calendario con hipótesis",
-            "Video corto, carruseles y copies valientes",
-            "Diseño y publicación con aprendizaje continuo"
+            "Tiendas completas en Shopify o Woocommerce",
+            "Integración de pagos y envíos locales",
+            "Optimización de fichas de producto"
         ],
         features: [
             {
-                title: "Estrategia de Pilares de Contenido",
-                description: "Definimos de qué hablar para atraer a tu cliente ideal, no likes vacíos."
+                title: "Pasarelas de Pago Locales",
+                description: "Integración fluida con Webpay, MercadoPago o VentiPay. Cobra sin problemas."
             },
             {
-                title: "Producción Multimedia Ágil",
-                description: "Edición de video dinámico y diseño gráfico de alto impacto optimizado para algoritmos actuales."
+                title: "Gestión de Catálogo",
+                description: "Te entregamos el sistema listo para que cargar productos nuevos sea cosa de niños."
             },
             {
-                title: "Copywriting de Respuesta Directa",
-                description: "Textos que no solo suenan bien, sino que invitan a la acción (hacer clic, comentar, comprar)."
-            },
-            {
-                title: "Gestión y Publicación",
-                description: "Nos encargamos de subir, etiquetar y gestionar la comunidad. Tú te enfocas en tu negocio."
+                title: "Experiencia de Compra (UX)",
+                description: "Reducimos los clics necesarios para comprar. Menos fricción, más ventas."
             }
         ],
         benefits: [
-            "Creación de audiencia propia que no depende de pagar pauta siempre.",
-            "Nutrición de leads: vende sin vender mientras educas.",
-            "Posicionamiento de autoridad para los fundadores/líderes.",
-            "Feedback loop constante con el mercado para mejorar productos."
+            "Ventas automáticas 24/7.",
+            "Control total de tu inventario y clientes.",
+            "Sistema escalable que crece con tus ventas."
         ],
-        result: "Resultado: engagement que convierte en conversaciones.",
-        priceAmount: "Desde $450.000",
-        priceMeta: "CLP / mes",
+        result: "Resultado: Tu negocio facturando online.",
+        priceAmount: "Desde $650.000",
+        priceMeta: "CLP",
         order: 3
     },
     {
-        id: "sprint",
-        slug: "sprint-de-leads",
-        title: "Sprint de leads (30 días)",
-        badge: "ALTO IMPACTO",
-        category: "estrategia",
-        tags: ["Google Ads", "Meta Ads", "Landing Pages", "CRO"],
-        description: "Oferta clara + pauta + landing CRO. Resultados rápidos.",
+        id: "branding",
+        slug: "identidad-corporativa",
+        title: "Branding & Identidad Visual",
+        badge: "DISEÑO",
+        category: "visual",
+        tags: ["Logotipos", "Papelería", "Manual de Marca", "Imagen"],
+        description: "Marcas con carácter. Dejamos de lado lo genérico.",
         longDescription: `
-            <p>¿Necesitas caja rápido? El Sprint de Leads es nuestra <strong>operación de asalto comercial.</strong> En 30 días, diseñamos, lanzamos y optimizamos un embudo de ventas simplificado para capturar demanda existente.</p>
-            <p>No hay teoría, solo ejecución. Creamos una oferta irresistible, montamos una Landing Page de alta conversión (separada de tu web si es necesario) e inyectamos tráfico cualificado vía Google o Meta Ads. Es la forma más rápida de validar una oferta o llenar el pipeline de ventas.</p>
+            <p>Una marca no es solo un logo bonito. Es cómo te perciben tus clientes antes de hablar contigo. En Zutra creamos identidades visuales con carácter, diseñadas para destacar en un mercado saturado de plantillas iguales.</p>
+            <p>Te entregamos un sistema visual completo: desde el logotipo hasta la papelería y los elementos gráficos que usarás en el día a día. Hacemos que tu empresa se vea más cara de lo que cobra.</p>
         `,
         details: [
-            "Landing con pruebas A/B",
-            "Creatividades valientes + ads",
-            "Tracking, optimización y reporte final"
+            "Diseño de Logotipo",
+            "Manual de uso de marca",
+            "Papelería corporativa y digital"
         ],
         features: [
             {
-                title: "Diseño de Oferta Irresistible",
-                description: "Te ayudamos a empaquetar tu servicio para que sea estúpido decir que no."
+                title: "Logotipos Versátiles",
+                description: "Marcas que funcionan igual de bien en un icono de app de 1cm que en un letrero gigante."
             },
             {
-                title: "High-Converting Landing Page",
-                description: "Una sola página, un solo objetivo. Copywriting agresivo y diseño enfocado en el formulario."
+                title: "Identidad Visual Completa",
+                description: "Definición de colores, tipografías y tramas. Coherencia en todos lados."
             },
             {
-                title: "Setup de Campañas Multicanal",
-                description: "Google Ads (intención) y Meta Ads (interrupción) configurados con estructuras de prueba A/B."
-            },
-            {
-                title: "Iteración Semanal",
-                description: "No 'seteamos y olvidamos'. Ajustamos pujas, creativos y copys cada semana basándonos en datos."
+                title: "Archivos Listos para Imprenta/Web",
+                description: "Te entregamos todos los formatos (Vectores, PNG, PDF) para que nunca sufras pixelación."
             }
         ],
         benefits: [
-            "Validación de mercado con dinero real en tiempo récord.",
-            "Inyección inmediata de oportunidades al equipo de ventas.",
-            "Datos claros sobre tu Costo por Adquisición (CPA).",
-            "Sin contratos a largo plazo forzosos: probamos, ganamos, seguimos."
+            "Diferenciación inmediata de la competencia.",
+            "Mayor confianza por parte de nuevos clientes.",
+            "Facilidad para crear nuevos materiales gráficos en el futuro."
         ],
-        result: "Resultado: pipeline medible y leads calificados en 30 días.",
-        priceAmount: "Desde $550.000",
-        priceMeta: "CLP + pauta",
+        result: "Resultado: Una marca que inspira respeto.",
+        priceAmount: "Desde $300.000",
+        priceMeta: "CLP",
         order: 4
     },
     {
-        id: "web",
-        slug: "soporte-web-evolutivo",
-        title: "Soporte web evolutivo",
-        badge: "CONTINUO",
-        category: "tecnologia",
-        tags: ["Mantenimiento", "Seguridad", "CRO", "Performance"],
-        description: "Velocidad con criterio: tu web siempre lista para vender.",
+        id: "social-assets",
+        slug: "kits-redes-sociales",
+        title: "Kits Visuales para RRSS",
+        badge: "SOPORTE",
+        category: "visual",
+        tags: ["Plantillas Canva", "Diseño Feed", "Assets", "Autonomía"],
+        description: "Tú gestionas, nosotros diseñamos. Plantillas y mantención estética.",
         longDescription: `
-            <p>Una web lanzada no es una web terminada. El <strong>Soporte Evolutivo</strong> es nuestro seguro contra la obsolescencia. No es solo 'actualizar plugins'; es mejorar proactivamente tu activo digital mes a mes.</p>
-            <p>Nos convertimos en tu departamento IT externo. ¿Necesitas una landing para Black Friday? Hecho. ¿El sitio cargó lento ayer? Ya lo arreglamos. ¿Quieres probar un nuevo copy en el home? Subido. Mantén tu foco en el negocio, nosotros mantenemos la máquina aceitada.</p>
+            <p>Seamos honestos: el crecimiento orgánico mágico no existe sin inversión o sin poner la cara en video. Por eso, no te vendemos humo. Te ofrecemos <strong>herramientas y diseño</strong>.</p>
+            <p>Nuestro servicio de Redes Sociales está enfocado en la "Mantención Corporativa" y la "Autonomía". Diseñamos grillas profesionales y plantillas editables (Canva/Figma) para que tú o tu equipo mantengan las redes activas y estéticas sin depender de una agencia mes a mes para subir un post.</p>
         `,
         details: [
-            "Actualizaciones y contenidos sin fricción",
-            "Promos, cupones y soporte a campañas",
-            "Monitoreo de seguridad y performance"
+            "Diseño de Grillas / Feed Estático",
+            "Plantillas editables en Canva/Figma",
+            "Gestión corporativa (solo planes con inversión)"
         ],
         features: [
             {
-                title: "Cambios Ilimitados de Contenido",
-                description: "Sube posts, cambia precios, actualiza fotos. Solo mándanos un correo."
+                title: "Plantillas Editables (Autonomía)",
+                description: "Te dejamos todo listo en Canva o Figma. Tú solo cambias la foto y el texto. Ahorra costos mensuales."
             },
             {
-                title: "Optimización de Velocidad Continua",
-                description: "Monitoreamos Core Web Vitals y ajustamos código para que Google te siga amando."
+                title: "Diseño de Feed Corporativo",
+                description: "Ideal para marcas que necesitan validación. Que quien te busque vea una empresa sólida, no un perfil abandonado."
             },
             {
-                title: "Seguridad Bancaria",
-                description: "Backups diarios, firewalls y protección contra malware. Tu negocio no puede permitirse estar offline."
-            },
-            {
-                title: "Consultoría Técnica",
-                description: "Te asesoramos sobre nuevas integraciones o herramientas antes de que gastes dinero."
+                title: "Condición de Gestión",
+                description: "Si deseas que nosotros gestionemos y publiquemos, trabajamos bajo esquemas de inversión publicitaria (Ads) para garantizar resultados."
             }
         ],
         benefits: [
-            "Paz mental total: tu web no se va a caer.",
-            "Agilidad comercial: lanza campañas cuando quieras, nosotros respondemos.",
-            "Mejora constante del SEO gracias a la frescura técnica.",
-            "Costo predecible vs. pagar horas sueltas a precios de urgencia."
+            "Ahorro significativo en fees mensuales de agencia.",
+            "Control total de tus tiempos de publicación.",
+            "Imagen profesional constante sin depender de la creatividad diaria."
         ],
-        result: "Resultado: una web que siempre funciona, sin dolores de cabeza.",
-        priceAmount: "Desde $200.000",
-        priceMeta: "CLP / mes",
+        result: "Resultado: Redes profesionales sin esclavitud mensual.",
+        priceAmount: "Desde $250.000",
+        priceMeta: "CLP (Pack de Activos)",
         order: 5
     },
     {
-        id: "automatizacion",
-        slug: "auditoria-automatizacion",
-        title: "Auditoría de automatización",
-        badge: "EFICIENCIA",
+        id: "mantenimiento",
+        slug: "partner-digital-mantenimiento",
+        title: "Partner Digital & Mantenimiento",
+        badge: "RECURRENTE",
         category: "tecnologia",
-        tags: ["Zapier", "Make", "CRM", "IA"],
-        description: "Menos horas manuales, más output. Escala sin contratar.",
+        tags: ["Soporte", "Hosting", "Actualizaciones", "Tranquilidad"],
+        description: "Tu departamento digital externo. Soporte técnico y gráfico mensual.",
         longDescription: `
-            <p>Escalar no significa contratar a más personas para hacer tareas repetitivas. Significa <strong>automatizar lo aburrido para humanizar lo valioso</strong>. Nuestra auditoría entra en tus procesos, detecta vampiros de tiempo y los elimina con código y flujos.</p>
-            <p>Conectamos tus herramientas (CRM, Email, Web, Facturación) para que hablen entre ellas. Desde que entra un lead hasta que se emite la factura, diseñamos  autopistas de datos invisibles que ahorran cientos de horas hombre al año. Tu equipo te lo agradecerá.</p>
+            <p>Este es el servicio que te da paz mental y a nosotros nos permite ser tu socio real. Sabemos que las webs se rompen, los plugins de Wordpress fallan, o simplemente necesitas cambiar un banner y no tienes tiempo de aprender a diseñar.</p>
+            <p>Con este plan, nos convertimos en tu departamento digital externalizado. No es solo hosting; es tener a Zutra en marcación rápida para solucionar problemas técnicos, realizar ajustes gráficos pequeños o asegurarnos de que tu negocio no se caiga nunca. Es la base operativa para que tú te dediques a vender.</p>
         `,
         details: [
-            "Mapeo de procesos y cuellos de botella",
-            "Diseño de solución y automatización",
-            "Implementación + training para el equipo"
+            "Hosting de alta velocidad incluido",
+            "Bolsa de horas para ajustes gráficos/web",
+            "Monitoreo de seguridad y respaldos"
         ],
         features: [
             {
-                title: "Mapeo de Procesos (Blueprint)",
-                description: "Visualizamos tu operación actual y encontramos dónde estás perdiendo dinero."
+                title: "Hosting & Dominio Gestionado",
+                description: "Olvídate de configurar DNS o pelear con servidores. Nosotros ponemos la casa y nos aseguramos que sea rápida y segura."
             },
             {
-                title: "Integraciones No-Code/Low-Code",
-                description: "Expertos en Make (Integromat), Zapier y APIs personalizadas."
+                title: "Bolsa de Horas Mensual",
+                description: "¿Necesitas cambiar una foto? ¿Subir un producto nuevo? ¿Rediseñar un banner? Lo hacemos nosotros. Sin cotizaciones lentas de por medio."
             },
             {
-                title: "Centralización de Datos",
-                description: "Adiós a los Excel dispersos. Creamos una única fuente de verdad (CRM/Database)."
-            },
-            {
-                title: "Capacitación de Equipo",
-                description: "No solo entregamos el robot, enseñamos a tu equipo a operarlo y mantenerlo."
+                title: "Seguridad y Actualizaciones",
+                description: "Mantenemos el motor aceitado. Actualizaciones de seguridad, renovación de certificados SSL y copias de seguridad automáticas."
             }
         ],
         benefits: [
-            "Reducción drástica de errores humanos en entrada de datos.",
-            "Respuesta inmediata a clientes 24/7 (bots inteligentes).",
-            "Escalabilidad real: atiende 10 o 1000 clientes con el mismo equipo.",
-            "Mayor satisfacción del empleado al eliminar tareas robotizadas."
+            "Respuesta prioritaria ante cualquier urgencia.",
+            "Costos fijos: sabes exactamente cuánto pagas a fin de mes.",
+            "Tu sitio web y activos digitales no envejecen, evolucionan mes a mes."
         ],
-        result: "Resultado: costos operativos abajo, capacidad de entrega arriba.",
-        priceAmount: "Desde $750.000",
-        priceMeta: "CLP",
+        result: "Resultado: Tu negocio digital siempre operativo y actualizado.",
+        priceAmount: "$200.000",
+        priceMeta: "CLP / Mensual (Cupos limitados)",
         order: 6
     }
 ];

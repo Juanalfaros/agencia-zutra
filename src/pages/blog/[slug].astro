@@ -4,25 +4,54 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/common/Header.astro";
 import Footer from "@/components/common/Footer.astro";
 import BlogCard from "@/components/blog/BlogCard.astro";
-import { blogPosts, categories } from "../../data/blog";
+import { Image } from "astro:assets";
+export const prerender = true; // Still prerender for production
+
+import { getEntries, getEntriesByField } from "@/lib/contentful";
+import { adaptBlogPost } from "@/lib/contentful-adapters";
+import type { Post } from "@/data/blog";
+import { categories } from "../../data/blog";
 
 export async function getStaticPaths() {
-    return blogPosts.map((post) => ({
+    // Fetch all published blog posts for build
+    const entries = await getEntries("blogPost", {
+        order: "-fields.publishDate",
+    });
+    const blogPosts = entries.items.map(adaptBlogPost);
+
+    return blogPosts.map((post: Post) => ({
         params: { slug: post.slug },
-        props: { post },
+        props: { post, allPosts: blogPosts },
     }));
 }
 
-const { post } = Astro.props;
+const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+let { post, allPosts } = Astro.props;
+
+if (isPreview) {
+    const slug = Astro.params.slug;
+    const entries = await getEntriesByField("blogPost", "slug", slug, true);
+    if (entries.items.length > 0) {
+        post = adaptBlogPost(entries.items[0]);
+    }
+
+    // Also fetch all posts in preview mode for the related section
+    const allEntries = await getEntries(
+        "blogPost",
+        { order: "-fields.publishDate" },
+        true,
+    );
+    allPosts = allEntries.items.map(adaptBlogPost);
+}
 
 // Artículos relacionados
-const relatedPosts = blogPosts
-    .filter((p) => p.category === post.category && p.id !== post.id)
+const relatedPosts = allPosts
+    .filter((p: Post) => p.category === post.category && p.id !== post.id)
     .slice(0, 3);
 
 if (relatedPosts.length < 3) {
-    const others = blogPosts
-        .filter((p) => p.category !== post.category && p.id !== post.id)
+    const others = allPosts
+        .filter((p: Post) => p.category !== post.category && p.id !== post.id)
         .slice(0, 3 - relatedPosts.length);
     relatedPosts.push(...others);
 }
@@ -87,10 +116,12 @@ const seoMeta = {
                     style="animation-delay: 0.2s;"
                 >
                     <div class="author-block">
-                        <img
+                        <Image
                             src={post.author.avatar}
                             alt={post.author.name}
                             class="author-avatar"
+                            width={56}
+                            height={56}
                         />
                         <div class="author-info">
                             <span class="author-name">{post.author.name}</span>
@@ -196,10 +227,12 @@ const seoMeta = {
                 }
 
                 <div class="author-bio-card">
-                    <img
+                    <Image
                         src={post.author.avatar}
                         alt={post.author.name}
                         class="bio-avatar"
+                        width={128}
+                        height={128}
                     />
                     <div class="bio-content">
                         <div class="bio-header">
@@ -244,7 +277,7 @@ const seoMeta = {
                             ><i class="ph-duotone ph-hash"></i> Etiquetas:</span
                         >
                         {
-                            post.tags.map((tag) => (
+                            post.tags.map((tag: string) => (
                                 <a href={`/blog/tag/${tag}`} class="tag-link">
                                     {tag}
                                 </a>
@@ -284,7 +317,7 @@ const seoMeta = {
                             </a>
                         </div>
                         <div class="related-grid">
-                            {relatedPosts.map((p) => (
+                            {relatedPosts.map((p: Post) => (
                                 <BlogCard post={p} />
                             ))}
                         </div>

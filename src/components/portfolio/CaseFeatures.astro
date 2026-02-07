@@ -1,0 +1,182 @@
+---
+import type { ZutraCaseStudy, ProjectImage } from "@/types/project-types";
+import { Image } from "astro:assets";
+
+interface Props {
+    project: ZutraCaseStudy;
+}
+
+const { project } = Astro.props;
+---
+
+<section class="case-features">
+    <div class="container">
+        {
+            project.keyFeatures && project.keyFeatures.length > 0 && (
+                <div class="features-box">
+                    <h2 class="section-title">Features Clave</h2>
+                    <div class="features-grid">
+                        {project.keyFeatures.map((feature: any) => (
+                            <div class="feature-card">
+                                <h4 class="feature-title">{feature.title}</h4>
+                                <p class="feature-desc">
+                                    {feature.description}
+                                </p>
+                                {feature.impact && (
+                                    <span class="feature-impact">
+                                        <i class="ph ph-lightning" />{" "}
+                                        {feature.impact}
+                                    </span>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )
+        }
+
+        <div class="gallery-section">
+            <h2 class="section-title">Galería del Proyecto</h2>
+            <div class="gallery-masonry">
+                {
+                    project.gallery.map((img: ProjectImage) => (
+                        <div class={`gallery-item ${img.category || "detail"}`}>
+                            <Image
+                                src={img.src}
+                                alt={img.alt}
+                                width={800}
+                                height={1000}
+                                class="gallery-image"
+                            />
+                            {img.caption && (
+                                <span class="gallery-caption">
+                                    {img.caption}
+                                </span>
+                            )}
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .section-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        margin-bottom: 3rem;
+        color: var(--color-secondary);
+        letter-spacing: -0.02em;
+    }
+
+    .case-features {
+        padding: 8rem 0;
+        background: var(--color-subtle);
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2.5rem;
+        margin: 4rem 0 8rem;
+    }
+
+    .feature-card {
+        padding: 3rem;
+        background: var(--color-primary);
+        border-radius: var(--radius-2xl);
+        border: 1px solid var(--color-line);
+        transition: border-color 0.3s;
+    }
+
+    .feature-card:hover {
+        border-color: var(--color-accent);
+    }
+
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin-bottom: 1.25rem;
+        color: var(--color-secondary);
+    }
+
+    .feature-desc {
+        font-size: 1.1rem;
+        color: var(--color-muted);
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+
+    .feature-impact {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: var(--color-accent);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-transform: uppercase;
+    }
+
+    .gallery-masonry {
+        columns: 2;
+        column-gap: 3rem;
+    }
+
+    .gallery-item {
+        margin-bottom: 3rem;
+        break-inside: avoid;
+        border-radius: var(--radius-2xl);
+        overflow: hidden;
+        border: 1px solid var(--color-line);
+        position: relative;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .gallery-image {
+        width: 100%;
+        height: auto;
+        display: block;
+        transition: transform 0.5s;
+    }
+
+    .gallery-item:hover .gallery-image {
+        transform: scale(1.02);
+    }
+
+    .gallery-caption {
+        background: var(--color-surface);
+        backdrop-filter: blur(5px);
+        color: var(--color-secondary);
+        padding: 1.25rem 2rem;
+        font-size: 0.95rem;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        transform: translateY(100%);
+        transition: transform 0.3s;
+    }
+
+    .gallery-item:hover .gallery-caption {
+        transform: translateY(0);
+    }
+
+    @media (max-width: 1024px) {
+        .gallery-masonry {
+            columns: 1;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .section-title {
+            font-size: 2rem;
+        }
+    }
+</style>

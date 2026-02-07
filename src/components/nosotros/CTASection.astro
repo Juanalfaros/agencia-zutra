@@ -1,0 +1,118 @@
+---
+---
+
+<section class="section final-cta">
+    <div class="container">
+        <div class="cta-content">
+            <div class="cta-badge">Sin compromisos</div>
+            <h2 class="cta-title">
+                ¿Listo para <span class="highlight">ir a todas</span>?
+            </h2>
+            <p class="cta-subtitle">
+                Agenda tu auditoría gratuita. Si no te entregamos
+                claridad y próximos pasos concretos en 30 minutos, te
+                regalamos una hora de consultoría.
+            </p>
+            <div class="cta-actions">
+                <a
+                    href="/schedule"
+                    class="button button--primary button--large"
+                >
+                    <i class="ph-duotone ph-calendar-check" aria-hidden="true"></i>
+                    Agendar auditoría
+                </a>
+                <a
+                    href="/#contacto"
+                    class="button button--secondary button--large"
+                >
+                    Enviar mensaje
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .final-cta {
+        padding: clamp(5rem, 10vh, 8rem) 0;
+        border-top: 1px solid var(--color-line);
+        background: linear-gradient(
+            135deg,
+            var(--color-surface) 0%,
+            var(--color-subtle) 100%
+        );
+        position: relative;
+        overflow: hidden;
+    }
+
+    .final-cta::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 150%;
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            var(--color-accent),
+            transparent
+        );
+    }
+
+    .cta-content {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .cta-badge {
+        display: inline-block;
+        padding: 0.5rem 1.25rem;
+        background: var(--color-accent-subtle);
+        color: var(--color-accent);
+        border: 1px solid var(--color-accent-subtle);
+        border-radius: 999px;
+        font-size: 0.875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 2rem;
+    }
+
+    .cta-title {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: 900;
+        margin-bottom: 1.5rem;
+        color: var(--color-secondary);
+        line-height: 1.1;
+    }
+
+    .cta-title .highlight {
+        color: var(--color-accent);
+        position: relative;
+    }
+
+    .cta-subtitle {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        color: var(--color-muted);
+        margin-bottom: 3rem;
+        line-height: 1.6;
+    }
+
+    .cta-actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .cta-actions .button {
+        min-width: 200px;
+    }
+
+    .cta-actions .button i {
+        margin-right: 0.5rem;
+    }
+</style>

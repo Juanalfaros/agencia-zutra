@@ -1,0 +1,223 @@
+---
+import type { ZutraCaseStudy } from "@/types/project-types";
+
+interface Props {
+    project: ZutraCaseStudy;
+}
+
+const { project } = Astro.props;
+---
+
+{
+    (project.userPersonas || project.designPhilosophy || project.approach) && (
+        <section class="case-strategy">
+            <div class="container">
+                <h2 class="section-title">Estrategia y Descubrimiento</h2>
+
+                {project.approach && (
+                    <div class="approach-box">
+                        <h3 class="subsection-title">El Enfoque</h3>
+                        <p class="description-text">{project.approach}</p>
+                    </div>
+                )}
+
+                {project.userPersonas && project.userPersonas.length > 0 && (
+                    <div class="personas-section">
+                        <h3 class="subsection-title">User Personas</h3>
+                        <div class="personas-grid">
+                            {project.userPersonas.map((persona: any) => (
+                                <div class="persona-card">
+                                    <div class="persona-header">
+                                        <span class="persona-job">
+                                            {persona.occupation}
+                                        </span>
+                                        <h4 class="persona-name">
+                                            {persona.name}
+                                        </h4>
+                                    </div>
+                                    <div class="persona-body">
+                                        <div class="persona-points">
+                                            <span class="mini-label">
+                                                Pain Points
+                                            </span>
+                                            <ul>
+                                                {persona.painPoints.map(
+                                                    (point: string) => (
+                                                        <li>{point}</li>
+                                                    ),
+                                                )}
+                                            </ul>
+                                        </div>
+                                        <div class="persona-points">
+                                            <span class="mini-label">
+                                                Metas
+                                            </span>
+                                            <ul>
+                                                {persona.goals.map(
+                                                    (goal: string) => (
+                                                        <li>{goal}</li>
+                                                    ),
+                                                )}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {project.designPhilosophy && (
+                    <div class="philosophy-box">
+                        <h3 class="subsection-title">Filosofía de Diseño</h3>
+                        <p class="philosophy-text">
+                            "{project.designPhilosophy}"
+                        </p>
+                    </div>
+                )}
+            </div>
+        </section>
+    )
+}
+
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .section-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        margin-bottom: 3rem;
+        color: var(--color-secondary);
+        letter-spacing: -0.02em;
+    }
+
+    .subsection-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--color-accent);
+        display: block;
+    }
+
+    .description-text {
+        font-size: 1.35rem;
+        line-height: 1.6;
+        color: var(--color-muted);
+    }
+
+    .case-strategy {
+        padding: 8rem 0;
+        background: var(--color-subtle);
+    }
+
+    .approach-box {
+        margin-bottom: 5rem;
+        max-width: 850px;
+    }
+
+    .personas-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2.5rem;
+        margin: 2rem 0 5rem;
+    }
+
+    .persona-card {
+        background: var(--color-primary);
+        padding: 2.5rem;
+        border-radius: var(--radius-2xl);
+        border: 1px solid var(--color-line);
+        transition: transform 0.3s;
+    }
+
+    .persona-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .persona-job {
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--color-accent);
+        letter-spacing: 0.1em;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .persona-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--color-secondary);
+        margin-bottom: 2rem;
+    }
+
+    .persona-points {
+        margin-bottom: 2rem;
+    }
+
+    .mini-label {
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        color: var(--color-muted);
+        display: block;
+        margin-bottom: 1rem;
+    }
+
+    .persona-points ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .persona-points li {
+        font-size: 1rem;
+        color: var(--color-muted);
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .persona-points li::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: var(--color-accent);
+    }
+
+    .philosophy-box {
+        background: var(--color-surface);
+        color: var(--color-secondary);
+        padding: 6rem 4rem;
+        border-radius: var(--radius-3xl);
+        text-align: center;
+        border: 1px solid var(--color-line);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .philosophy-text {
+        font-size: 2rem;
+        font-weight: 600;
+        font-style: italic;
+        line-height: 1.4;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 1024px) {
+        .philosophy-box {
+            padding: 4rem 2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .section-title {
+            font-size: 2rem;
+        }
+    }
+</style>

@@ -9,10 +9,9 @@ Zutra es una agencia de **Growth Marketing & Tecnología** con base en Chile. Es
 - **Estilos**: Vanilla CSS con un sistema de tokens globales y variables personalizadas para máxima velocidad.
 - **Iconografía**: [Phosphor Icons](https://phosphoricons.com/) e [Iconify](https://iconify.design/).
 - **Frontend Tools**: [Astro Icon](https://github.com/natemoo-re/astro-icon) para manejo eficiente de SVG.
-- **Backend/Integraciones**:
-  - **Email & CRM**: Brevo (vía API nativa).
-  - **Analytics**: Google Tag Manager.
-  - **Sitemap**: @astrojs/sitemap.
+- **CMS**: [Contentful](https://www.contentful.com/) (Headless CMS).
+- **Preview System**: Integración nativa con Contentful Live Preview para edición en tiempo real.
+- **Sitemap**: @astrojs/sitemap.
 
 ## 📁 Estructura del Proyecto
 
@@ -58,6 +57,18 @@ Zutra es una agencia de **Growth Marketing & Tecnología** con base en Chile. Es
    ```bash
    npm run build
    ```
+
+### 📄 Gestión de Contenido (Contentful)
+
+El sitio utiliza Contentful para gestionar Blog, Portfolio y Servicios. 
+
+1.  **Sincronización**: Para migrar datos locales a Contentful, usa:
+    ```bash
+    pnpm run migrate
+    ```
+2.  **Live Preview**: El sitio soporta previsualización en tiempo real. 
+    - Para habilitarlo en local, asegúrate de tener `CONTENTFUL_PREVIEW_TOKEN` en tu `.env`.
+    - En producción, usa el botón "Open Live Preview" desde Contentful.
 
 ## 🌐 SEO & Indexación
 

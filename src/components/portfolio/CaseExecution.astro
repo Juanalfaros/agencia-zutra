@@ -1,0 +1,227 @@
+---
+import type { ZutraCaseStudy, ProjectPhase } from "@/types/project-types";
+import { Icon } from "astro-icon/components";
+import { getTechIcon } from "../../data/techIcons";
+
+interface Props {
+    project: ZutraCaseStudy;
+}
+
+const { project } = Astro.props;
+---
+
+<section class="case-execution">
+    <div class="container">
+        <div class="execution-layout">
+            <div class="process-main">
+                <h2 class="section-title">Ejecución y Proceso</h2>
+                <div class="text-content">
+                    <p class="description-text">{project.solution}</p>
+                </div>
+                {
+                    project.process && project.process.length > 0 && (
+                        <div class="process-timeline">
+                            {project.process.map(
+                                (phase: ProjectPhase, index: number) => (
+                                    <div class="process-phase">
+                                        <div class="phase-number">
+                                            0{index + 1}
+                                        </div>
+                                        <div class="phase-content">
+                                            <h4 class="phase-name">
+                                                {phase.name}
+                                            </h4>
+                                            <span class="phase-duration">
+                                                {phase.duration}
+                                            </span>
+                                            {phase.highlights && (
+                                                <p class="phase-highlights">
+                                                    {phase.highlights}
+                                                </p>
+                                            )}
+                                            <div class="phase-deliverables">
+                                                {phase.deliverables.map(
+                                                    (item: string) => (
+                                                        <span class="deliverable-tag">
+                                                            {item}
+                                                        </span>
+                                                    ),
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ),
+                            )}
+                        </div>
+                    )
+                }
+            </div>
+            <div class="tech-sidebar">
+                <h3 class="subsection-title">Tech Stack</h3>
+                <div class="tech-grid">
+                    {
+                        project.techStack.map((tech: string) => (
+                            <div class="tech-badge">
+                                <Icon
+                                    name={getTechIcon(tech)}
+                                    class="tech-icon"
+                                />
+                                <span class="tech-name">{tech}</span>
+                            </div>
+                        ))
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .section-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        margin-bottom: 3rem;
+        color: var(--color-secondary);
+        letter-spacing: -0.02em;
+    }
+
+    .subsection-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--color-accent);
+        display: block;
+    }
+
+    .description-text {
+        font-size: 1.35rem;
+        line-height: 1.6;
+        color: var(--color-muted);
+    }
+
+    .case-execution {
+        padding: 8rem 0;
+    }
+
+    .execution-layout {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: 6rem;
+    }
+
+    .process-timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+        margin-top: 4rem;
+    }
+
+    .process-phase {
+        display: flex;
+        gap: 3rem;
+    }
+
+    .phase-number {
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: var(--color-accent);
+        opacity: 0.4;
+        font-family: var(--font-mono, monospace);
+    }
+
+    .phase-name {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--color-secondary);
+        margin-bottom: 0.5rem;
+    }
+
+    .phase-duration {
+        font-size: 0.9rem;
+        color: var(--color-muted);
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: block;
+    }
+
+    .phase-highlights {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: var(--color-muted);
+        margin-bottom: 1.5rem;
+    }
+
+    .phase-deliverables {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .deliverable-tag {
+        padding: 0.4rem 0.8rem;
+        background: var(--color-subtle);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-md);
+        font-size: 0.85rem;
+        color: var(--color-muted);
+    }
+
+    .tech-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .tech-badge {
+        padding: 1rem 1.25rem;
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-xl);
+        text-align: left;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .tech-badge:hover {
+        border-color: var(--color-accent);
+        background: var(--color-subtle);
+        transform: translateX(5px);
+    }
+
+    .tech-icon {
+        font-size: 1.5rem;
+        color: var(--color-accent);
+        flex-shrink: 0;
+    }
+
+    .tech-name {
+        font-weight: 700;
+        color: var(--color-secondary);
+        font-size: 1rem;
+    }
+
+    @media (max-width: 1024px) {
+        .execution-layout {
+            grid-template-columns: 1fr;
+            gap: 4rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .phase-phase {
+            gap: 1.5rem;
+        }
+    }
+</style>

@@ -1,123 +1,258 @@
 ---
-import { results } from "../../data/resultados";
+import { Image } from "astro:assets";
+import { cases } from "../../data/casos"; // Importamos la data real
+import { Icon } from "astro-icon/components";
+import { getTechIcon } from "../../data/techIcons";
+import type { ZutraCaseStudy } from "@/types/project-types";
+
+// Seleccionamos los casos principales (por orden o IDs específicos)
+// Aquí tomamos los primeros 4 definidos en el orden del archivo
+const selectedProjects = cases.sort((a, b) => a.order - b.order).slice(0, 4);
 ---
 
-<section id="resultados" class="section">
+<section id="proyectos" class="section">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">Resultados que hablan por nosotros</h2>
+      <h2 class="section-title">Resultados, no promesas</h2>
       <p class="section-subtitle">
-        Logros clave de proyectos liderados por nuestros fundadores antes de
-        Zutra. Esta es la experiencia que ponemos a tu servicio.
+        Hemos resuelto problemas complejos para industrias exigentes.
+        <br />
+        Desde automatizar matrículas universitarias hasta vender cerveza.
       </p>
     </div>
-    <div class="results-grid">
+
+    <div class="projects-grid">
       {
-        results.map((result) => (
-          <article class="result-card">
-            <div class="card__header">
-              <i class={result.icon} />
-              <p class="card__project">{result.project}</p>
+        selectedProjects.map((project: ZutraCaseStudy) => (
+          /* Ajustamos el link al slug del proyecto */
+          <a href={`/portfolio/${project.slug}`} class="project-card group">
+            <div class="project-card__image-wrap">
+              <Image
+                src={project.featuredImage.src}
+                alt={`Caso de éxito: ${project.title}`}
+                width={800}
+                height={600}
+                class="project-card__image"
+              />
+              <div class="project-card__overlay">
+                <span class="view-case-btn">Ver Caso Completo</span>
+              </div>
             </div>
-            <h3 class="card__achievement">{result.achievement}</h3>
-            <p class="card__context" set:html={result.context} />
-            <div class="card__footer">
-              <p class="card__attribution">{result.attribution}</p>
+
+            <div class="project-card__content">
+              <div class="project-card__meta">
+                {/* Mapeamos Industry como Categoría */}
+                <span class="project-category">{project.industry}</span>
+
+                {/* Lógica para mostrar la métrica más importante si existe */}
+                {project.metrics && project.metrics.length > 0 && (
+                  <span class="project-metric">
+                    <i class="ph-duotone ph-trend-up" />
+                    {project.metrics[0].value} {project.metrics[0].label}
+                  </span>
+                )}
+              </div>
+
+              <h3 class="project-title">{project.title}</h3>
+              <p class="project-desc line-clamp-3">{project.description}</p>
+
+              <div class="project-tags">
+                {/* Mostramos el Tech Stack o Servicios como tags (max 3) */}
+                {project.techStack.slice(0, 3).map((tag: string) => (
+                  <span class="tag">
+                    <Icon name={getTechIcon(tag)} class="tag-icon" />
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
-          </article>
+          </a>
         ))
       }
     </div>
-    <div class="section-cta">
-      <a
-        href="#contacto"
-        data-track="cta_resultados_click"
-        data-loc="resultados"
-        class="button button--primary button--icon-right"
-      >
-        Quiero resultados así <i class="ph-duotone ph-arrow-right"></i>
+
+    <div class="section-footer">
+      <a href="/portafolio" class="button button--secondary">
+        Ver todos los proyectos <i class="ph ph-arrow-right"></i>
       </a>
     </div>
   </div>
 </section>
 
 <style>
-  .results-grid {
+  .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    gap: 2rem;
     margin-top: 3rem;
   }
 
-  .result-card {
-    border: 1px solid var(--color-line);
-    border-radius: var(--radius-md);
-    padding: 1.5rem;
+  /* Diseño de tarjeta */
+  .project-card {
     display: flex;
     flex-direction: column;
-    text-align: left;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    /* Fallback por si la variable no está definida globalmente */
+    background-color: var(--color-surface, #111);
+    transition:
+      transform 0.3s ease,
+      border-color 0.3s ease;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
+  }
+
+  .project-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--color-accent);
+  }
+
+  /* Imagen */
+  .project-card__image-wrap {
+    position: relative;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+  }
+
+  .project-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .project-card:hover .project-card__image {
+    transform: scale(1.05);
+  }
+
+  /* Overlay al hover */
+  .project-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .project-card:hover .project-card__overlay {
+    opacity: 1;
+  }
+
+  .view-case-btn {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 0.875rem;
+    transform: translateY(10px);
     transition: transform 0.3s ease;
   }
 
-  .result-card:hover {
-    transform: translateY(-4px);
+  .project-card:hover .view-case-btn {
+    transform: translateY(0);
   }
 
-  .card__header {
+  /* Contenido */
+  .project-card__content {
+    padding: 1.5rem;
     display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
-  }
-
-  .card__header i {
-    font-size: 1.5rem;
-    color: var(--color-accent);
-  }
-
-  .card__project {
-    margin: 0;
-    font-size: 0.875rem;
-    font-weight: 700;
-    color: var(--color-secondary);
-    opacity: 0.8;
-  }
-
-  .card__achievement {
-    font-size: 1.5rem;
-    font-weight: 800;
-    line-height: 1.2;
-    margin: 0 0 0.75rem 0;
-    color: var(--color-accent);
-  }
-
-  .card__context {
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: var(--color-muted);
-    margin: 0;
+    flex-direction: column;
     flex-grow: 1;
   }
 
-  .card__context :global(strong) {
-    color: var(--color-secondary);
+  .project-card__meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    gap: 1rem;
   }
 
-  .card__footer {
-    margin-top: 1.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--color-line);
+  .project-category {
+    color: var(--color-accent);
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  .card__attribution {
-    margin: 0;
+  .project-metric {
+    background-color: var(--color-subtle, rgba(255, 255, 255, 0.05));
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.7rem;
+    white-space: nowrap;
+  }
+
+  .project-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin: 0 0 0.5rem;
+    line-height: 1.2;
+    color: var(--color-heading, #fff);
+  }
+
+  .project-desc {
+    font-size: 0.95rem;
+    color: var(--color-muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+    flex-grow: 1;
+  }
+
+  /* Utilidad para cortar texto largo */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .project-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: auto; /* Empuja los tags al fondo si sobra espacio */
+  }
+
+  .tag {
     font-size: 0.75rem;
     color: var(--color-muted);
-    font-style: italic;
+    background: var(--color-line);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
   }
 
+  .tag-icon {
+    font-size: 0.9rem;
+    color: var(--color-accent);
+  }
+
+  .section-footer {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  /* Responsive Grid */
   @media (min-width: 768px) {
-    .results-grid {
+    .projects-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }

@@ -1,531 +1,540 @@
 ---
 import { Image } from "astro:assets";
+// Asegúrate de que la ruta a los datos sea correcta
 import { chips, founders } from "../../data/quienes-somos";
 ---
 
 <section id="quienes-somos" class="section">
-	<div class="container">
-		<div class="section-header">
-			<h2 class="section-title">Quiénes somos</h2>
-			<p class="section-subtitle">
-				Identidad operativa: <strong>audacia con plan</strong> + <strong
-					>maestría técnica</strong
-				>.
-			</p>
-		</div>
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Quiénes somos</h2>
+            <p class="section-subtitle">
+                Identidad operativa: <strong>Audacia creativa</strong> + <strong
+                    >Maestría técnica</strong
+                >. <br>Sin intermediarios, sin burocracia.
+            </p>
+        </div>
 
-		<div class="chips-container">
-			{
-				chips.map((chip) => (
-					<span class={`chip ${chip.primary ? "chip--primary" : ""}`}>
-						<i class={chip.icon} />
-						{chip.text}
-					</span>
-				))
-			}
-		</div>
+        <div class="chips-container">
+            {
+                chips.map((chip) => (
+                    <span class={`chip ${chip.primary ? "chip--primary" : ""}`}>
+                        <i class={chip.icon} />
+                        {chip.text}
+                    </span>
+                ))
+            }
+        </div>
 
-		<div
-			class="tabs-container"
-			role="tablist"
-			aria-label="Contenido de Quiénes somos"
-		>
-			<button
-				class="tab-button"
-				role="tab"
-				aria-selected="false"
-				aria-controls="qs-tab-manifiesto"
-				id="qs-btn-manifiesto"
-				data-target="qs-tab-manifiesto">Manifiesto</button
-			>
-			<button
-				class="tab-button active"
-				role="tab"
-				aria-selected="true"
-				aria-controls="qs-tab-roles"
-				id="qs-btn-roles"
-				data-target="qs-tab-roles">Fundadores</button
-			>
-			<button
-				class="tab-button"
-				role="tab"
-				aria-selected="false"
-				aria-controls="qs-tab-metodo"
-				id="qs-btn-metodo"
-				data-target="qs-tab-metodo">Cómo trabajamos</button
-			>
-		</div>
+        <div
+            class="tabs-container"
+            role="tablist"
+            aria-label="Contenido de Quiénes somos"
+        >
+            <button
+                class="tab-button active"
+                role="tab"
+                aria-selected="true"
+                aria-controls="qs-tab-fundadores"
+                id="qs-btn-fundadores"
+                data-target="qs-tab-fundadores">Fundadores</button
+            >
+            <button
+                class="tab-button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="qs-tab-manifiesto"
+                id="qs-btn-manifiesto"
+                data-target="qs-tab-manifiesto">Manifiesto</button
+            >
+            <button
+                class="tab-button"
+                role="tab"
+                aria-selected="false"
+                aria-controls="qs-tab-workflow"
+                id="qs-btn-workflow"
+                data-target="qs-tab-workflow">Workflow</button
+            >
+        </div>
 
-		<div
-			id="qs-tab-metodo"
-			role="tabpanel"
-			aria-labelledby="qs-btn-metodo"
-			class="tab-panel hidden"
-		>
-			<div class="panel-container">
-				<div class="panel-grid">
-					<article class="panel-card">
-						<div class="panel-card__header">
-							<div class="panel-card__number">1</div>
-							<h3 class="panel-card__title">
-								Diagnóstico + KPIs
-							</h3>
-						</div>
-						<p class="panel-card__text">
-							Aterrizamos problema, hipótesis y métricas. Te queda
-							un plan claro.
-						</p>
-					</article>
-					<article class="panel-card">
-						<div class="panel-card__header">
-							<div class="panel-card__number">2</div>
-							<h3 class="panel-card__title">
-								Ejecución con foco
-							</h3>
-						</div>
-						<p class="panel-card__text">
-							Creatividades + tech listo para medir: ads,
-							contenido y web.
-						</p>
-					</article>
-					<article class="panel-card">
-						<div class="panel-card__header">
-							<div class="panel-card__number">3</div>
-							<h3 class="panel-card__title">
-								Aprender y escalar
-							</h3>
-						</div>
-						<p class="panel-card__text">
-							Reportes breves, decisiones claras. Lo que funciona,
-							se escala.
-						</p>
-					</article>
-				</div>
-				<div class="panel__cta-container">
-					<a href="#metodo" class="panel__cta-link"
-						>Ver método en detalle <i
-							class="ph-duotone ph-arrow-up-right"></i></a
-					>
-				</div>
-			</div>
-		</div>
+        <div
+            id="qs-tab-fundadores"
+            role="tabpanel"
+            aria-labelledby="qs-btn-fundadores"
+            class="tab-panel active"
+        >
+            <div class="panel-container">
+                <div class="founders-grid">
+                    {
+                        founders.map((founder) => (
+                            <article class="founder-card">
+                                <div class="founder-card__visual">
+                                    <div class="founder-card__blob">
+                                        <svg viewBox="0 0 390.49 363.11">
+                                            <path
+                                                fill="currentColor"
+                                                d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"
+                                            />
+                                        </svg>
+                                    </div>
+                                    <Image
+                                        src={founder.image}
+                                        alt={founder.name}
+                                        class="founder-card__image"
+                                        width={600}
+                                        height={800}
+                                    />
+                                </div>
+                                <div class="founder-card__content">
+                                    <div class="founder-header">
+                                        <h3 class="founder-card__title">
+                                            {founder.name}
+                                        </h3>
+                                        <p class="founder-card__role">
+                                            {founder.role}
+                                        </p>
+                                    </div>
+                                    <div class="founder-specs">
+                                        <span class="specs-label">Core Skills:</span>
+                                        <ul class="founder-card__list">
+                                            {founder.bullets.map(
+                                                (bullet: string) => (
+                                                    <li>
+                                                        <i class="ph-bold ph-check" />
+                                                        {bullet}
+                                                    </li>
+                                                ),
+                                            )}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </article>
+                        ))
+                    }
+                </div>
+            </div>
+        </div>
 
-		<div
-			id="qs-tab-manifiesto"
-			role="tabpanel"
-			aria-labelledby="qs-btn-manifiesto"
-			class="tab-panel hidden"
-		>
-			<div class="panel-container">
-				<div class="panel-grid--two-col">
-					<div>
-						<h3 class="panel__sub-title">
-							<i class="ph-duotone ph-fire"></i> ZUTRA: ir a todas,
-							con cabeza
-						</h3>
-						<ul class="panel__list">
-							<li>
-								<i class="ph-duotone ph-target"></i>Audacia con
-								hipótesis: arriesgamos donde hay retorno
-								esperado.
-							</li>
-							<li>
-								<i class="ph-duotone ph-flask"></i>Aprendizaje
-								continuo: ciclos cortos → decisión → escala.
-							</li>
-							<li>
-								<i class="ph-duotone ph-lock-key-open"
-								></i>Transparencia radical: métricas y avances a
-								la vista.
-							</li>
-							<li>
-								<i class="ph-duotone ph-user-focus"
-								></i>Responsables claros: quién hace qué y
-								cuándo.
-							</li>
-						</ul>
-					</div>
-					<div>
-						<h3 class="panel__sub-title">
-							<i class="ph-duotone ph-shield-check"></i> Lo que no somos
-						</h3>
-						<ul class="panel__list">
-							<li>
-								<i class="ph-duotone ph-x-circle"></i>No
-								vendemos humo ni “likes” sin impacto de negocio.
-							</li>
-							<li>
-								<i class="ph-duotone ph-x-circle"></i>No
-								improvisamos la técnica: performance y tracking
-								primero.
-							</li>
-							<li>
-								<i class="ph-duotone ph-x-circle"></i>No
-								contratos amarrados: seguimos solo si aporta.
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div class="panel__cta-container">
-					<a
-						href="#contacto"
-						class="button button--primary button--icon-right"
-						>Conversemos 20’ <i class="ph-duotone ph-arrow-right"
-						></i></a
-					>
-				</div>
-			</div>
-		</div>
+        <div
+            id="qs-tab-manifiesto"
+            role="tabpanel"
+            aria-labelledby="qs-btn-manifiesto"
+            class="tab-panel hidden"
+        >
+            <div class="panel-container">
+                <div class="panel-grid--two-col">
+                    <div class="manifesto-block">
+                        <h3 class="panel__sub-title text-accent">
+                            <i class="ph-duotone ph-lightning"></i> Ir a todas, con cabeza
+                        </h3>
+                        <ul class="panel__list">
+                            <li>
+                                <i class="ph-bold ph-check"></i>
+                                <span><strong>Audacia con datos:</strong> Arriesgamos en el diseño, pero aseguramos en la infraestructura.</span>
+                            </li>
+                            <li>
+                                <i class="ph-bold ph-check"></i>
+                                <span><strong>Aprendizaje continuo:</strong> Ciclos cortos de 14 días. Lanzar, medir, iterar.</span>
+                            </li>
+                            <li>
+                                <i class="ph-bold ph-check"></i>
+                                <span><strong>Transparencia radical:</strong> Tienes acceso a los mismos tableros que nosotros.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="manifesto-block">
+                        <h3 class="panel__sub-title text-muted">
+                            <i class="ph-duotone ph-prohibit"></i> Lo que NO somos
+                        </h3>
+                        <ul class="panel__list negative-list">
+                            <li>
+                                <i class="ph-bold ph-x"></i>
+                                <span>No vendemos "likes" ni métricas de vanidad.</span>
+                            </li>
+                            <li>
+                                <i class="ph-bold ph-x"></i>
+                                <span>No somos una "fábrica de posts" genéricos.</span>
+                            </li>
+                            <li>
+                                <i class="ph-bold ph-x"></i>
+                                <span>No amarramos clientes con contratos abusivos.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="panel__cta-container">
+                    <a
+                        href="#contacto"
+                        class="button button--primary button--icon-right"
+                        >Hablemos de negocios <i class="ph-duotone ph-arrow-right"
+                        ></i></a
+                    >
+                </div>
+            </div>
+        </div>
 
-		<div
-			id="qs-tab-roles"
-			role="tabpanel"
-			aria-labelledby="qs-btn-roles"
-			class="tab-panel active"
-		>
-			<div class="panel-container">
-				<div class="panel-grid--two-col">
-					{
-						founders.map((founder) => (
-							<article class="founder-card">
-								<div class="founder-card__image-wrapper">
-									<div class="founder-card__blob">
-										<svg viewBox="0 0 390.49 363.11">
-											<path
-												fill="var(--color-accent)"
-												d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"
-											/>
-										</svg>
-									</div>
-									<Image
-										src={founder.image}
-										alt={founder.name}
-										class="founder-card__image"
-										width={900}
-										height={1200}
-										loading="lazy"
-										decoding="async"
-									/>
-								</div>
-								<div class="founder-card__text-wrapper">
-									<h3 class="founder-card__title">
-										{founder.name}
-									</h3>
-									<p class="founder-card__subtitle">
-										{founder.role}
-									</p>
-									<ul class="founder-card__list">
-										{founder.bullets.map((bullet) => (
-											<li>
-												<i class="ph-duotone ph-quotes" />
-												{bullet}
-											</li>
-										))}
-									</ul>
-								</div>
-							</article>
-						))
-					}
-				</div>
-				<p class="panel__footer-text">
-					Creatividad con criterio + ejecución impecable. <strong
-						>Equipo, no proveedor.</strong
-					>
-				</p>
-			</div>
-		</div>
-	</div>
+        <div
+            id="qs-tab-workflow"
+            role="tabpanel"
+            aria-labelledby="qs-btn-workflow"
+            class="tab-panel hidden"
+        >
+            <div class="panel-container">
+                <div class="workflow-grid">
+                    <article class="workflow-card">
+                        <div class="workflow-step">01</div>
+                        <h3 class="workflow-title">Diagnóstico Directo</h3>
+                        <p class="workflow-text">
+                            Sin rodeos. Analizamos tu stack técnico y tu marca. Definimos dónde está la fuga de dinero o atención.
+                        </p>
+                    </article>
+                    <article class="workflow-card">
+                        <div class="workflow-step">02</div>
+                        <h3 class="workflow-title">Ejecución Técnica</h3>
+                        <p class="workflow-text">
+                            Desplegamos código, diseño y automatizaciones. Construimos activos propios, no alquilados.
+                        </p>
+                    </article>
+                    <article class="workflow-card">
+                        <div class="workflow-step">03</div>
+                        <h3 class="workflow-title">Soporte Evolutivo</h3>
+                        <p class="workflow-text">
+                            No desaparecemos. Nos quedamos como tu partner para optimizar, mantener y escalar mes a mes.
+                        </p>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
+<script>
+    document.addEventListener('astro:page-load', () => {
+        const tabs = document.querySelectorAll('.tab-button');
+        const panels = document.querySelectorAll('.tab-panel');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetId = tab.getAttribute('data-target');
+                
+                if (!targetId) return;
+
+                // 1. Quitar active de todos los tabs y panels
+                tabs.forEach(t => {
+                    t.setAttribute('aria-selected', 'false');
+                    t.classList.remove('active');
+                });
+                panels.forEach(p => {
+                    p.classList.add('hidden');
+                    p.classList.remove('active');
+                });
+
+                // 2. Activar el seleccionado
+                tab.setAttribute('aria-selected', 'true');
+                tab.classList.add('active');
+                
+                const targetPanel = document.getElementById(targetId);
+                if (targetPanel) {
+                    targetPanel.classList.remove('hidden');
+                    targetPanel.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
+
 <style>
-	.chips-container {
-		margin-top: 1.25rem;
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		gap: 0.75rem;
-	}
+    /* CHIPS */
+    .chips-container {
+        margin-top: 1.5rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.75rem;
+    }
 
-	.chip {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		height: 2.25rem;
-		padding: 0 1rem;
-		border-radius: var(--radius-full);
-		border: 1px solid var(--color-line);
-		font-weight: 700;
-		font-size: 0.875rem;
-		color: var(--color-muted);
-	}
+    .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        height: 2.5rem;
+        padding: 0 1.25rem;
+        border-radius: var(--radius-full);
+        border: 1px solid var(--color-line);
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: var(--color-muted);
+        transition: all 0.2s ease;
+    }
 
-	.chip--primary {
-		background-color: var(--color-accent);
-		color: var(--color-on-accent);
-		border-color: transparent;
-	}
+    .chip--primary {
+        background-color: var(--color-on-accent-subtle);
+        color: var(--color-accent);
+        border-color: var(--color-accent);
+    }
+    
+    .chip:hover {
+        border-color: var(--color-accent);
+        color: var(--color-secondary);
+    }
 
-	.chip i {
-		font-size: 1rem;
-	}
+    /* TABS NAV */
+    .tabs-container {
+        margin-top: 3rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        background: rgba(255,255,255,0.03);
+        border-radius: 99px; /* Pill shape container */
+        border: 1px solid var(--color-line);
+        width: fit-content;
+        margin-left: auto;
+        margin-right: auto;
+    }
 
-	.tabs-container {
-		margin-top: 2.5rem;
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: center;
-		gap: 1rem;
-	}
+    .tab-button {
+        padding: 0.6rem 1.5rem;
+        border-radius: 99px;
+        border: none;
+        background-color: transparent;
+        color: var(--color-muted);
+        font-family: inherit;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-	.tab-button {
-		padding: 0.75rem 1.5rem;
-		border-radius: var(--radius-md);
-		border: 1px solid var(--color-line);
-		background-color: transparent;
-		color: var(--color-muted);
-		font-family: inherit;
-		font-size: 1rem;
-		cursor: pointer;
-		transition: all 0.3s ease;
-	}
+    .tab-button:hover {
+        color: var(--color-secondary);
+    }
 
-	.tab-button:hover {
-		border-color: var(--color-accent);
-		color: var(--color-secondary);
-	}
+    .tab-button.active {
+        background-color: var(--color-accent);
+        color: var(--color-on-accent);
+    }
 
-	.tab-button.active {
-		background-color: var(--color-accent);
-		color: var(--color-on-accent);
-		border-color: var(--color-accent);
-		font-weight: 800;
-	}
+    /* PANELS */
+    .tab-panel {
+        margin-top: 2.5rem;
+        animation: fadeIn 0.4s ease;
+    }
+    
+    .hidden {
+        display: none;
+    }
 
-	.tab-panel {
-		margin-top: 2rem;
-	}
 
-	.panel-container {
-		border: 1px solid var(--color-line);
-		border-radius: var(--radius-xl);
-		padding: 2rem;
-	}
+    /* FOUNDERS GRID */
+    .founders-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
 
-	.panel-grid,
-	.panel-grid--two-col {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 1.5rem;
-	}
+    .founder-card {
+        display: grid;
+        gap: 2rem;
 
-	.panel-card {
-		border: 1px solid var(--color-line);
-		border-radius: var(--radius-lg);
-		padding: 1.5rem;
-		transition: transform 0.3s ease;
-	}
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        transition: transform 0.3s ease;
+    }
 
-	.panel-card:hover {
-		transform: translateY(-4px);
-	}
+    .founder-card:hover {
+        border-color: var(--color-accent);
+        transform: translateY(-2px);
+    }
 
-	.panel-card__header {
-		display: flex;
-		align-items: center;
-		gap: 1rem;
-		margin-bottom: 1rem;
-	}
+    .founder-card__visual {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .founder-card__blob {
+        position: absolute;
+        width: 120%;
+        color: var(--color-accent);
+        z-index: 0;
+    }
 
-	.panel-card__number {
-		width: 2.5rem;
-		height: 2.5rem;
-		border-radius: var(--radius-full);
-		background-color: var(--color-accent);
-		color: var(--color-on-accent);
-		font-weight: 800;
-		display: grid;
-		place-items: center;
-		flex-shrink: 0;
-	}
+    .founder-card__image {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        max-width: 250px;
+        border-radius: var(--radius-lg);
+        object-fit: cover;
+    }
 
-	.panel-card__title {
-		font-size: 1.25rem;
-		font-weight: 800;
-		margin: 0;
-		color: var(--color-secondary);
-	}
+    .founder-header {
+        margin-bottom: 1rem;
+        border-bottom: 1px solid var(--color-line);
+        padding-bottom: 1rem;
+    }
 
-	.panel-card__text {
-		margin: 0;
-		color: var(--color-gray-300);
-		line-height: 1.6;
-	}
+    .founder-card__title {
+        font-size: 1.5rem;
+        font-weight: 800;
+        margin: 0;
+        color: var(--color-secondary);
+    }
 
-	.panel__cta-container {
-		margin-top: 2rem;
-		text-align: center;
-	}
+    .founder-card__role {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-accent);
+        font-weight: 700;
+        margin-top: 0.25rem;
+    }
 
-	.panel__cta-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.75rem 1.5rem;
-		border-radius: var(--radius-md);
-		background-color: var(--color-subtle);
-		border: 1px solid var(--color-line);
-		transition: all 0.3s ease;
-		font-weight: 700;
-	}
+    .founder-card__bio {
+        font-size: 0.95rem;
+        color: var(--color-muted);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
 
-	.panel__cta-link:hover {
-		border-color: var(--color-accent);
-		color: var(--color-accent);
-	}
+    .specs-label {
+        display: block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: var(--color-muted);
+        margin-bottom: 0.75rem;
+        font-weight: 700;
+    }
 
-	.panel__sub-title {
-		font-size: 1.5rem;
-		font-weight: 800;
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		margin-bottom: 1.5rem;
-		color: var(--color-secondary);
-	}
+    .founder-card__list {
+        list-style: none;
+        padding: 0;
+        display: grid;
+        gap: 0.5rem;
+    }
 
-	.panel__sub-title i {
-		color: var(--color-accent);
-	}
+    .founder-card__list li {
+        display: flex;
+        gap: 0.75rem;
+        font-size: 0.9rem;
+        color: var(--color-muted);
+        align-items: flex-start;
+    }
 
-	.panel__list {
-		margin: 0;
-		padding: 0;
-		list-style: none;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
+    .founder-card__list i {
+        color: var(--color-accent);
+        margin-top: 3px;
+    }
 
-	.panel__list li {
-		display: flex;
-		gap: 0.75rem;
-		color: var(--color-gray-300);
-		line-height: 1.5;
-	}
+    /* MANIFIESTO LAYOUT */
+    .panel-grid--two-col {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
 
-	.panel__list i {
-		color: var(--color-accent);
-		margin-top: 0.25rem;
-		flex-shrink: 0;
-	}
+    .panel__sub-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
 
-	.panel__footer-text {
-		margin-top: 3rem;
-		text-align: center;
-		font-size: 1rem;
-		color: var(--color-muted);
-	}
+    .text-accent { color: var(--color-secondary); }
+    .text-accent i { color: var(--color-accent); }
+    
+    .text-muted { color: var(--color-muted); }
+    
+    .panel__list li {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 1rem;
+        line-height: 1.5;
+        color: var(--color-muted);
+    }
+    
+    .panel__list i {
+        color: var(--color-accent);
+        font-size: 1.1rem;
+        flex-shrink: 0;
+        margin-top: 2px;
+    }
+    
+    .negative-list i {
+        color: var(--color-muted);
+    }
 
-	.founder-card {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 2rem;
-		align-items: center;
-		padding: 1.5rem;
-		border-radius: var(--radius-lg);
-		background-color: var(--color-accent-subtle);
-		border: 1px solid var(--color-accent-subtle);
-	}
+    /* WORKFLOW */
+    .workflow-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
 
-	.founder-card__image-wrapper {
-		position: relative;
-		max-width: 280px;
-		width: 100%;
-		margin: 0 auto;
-	}
+    .workflow-card {
+        background: var(--color-bg);
+        border: 1px solid var(--color-line);
+        padding: 2rem;
+        border-radius: var(--radius-lg);
+        position: relative;
+        overflow: hidden;
+    }
 
-	.founder-card__blob {
-		position: absolute;
-		z-index: 0;
-		left: 50%;
-		top: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
-		opacity: 0.8;
-	}
+    .workflow-step {
+        font-size: 4rem;
+        font-weight: 900;
+        color: var(--color-line);
+        position: absolute;
+        top: 0;
+        right: 1rem;
+        opacity: 0.3;
+        line-height: 1;
+    }
 
-	.founder-card__image {
-		position: relative;
-		z-index: 1;
-		width: 90%;
-		margin: 0 auto;
-		border-radius: var(--radius-lg);
-	}
+    .workflow-title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: var(--color-secondary);
+        margin-bottom: 0.75rem;
+        position: relative;
+    }
 
-	.founder-card__text-wrapper {
-		text-align: center;
-	}
+    .workflow-text {
+        font-size: 0.95rem;
+        color: var(--color-muted);
+        position: relative;
+        max-width: 90%;
+    }
+    
+    .panel__cta-container {
+        margin-top: 3rem;
+        text-align: center;
+    }
 
-	.founder-card__title {
-		font-size: 1.75rem;
-		font-weight: 800;
-		margin: 0;
-		color: var(--color-secondary);
-	}
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 
-	.founder-card__subtitle {
-		font-weight: 700;
-		color: var(--color-accent);
-		margin: 0.5rem 0 1.5rem;
-		text-transform: uppercase;
-		font-size: 0.875rem;
-		letter-spacing: 0.05em;
-	}
+    /* RESPONSIVE */
+    @media (min-width: 768px) {
+        .panel-grid--two-col {
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
 
-	.founder-card__list {
-		margin: 0;
-		padding: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-		list-style: none;
-	}
-
-	.founder-card__list li {
-		display: flex;
-		align-items: flex-start;
-		gap: 0.75rem;
-		color: var(--color-gray-300);
-		text-align: left;
-		font-size: 0.95rem;
-	}
-
-	.founder-card__list i {
-		color: var(--color-accent);
-		margin-top: 0.25rem;
-		flex-shrink: 0;
-	}
-
-	@media (min-width: 768px) {
-		.panel-grid--two-col {
-			grid-template-columns: 1fr 1fr;
-			gap: 3rem;
-		}
-
-		.founder-card {
-			grid-template-columns: 1fr;
-			text-align: center;
-		}
-	}
-
-	@media (min-width: 1024px) {
-		.founder-card {
-			grid-template-columns: 200px 1fr;
-			text-align: left;
-		}
-
-		.founder-card__text-wrapper {
-			text-align: left;
-		}
-	}
+        .workflow-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .founders-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
 </style>

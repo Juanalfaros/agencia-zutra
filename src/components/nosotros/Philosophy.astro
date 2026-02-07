@@ -1,0 +1,169 @@
+---
+const items = [
+    {
+        icon: "ph-lightning",
+        title: "Ejecución Obsesiva",
+        description: "Menos reuniones, más lanzamientos. Nos movemos en ciclos cortos para que veas avance real (código, diseño), no solo reportes de intención."
+    },
+    {
+        icon: "ph-code",
+        title: "Maestría Técnica",
+        description: "No tercerizamos la ejecución web. Construimos nuestras propias infraestructuras con Astro y código moderno para asegurar que cada página vuele y convierta."
+    },
+    {
+        icon: "ph-target",
+        title: "Foco en el Bottom Line",
+        description: "Los \"likes\" no pagan nóminas. Optimizamos para ventas, automatización y eficiencia operativa. Hablamos el lenguaje de tu negocio, no el de las vanidades."
+    }
+];
+---
+
+<section class="section philosophy" aria-labelledby="philosophy-title">
+    <div class="container">
+        <div class="philosophy-grid">
+            <div class="phi-content">
+                <h2 id="philosophy-title" class="section-title">¿Por qué Zutra?</h2>
+                <ul class="phi-items" role="list">
+                    {items.map((item, index) => (
+                        <li class="phi-item reveal">
+                            <i class={`ph-duotone ${item.icon}`} aria-hidden="true"></i>
+                            <div class="phi-item__body">
+                                <h3>{item.title}</h3>
+                                <p>{item.description}</p>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+            <div class="phi-visual reveal">
+                <figure class="phi-box">
+                    <span class="phi-tag">VALIENTE</span>
+                    <blockquote class="phi-quote">
+                        "El riesgo más grande es no arriesgar nada en
+                        una campaña que nadie recordará."
+                    </blockquote>
+                </figure>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .philosophy {
+        border-top: 1px solid var(--color-line);
+    }
+
+    .philosophy-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 0.8fr;
+        gap: 4rem;
+        align-items: center;
+    }
+
+    .phi-items {
+        list-style: none;
+        padding: 0;
+        margin: 3rem 0 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+
+    .phi-item {
+        display: flex;
+        gap: 1.5rem;
+        align-items: flex-start;
+        transition: transform 0.3s ease;
+    }
+
+    .phi-item:hover {
+        transform: translateX(10px);
+    }
+
+    .phi-item i,
+    .phi-item svg {
+        font-size: 2rem;
+        color: var(--color-accent);
+        flex-shrink: 0;
+        width: 2.5rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 0.15rem;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .phi-item:hover i,
+    .phi-item:hover svg {
+        transform: scale(1.2) rotate(10deg);
+    }
+
+    .phi-item h3 {
+        font-size: 1.25rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        color: var(--color-secondary);
+    }
+
+    .phi-item p {
+        color: var(--color-muted);
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .phi-visual {
+        order: -1;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .phi-box {
+        background: var(--color-accent);
+        padding: 3rem;
+        border-radius: var(--radius-2xl);
+        position: relative;
+        transform: rotate(2deg);
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        cursor: default;
+    }
+
+    .phi-box:hover {
+        transform: rotate(0deg) scale(1.02);
+        box-shadow: 0 20px 40px var(--color-accent-subtle);
+    }
+
+    .phi-tag {
+        position: absolute;
+        top: -1rem;
+        left: 2rem;
+        background: var(--color-secondary);
+        color: var(--color-surface);
+        padding: 0.4rem 1rem;
+        font-weight: 900;
+        font-size: 0.75rem;
+        border-radius: var(--radius-sm);
+    }
+
+    .phi-quote {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--color-on-accent);
+        margin: 0;
+        line-height: 1.3;
+        border: 0;
+        padding: 0;
+    }
+
+    @media (max-width: 1024px) {
+        .philosophy-grid {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+        }
+
+        .phi-visual {
+            order: -1;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    }
+</style>

@@ -1,8 +1,24 @@
 ---
-import { cases } from "../../data/casos";
+import { getEntries } from "@/lib/contentful";
+import { adaptPortfolioCase } from "@/lib/contentful-adapters";
 import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import { getTechIcon } from "../../data/techIcons";
+import type { ZutraCaseStudy } from "@/types/project-types";
 
-const sortedCases = cases.sort((a, b) => (a.order || 0) - (b.order || 0));
+// Check for preview cookie
+const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+
+// Fetch portfolio cases from Contentful
+const entries = await getEntries(
+	"portfolioCase",
+	{
+		order: "fields.order",
+		limit: 6,
+	},
+	isPreview,
+);
+const sortedCases = entries.items.map(adaptPortfolioCase);
 ---
 
 <section id="casos" class="section">
@@ -12,11 +28,11 @@ const sortedCases = cases.sort((a, b) => (a.order || 0) - (b.order || 0));
 		</div>
 		<div class="portfolio-grid">
 			{
-				sortedCases.map((project) => (
+				sortedCases.map((project: ZutraCaseStudy) => (
 					<a href={`/portfolio/${project.slug}`} class="project-card">
 						<div class="project-image-wrapper">
 							<Image
-								src={project.image}
+								src={project.featuredImage.src}
 								alt={project.title}
 								width={800}
 								height={600}
@@ -39,21 +55,29 @@ const sortedCases = cases.sort((a, b) => (a.order || 0) - (b.order || 0));
 							<h3 class="project-title">{project.title}</h3>
 							<p class="project-desc">{project.description}</p>
 							<div class="project-tags">
-								{project.techStack.slice(0, 3).map((tag) => (
-									<span class="tech-tag">{tag}</span>
-								))}
+								{project.techStack
+									.slice(0, 3)
+									.map((tag: string) => (
+										<span class="tech-tag">
+											<Icon
+												name={getTechIcon(tag)}
+												class="tech-tag-icon"
+											/>
+											{tag}
+										</span>
+									))}
 							</div>
 						</div>
 					</a>
 				))
 			}
 		</div>
-		<p class="disclaimer-text">
+		<!-- <p class="disclaimer-text">
 			*Nota: Algunos de estos proyectos fueron liderados por nuestros
 			fundadores antes de la creación de Zutra. Si deseas referencias, con
 			gusto te conectaremos con los líderes que supervisaron estas
 			iniciativas.
-		</p>
+		</p> -->
 	</div>
 </section>
 
@@ -161,7 +185,7 @@ const sortedCases = cases.sort((a, b) => (a.order || 0) - (b.order || 0));
 
 	.project-desc {
 		font-size: 0.95rem;
-		color: var(--color-gray-300);
+		color: var(--color-muted);
 		line-height: 1.5;
 		margin-bottom: 1.25rem;
 		display: -webkit-box;
@@ -178,11 +202,19 @@ const sortedCases = cases.sort((a, b) => (a.order || 0) - (b.order || 0));
 
 	.tech-tag {
 		font-size: 0.75rem;
-		padding: 0.25rem 0.5rem;
+		padding: 0.25rem 0.6rem;
 		background-color: var(--color-subtle);
 		border-radius: var(--radius-sm);
 		color: var(--color-muted);
 		font-weight: 500;
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+	}
+
+	.tech-tag-icon {
+		font-size: 0.9rem;
+		color: var(--color-accent);
 	}
 
 	.disclaimer-text {

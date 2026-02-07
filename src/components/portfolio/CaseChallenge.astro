@@ -1,0 +1,139 @@
+---
+import type { ZutraCaseStudy } from "@/types/project-types";
+
+interface Props {
+    project: ZutraCaseStudy;
+}
+
+const { project } = Astro.props;
+---
+
+<section class="case-challenge">
+    <div class="container">
+        <div class="challenge-layout">
+            <div class="challenge-main">
+                <h2 class="section-title">El Desafío</h2>
+                <div class="text-content">
+                    <p class="description-text">{project.challenge}</p>
+                    {
+                        project.problemStatement && (
+                            <div class="problem-statement">
+                                <h3 class="subsection-title">
+                                    Problem Statement
+                                </h3>
+                                <p>{project.problemStatement}</p>
+                            </div>
+                        )
+                    }
+                </div>
+            </div>
+            {
+                project.challenges && project.challenges.length > 0 && (
+                    <div class="challenge-sidebar">
+                        <h3 class="subsection-title">Puntos Críticos</h3>
+                        <ul class="challenge-list">
+                            {project.challenges.map((item: string) => (
+                                <li>
+                                    <i class="ph ph-warning-circle" /> {item}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .section-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        margin-bottom: 3rem;
+        color: var(--color-secondary);
+        letter-spacing: -0.02em;
+    }
+
+    .subsection-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        color: var(--color-accent);
+        display: block;
+    }
+
+    .case-challenge {
+        padding: 8rem 0;
+    }
+
+    .challenge-layout {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 6rem;
+        align-items: start;
+    }
+
+    .description-text {
+        font-size: 1.35rem;
+        line-height: 1.6;
+        color: var(--color-muted);
+    }
+
+    .problem-statement {
+        background: var(--color-subtle);
+        padding: 2.5rem;
+        border-radius: var(--radius-xl);
+        border-left: 5px solid var(--color-accent);
+        margin-top: 4rem;
+    }
+
+    .challenge-sidebar {
+        background: var(--color-surface);
+        padding: 2.5rem;
+        border-radius: var(--radius-2xl);
+        border: 1px solid var(--color-line);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .challenge-list {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .challenge-list li {
+        display: flex;
+        gap: 1rem;
+        line-height: 1.5;
+        color: var(--color-muted);
+        font-size: 1.1rem;
+    }
+
+    .challenge-list li i {
+        color: var(--color-accent);
+        flex-shrink: 0;
+        font-size: 1.4rem;
+        margin-top: 0.2rem;
+    }
+
+    @media (max-width: 1024px) {
+        .challenge-layout {
+            grid-template-columns: 1fr;
+            gap: 4rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .section-title {
+            font-size: 2rem;
+        }
+    }
+</style>

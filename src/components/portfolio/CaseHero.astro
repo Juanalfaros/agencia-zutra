@@ -1,0 +1,153 @@
+---
+import type { ZutraCaseStudy } from "@/types/project-types";
+import { Image } from "astro:assets";
+
+interface Props {
+    project: ZutraCaseStudy;
+}
+
+const { project } = Astro.props;
+---
+
+<section class="case-hero">
+    <div class="container">
+        <div class="hero-header">
+            <div class="hero-labels">
+                <span class="label-badge primary">{project.industry}</span>
+                {
+                    project.projectType && (
+                        <span class="label-badge secondary">
+                            {project.projectType}
+                        </span>
+                    )
+                }
+                <span class="label-year">{project.year}</span>
+            </div>
+            <h1 class="hero-title">{project.title}</h1>
+            {
+                project.subtitle && (
+                    <p class="hero-subtitle">{project.subtitle}</p>
+                )
+            }
+            {project.tagline && <p class="hero-tagline">{project.tagline}</p>}
+        </div>
+
+        <div class="hero-main-image">
+            <div class="image-container">
+                <Image
+                    src={project.featuredImage.src}
+                    alt={project.featuredImage.alt}
+                    width={1400}
+                    height={800}
+                    class="featured-image"
+                    loading="eager"
+                />
+                {
+                    project.featuredImage.caption && (
+                        <div class="image-caption">
+                            <i class="ph ph-info" />{" "}
+                            {project.featuredImage.caption}
+                        </div>
+                    )
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+    }
+
+    .case-hero {
+        padding: 6rem 0;
+        background: var(--color-subtle);
+    }
+
+    .hero-header {
+        max-width: 900px;
+        margin-bottom: 4rem;
+    }
+
+    .hero-labels {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .label-badge {
+        padding: 0.35rem 1rem;
+        border-radius: var(--radius-full);
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .label-badge.primary {
+        background: var(--color-accent-subtle);
+        color: var(--color-accent);
+    }
+
+    .label-badge.secondary {
+        background: var(--color-line);
+        color: var(--color-muted);
+    }
+
+    .label-year {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--color-muted);
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-weight: 900;
+        color: var(--color-secondary);
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        color: var(--color-muted);
+        line-height: 1.4;
+        margin-bottom: 1.5rem;
+        max-width: 800px;
+    }
+
+    .hero-tagline {
+        font-size: 1.25rem;
+        color: var(--color-accent);
+        font-weight: 600;
+        font-style: italic;
+    }
+
+    .hero-main-image {
+        border-radius: var(--radius-2xl);
+        overflow: hidden;
+        border: 1px solid var(--color-line);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    .featured-image {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .image-caption {
+        background: var(--color-surface);
+        padding: 1.25rem 2rem;
+        font-size: 0.95rem;
+        color: var(--color-muted);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border-top: 1px solid var(--color-line);
+    }
+</style>

@@ -6,6 +6,8 @@ import StickyCTA from "../../../components/common/StickyCTA.astro";
 import { cases, allIndustries, allServices } from "../../../data/casos";
 import { Image } from "astro:assets";
 import { slugify } from "../../../scripts/utils/slugify";
+import { Icon } from "astro-icon/components";
+import { getTechIcon } from "../../../data/techIcons";
 
 export async function getStaticPaths() {
     const industries = allIndustries.map((tag: string) => ({
@@ -66,7 +68,7 @@ const filteredCases = cases.filter(
                             >
                                 <div class="project-image-wrapper">
                                     <Image
-                                        src={project.image}
+                                        src={project.featuredImage.src}
                                         alt={project.title}
                                         width={800}
                                         height={600}
@@ -99,6 +101,10 @@ const filteredCases = cases.filter(
                                             .slice(0, 3)
                                             .map((t: string) => (
                                                 <span class="tech-tag">
+                                                    <Icon
+                                                        name={getTechIcon(t)}
+                                                        class="tech-tag-icon"
+                                                    />
                                                     {t}
                                                 </span>
                                             ))}
@@ -284,7 +290,7 @@ const filteredCases = cases.filter(
 
     .project-desc {
         font-size: 0.95rem;
-        color: var(--color-gray-300);
+        color: var(--color-muted);
         line-height: 1.5;
         margin-bottom: 1.25rem;
         display: -webkit-box;
@@ -301,11 +307,19 @@ const filteredCases = cases.filter(
 
     .tech-tag {
         font-size: 0.75rem;
-        padding: 0.25rem 0.5rem;
+        padding: 0.25rem 0.6rem;
         background-color: var(--color-subtle);
         border-radius: var(--radius-sm);
         color: var(--color-muted);
         font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .tech-tag-icon {
+        font-size: 0.9rem;
+        color: var(--color-accent);
     }
 
     @media (max-width: 640px) {

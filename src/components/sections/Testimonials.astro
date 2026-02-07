@@ -1,0 +1,138 @@
+---
+export interface Testimonial {
+    quote: string;
+    author: string;
+    role: string;
+    company: string;
+}
+
+const testimonials: Testimonial[] = [
+    {
+        quote: "Zutra transformó nuestra web de un folleto estático a una máquina de ventas. La automatización de matrículas nos ahorró 20 horas semanales de trabajo administrativo.",
+        author: "Director Académico",
+        role: "Cliente IEJ",
+        company: "Instituto de Estudios Judiciales",
+    },
+    {
+        quote: "Entendieron que no queríamos vernos como una clínica aburrida. La identidad visual que crearon nos posicionó inmediatamente como una marca premium en el sector.",
+        author: "Fundadora",
+        role: "Cliente Vibrando",
+        company: "Vibrando Kine",
+    },
+    {
+        quote: "La velocidad de carga y la estructura SEO que implementaron nos puso en la primera página de Google en semanas, sin gastar una fortuna en anuncios.",
+        author: "Gerente Comercial",
+        role: "Cliente Isinova",
+        company: "Isinova Infraestructura",
+    },
+];
+---
+
+<section id="testimonios" class="section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Lo que dicen los que invirtieron</h2>
+            <p class="section-subtitle">
+                No nos creas a nosotros. Créeles a los números de nuestros
+                clientes.
+            </p>
+        </div>
+
+        <div class="testimonials-grid">
+            {
+                testimonials.map((item) => (
+                    <div class="testimonial-card">
+                        <div class="quote-icon">
+                            <i class="ph-fill ph-quotes" />
+                        </div>
+                        <p class="testimonial-text">"{item.quote}"</p>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <strong class="author-name">
+                                    {item.author}
+                                </strong>
+                                <span class="author-role">
+                                    {item.role}, {item.company}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 4rem;
+    }
+
+    .testimonial-card {
+        background-color: var(--color-subtle); /* Fondo sutil o transparente */
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-lg);
+        padding: 2.5rem 2rem;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        transition:
+            transform 0.3s ease,
+            border-color 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--color-accent);
+    }
+
+    .quote-icon {
+        font-size: 2rem;
+        color: var(--color-accent);
+        margin-bottom: 1.5rem;
+        opacity: 0.8;
+    }
+
+    .testimonial-text {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: var(--color-muted);
+        margin-bottom: 2rem;
+        flex-grow: 1;
+        font-style: italic;
+    }
+
+    .testimonial-author {
+        border-top: 1px solid var(--color-line);
+        padding-top: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .author-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .author-name {
+        color: var(--color-heading);
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .author-role {
+        color: var(--color-muted);
+        font-size: 0.85rem;
+    }
+
+    @media (max-width: 768px) {
+        .testimonials-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
