@@ -23,8 +23,5 @@ const init = () => {
 };
 
 // Safe initialization for modules
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
+document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('astro:page-load', init);
