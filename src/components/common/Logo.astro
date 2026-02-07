@@ -6,7 +6,11 @@ interface Props {
     height?: string | number;
 }
 
+<<<<<<< /Users/juanalfaro/Projects/agencia-zutra/src/components/common/Logo.astro
 const { class: className = "", width = "100%", height = "auto" } = Astro.props;
+=======
+const { class: className = "", width = "100%", height = undefined } = Astro.props;
+>>>>>>> /Users/juanalfaro/.windsurf/worktrees/agencia-zutra/agencia-zutra-56f55973/src/components/common/Logo.astro
 ---
 
 <svg
@@ -16,7 +20,6 @@ const { class: className = "", width = "100%", height = "auto" } = Astro.props;
     role="img"
     aria-label="Logo Zutra"
     width={width}
-    height={height}
 >
     <path
         fill="currentColor"
