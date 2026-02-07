@@ -21,6 +21,7 @@ export default defineConfig({
     sitemap(),
   ],
   image: {
+    service: { entrypoint: "astro/assets/services/sharp" }, // Forzar sharp si es posible
     remotePatterns: [
       {
         protocol: "https",
@@ -33,7 +34,9 @@ export default defineConfig({
     ],
   },
   output: "static",
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: "compile",
+  }),
   vite: {
     resolve: {
       alias: {
