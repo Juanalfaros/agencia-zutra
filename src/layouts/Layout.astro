@@ -150,8 +150,6 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
       </script>
     )}
 
-    <script>
-      import "../scripts/main.js";
-    </script>
+    <script type="module" src={Astro.resolve("../scripts/main.js")}></script>
   </body>
 </html>
