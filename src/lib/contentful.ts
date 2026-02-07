@@ -7,22 +7,24 @@
 
 import { createClient, type EntrySkeletonType } from "contentful";
 import type { Entry, Asset, EntryCollection } from "contentful";
+import { env } from "node:process";
 
 function readEnv(key: string): string {
-  // En Cloudflare Pages, las variables están en process.env
-  const fromProcess = (globalThis as any)?.process?.env?.[key];
+  // Try to get variable from node:process (Reliable in SSG/Build)
+  const fromProcess = env[key];
 
-  // Debug: Log validation (only once per key check to avoid spam, or finding a better place)
-  // Check if we are in a build environment (CI)
+  // Debug logging
   if (key === "CONTENTFUL_SPACE_ID" && !fromProcess) {
-    console.log("DEBUG: process.env keys available:", Object.keys((globalThis as any)?.process?.env || {}));
-    console.log("DEBUG: Looking for:", key);
+    console.log(`DEBUG: node:process.env.${key} is missing/empty`);
+    // Optional: Print all keys to debug
+    // console.log("DEBUG: Available keys:", Object.keys(env)); 
   }
 
   if (typeof fromProcess === "string" && fromProcess.length > 0)
     return fromProcess;
 
-  // Fallback a import.meta.env para desarrollo local
+  // Fallback to import.meta.env (for Dev/Vite contexts)
+  // Note: Dynamic access import.meta.env[key] often fails in Vite for non-public vars
   const fromImportMeta = (import.meta as any)?.env?.[key];
   if (typeof fromImportMeta === "string" && fromImportMeta.length > 0)
     return fromImportMeta;
