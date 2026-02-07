@@ -25,29 +25,67 @@ export const isPreviewEnabled =
   import.meta.env.CONTENTFUL_USE_PREVIEW === "true" ||
   import.meta.env.NODE_ENV === "development";
 
-// Delivery Client (Published content)
-const deliveryClient = createClient({
-  space: readEnv("CONTENTFUL_SPACE_ID"),
-  accessToken: readEnv("CONTENTFUL_ACCESS_TOKEN"),
-  host: "cdn.contentful.com",
-  environment: readEnv("CONTENTFUL_ENVIRONMENT") || "master",
-});
+// Delivery Client (Published content) - Lazy initialization
+let deliveryClient: ReturnType<typeof createClient> | null = null;
 
-// Preview Client (Draft content)
-const previewClient = createClient({
-  space: readEnv("CONTENTFUL_SPACE_ID"),
-  accessToken:
-    readEnv("CONTENTFUL_PREVIEW_TOKEN") || readEnv("CONTENTFUL_ACCESS_TOKEN"),
-  host: "preview.contentful.com",
-  environment: readEnv("CONTENTFUL_ENVIRONMENT") || "master",
-});
+// Preview Client (Draft content) - Lazy initialization
+let previewClient: ReturnType<typeof createClient> | null = null;
+
+function createDeliveryClient() {
+  const spaceId = readEnv("CONTENTFUL_SPACE_ID");
+  const accessToken = readEnv("CONTENTFUL_ACCESS_TOKEN");
+
+  if (!spaceId || !accessToken) {
+    throw new Error(
+      "CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN are required",
+    );
+  }
+
+  return createClient({
+    space: spaceId,
+    accessToken: accessToken,
+    host: "cdn.contentful.com",
+    environment: readEnv("CONTENTFUL_ENVIRONMENT") || "master",
+  });
+}
+
+function createPreviewClient() {
+  const spaceId = readEnv("CONTENTFUL_SPACE_ID");
+  const accessToken =
+    readEnv("CONTENTFUL_PREVIEW_TOKEN") || readEnv("CONTENTFUL_ACCESS_TOKEN");
+
+  if (!spaceId || !accessToken) {
+    throw new Error(
+      "CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN/CONTENTFUL_PREVIEW_TOKEN are required",
+    );
+  }
+
+  return createClient({
+    space: spaceId,
+    accessToken: accessToken,
+    host: "preview.contentful.com",
+    environment: readEnv("CONTENTFUL_ENVIRONMENT") || "master",
+  });
+}
 
 /**
  * Get the appropriate client
  * @param preview - Force preview mode
  */
 export function getClient(preview?: boolean) {
-  return (preview ?? isPreviewEnabled) ? previewClient : deliveryClient;
+  const usePreview = preview ?? isPreviewEnabled;
+
+  if (usePreview) {
+    if (!previewClient) {
+      previewClient = createPreviewClient();
+    }
+    return previewClient;
+  } else {
+    if (!deliveryClient) {
+      deliveryClient = createDeliveryClient();
+    }
+    return deliveryClient;
+  }
 }
 
 // Simple in-memory cache for build-time optimization
@@ -65,14 +103,14 @@ export async function getEntries<T extends EntrySkeletonType>(
   query: Record<string, any> = {},
   preview?: boolean,
 ): Promise<EntryCollection<T, undefined, string>> {
-  const isPreview = preview ?? isPreviewEnabled;
-  const cacheKey = `${contentType}-${JSON.stringify(query)}-${isPreview}`;
-
-  if (cache.has(cacheKey)) {
-    return cache.get(cacheKey);
-  }
-
   try {
+    const isPreview = preview ?? isPreviewEnabled;
+    const cacheKey = `${contentType}-${JSON.stringify(query)}-${isPreview}`;
+
+    if (cache.has(cacheKey)) {
+      return cache.get(cacheKey);
+    }
+
     const clientInstance = getClient(isPreview);
     const entries = await clientInstance.getEntries<T>({
       content_type: contentType,
@@ -82,6 +120,17 @@ export async function getEntries<T extends EntrySkeletonType>(
     cache.set(cacheKey, entries);
     return entries;
   } catch (error) {
+    // If Contentful is not configured, return empty collection
+    if (error instanceof Error && error.message.includes("required")) {
+      console.warn("Contentful not configured, returning empty collection");
+      return {
+        items: [],
+        total: 0,
+        skip: 0,
+        limit: 0,
+        sys: { type: "Array" as const },
+      } as EntryCollection<T, undefined, string>;
+    }
     console.error(`Error fetching entries for ${contentType}:`, error);
     throw error;
   }
@@ -97,19 +146,26 @@ export async function getEntry<T extends EntrySkeletonType>(
   entryId: string,
   preview?: boolean,
 ): Promise<Entry<T, undefined, string>> {
-  const isPreview = preview ?? isPreviewEnabled;
-  const cacheKey = `${entryId}-${isPreview}`;
-
-  if (cache.has(cacheKey)) {
-    return cache.get(cacheKey);
-  }
-
   try {
+    const isPreview = preview ?? isPreviewEnabled;
+    const cacheKey = `${entryId}-${isPreview}`;
+
+    if (cache.has(cacheKey)) {
+      return cache.get(cacheKey);
+    }
+
     const clientInstance = getClient(isPreview);
     const entry = await clientInstance.getEntry<T>(entryId);
     cache.set(cacheKey, entry);
     return entry;
   } catch (error) {
+    // If Contentful is not configured, throw a more descriptive error
+    if (error instanceof Error && error.message.includes("required")) {
+      console.warn("Contentful not configured, cannot fetch entry");
+      throw new Error(
+        "Contentful is not configured. Please set CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN environment variables.",
+      );
+    }
     console.error(`Error fetching entry ${entryId}:`, error);
     throw error;
   }
