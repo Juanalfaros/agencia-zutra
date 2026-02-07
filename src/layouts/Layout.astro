@@ -50,7 +50,6 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
       </script>
     )}
 
-    <!-- Critical Theme Script -->
     <script is:inline>
       const getTheme = () => {
         if (
@@ -64,6 +63,32 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
           : "light";
       };
       document.documentElement.setAttribute("data-theme", getTheme());
+
+      // Zutra: Random Accent Color Initialization
+      (function() {
+        const palettes = [
+          { main: '#EFD319', hover: '#FACC15', onAccent: '#080501' }, // Amarillo
+          { main: '#19EFB5', hover: '#15C999', onAccent: '#080501' }, // Verde Menta
+          { main: '#FF0055', hover: '#D6004C', onAccent: '#ffffff' }, // Magenta
+          { main: '#811DBC', hover: '#6A169E', onAccent: '#ffffff' }  // Púrpura
+        ];
+        const randomPalette = palettes[Math.floor(Math.random() * palettes.length)];
+        const root = document.documentElement;
+        
+        root.style.setProperty('--accent-main', randomPalette.main);
+        root.style.setProperty('--accent-hover', randomPalette.hover);
+        root.style.setProperty('--color-accent', randomPalette.main);
+        root.style.setProperty('--color-accent-hover', randomPalette.hover);
+        root.style.setProperty('--color-on-accent', randomPalette.onAccent);
+        
+        const r = parseInt(randomPalette.main.slice(1, 3), 16);
+        const g = parseInt(randomPalette.main.slice(3, 5), 16);
+        const b = parseInt(randomPalette.main.slice(5, 7), 16);
+        root.style.setProperty('--color-accent-rgb', `${r}, ${g}, ${b}`);
+        
+        console.log('Zutra: Accent color initialized in head:', randomPalette.main);
+        window.__ZUTRA_ACCENT__ = randomPalette.main;
+      })();
     </script>
 
     <link

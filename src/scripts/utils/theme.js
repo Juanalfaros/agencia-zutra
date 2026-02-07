@@ -25,28 +25,32 @@ const hexToRgb = (hex) => {
 };
 
 export function setRandomTheme() {
-  console.log('Zutra: Initializing random theme...');
-  const palettes = [
-    { main: '#EFD319', hover: '#FACC15', onAccent: '#080501' }, // Amarillo
-    { main: '#19EFB5', hover: '#15C999', onAccent: '#080501' }, // Verde Menta
-    { main: '#FF0055', hover: '#D6004C', onAccent: '#ffffff' }, // Magenta
-    { main: '#811DBC', hover: '#6A169E', onAccent: '#ffffff' }  // Púrpura
-  ];
-
-  const randomPalette = palettes[Math.floor(Math.random() * palettes.length)];
-  console.log('Zutra: Selected palette:', randomPalette.main);
-
   const root = document.documentElement;
-  // Seteamos todas las variantes para asegurar compatibilidad
-  root.style.setProperty('--accent-main', randomPalette.main);
-  root.style.setProperty('--accent-hover', randomPalette.hover);
-  root.style.setProperty('--color-accent', randomPalette.main);
-  root.style.setProperty('--color-accent-hover', randomPalette.hover);
-  root.style.setProperty('--color-on-accent', randomPalette.onAccent);
+  let accentColor = window.__ZUTRA_ACCENT__;
 
-  // RGB para componentes que usan transparencias
-  const rgb = hexToRgb(randomPalette.main);
-  root.style.setProperty('--color-accent-rgb', rgb);
+  if (!accentColor) {
+    console.log('Zutra: Initializing random theme from module...');
+    const palettes = [
+      { main: '#EFD319', hover: '#FACC15', onAccent: '#080501' }, // Amarillo
+      { main: '#19EFB5', hover: '#15C999', onAccent: '#080501' }, // Verde Menta
+      { main: '#FF0055', hover: '#D6004C', onAccent: '#ffffff' }, // Magenta
+      { main: '#811DBC', hover: '#6A169E', onAccent: '#ffffff' }  // Púrpura
+    ];
 
-  updateFavicon(randomPalette.main);
+    const randomPalette = palettes[Math.floor(Math.random() * palettes.length)];
+    accentColor = randomPalette.main;
+
+    root.style.setProperty('--accent-main', randomPalette.main);
+    root.style.setProperty('--accent-hover', randomPalette.hover);
+    root.style.setProperty('--color-accent', randomPalette.main);
+    root.style.setProperty('--color-accent-hover', randomPalette.hover);
+    root.style.setProperty('--color-on-accent', randomPalette.onAccent);
+
+    const rgb = hexToRgb(randomPalette.main);
+    root.style.setProperty('--color-accent-rgb', rgb);
+  } else {
+    console.log('Zutra: Using existing accent color:', accentColor);
+  }
+
+  updateFavicon(accentColor);
 }
