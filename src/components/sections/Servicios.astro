@@ -43,6 +43,7 @@ const sortedServices = entries.items.map(adaptService);
             {service.result && <div class="card__result">{service.result}</div>}
             {service.priceAmount && (
               <div class="card__price">
+                <span class="price__label">Desde</span>
                 <span class="price__amount">{service.priceAmount}</span>
                 <span class="price__meta">{service.priceMeta}</span>
               </div>

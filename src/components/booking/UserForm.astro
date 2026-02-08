@@ -1,0 +1,628 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<form id="booking-form">
+    <div class="form-layout">
+        <!-- Sidebar: Information & Meeting Info -->
+        <aside class="form-sidebar">
+            <header class="form-header">
+                <div class="summary-badge">
+                    <Icon name="ph:calendar-check-fill" />
+                    <span id="summary-date">...</span>
+                </div>
+                <h3>Finaliza tu Reserva</h3>
+                <p class="subtitle">
+                    Complete sus datos para confirmar la reunión.
+                </p>
+            </header>
+
+            <section class="form-section meeting-section">
+                <label class="section-label">¿Cómo nos reunimos?</label>
+                <div class="meeting-grid">
+                    <label class="meeting-option" title="Google Meet">
+                        <input
+                            type="radio"
+                            name="meetingType"
+                            value="google_meet"
+                            checked
+                        />
+                        <div class="card-content">
+                            <Icon
+                                name="simple-icons:googlemeet"
+                                class="brand-icon meet"
+                            />
+                            <span class="opt-name">Meet</span>
+                        </div>
+                    </label>
+                    <label class="meeting-option" title="Zoom">
+                        <input type="radio" name="meetingType" value="zoom" />
+                        <div class="card-content">
+                            <Icon
+                                name="simple-icons:zoom"
+                                class="brand-icon zoom"
+                            />
+                            <span class="opt-name">Zoom</span>
+                        </div>
+                    </label>
+                    <label class="meeting-option" title="Microsoft Teams">
+                        <input type="radio" name="meetingType" value="teams" />
+                        <div class="card-content">
+                            <Icon
+                                name="simple-icons:microsoftteams"
+                                class="brand-icon teams"
+                            />
+                            <span class="opt-name">Teams</span>
+                        </div>
+                    </label>
+                    <label class="meeting-option" title="Llamada Telefónica">
+                        <input type="radio" name="meetingType" value="phone" />
+                        <div class="card-content">
+                            <Icon
+                                name="ph:phone-duotone"
+                                class="brand-icon phone"
+                            />
+                            <span class="opt-name">Teléfono</span>
+                        </div>
+                    </label>
+                    <label class="meeting-option" title="Presencial">
+                        <input
+                            type="radio"
+                            name="meetingType"
+                            value="physical"
+                        />
+                        <div class="card-content">
+                            <Icon
+                                name="ph:map-pin-duotone"
+                                class="brand-icon pin"
+                            />
+                            <span class="opt-name">Oficina</span>
+                        </div>
+                    </label>
+                </div>
+
+                <div id="location-info" class="info-tag hidden">
+                    <Icon name="ph:info-fill" />
+                    <span id="location-text"
+                        >Se enviará un enlace de Google Meet.</span
+                    >
+                </div>
+            </section>
+            <footer class="form-footer">
+                <button type="button" class="btn-ghost" id="back-btn">
+                    Atrás
+                </button>
+            </footer>
+        </aside>
+
+        <!-- Main: Input Fields -->
+        <main class="form-main">
+            <section class="form-section inputs-section">
+                <label class="section-label">Información Personal</label>
+
+                <div class="input-grid">
+                    <div class="field-wrapper full-width">
+                        <label for="name">Nombre Completo *</label>
+                        <div class="input-icon-container">
+                            <Icon name="ph:user" class="field-icon" />
+                            <input
+                                type="text"
+                                id="name"
+                                required
+                                placeholder="Ej: Juan Pérez"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="field-wrapper">
+                        <label for="email">Email Corporativo *</label>
+                        <div class="input-icon-container">
+                            <Icon
+                                name="ph:envelope-simple"
+                                class="field-icon"
+                            />
+                            <input
+                                type="email"
+                                id="email"
+                                required
+                                placeholder="juan@empresa.com"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="field-wrapper">
+                        <label for="phone">Teléfono / WhatsApp *</label>
+                        <div class="input-icon-container">
+                            <Icon name="ph:whatsapp-logo" class="field-icon" />
+                            <input
+                                type="tel"
+                                id="phone"
+                                required
+                                placeholder="+56 9 1234 5678"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="field-wrapper">
+                        <label for="company"
+                            >Empresa <small>(Opcional)</small></label
+                        >
+                        <div class="input-icon-container">
+                            <Icon name="ph:buildings" class="field-icon" />
+                            <input
+                                type="text"
+                                id="company"
+                                placeholder="Mi Empresa S.A."
+                            />
+                        </div>
+                    </div>
+
+                    <div class="field-wrapper">
+                        <label for="rut">RUT <small>(Opcional)</small></label>
+                        <div class="input-icon-container">
+                            <Icon
+                                name="ph:identification-card"
+                                class="field-icon"
+                            />
+                            <input
+                                type="text"
+                                id="rut"
+                                placeholder="XX.XXX.XXX-X"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="field-wrapper full-width">
+                        <label for="notes"
+                            >Notas / Comentarios <small>(Opcional)</small
+                            ></label
+                        >
+                        <textarea
+                            id="notes"
+                            rows="3"
+                            placeholder="Cuéntanos brevemente de qué trata el proyecto..."
+                        ></textarea>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer Actions inside Main for flow -->
+            <footer class="form-footer">
+                
+                <button type="submit" class="btn-primary">
+                    Confirmar Cita
+                    <Icon name="ph:arrow-right-bold" />
+                </button>
+            </footer>
+        </main>
+    </div>
+</form>
+
+<style>
+    form {
+        animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .form-layout {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 3rem;
+        align-items: start;
+    }
+
+    /* Sidebar Styling */
+    .form-sidebar {
+        position: sticky;
+        top: 2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%; /* Take full height of the grid row */
+        padding-bottom: 2rem; /* Avoid touching the bottom */
+        box-sizing: border-box;
+    }
+
+    .form-header {
+        text-align: left;
+    }
+
+    .form-header h3 {
+        font-size: 1.75rem;
+        font-weight: 800;
+        margin: 0.75rem 0 0.5rem;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        color: var(--color-secondary, #111);
+    }
+
+    .subtitle {
+        color: var(--color-muted, #777);
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .summary-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.4rem 0.8rem;
+        background: var(--color-accent-subtle, rgba(239, 211, 25, 0.15));
+        color: var(--color-accent, #000);
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        border: 1px solid var(--color-accent, #000);
+    }
+
+    .section-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--color-muted, #999);
+        font-weight: 800;
+        margin-bottom: 1.25rem;
+        display: block;
+    }
+
+    /* Meeting Grid in Sidebar */
+    .meeting-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+
+    .meeting-option {
+        position: relative;
+    }
+
+    .meeting-option input {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .card-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        padding: 0.75rem 0.25rem;
+        border: 1px solid var(--color-line, #eee);
+        border-radius: 10px;
+        background: var(--color-surface, #fff);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        aspect-ratio: 1/1;
+    }
+
+    .brand-icon {
+        font-size: 1.25rem;
+        color: var(--color-muted, #aaa);
+    }
+
+    .opt-name {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: var(--color-secondary, #555);
+    }
+
+    .meeting-option input:checked + .card-content {
+        border-color: var(--color-accent, #000);
+        background: var(--color-accent-subtle, #f9f9f9);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .meeting-option input:checked + .card-content .brand-icon {
+        color: var(--color-accent, #000);
+    }
+    .meeting-option input:checked + .card-content .meet {
+        color: #00ac47;
+    }
+    .meeting-option input:checked + .card-content .zoom {
+        color: #2d8cff;
+    }
+    .meeting-option input:checked + .card-content .teams {
+        color: #6264a7;
+    }
+
+    .info-tag {
+        margin-top: 1.25rem;
+        font-size: 0.8rem;
+        color: var(--color-muted, #777);
+        display: flex;
+        gap: 0.5rem;
+        line-height: 1.4;
+    }
+
+    /* Main Content Styling */
+    .form-main {
+        background: var(--color-surface, #fff);
+        padding: 2.5rem;
+        border-radius: 24px;
+        border: 1px solid var(--color-line, #eee);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+        transition: box-shadow 0.3s ease;
+    }
+
+    html[data-theme="light"] .form-main {
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .input-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    .field-wrapper label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--color-secondary, #222);
+    }
+
+    .field-wrapper label small {
+        font-weight: 400;
+        color: var(--color-muted, #888);
+    }
+
+    .input-icon-container {
+        position: relative;
+    }
+
+    .field-icon {
+        position: absolute;
+        left: 1.1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--color-muted, #bbb);
+        font-size: 1.1rem;
+        pointer-events: none;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+        padding: 0.875rem 1.25rem 0.875rem 3rem;
+        border: 1.5px solid var(--color-line, #e2e2e2);
+        border-radius: 14px;
+        background: var(--color-bg, #fff);
+        font-family: inherit;
+        font-size: 0.95rem;
+        color: var(--color-secondary, #111);
+        transition: all 0.2s ease;
+    }
+
+    input {
+        background: var(--color-surface);
+    }
+
+    textarea {
+        padding-left: 1.25rem;
+        resize: none;
+        background: var(--color-surface);
+    }
+
+    input:focus,
+    textarea:focus {
+        outline: none;
+        border-color: var(--color-accent, #000);
+        background: var(--color-surface, #fff);
+        box-shadow: 0 0 0 4px var(--color-accent-subtle, rgba(0, 0, 0, 0.05));
+    }
+
+    /* Footer / Actions */
+    .form-footer {
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--color-line, #eee);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-ghost {
+        background: transparent;
+        color: var(--color-muted, #888);
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        padding: 0.75rem 1.25rem;
+        border-radius: 10px;
+        transition: all 0.2s;
+    }
+
+    .btn-ghost:hover {
+        background: var(--color-subtle, #f5f5f5);
+        color: var(--color-secondary, #111);
+    }
+
+    .btn-primary {
+        background: var(--color-accent, #000);
+        color: var(--color-on-accent, #fff);
+        padding: 1rem 2.5rem;
+        border-radius: 14px;
+        font-weight: 800;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Tablet / Mobile Adjustments */
+    @media (max-width: 992px) {
+        .form-layout {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        .form-sidebar {
+            position: static;
+        }
+        .form-main {
+            padding: 1.5rem;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .input-grid {
+            grid-template-columns: 1fr;
+        }
+        .form-footer {
+            flex-direction: column-reverse;
+            gap: 1rem;
+        }
+        .btn-primary,
+        .btn-ghost {
+            width: 100%;
+            justify-content: center;
+        }
+        .meeting-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+
+<script>
+    import type { BookingState } from "./booking.types";
+    import {
+        bookingStore,
+        setStep,
+        updateFormData,
+        submitBookingInformation,
+    } from "./booking.store";
+
+    const form = document.getElementById("booking-form") as HTMLFormElement;
+    const summaryDate = document.getElementById("summary-date");
+    const backBtn = document.getElementById("back-btn");
+
+    // Inputs
+    const nameInput = document.getElementById("name") as HTMLInputElement;
+    const emailInput = document.getElementById("email") as HTMLInputElement;
+    const phoneInput = document.getElementById("phone") as HTMLInputElement;
+    const rutInput = document.getElementById("rut") as HTMLInputElement;
+    const companyInput = document.getElementById("company") as HTMLInputElement;
+    const notesInput = document.getElementById("notes") as HTMLTextAreaElement;
+
+    // Dynamic Logic Elements
+    const locationInfo = document.getElementById("location-info");
+    const locationText = document.getElementById("location-text");
+    const meetingRadios = document.querySelectorAll(
+        'input[name="meetingType"]',
+    );
+
+    // State Subscription
+    bookingStore.subscribe((state: BookingState) => {
+        if (state.step === 2) {
+            if (summaryDate) {
+                const dateObj = new Date(state.selectedDate + "T00:00:00");
+                const dateStr = dateObj.toLocaleDateString("es-CL", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                });
+                summaryDate.textContent = `${dateStr} · ${state.selectedTime}`;
+            }
+        }
+    });
+
+    backBtn?.addEventListener("click", () => setStep(1));
+
+    meetingRadios.forEach((radio) => {
+        radio.addEventListener("change", (e) => {
+            const type = (e.target as HTMLInputElement).value;
+            updateFormData("meetingType", type as any);
+
+            if (locationInfo && locationText) {
+                locationInfo.classList.remove("hidden");
+                switch (type) {
+                    case "google_meet":
+                        locationText.textContent =
+                            "Se generará un enlace de Google Meet automáticamente.";
+                        break;
+                    case "zoom":
+                        locationText.textContent =
+                            "Se generará un enlace de Zoom automáticamente.";
+                        break;
+                    case "teams":
+                        locationText.textContent =
+                            "Se generará un enlace de Microsoft Teams automáticamente.";
+                        break;
+                    case "phone":
+                        locationText.textContent =
+                            "Te llamaremos al número que proporciones.";
+                        break;
+                    case "physical":
+                        locationText.textContent =
+                            "Reunión presencial en nuestras oficinas: Av. Ejemplo 123, Santiago.";
+                        break;
+                }
+            }
+        });
+    });
+
+    form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        if (!nameInput.value || !emailInput.value || !phoneInput.value) {
+            alert("Por favor completa los campos obligatorios.");
+            return;
+        }
+
+        // Update with final values before submit
+        updateFormData("name", nameInput.value);
+        updateFormData("email", emailInput.value);
+        updateFormData("phone", phoneInput.value);
+        updateFormData("rut", rutInput.value);
+        updateFormData("company", companyInput.value);
+        updateFormData("notes", notesInput.value);
+
+        const submitBtn = form.querySelector(
+            'button[type="submit"]',
+        ) as HTMLButtonElement;
+        if (submitBtn) {
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.innerHTML = `Confirmando...`;
+            submitBtn.disabled = true;
+
+            const result = await submitBookingInformation();
+
+            if (!result.success) {
+                alert(result.message || "Error al confirmar la cita.");
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalHTML;
+            }
+            // If success, setStep(3) is already handled by the store
+        }
+    });
+</script>

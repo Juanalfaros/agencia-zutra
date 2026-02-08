@@ -1,0 +1,334 @@
+---
+import Calendar from "./Calendar.astro";
+import TimeSlots from "./TimeSlots.astro";
+import UserForm from "./UserForm.astro";
+import SuccessSection from "./SuccessSection.astro";
+---
+
+<div class="booking-widget">
+    <!-- Premium Accents -->
+    <div class="widget-accent widget-accent-1"></div>
+    <div class="widget-accent widget-accent-2"></div>
+
+    <!-- Progress Header -->
+    <div class="booking-steps">
+        <div class="step active" id="step-indicator-1">
+            <span class="step-num">1</span>
+            <span class="step-label">Selección</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step-indicator-2">
+            <span class="step-num">2</span>
+            <span class="step-label">Datos</span>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step-indicator-3">
+            <span class="step-num">3</span>
+            <span class="step-label">Confirmación</span>
+        </div>
+    </div>
+
+    <!-- Steps Viewport -->
+    <div class="steps-viewport" id="steps-viewport">
+        <!-- Noise Texture Overlay -->
+        <div class="viewport-noise"></div>
+
+        <div class="steps-track" id="steps-track">
+            <!-- Step 1: Selection -->
+            <div id="step-1" class="step-container active-step">
+                <div class="step-content-grid">
+                    <Calendar />
+                    <TimeSlots />
+                </div>
+            </div>
+
+            <!-- Step 2: Form -->
+            <div id="step-2" class="step-container">
+                <UserForm />
+            </div>
+
+            <!-- Step 3: Success -->
+            <div id="step-3" class="step-container">
+                <SuccessSection />
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --widget-shadow:
+            0 10px 40px -10px rgba(0, 0, 0, 0.08),
+            0 20px 25px -5px rgba(0, 0, 0, 0.04);
+        --viewport-bg: var(--color-surface, #fff);
+    }
+
+    [data-theme="dark"] {
+        --widget-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .booking-widget {
+        background: var(--viewport-bg);
+        border-radius: 32px;
+        overflow: hidden;
+        position: relative;
+        border: 1px solid var(--color-line, rgba(0, 0, 0, 0.05));
+        box-shadow: var(--widget-shadow);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+    }
+
+    /* Cinematic Accents */
+    .widget-accent {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.03;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .widget-accent-1 {
+        top: -100px;
+        right: -100px;
+        background: var(--color-primary, #000);
+    }
+
+    .widget-accent-2 {
+        bottom: -100px;
+        left: -100px;
+        background: var(--color-accent, #ff0);
+    }
+
+    /* Steps Header */
+    .booking-steps {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 2.5rem 0 1.5rem;
+        border-bottom: 1px solid var(--color-line, #eee);
+        position: relative;
+        z-index: 10;
+        background: var(--color-surface, #fff);
+    }
+
+    /* Theme-specific background color for contrast in glass header */
+    html[data-theme="dark"] .booking-steps {
+        background: rgba(18, 18, 18, 0.82);
+    }
+
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+        opacity: 0.35;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+    }
+
+    .step.active {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+    .step.completed {
+        opacity: 1;
+        color: var(--color-accent, #000);
+    }
+
+    .step-num {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--color-subtle, #f5f5f5);
+        border: 1px solid var(--color-line, #ddd);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 0.85rem;
+        color: var(--color-secondary, #333);
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .active .step-num {
+        background: var(--color-accent, #000);
+        color: var(--color-on-accent, #fff);
+        border-color: var(--color-accent, #000);
+        box-shadow: 0 4px 15px var(--color-accent-subtle);
+        transform: scale(1.15);
+    }
+
+    .completed .step-num {
+        background: var(--color-accent-subtle, #e0e0e0);
+        color: var(--color-accent, #000);
+        border-color: var(--color-accent, #000);
+    }
+
+    .step-label {
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--color-secondary, #333);
+    }
+
+    .step-line {
+        width: 25px;
+        height: 2px;
+        background: var(--color-line, #ddd);
+        margin-bottom: 1.4rem;
+        border-radius: 2px;
+        opacity: 0.4;
+    }
+
+    /* Premium Viewport */
+    .steps-viewport {
+        overflow: hidden;
+        position: relative;
+        width: 100%;
+        transition: height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        background: var(--viewport-bg);
+        z-index: 5;
+    }
+
+    .viewport-noise {
+        position: absolute;
+        inset: 0;
+        background: url("https://grainy-gradients.vercel.app/noise.svg");
+        opacity: 0.02;
+        pointer-events: none;
+        z-index: 10;
+        mix-blend-mode: overlay;
+    }
+
+    .steps-track {
+        display: flex;
+        width: 300%; /* Three steps */
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        align-items: flex-start;
+    }
+
+    .step-container {
+        width: 33.333%;
+        padding: 2.5rem;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        box-sizing: border-box;
+        transition:
+            opacity 0.6s ease,
+            transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+            filter 0.6s ease;
+        opacity: 0;
+        transform: scale(0.97) translateY(20px);
+        filter: blur(12px);
+    }
+
+    .active-step {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
+
+    .step-content-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    @media (min-width: 992px) {
+        .step-content-grid {
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 3rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .step-container {
+            padding: 1.5rem;
+        }
+        .booking-steps {
+            padding: 1.5rem 0 1rem;
+        }
+    }
+</style>
+
+<script>
+    import type { BookingState } from "./booking.types";
+    import { bookingStore } from "./booking.store";
+
+    const viewport = document.getElementById("steps-viewport") as HTMLElement;
+    const track = document.getElementById("steps-track") as HTMLElement;
+    const steps = [
+        document.getElementById("step-1"),
+        document.getElementById("step-2"),
+        document.getElementById("step-3"),
+    ];
+    const indicators = [
+        document.getElementById("step-indicator-1"),
+        document.getElementById("step-indicator-2"),
+        document.getElementById("step-indicator-3"),
+    ];
+
+    // Function to update viewport height based on current step content
+    function updateViewportHeight(currentStepIndex: number) {
+        const activeContainer = steps[currentStepIndex];
+        if (activeContainer && viewport) {
+            // We need a slight delay to ensure the DOM has rendered any dynamic content
+            requestAnimationFrame(() => {
+                const height = activeContainer.offsetHeight;
+                viewport.style.height = `${height}px`;
+            });
+        }
+    }
+
+    // Set up ResizeObserver to handle content changes (e.g. timeslots loading)
+    const resizeObserver = new ResizeObserver(() => {
+        const state = bookingStore.get();
+        updateViewportHeight(state.step - 1);
+    });
+
+    // Start observing each step container
+    steps.forEach((step) => step && resizeObserver.observe(step));
+
+    bookingStore.subscribe((state: BookingState) => {
+        const idx = state.step - 1;
+
+        // Handle Track Position
+        if (track) {
+            const tx = idx * -33.333;
+            track.style.transform = `translateX(${tx}%)`;
+        }
+
+        // Handle Height & Active Classes
+        steps.forEach((step, i) => {
+            if (step) {
+                step.classList.toggle("active-step", i === idx);
+            }
+        });
+
+        // Request height update after transition start
+        updateViewportHeight(idx);
+
+        // Update Indicators
+        indicators.forEach((ind, i) => {
+            if (ind) {
+                ind.classList.toggle("active", i + 1 === state.step);
+                ind.classList.toggle("completed", i + 1 < state.step);
+            }
+        });
+    });
+
+    // Initial height set
+    window.addEventListener("load", () => {
+        setTimeout(() => {
+            updateViewportHeight(bookingStore.get().step - 1);
+        }, 300);
+    });
+</script>

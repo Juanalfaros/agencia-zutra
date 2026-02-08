@@ -1,0 +1,337 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<div class="success-screen">
+    <div class="success-header">
+        <div class="icon-circle">
+            <Icon name="ph:check-bold" class="check-icon" />
+        </div>
+        <h2>¡Reserva Confirmada!</h2>
+        <p class="subtitle">
+            Se ha enviado un correo de confirmación a <strong id="success-email"
+                >...</strong>
+        </p>
+    </div>
+
+    <div class="booking-details-card">
+        <div class="detail-row">
+            <Icon name="ph:calendar-blank-duotone" />
+            <div class="detail-text">
+                <span class="label">Fecha y Hora</span>
+                <span id="success-datetime" class="value">...</span>
+            </div>
+        </div>
+
+        <div class="detail-row">
+            <Icon name="ph:video-camera-duotone" />
+            <div class="detail-text">
+                <span class="label">Modalidad</span>
+                <span id="success-meeting-type" class="value">...</span>
+            </div>
+        </div>
+
+        <div id="success-location-row" class="detail-row hidden">
+            <Icon name="ph:map-pin-duotone" />
+            <div class="detail-text">
+                <span class="label">Ubicación</span>
+                <span id="success-location" class="value"
+                    >Nuestras Oficinas</span
+                >
+            </div>
+        </div>
+    </div>
+
+    <div class="calendar-actions">
+        <p class="action-label">Agregar a mi calendario:</p>
+        <div class="calendar-grid">
+            <a href="#" id="google-cal" target="_blank" class="cal-btn">
+                <Icon name="simple-icons:googlecalendar" />
+                <span>Google</span>
+            </a>
+            <a href="#" id="outlook-cal" target="_blank" class="cal-btn">
+                <Icon name="simple-icons:microsoftoutlook" />
+                <span>Outlook</span>
+            </a>
+            <a href="#" id="apple-cal" target="_blank" class="cal-btn">
+                <Icon name="simple-icons:apple" />
+                <span>iCal</span>
+            </a>
+        </div>
+    </div>
+
+    <button id="restart-booking" class="btn-ghost">Programar otra cita</button>
+</div>
+
+<style>
+    .success-screen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        animation: fadeScale 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .success-header {
+        margin-bottom: 2rem;
+    }
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        background: var(--color-accent, #000);
+        color: var(--color-on-accent, #fff);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        font-size: 2.5rem;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .check-icon {
+        animation: checkBounce 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+    }
+
+    h2 {
+        font-size: 2rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+        color: var(--color-secondary, #111);
+    }
+
+    .subtitle {
+        color: var(--color-muted, #777);
+        font-size: 1rem;
+    }
+
+    .booking-details-card {
+        width: 100%;
+        background: var(--color-surface, #fff);
+        border: 1px solid var(--color-line, #eee);
+        border-radius: 20px;
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    }
+
+    .detail-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        text-align: left;
+    }
+
+    .detail-row [data-icon] {
+        font-size: 1.5rem;
+        color: var(--color-accent, #000);
+        background: var(--color-subtle, #f5f5f5);
+        padding: 8px;
+        border-radius: 10px;
+    }
+
+    .detail-text {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--color-muted, #999);
+        letter-spacing: 0.05em;
+    }
+
+    .value {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--color-secondary, #222);
+    }
+
+    .calendar-actions {
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+
+    .action-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: var(--color-muted, #888);
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+
+    .cal-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.75rem 0.5rem;
+        background: var(--color-surface, #fff);
+        border: 1px solid var(--color-line, #eee);
+        border-radius: 14px;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        color: var(--color-secondary, #333);
+        font-weight: 700;
+        font-size: 0.75rem;
+    }
+
+    .cal-btn [data-icon] {
+        font-size: 1.25rem;
+    }
+
+    .cal-btn:hover {
+        border-color: var(--color-accent, #000);
+        transform: translateY(-2px);
+        background: var(--color-accent-subtle, #f9f9f9);
+    }
+
+    #restart-booking {
+        background: transparent;
+        color: var(--color-muted, #777);
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.85rem;
+    }
+
+    #restart-booking:hover {
+        color: var(--color-accent, #000);
+        text-decoration: underline;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    @keyframes fadeScale {
+        from {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+
+    @keyframes checkBounce {
+        0% {
+            transform: scale(0);
+        }
+        50% {
+            transform: scale(1.2);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+</style>
+
+<script>
+    import type { BookingState } from "./booking.types";
+    import { bookingStore, resetBooking } from "./booking.store";
+
+    const emailDisplay = document.getElementById("success-email");
+    const dateTimeDisplay = document.getElementById("success-datetime");
+    const meetingTypeDisplay = document.getElementById("success-meeting-type");
+    const restartBtn = document.getElementById("restart-booking");
+
+    const googleBtn = document.getElementById(
+        "google-cal",
+    ) as HTMLAnchorElement;
+    const outlookBtn = document.getElementById(
+        "outlook-cal",
+    ) as HTMLAnchorElement;
+    const appleBtn = document.getElementById("apple-cal") as HTMLAnchorElement;
+
+    bookingStore.subscribe((state: BookingState) => {
+        if (state.step === 3) {
+            if (emailDisplay) emailDisplay.textContent = state.formData.email;
+
+            if (dateTimeDisplay) {
+                const dateObj = new Date(state.selectedDate + "T00:00:00");
+                const dateStr = dateObj.toLocaleDateString("es-CL", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                });
+                dateTimeDisplay.textContent = `${dateStr} · ${state.selectedTime}`;
+            }
+
+            if (meetingTypeDisplay) {
+                const typesMap: Record<string, string> = {
+                    google_meet: "Google Meet",
+                    zoom: "Zoom",
+                    teams: "Microsoft Teams",
+                    phone: "Llamada Telefónica",
+                    physical: "Reunión Presencial",
+                };
+                meetingTypeDisplay.textContent =
+                    typesMap[state.formData.meetingType] ||
+                    state.formData.meetingType;
+            }
+
+            updateCalendarLinks(state);
+        }
+    });
+
+    restartBtn?.addEventListener("click", () => resetBooking());
+
+    function updateCalendarLinks(state: BookingState) {
+        const title = "Reunión con Agencia Zutra";
+        const details = `Reunión agendada vía web. Modalidad: ${state.formData.meetingType}`;
+        const location =
+            state.formData.meetingType === "physical"
+                ? "Oficinas Zutra"
+                : "Online";
+
+        if (!state.selectedDate || !state.selectedTime) return;
+
+        const [hours, minutes] = state.selectedTime.split(":");
+        const startDate = new Date(state.selectedDate);
+        startDate.setHours(parseInt(hours), parseInt(minutes));
+
+        const endDate = new Date(startDate);
+        endDate.setMinutes(startDate.getMinutes() + 45);
+
+        const startISO = startDate.toISOString().replace(/-|:|\.\d\d\d/g, "");
+        const endISO = endDate.toISOString().replace(/-|:|\.\d\d\d/g, "");
+
+        if (googleBtn)
+            googleBtn.href = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startISO}/${endISO}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
+        if (outlookBtn)
+            outlookBtn.href = `https://outlook.live.com/calendar/0/deeplink/compose?subject=${encodeURIComponent(title)}&startdt=${startDate.toISOString()}&enddt=${endDate.toISOString()}&body=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}`;
+
+        if (appleBtn) {
+            const ics = [
+                "BEGIN:VCALENDAR",
+                "VERSION:2.0",
+                "BEGIN:VEVENT",
+                `DTSTART:${startISO}`,
+                `DTEND:${endISO}`,
+                `SUMMARY:${title}`,
+                `DESCRIPTION:${details}`,
+                `LOCATION:${location}`,
+                "END:VEVENT",
+                "END:VCALENDAR",
+            ].join("\n");
+            appleBtn.href = `data:text/calendar;charset=utf8,${encodeURIComponent(ics)}`;
+            appleBtn.setAttribute("download", "reserva-zutra.ics");
+        }
+    }
+</script>

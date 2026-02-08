@@ -1,0 +1,353 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<div class="calendar-panel">
+    <div class="calendar-header">
+        <button class="cal-nav" id="prev-month" aria-label="Mes anterior">
+            <Icon name="ph:caret-left" />
+        </button>
+        <h3 class="current-month" id="month-display">Cargando...</h3>
+        <button class="cal-nav" id="next-month" aria-label="Siguiente mes">
+            <Icon name="ph:caret-right" />
+        </button>
+    </div>
+
+    <div class="calendar-grid" id="calendar-grid">
+        <!-- Populated by JS -->
+    </div>
+
+    <p class="cal-hint">Días resaltados están disponibles para reservar.</p>
+</div>
+
+<style>
+    /* Local Variables for Isolation */
+    .calendar-panel {
+        /* Define fallbacks here or use in properties directly */
+        width: 100%;
+        padding-right: 0.5rem;
+    }
+
+    .calendar-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 2rem;
+        padding: 0.75rem 1rem;
+        background: var(--color-subtle, #f5f5f5);
+        border-radius: 16px;
+        border: 1px solid var(--color-line, #eee);
+    }
+
+    .current-month {
+        font-family: inherit;
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--color-secondary, #333);
+        text-transform: capitalize;
+        letter-spacing: -0.01em;
+    }
+
+    .cal-nav {
+        background: var(--color-surface, #fff);
+        border: 1px solid var(--color-line, #e5e5e5);
+        color: var(--color-secondary, #333);
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        font-size: 1.2rem;
+    }
+
+    .cal-nav:hover {
+        border-color: var(--color-accent, #000);
+        color: var(--color-accent, #000);
+        transform: scale(1.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.5rem;
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+
+    .cal-hint {
+        margin-top: 2rem;
+        font-size: 0.8rem;
+        color: var(--color-muted, #888);
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .text-accent {
+        color: var(--color-accent, #000);
+        font-weight: 700;
+    }
+
+    @media (min-width: 768px) {
+        .calendar-panel {
+            padding-right: 2rem;
+            border-right: 1px solid var(--color-line, #eee);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .calendar-panel {
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-line, #eee);
+            margin-bottom: 2rem;
+        }
+    }
+</style>
+
+<script>
+    import type { BookingState } from "./booking.types";
+    import { bookingStore, setSelectedDate, setStep } from "./booking.store";
+
+    class CalendarComponent {
+        private currentDate: Date;
+        private grid: HTMLElement | null;
+        private monthDisplay: HTMLElement | null;
+
+        constructor() {
+            this.currentDate = new Date();
+            this.grid = document.getElementById("calendar-grid");
+            this.monthDisplay = document.getElementById("month-display");
+
+            this.init();
+            this.subscribe();
+        }
+
+        private init() {
+            document
+                .getElementById("prev-month")
+                ?.addEventListener("click", () => this.changeMonth(-1));
+            document
+                .getElementById("next-month")
+                ?.addEventListener("click", () => this.changeMonth(1));
+
+            this.render();
+
+            // Select Today by Default
+            const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+            setSelectedDate(todayStr);
+        }
+
+        private subscribe() {
+            // Re-render if external store changes date (optional, for 2-way sync)
+            bookingStore.subscribe((state: BookingState) => {
+                // Logic to update UI selected state
+                this.highlightSelected(state.selectedDate);
+            });
+        }
+
+        private changeMonth(offset: number) {
+            this.currentDate.setMonth(this.currentDate.getMonth() + offset);
+            this.render();
+        }
+
+        private highlightSelected(dateStr: string | null) {
+            if (!this.grid) return;
+            this.grid.querySelectorAll(".day-btn").forEach((btn) => {
+                const btnDate = (btn as HTMLElement).dataset.date;
+                if (btnDate === dateStr) btn.classList.add("selected");
+                else btn.classList.remove("selected");
+            });
+        }
+
+        private render() {
+            if (!this.grid || !this.monthDisplay) return;
+
+            const year = this.currentDate.getFullYear();
+            const month = this.currentDate.getMonth();
+
+            const monthNames = [
+                "Enero",
+                "Febrero",
+                "Marzo",
+                "Abril",
+                "Mayo",
+                "Junio",
+                "Julio",
+                "Agosto",
+                "Septiembre",
+                "Octubre",
+                "Noviembre",
+                "Diciembre",
+            ];
+            this.monthDisplay.textContent = `${monthNames[month]} ${year}`;
+
+            this.grid.innerHTML = "";
+
+            // Headers
+            ["Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"].forEach((d) => {
+                const el = document.createElement("div");
+                el.className = "day-name";
+                el.textContent = d;
+                this.grid!.appendChild(el);
+            });
+
+            // Days
+            const firstDay = new Date(year, month, 1).getDay();
+            const startingDay = firstDay === 0 ? 6 : firstDay - 1;
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            for (let i = 0; i < startingDay; i++) {
+                const empty = document.createElement("div");
+                this.grid.appendChild(empty);
+            }
+
+            const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const btn = document.createElement("button");
+                const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
+                const dayDate = new Date(year, month, i);
+                const dayOfWeek = dayDate.getDay();
+
+                // Mock Availability Logic (Tue-Thu)
+                const isAvailable = dayOfWeek >= 2 && dayOfWeek <= 4;
+                // Strict past check (yesterday or before)
+                const isPast =
+                    dayDate.setHours(0, 0, 0, 0) < today.setHours(0, 0, 0, 0);
+                const isToday = dateStr === todayStr;
+
+                btn.className = "day-btn";
+                btn.textContent = i.toString();
+                btn.dataset.date = dateStr;
+
+                if (isToday) {
+                    btn.classList.add("today");
+                    // Ensure today is selectable even if "no slots" for the sake of showing the message?
+                    // User wants "active by default" with "no slots message".
+                    // So we allow selection of today to show the message.
+                    if (!isAvailable) {
+                        // If today is not available naturally, we still want it to be "clickable"
+                        // or at least visually distinct to show the message.
+                        // But if we make it clickable, we need to handle "empty slots" in TimeSlots.
+                    }
+                }
+
+                // Logic:
+                // Available days -> Clickable
+                // Today -> Always Clickable (to show "No slots" if needed)
+                // Past days -> Disabled
+
+                if (isPast) {
+                    btn.classList.add("disabled");
+                    btn.disabled = true;
+                } else if (isAvailable || isToday) {
+                    btn.classList.add("available");
+                    btn.addEventListener("click", () => {
+                        setSelectedDate(dateStr);
+                    });
+                } else {
+                    btn.classList.add("disabled");
+                    btn.disabled = true;
+                }
+
+                this.grid.appendChild(btn);
+            }
+
+            // Auto-select today if it's the current month view
+            if (today.getMonth() === month && today.getFullYear() === year) {
+                // Determine if we should select it.
+                // The user asked for "primer dia seleccionado por defecto".
+                // We check if store has a date, if not, set today.
+                // But we must be careful not to override if user navigated back/forth.
+                // Ideally do this only once on init, but logic here is safer in render if we check store.
+                // Better approach: In init(), set the date once.
+            }
+        }
+    }
+
+    // Init
+    new CalendarComponent();
+</script>
+
+<style is:global>
+    /* Global styles needed for dynamic JS elements */
+    .day-name {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-muted, #888);
+        padding-bottom: 0.75rem;
+    }
+
+    .day-btn {
+        aspect-ratio: 1;
+        border: 1px solid transparent;
+        background: transparent;
+        border-radius: 12px;
+        font-family: inherit;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--color-muted, #bbb);
+        transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .day-btn.available {
+        color: var(--color-secondary, #333);
+        background: var(--color-surface, #fff);
+        border-color: var(--color-line, #eee);
+    }
+
+    .day-btn.available:hover {
+        border-color: var(--color-accent, #000);
+        color: var(--color-accent, #000);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        z-index: 2;
+    }
+
+    .day-btn.selected {
+        background: var(--color-accent, #000) !important;
+        color: var(--color-on-accent, #fff) !important;
+        border-color: var(--color-accent, #000) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        font-weight: 800;
+        opacity: 1 !important;
+    }
+
+    .day-btn.disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        background: transparent;
+    }
+
+    /* Current Day Indicator */
+    .day-btn.today {
+        border-color: var(--color-accent, #000);
+        font-weight: 700;
+        color: var(
+            --color-accent,
+            #000
+        ); /* Ensure visible even if not available */
+    }
+
+    .day-btn.today::after {
+        content: "";
+        position: absolute;
+        bottom: 6px;
+        width: 4px;
+        height: 4px;
+        background: currentColor;
+        border-radius: 50%;
+    }
+</style>
