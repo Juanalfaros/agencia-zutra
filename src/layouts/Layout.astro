@@ -70,6 +70,7 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
           : "light";
       };
       document.documentElement.setAttribute("data-theme", getTheme());
+      document.documentElement.classList.add("js-loaded");
 
       // Zutra: Random Accent Color Initialization
       (function() {
@@ -152,7 +153,7 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
       </script>
     )}
 
-    <script>
+    <script is:inline>
       /**
        * Reveal Animation Script
        * Adds the 'show' class to elements with the 'reveal' class
@@ -163,6 +164,13 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
         
         if (!revealElements.length) return;
 
+        // Safety timeout: Show everything after 3 seconds if JS is running
+        // but observer hasn't triggered yet.
+        const safetyTimeout = setTimeout(() => {
+          revealElements.forEach(el => el.classList.add('show'));
+          console.log('Zutra: Safety reveal triggered');
+        }, 3000);
+
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
@@ -172,6 +180,10 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
                 observer.unobserve(entry.target);
               }
             });
+            
+            // If all elements are shown, clear the safety timeout
+            const allShown = Array.from(revealElements).every(el => el.classList.contains('show'));
+            if (allShown) clearTimeout(safetyTimeout);
           },
           {
             threshold: 0.1, // Trigger when 10% of the element is visible
@@ -182,15 +194,14 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
         revealElements.forEach((el) => observer.observe(el));
       }
 
-      // Initialize on DOMContentLoaded
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initRevealAnimations);
-      } else {
+      // Initialize on DOMContentLoaded and Astro page load
+      document.addEventListener('DOMContentLoaded', initRevealAnimations);
+      document.addEventListener('astro:page-load', initRevealAnimations);
+      
+      // Immediate call if already loaded
+      if (document.readyState !== 'loading') {
         initRevealAnimations();
       }
-
-      // Re-initialize on Astro page transitions
-      document.addEventListener('astro:page-load', initRevealAnimations);
     </script>
 
 <script type="module" src="/scripts/main.js"></script>
