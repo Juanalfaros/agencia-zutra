@@ -10,6 +10,7 @@ export async function getStaticPaths() {
     try {
         const entries = await getEntries("service", {
             order: "fields.order",
+            include: 2,
         });
         const services = entries.items.map(adaptService);
 
@@ -28,9 +29,20 @@ export async function getStaticPaths() {
     }
 }
 
+import { adaptCategory } from "@/lib/contentful-adapters";
+import { categories as legacyCategories } from "../../data/legacy/servicios";
+
 const { service } = Astro.props as { service: any };
+
+// Fetch categories to get the label
+const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+const categoryEntries = await getEntries("category", {}, isPreview);
+const dynamicCategories = categoryEntries.items.map(adaptCategory);
+const allCategories =
+    dynamicCategories.length > 0 ? dynamicCategories : legacyCategories;
+
 const categoryLabel =
-    categories.find((c) => c.id === service.category)?.label ||
+    allCategories.find((c) => c.id === service.category)?.label ||
     service.category;
 ---
 

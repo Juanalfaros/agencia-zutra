@@ -25,11 +25,17 @@ export interface Service {
     order: number;
 }
 
+export interface ServiceCategory {
+    id: string; // slug
+    label: string; // name
+    order: number;
+}
+
 // Taxonomies for easier filtering
 export const categories = [
-    { id: 'desarrollo', label: 'Desarrollo & Web' },
-    { id: 'marketing', label: 'Marketing Directo' },
-    { id: 'visual', label: 'Identidad Visual' }
+    { id: 'desarrollo', label: 'Desarrollo & Web', order: 1 },
+    { id: 'marketing', label: 'Marketing Directo', order: 2 },
+    { id: 'visual', label: 'Identidad Visual', order: 3 }
 ];
 
 export const services: Service[] = [

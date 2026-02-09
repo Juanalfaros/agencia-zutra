@@ -9,7 +9,7 @@ import type { Entry, Asset } from 'contentful';
 import type { Post, Author } from "@/data/legacy/blog";
 import type { ZutraCaseStudy } from "@/types/project-types";
 import type { HeroSlide } from '@/data/hero';
-import type { Service } from '@/data/legacy/servicios';
+import type { Service, ServiceCategory } from '@/data/legacy/servicios';
 import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
 import type { Document } from '@contentful/rich-text-types';
 import { globalCTAs } from "@/data/legacy/blog";
@@ -242,6 +242,23 @@ export function adaptHeroSlide(entry: Entry<any, undefined, string>): HeroSlide 
 }
 
 /**
+ * Adapt Category from Contentful
+ */
+export function adaptCategory(entry: Entry<any, undefined, string>): ServiceCategory {
+    if (!entry || !entry.fields) {
+        throw new Error('Invalid category entry');
+    }
+
+    const fields = entry.fields;
+
+    return {
+        id: typeof fields.slug === 'string' ? fields.slug : '',
+        label: typeof fields.name === 'string' ? fields.name : '',
+        order: typeof fields.order === 'number' ? fields.order : 99,
+    };
+}
+
+/**
  * Adapt Service from Contentful
  */
 export function adaptService(entry: Entry<any, undefined, string>): Service {
@@ -261,13 +278,32 @@ export function adaptService(entry: Entry<any, undefined, string>): Service {
         ? (fields.features as any[]).filter(f => typeof f === 'object' && f !== null)
         : [];
 
+    // Resolve category from reference if available, otherwise fallback to text field
+    let categorySlug = typeof fields.category === 'string' ? fields.category : 'general';
+    if (fields.categoryRef && typeof fields.categoryRef === 'object' && 'fields' in fields.categoryRef) {
+        const catEntry = fields.categoryRef as Entry<any, undefined, string>;
+        if (catEntry.fields && typeof catEntry.fields.slug === 'string') {
+            categorySlug = catEntry.fields.slug;
+        }
+    }
+
+    // Use first tag or featured status as badge since we won't add a new field
+    let badge: string | undefined = undefined;
+    if (fields.featured === true) {
+        badge = 'Destacado';
+    } else if (Array.isArray(fields.tags) && fields.tags.length > 0) {
+        const firstTag = fields.tags[0];
+        badge = typeof firstTag === 'string' ? firstTag : undefined;
+    }
+
     return {
         id: entry.sys.id,
         slug: typeof fields.slug === 'string' ? fields.slug : '',
         title: typeof fields.title === 'string' ? fields.title : '',
+        badge,
         description: typeof fields.excerpt === 'string' ? fields.excerpt : '',
         longDescription: content,
-        category: typeof fields.category === 'string' ? fields.category : 'general',
+        category: categorySlug,
         tags: Array.isArray(fields.tags) ? fields.tags.filter((t): t is string => typeof t === 'string') : [],
         icon: typeof fields.icon === 'string' ? fields.icon : undefined,
         featuredImage: adaptAsset(fields.featuredImage as Asset),
@@ -275,8 +311,8 @@ export function adaptService(entry: Entry<any, undefined, string>): Service {
         priceMeta: typeof fields.duration === 'string' ? fields.duration : undefined,
         deliverables,
         benefits: deliverables, // Template might use benefits
-        details: deliverables, // Homepage uses .details
-        features, // Essential for .map()
+        details: deliverables, // Used in card lists
+        features, // Essential for .map() in detail pages
         result: typeof fields.result === 'string' ? fields.result : undefined,
         featured: typeof fields.featured === 'boolean' ? fields.featured : false,
         order: typeof fields.order === 'number' ? fields.order : 999,

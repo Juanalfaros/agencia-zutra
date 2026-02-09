@@ -3,29 +3,55 @@ import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/common/Header.astro";
 import Footer from "@/components/common/Footer.astro";
 import { getEntries } from "@/lib/contentful";
-import { adaptService } from "@/lib/contentful-adapters";
-import { categories } from "@/data/legacy/servicios";
-import type { Service } from "@/data/legacy/servicios";
+import { adaptService, adaptCategory } from "@/lib/contentful-adapters";
+import { categories as legacyCategories } from "@/data/legacy/servicios";
+import type { Service, ServiceCategory } from "@/data/legacy/servicios";
+
+// Check for preview cookie
+const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+
+// Fetch categories from Contentful
+const categoryEntries = await getEntries(
+    "category",
+    {
+        order: "fields.order",
+    },
+    isPreview,
+);
+const dynamicCategories = categoryEntries.items.map(adaptCategory);
 
 // Fetch services from Contentful
-const entries = await getEntries("service", {
-    order: "fields.order",
-});
+const entries = await getEntries(
+    "service",
+    {
+        order: "fields.order",
+        include: 2, // Ensure references are resolved
+    },
+    isPreview,
+);
 const services = entries.items.map(adaptService);
+
+// Use dynamic categories if available, otherwise fallback
+const categories =
+    dynamicCategories.length > 0 ? dynamicCategories : legacyCategories;
 
 // Handle case when no services are available (Contentful not configured)
 const hasServices = services.length > 0;
 
 // Group services by category for a structured view
-const servicesByCategory = hasServices ? categories.map((cat) => ({
-    ...cat,
-    items: services
-        .filter((s: any) => s.category === cat.id)
-        .sort((a: any, b: any) => (a.order || 99) - (b.order || 99)),
-})) : categories.map((cat) => ({
-    ...cat,
-    items: [],
-}));
+const servicesByCategory = hasServices
+    ? categories.map((cat: ServiceCategory) => ({
+          ...cat,
+          items: services
+              .filter((s: Service) => s.category === cat.id)
+              .sort(
+                  (a: Service, b: Service) => (a.order || 99) - (b.order || 99),
+              ),
+      }))
+    : categories.map((cat: ServiceCategory) => ({
+          ...cat,
+          items: [],
+      }));
 ---
 
 <Layout
@@ -49,56 +75,82 @@ const servicesByCategory = hasServices ? categories.map((cat) => ({
         </section>
 
         <div class="container container--wide">
-            {hasServices ? (
-                servicesByCategory.map((category) => (
-                    <section class="category-section animate-fade-up delay-2">
-                        <div class="category-header">
-                            <h2 class="category-title">{category.label}</h2>
-                            <div class="category-line" />
-                        </div>
+            {
+                hasServices ? (
+                    servicesByCategory.map((category) => (
+                        <section class="category-section animate-fade-up delay-2">
+                            <div class="category-header">
+                                <h2 class="category-title">{category.label}</h2>
+                                <div class="category-line" />
+                            </div>
 
-                        <div class="services-grid">
-                            {category.items.map((service: any) => (
-                                <a
-                                    href={`/servicios/${service.slug}`}
-                                    class="service-card-link"
-                                >
-                                    <article class="service-card">
-                                        <div class="card-top">
-                                            <div class="card-meta">
-                                                <span class="card-badge">
-                                                    {service.badge}
-                                                </span>
-                                                {service.priceAmount && (
-                                                    <span class="card-price-sm">
-                                                        {service.priceAmount}
-                                                    </span>
+                            <div class="services-grid">
+                                {category.items.map((service: any) => (
+                                    <a
+                                        href={`/servicios/${service.slug}`}
+                                        class="service-card-link"
+                                    >
+                                        <article class="service-card">
+                                            <div class="card-top">
+                                                <div class="card-meta">
+                                                    {/* <span class="card-badge">
+                                                        {service.badge}
+                                                    </span> */}
+                                                    {service.priceAmount && (
+                                                        <span class="card-price-sm">
+                                                            {
+                                                                service.priceAmount
+                                                            }
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <h3 class="card-title">
+                                                    {service.title}
+                                                </h3>
+                                                <p class="card-desc">
+                                                    {service.description}
+                                                </p>
+                                                {service.details &&
+                                                    service.details.length >
+                                                        0 && (
+                                                        <ul class="card-features">
+                                                            {service.details.map(
+                                                                (
+                                                                    detail: string,
+                                                                ) => (
+                                                                    <li>
+                                                                        <i class="ph-duotone ph-check-circle" />{" "}
+                                                                        {detail}
+                                                                    </li>
+                                                                ),
+                                                            )}
+                                                        </ul>
+                                                    )}
+                                                {service.result && (
+                                                    <div class="card-result">
+                                                        <i class="ph-duotone ph-sparkle" />{" "}
+                                                        {service.result}
+                                                    </div>
                                                 )}
                                             </div>
-                                            <h3 class="card-title">
-                                                {service.title}
-                                            </h3>
-                                            <p class="card-desc">
-                                                {service.description}
-                                            </p>
-                                        </div>
-                                        <div class="card-bottom">
-                                            <span class="btn-text">
-                                                Ver detalles{" "}
-                                                <i class="ph-duotone ph-arrow-right" />
-                                            </span>
-                                        </div>
-                                    </article>
-                                </a>
-                            ))}
-                        </div>
-                    </section>
-                ))
-            ) : (
-                <div class="no-services">
-                    <p>No hay servicios disponibles en este momento.</p>
-                </div>
-            )}
+                                            <div class="card-bottom">
+                                                <span class="btn-text">
+                                                    Ver detalles{" "}
+                                                    <i class="ph-duotone ph-arrow-right" />
+                                                </span>
+                                            </div>
+                                        </article>
+                                    </a>
+                                ))}
+                            </div>
+                        </section>
+                    ))
+                ) : (
+                    <div class="no-services">
+                        <p>No hay servicios disponibles en este momento.</p>
+                    </div>
+                )
+            }
         </div>
 
         <section class="cta-section">
@@ -254,8 +306,46 @@ const servicesByCategory = hasServices ? categories.map((cat) => ({
 
     .card-desc {
         color: var(--color-gray-300);
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
         line-height: 1.5;
+    }
+
+    .card-features {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 1.5rem 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .card-features li {
+        display: flex;
+        gap: 0.75rem;
+        font-size: 0.9rem;
+        color: var(--color-secondary);
+        line-height: 1.4;
+    }
+
+    .card-features li i {
+        color: var(--color-accent);
+        font-size: 1.1rem;
+        flex-shrink: 0;
+    }
+
+    .card-result {
+        padding: 0.75rem 1rem;
+        background-color: var(--color-accent-subtle);
+        border-radius: var(--radius-md);
+        border: 1px dashed
+            color-mix(in srgb, var(--color-accent), transparent 70%);
+        font-size: 0.85rem;
+        color: var(--color-accent);
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
     }
 
     .card-bottom {
