@@ -1,8 +1,6 @@
 ---
 // src/pages/gracias.astro
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/common/Header.astro";
-import Footer from "../components/common/Footer.astro";
 import JsonLD from "../components/common/JsonLD.astro";
 ---
 
@@ -10,8 +8,6 @@ import JsonLD from "../components/common/JsonLD.astro";
     title="¡Gracias! — Zutra"
     description="Confirmación de recepción de mensaje. En breve nos pondremos en contacto contigo para dar el siguiente paso."
 >
-    <Header />
-
     <main id="main" class="thanks-page">
         <section class="section thanks-hero">
             <div class="container container--narrow">
@@ -82,7 +78,6 @@ import JsonLD from "../components/common/JsonLD.astro";
         </section>
     </main>
 
-    <Footer />
     <JsonLD />
 </Layout>
 

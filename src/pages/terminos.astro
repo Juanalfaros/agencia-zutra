@@ -1,7 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/common/Header.astro";
-import Footer from "../components/common/Footer.astro";
 
 const title = "Términos y Condiciones | Zutra";
 const description =
@@ -9,8 +7,6 @@ const description =
 ---
 
 <Layout title={title} description={description}>
-    <Header />
-
     <main class="legal-page section">
         <div class="container container--narrow">
             <div class="legal-header">
@@ -106,8 +102,6 @@ const description =
             </div>
         </div>
     </main>
-
-    <Footer />
 </Layout>
 
 <style>

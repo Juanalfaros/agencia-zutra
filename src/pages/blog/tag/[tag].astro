@@ -1,8 +1,6 @@
 ---
 // src/pages/blog/tag/[tag].astro
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/common/Header.astro";
-import Footer from "@/components/common/Footer.astro";
 import BlogCard from "@/components/blog/BlogCard.astro";
 import BlogSearch from "@/components/blog/BlogSearch.astro";
 import { blogPosts } from "../../../data/legacy/blog";
@@ -23,8 +21,6 @@ const description = `Artículos etiquetados con #${tag} en el blog de ZUTRA.`;
 ---
 
 <Layout title={title} description={description}>
-    <Header />
-
     <main class="blog-archive">
         <section class="blog-hero">
             <div class="container">
@@ -46,8 +42,6 @@ const description = `Artículos etiquetados con #${tag} en el blog de ZUTRA.`;
             </div>
         </section>
     </main>
-
-    <Footer />
 </Layout>
 
 <style>

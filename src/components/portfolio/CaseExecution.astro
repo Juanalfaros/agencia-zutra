@@ -61,12 +61,15 @@ const { project } = Astro.props;
                 <div class="tech-grid">
                     {
                         project.techStack.map((tech: string) => (
-                            <div class="tech-badge">
+                            <div
+                                class="tech-badge"
+                                data-tooltip={tech}
+                                aria-label={tech}
+                            >
                                 <Icon
                                     name={getTechIcon(tech)}
                                     class="tech-icon"
                                 />
-                                <span class="tech-name">{tech}</span>
                             </div>
                         ))
                     }
@@ -124,14 +127,20 @@ const { project } = Astro.props;
 
     .process-phase {
         display: flex;
-        gap: 3rem;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+
+    .phase-content {
+        display: flex;
+        flex-direction: column;
     }
 
     .phase-number {
         font-size: 1.5rem;
         font-weight: 900;
         color: var(--color-accent);
-        opacity: 0.4;
+        opacity: 0.7;
         font-family: var(--font-mono, monospace);
     }
 
@@ -140,13 +149,14 @@ const { project } = Astro.props;
         font-weight: 800;
         color: var(--color-secondary);
         margin-bottom: 0.5rem;
+        margin-top: 0px;
     }
 
     .phase-duration {
         font-size: 0.9rem;
         color: var(--color-muted);
         font-weight: 600;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1rem;
         display: block;
     }
 
@@ -164,48 +174,109 @@ const { project } = Astro.props;
     }
 
     .deliverable-tag {
-        padding: 0.4rem 0.8rem;
-        background: var(--color-subtle);
+        padding: 0.4rem 1rem;
+        background: var(--color-surface);
         border: 1px solid var(--color-line);
-        border-radius: var(--radius-md);
-        font-size: 0.85rem;
+        border-radius: var(--radius-full);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
         color: var(--color-muted);
+        cursor: default;
+        transition: all 0.2s ease-out;
+        user-select: none;
+    }
+
+    .deliverable-tag:hover {
+        border-color: var(--color-accent);
+        background: var(--color-accent);
+        color: var(--color-on-accent, #fff);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(var(--color-accent-rgb), 0.2);
     }
 
     .tech-grid {
-        display: grid;
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-wrap: wrap;
         gap: 1rem;
     }
 
     .tech-badge {
-        padding: 1rem 1.25rem;
-        background: var(--color-surface);
-        border: 1px solid var(--color-line);
-        border-radius: var(--radius-xl);
-        text-align: left;
-        transition: all 0.3s;
+        width: 3.5rem;
+        height: 3.5rem;
         display: flex;
         align-items: center;
-        gap: 0.75rem;
+        justify-content: center;
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        border-radius: 50%;
+        position: relative;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        cursor: pointer;
     }
 
     .tech-badge:hover {
         border-color: var(--color-accent);
         background: var(--color-subtle);
-        transform: translateX(5px);
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
 
     .tech-icon {
         font-size: 1.5rem;
-        color: var(--color-accent);
-        flex-shrink: 0;
+        color: var(--color-muted);
+        transition: color 0.3s;
     }
 
-    .tech-name {
+    .tech-badge:hover .tech-icon {
+        color: var(--color-accent);
+    }
+
+    /* Tooltip Styles */
+    .tech-badge::before {
+        content: attr(data-tooltip);
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(10px);
+        padding: 0.5rem 0.8rem;
+        background: var(--color-secondary);
+        color: var(--color-surface);
+        font-size: 0.75rem;
         font-weight: 700;
-        color: var(--color-secondary);
-        font-size: 1rem;
+        white-space: nowrap;
+        border-radius: 0.5rem;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+        pointer-events: none;
+        z-index: 10;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        margin-bottom: 0.6rem;
+    }
+
+    /* Triangle for Tooltip */
+    .tech-badge::after {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(10px);
+        border: 6px solid transparent;
+        border-top-color: var(--color-secondary);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.2s ease;
+        pointer-events: none;
+        z-index: 10;
+        margin-bottom: 0.1rem;
+    }
+
+    .tech-badge:hover::before,
+    .tech-badge:hover::after {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
     }
 
     @media (max-width: 1024px) {

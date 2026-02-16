@@ -1,18 +1,10 @@
 ---
 export const prerender = true;
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/common/Header.astro";
-import Footer from "../../components/common/Footer.astro";
-import StickyCTA from "../../components/common/StickyCTA.astro";
-import CaseNavigation from "../../components/portfolio/CaseNavigation.astro";
 import CaseHero from "../../components/portfolio/CaseHero.astro";
-import CaseKeyInfo from "../../components/portfolio/CaseKeyInfo.astro";
 import CaseChallenge from "../../components/portfolio/CaseChallenge.astro";
-import CaseStrategy from "../../components/portfolio/CaseStrategy.astro";
 import CaseExecution from "../../components/portfolio/CaseExecution.astro";
-import CaseResults from "../../components/portfolio/CaseResults.astro";
 import CaseFeatures from "../../components/portfolio/CaseFeatures.astro";
-import CaseClosure from "../../components/portfolio/CaseClosure.astro";
 import NextProjectNav from "../../components/portfolio/NextProjectNav.astro";
 import { getEntries, getEntriesByField } from "@/lib/contentful";
 import { adaptPortfolioCase } from "@/lib/contentful-adapters";
@@ -25,7 +17,6 @@ export async function getStaticPaths() {
         });
         const portfolioCases = entries.items.map(adaptPortfolioCase);
 
-        // If no cases available, return empty paths array
         if (portfolioCases.length === 0) {
             return [];
         }
@@ -35,12 +26,16 @@ export async function getStaticPaths() {
             props: { project, allProjects: portfolioCases },
         }));
     } catch (error) {
-        console.warn("No portfolio cases available for static paths generation");
+        console.warn(
+            "No portfolio cases available for static paths generation",
+        );
         return [];
     }
 }
 
-const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+const isPreview =
+    import.meta.env.DEV &&
+    Astro.cookies.get("contentful_preview")?.value === "true";
 let { project, allProjects } = Astro.props as {
     project: ZutraCaseStudy;
     allProjects: ZutraCaseStudy[];
@@ -69,6 +64,8 @@ if (isPreview) {
 // Find next project for navigation
 const currentIndex = allProjects.findIndex((c) => c.id === project.id);
 const nextProject = allProjects[(currentIndex + 1) % allProjects.length];
+const prevProject =
+    allProjects[(currentIndex - 1 + allProjects.length) % allProjects.length];
 ---
 
 <Layout
@@ -76,27 +73,31 @@ const nextProject = allProjects[(currentIndex + 1) % allProjects.length];
     description={project.description}
     image={project.featuredImage.src.src}
 >
-    <Header />
-
     <main class="case-study">
-        <CaseNavigation />
         <CaseHero project={project} />
-        <CaseKeyInfo project={project} />
-        <CaseChallenge project={project} />
-        <CaseStrategy project={project} />
-        <CaseExecution project={project} />
-        <CaseResults project={project} />
-        <CaseFeatures project={project} />
-        <CaseClosure project={project} />
-        <NextProjectNav nextProject={nextProject} />
-    </main>
+        <hr class="divider" />
 
-    <StickyCTA />
-    <Footer />
+        <CaseChallenge project={project} />
+        <hr class="divider" />
+
+        <CaseExecution project={project} />
+        <hr class="divider" />
+
+        <CaseFeatures project={project} />
+
+        <NextProjectNav nextProject={nextProject} prevProject={prevProject} />
+    </main>
 </Layout>
 
 <style>
     .case-study {
         padding-top: 5rem;
+    }
+    .divider {
+        width: 100%;
+        border: 0;
+        height: 1px;
+        background-color: var(--color-line);
+        margin: 0;
     }
 </style>

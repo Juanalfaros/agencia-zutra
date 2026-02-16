@@ -1,8 +1,6 @@
 ---
 // src/pages/blog/index.astro
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/common/Header.astro";
-import Footer from "@/components/common/Footer.astro";
 import BlogCard from "@/components/blog/BlogCard.astro";
 import BlogSearch from "@/components/blog/BlogSearch.astro";
 import { getEntries } from "@/lib/contentful";
@@ -18,10 +16,10 @@ const blogPosts: Post[] = entries.items.map(adaptBlogPost);
 // Handle case when no posts are available (Contentful not configured)
 const hasPosts = blogPosts.length > 0;
 
-const featuredPost = hasPosts 
-    ? (blogPosts.find((post: Post) => post.featured) || blogPosts[0])
+const featuredPost = hasPosts
+    ? blogPosts.find((post: Post) => post.featured) || blogPosts[0]
     : null;
-const regularPosts = hasPosts 
+const regularPosts = hasPosts
     ? blogPosts.filter((post: Post) => post.id !== featuredPost?.id)
     : [];
 
@@ -31,8 +29,6 @@ const description =
 ---
 
 <Layout title={title} description={description}>
-    <Header />
-
     <main class="blog-archive">
         <section class="blog-hero">
             <div class="container">
@@ -52,27 +48,34 @@ const description =
 
                 <div class="featured-section">
                     <h2 class="section-label">Destacado</h2>
-                    {featuredPost ? <BlogCard post={featuredPost} featured={true} /> : (
-                        <div class="no-posts">
-                            <p>No hay artículos disponibles en este momento.</p>
-                        </div>
-                    )}
+                    {
+                        featuredPost ? (
+                            <BlogCard post={featuredPost} featured={true} />
+                        ) : (
+                            <div class="no-posts">
+                                <p>
+                                    No hay artículos disponibles en este
+                                    momento.
+                                </p>
+                            </div>
+                        )
+                    }
                 </div>
 
                 <div class="posts-grid">
-                    {regularPosts.length > 0 ? (
-                        regularPosts.map((post) => <BlogCard post={post} />)
-                    ) : hasPosts ? (
-                        <div class="no-posts">
-                            <p>No hay más artículos disponibles.</p>
-                        </div>
-                    ) : null}
+                    {
+                        regularPosts.length > 0 ? (
+                            regularPosts.map((post) => <BlogCard post={post} />)
+                        ) : hasPosts ? (
+                            <div class="no-posts">
+                                <p>No hay más artículos disponibles.</p>
+                            </div>
+                        ) : null
+                    }
                 </div>
             </div>
         </section>
     </main>
-
-    <Footer />
 </Layout>
 
 <style>

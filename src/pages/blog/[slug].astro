@@ -1,8 +1,6 @@
 ---
 // src/pages/blog/[slug].astro
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/common/Header.astro";
-import Footer from "@/components/common/Footer.astro";
 import BlogCard from "@/components/blog/BlogCard.astro";
 import { Image } from "astro:assets";
 export const prerender = true; // Still prerender for production
@@ -35,7 +33,9 @@ export async function getStaticPaths() {
     }
 }
 
-const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+const isPreview =
+    import.meta.env.DEV &&
+    Astro.cookies.get("contentful_preview")?.value === "true";
 let { post, allPosts } = Astro.props;
 
 if (isPreview) {
@@ -101,8 +101,6 @@ const seoMeta = {
     }
     <div id="reading-progress" class="reading-progress"></div>
 
-    <Header />
-
     <article class="post-detail">
         <header class="post-header">
             <div class="container container--narrow">
@@ -127,7 +125,7 @@ const seoMeta = {
                 >
                     <div class="author-block">
                         <Image
-                            src={post.author.avatar}
+                            src={post.author.avatar as any}
                             alt={post.author.name}
                             class="author-avatar"
                             width={56}
@@ -238,7 +236,7 @@ const seoMeta = {
 
                 <div class="author-bio-card">
                     <Image
-                        src={post.author.avatar}
+                        src={post.author.avatar as any}
                         alt={post.author.name}
                         class="bio-avatar"
                         width={128}
@@ -336,8 +334,6 @@ const seoMeta = {
             )
         }
     </article>
-
-    <Footer />
 </Layout>
 
 <script>

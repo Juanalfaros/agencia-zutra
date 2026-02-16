@@ -1,7 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/common/Header.astro";
-import Footer from "../components/common/Footer.astro";
 import JsonLD from "../components/common/JsonLD.astro";
 import ManifestoHero from "../components/nosotros/ManifestoHero.astro";
 import Philosophy from "../components/nosotros/Philosophy.astro";
@@ -14,8 +12,6 @@ import CTASection from "../components/nosotros/CTASection.astro";
     title="Nosotros — La Estética Valiente | Zutra"
     description="Conoce la filosofía y el equipo detrás de Zutra. No somos una agencia tradicional, somos tu partner de ejecución técnica y creativa."
 >
-    <Header />
-
     <main id="main">
         <ManifestoHero />
         <Philosophy />
@@ -24,6 +20,5 @@ import CTASection from "../components/nosotros/CTASection.astro";
         <CTASection />
     </main>
 
-    <Footer />
     <JsonLD />
 </Layout>

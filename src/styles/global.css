@@ -17,7 +17,8 @@
 
 /* --- Variables y Configuración Base --- */
 :root {
-  --scrollbar-gutter: stable; /* fallback para navegadores que no soportan scrollbar-gutter */
+  --scrollbar-gutter: stable;
+  /* fallback para navegadores que no soportan scrollbar-gutter */
   --color-primary: #080501;
   --color-surface: #101010;
   --color-subtle: #151515;
@@ -36,38 +37,33 @@
   --color-blue-400: #60a5fa;
 
   /* --- Global Mix Variants & Utilities --- */
-  --color-accent-subtle: color-mix(
-    in srgb,
-    var(--color-accent),
-    transparent 92%
-  );
-  --color-primary-subtle: color-mix(
-    in srgb,
-    var(--color-primary),
-    transparent 92%
-  );
-  --color-secondary-subtle: color-mix(
-    in srgb,
-    var(--color-secondary),
-    transparent 92%
-  );
-  --color-on-accent-subtle: color-mix(
-    in srgb,
-    var(--color-on-accent),
-    transparent 90%
-  );
-  --color-surface-subtle: color-mix(
-    in srgb,
-    var(--color-surface),
-    transparent 10%
-  );
-  --color-error-subtle: color-mix(
-    in srgb,
-    var(--color-red-400),
-    transparent 92%
-  );
+  --color-accent-subtle: color-mix(in srgb,
+      var(--color-accent),
+      transparent 92%);
+  --color-primary-subtle: color-mix(in srgb,
+      var(--color-primary),
+      transparent 92%);
+  --color-secondary-subtle: color-mix(in srgb,
+      var(--color-secondary),
+      transparent 92%);
+  --color-on-accent-subtle: color-mix(in srgb,
+      var(--color-on-accent),
+      transparent 90%);
+  --color-surface-subtle: color-mix(in srgb,
+      var(--color-surface),
+      transparent 10%);
+  --color-error-subtle: color-mix(in srgb,
+      var(--color-red-400),
+      transparent 92%);
 
-  --font-sans: "magistral", ui-sans-serif, system-ui, sans-serif;
+  /* --font-sans: "magistral", ui-sans-serif, system-ui, sans-serif; */
+  /* --font-sans: 'Azeret Mono', ui-sans-serif, system-ui, sans-serif; */
+  /* --font-sans: 'Bevellier', ui-sans-serif, system-ui, sans-serif; */
+  /* --font-sans: 'Unbounded', ui-sans-serif, system-ui, sans-serif; */
+  /* --font-sans: 'Orbitron', ui-sans-serif, system-ui, sans-serif; */
+  /* --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif; */
+  /* --font-sans: 'Oxanium', ui-sans-serif, system-ui, sans-serif; */
+  --font-sans: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
   --font-blog: "Outfit", sans-serif;
   /* --- Border Radius System --- */
   --radius-sm: 0.25rem;
@@ -143,6 +139,11 @@ body {
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+* {
+  padding: 0;
+  margin: 0;
 }
 
 a {
@@ -238,6 +239,7 @@ h6 {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -268,7 +270,7 @@ h6 {
   transition:
     opacity 0.5s ease,
     transform 0.5s ease;
-  
+
   /* CSS Fallback: Reveal after 4s even if JS fails */
   animation: safety-reveal 0.5s ease 4s forwards;
 }

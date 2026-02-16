@@ -1,7 +1,5 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/common/Header.astro";
-import Footer from "@/components/common/Footer.astro";
 import { getEntries } from "@/lib/contentful";
 import { adaptService, adaptCategory } from "@/lib/contentful-adapters";
 import { categories as legacyCategories } from "@/data/legacy/servicios";
@@ -58,8 +56,6 @@ const servicesByCategory = hasServices
     title="Servicios | Agencia Zutra"
     description="Soluciones de marketing digital, diseño y tecnología para empresas que buscan crecimiento agresivo y resultados medibles."
 >
-    <Header />
-
     <main class="page-content">
         <section class="services-hero">
             <div class="container text-center">
@@ -168,8 +164,6 @@ const servicesByCategory = hasServices
             </div>
         </section>
     </main>
-
-    <Footer />
 </Layout>
 
 <style>

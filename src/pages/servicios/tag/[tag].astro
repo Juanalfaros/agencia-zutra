@@ -1,7 +1,5 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/common/Header.astro";
-import Footer from "@/components/common/Footer.astro";
 import { services, categories } from "../../../data/legacy/servicios";
 
 export async function getStaticPaths() {
@@ -39,8 +37,6 @@ const tagServices = services
     title={`Servicios de ${tagName} | Agencia Zutra`}
     description={`Explora nuestros servicios relacionados con ${tagName}.`}
 >
-    <Header />
-
     <main class="page-content">
         <div class="container text-center">
             <span class="eyebrow">Etiqueta</span>
@@ -92,8 +88,6 @@ const tagServices = services
             >
         </div>
     </main>
-
-    <Footer />
 </Layout>
 
 <style>

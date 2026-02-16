@@ -1,8 +1,6 @@
 ---
 // src/pages/blog/category/[category].astro
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/common/Header.astro";
-import Footer from "@/components/common/Footer.astro";
 import BlogCard from "@/components/blog/BlogCard.astro";
 import BlogSearch from "@/components/blog/BlogSearch.astro";
 import { blogPosts, categories } from "../../../data/legacy/blog";
@@ -22,8 +20,6 @@ const description = `Explora todos los artículos sobre ${category.name} en el b
 ---
 
 <Layout title={title} description={description}>
-    <Header />
-
     <main class="blog-archive">
         <section class="blog-hero">
             <div class="container">
@@ -62,8 +58,6 @@ const description = `Explora todos los artículos sobre ${category.name} en el b
             </div>
         </section>
     </main>
-
-    <Footer />
 </Layout>
 
 <style>

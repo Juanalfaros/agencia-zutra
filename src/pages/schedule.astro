@@ -1,7 +1,5 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Header from "../components/common/Header.astro";
-import Footer from "../components/common/Footer.astro";
 import BookingWidget from "../components/booking/BookingWidget.astro";
 
 const title = "Agendar Cita | Zutra Prototype";
@@ -11,8 +9,6 @@ const title = "Agendar Cita | Zutra Prototype";
     title={title}
     description="Prototipo del sistema de agendamiento estratégico de Zutra Agencia."
 >
-    <Header />
-
     <main class="schedule-page section">
         <div class="container container--narrow">
             <div class="schedule-intro text-center">
@@ -49,8 +45,6 @@ const title = "Agendar Cita | Zutra Prototype";
             </div>
         </div>
     </main>
-
-    <Footer />
 </Layout>
 
 <style>

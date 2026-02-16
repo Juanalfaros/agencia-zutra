@@ -1,7 +1,5 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/common/Header.astro";
-import Footer from "@/components/common/Footer.astro";
 import { getEntries } from "@/lib/contentful";
 import { adaptService } from "@/lib/contentful-adapters";
 import { services, categories } from "../../data/legacy/servicios";
@@ -50,8 +48,6 @@ const categoryLabel =
     title={`${service.title} | Agencia Zutra`}
     description={service.description}
 >
-    <Header />
-
     <main class="page-services-detail">
         {/* --- HERO SECTION: Impacto Visual Puro --- */}
         <section class="service-hero">
@@ -251,8 +247,6 @@ const categoryLabel =
             </div>
         </section>
     </main>
-
-    <Footer />
 </Layout>
 
 <style>

@@ -5,12 +5,18 @@ interface Props {
   image?: string;
   type?: string;
   keywords?: string;
+  showHeader?: boolean;
+  showFooter?: boolean;
+  showCTA?: boolean;
 }
 
 import SEO from "@/components/common/SEO.astro";
 import JsonLD from "@/components/common/JsonLD.astro";
 import CookieConsent from "@/components/common/CookieConsent.astro";
 import PreviewIndicator from "@/components/common/PreviewIndicator.astro";
+import Header from "@/components/common/Header.astro";
+import Footer from "@/components/common/Footer.astro";
+import StickyCTA from "@/components/common/StickyCTA.astro";
 import { isPreviewEnabled } from "@/lib/contentful";
 import "@/styles/main.css";
 import "@phosphor-icons/web/regular";
@@ -20,7 +26,16 @@ import "@phosphor-icons/web/fill";
 import "@phosphor-icons/web/light";
 import "@phosphor-icons/web/thin";
 
-const { title, description, image, type, keywords } = Astro.props;
+const { 
+  title, 
+  description, 
+  image, 
+  type, 
+  keywords,
+  showHeader = true,
+  showFooter = true,
+  showCTA = true
+} = Astro.props;
 
 const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
 ---
@@ -121,7 +136,8 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
 
 
     <link rel="stylesheet" href="https://use.typekit.net/dmw4nxz.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://api.fontshare.com/v2/css?f[]=azeret-mono@300,400,500,600,700,800,900&f[]=bevellier@100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Unbounded:wght@200..900&family=Orbitron:wght@400..900&family=Space+Grotesk:wght@300..700&family=Oxanium:wght@200..800&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
   </head>
   <body>
     <!-- GTM NoScript -->
@@ -130,7 +146,12 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
       height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     )}
 
+    {showHeader && <Header />}
+    
     <slot />
+    
+    {showFooter && <Footer />}
+    {showCTA && <StickyCTA />}
     
     <div id="bg-master" class="bg-master">
       <div class="bg-layer topo-layer"></div>

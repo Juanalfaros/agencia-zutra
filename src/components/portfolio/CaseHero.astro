@@ -1,16 +1,39 @@
 ---
 import type { ZutraCaseStudy } from "@/types/project-types";
 import { Image } from "astro:assets";
+import LightboxGallery from "@/components/common/LightboxGallery.astro";
 
 interface Props {
     project: ZutraCaseStudy;
 }
 
 const { project } = Astro.props;
+
+// 1. Preparamos TODAS las imágenes en un array plano para el Lightbox
+// Esto nos permite calcular índices globales fácilmente.
+const allImages = [
+    {
+        src: project.featuredImage.src,
+        alt: project.featuredImage.alt || project.title,
+    },
+    ...(project.gallery || []).map((img) => ({
+        src: img.src,
+        alt: img.alt || `Galería ${project.title}`,
+    })),
+];
+
+// ID único para conectar triggers con el componente Lightbox
+const galleryId = `gallery-${project.slug}`;
+
+// Lógica para la Grid Lateral
+const hasGallery = project.gallery && project.gallery.length > 0;
+const sideImages = hasGallery ? project.gallery.slice(0, 2) : [];
+const remainingImages = hasGallery ? project.gallery.length - 2 : 0;
 ---
 
 <section class="case-hero">
     <div class="container">
+        {/* Header del Caso */}
         <div class="hero-header">
             <div class="hero-labels">
                 <span class="label-badge primary">{project.industry}</span>
@@ -24,64 +47,129 @@ const { project } = Astro.props;
                 <span class="label-year">{project.year}</span>
             </div>
             <h1 class="hero-title">{project.title}</h1>
-            {
-                project.subtitle && (
-                    <p class="hero-subtitle">{project.subtitle}</p>
-                )
-            }
-            {project.tagline && <p class="hero-tagline">{project.tagline}</p>}
         </div>
 
-        <div class="hero-main-image">
-            <div class="image-container">
-                <Image
-                    src={project.featuredImage.src}
-                    alt={project.featuredImage.alt}
-                    width={1400}
-                    height={800}
-                    class="featured-image"
-                    loading="eager"
-                />
-                {
-                    project.featuredImage.caption && (
-                        <div class="image-caption">
-                            <i class="ph ph-info" />{" "}
-                            {project.featuredImage.caption}
-                        </div>
-                    )
-                }
+        {/* Grid de Imágenes */}
+        <div class="hero-gallery-grid">
+            <div class="main-image-wrapper group">
+                <button
+                    type="button"
+                    class="image-trigger main-trigger"
+                    data-lightbox-trigger={galleryId}
+                    data-index="0"
+                    aria-label="Ver imagen principal en pantalla completa"
+                >
+                    <Image
+                        src={project.featuredImage.src}
+                        alt={project.featuredImage.alt}
+                        width={1400}
+                        height={800}
+                        class="featured-image"
+                        loading="eager"
+                    />
+
+                    <div class="overlay-hint">
+                        <i class="ph ph-arrows-out-simple"></i>
+                    </div>
+                </button>
+
+                {/* Botón flotante "Ver Galería" (Crítico para UX Móvil) */}
+                <button
+                    class="view-gallery-btn"
+                    data-lightbox-trigger={galleryId}
+                    data-index="0"
+                >
+                    <i class="ph ph-images"></i>
+                    <span>Ver Galería ({allImages.length})</span>
+                </button>
             </div>
+
+            {
+                hasGallery && (
+                    <div class="side-gallery">
+                        {sideImages.map((img, index) => {
+                            // El índice global es: 1 (porque 0 es la featured) + index del loop
+                            const globalIndex = index + 1;
+                            // Mostramos overlay solo en la segunda imagen (index 1 del loop) SI sobran fotos
+                            const isLastVisible = index === 1;
+                            const showCountOverlay =
+                                isLastVisible && remainingImages > 0;
+
+                            return (
+                                <div class="side-image-wrapper">
+                                    <button
+                                        type="button"
+                                        class="image-trigger side-trigger"
+                                        data-lightbox-trigger={galleryId}
+                                        data-index={globalIndex}
+                                        aria-label={`Ver imagen de galería ${globalIndex}`}
+                                    >
+                                        <Image
+                                            src={img.src}
+                                            alt={img.alt || ""}
+                                            width={800}
+                                            height={600}
+                                            class="side-image"
+                                        />
+
+                                        {/* Overlay de "+N fotos" o Icono de Zoom */}
+                                        {showCountOverlay ? (
+                                            <div class="more-images-overlay">
+                                                <span class="count">
+                                                    +{remainingImages + 1}
+                                                </span>
+                                                <span class="text">
+                                                    ver más
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <div class="overlay-hint">
+                                                <i class="ph ph-plus" />
+                                            </div>
+                                        )}
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )
+            }
         </div>
     </div>
 </section>
 
+{/* Componente Lightbox (Cargado pero invisible hasta interactuar) */}
+<LightboxGallery images={allImages} id={galleryId} />
+
 <style>
+    /* --- Layout Base --- */
     .container {
-        max-width: 1200px;
+        max-width: 1280px;
         margin: 0 auto;
         padding: 0 1.5rem;
     }
 
     .case-hero {
-        padding: 6rem 0;
-        background: var(--color-subtle);
+        padding: 4rem 0 6rem;
     }
 
     .hero-header {
         max-width: 900px;
-        margin-bottom: 4rem;
+        margin-bottom: 3.5rem;
     }
 
+    /* --- Badges & Typos --- */
     .hero-labels {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: 1rem;
+        gap: 0.75rem;
         margin-bottom: 1.5rem;
     }
 
     .label-badge {
-        padding: 0.35rem 1rem;
-        border-radius: var(--radius-full);
+        padding: 0.35rem 0.85rem;
+        border-radius: 99px;
         font-size: 0.75rem;
         font-weight: 700;
         text-transform: uppercase;
@@ -89,65 +177,238 @@ const { project } = Astro.props;
     }
 
     .label-badge.primary {
-        background: var(--color-accent-subtle);
+        background: color-mix(in srgb, var(--color-accent), transparent 85%);
         color: var(--color-accent);
+        border: 1px solid
+            color-mix(in srgb, var(--color-accent), transparent 90%);
     }
-
     .label-badge.secondary {
-        background: var(--color-line);
-        color: var(--color-muted);
+        background: color-mix(in srgb, var(--color-accent), transparent 85%);
+        color: var(--color-accent);
+        border: 1px solid
+            color-mix(in srgb, var(--color-accent), transparent 90%);
     }
 
     .label-year {
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: var(--color-muted);
+        color: var(--color-text-muted);
+        font-weight: 700;
     }
 
     .hero-title {
-        font-size: clamp(2.5rem, 6vw, 4.5rem);
-        font-weight: 900;
-        color: var(--color-secondary);
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        font-weight: 800;
         line-height: 1.1;
-        margin-bottom: 1.5rem;
+        letter-spacing: -0.02em;
+        color: var(--color-secondary);
     }
 
-    .hero-subtitle {
-        font-size: 1.5rem;
-        color: var(--color-muted);
-        line-height: 1.4;
-        margin-bottom: 1.5rem;
-        max-width: 800px;
+    /* --- Grid Layout Principal --- */
+    .hero-gallery-grid {
+        display: grid;
+        grid-template-columns: 1.8fr 1fr; /* Proporción áurea aproximada */
+        gap: 1.25rem;
+        height: 600px; /* Altura fija para mantener alineación */
     }
 
-    .hero-tagline {
-        font-size: 1.25rem;
-        color: var(--color-accent);
-        font-weight: 600;
-        font-style: italic;
-    }
-
-    .hero-main-image {
-        border-radius: var(--radius-2xl);
+    /* Reset de botones para que parezcan enlaces/imágenes */
+    .image-trigger {
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        border: none;
+        background: none;
+        cursor: zoom-in; /* Cursor correcto para lightbox */
+        position: relative;
         overflow: hidden;
-        border: 1px solid var(--color-line);
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        transition: all 0.3s ease;
+    }
+
+    /* --- Imagen Principal --- */
+    .main-image-wrapper {
+        position: relative;
+        border-radius: 24px;
+        overflow: hidden;
+        height: 100%;
+        /* Sutil borde para definir límites en imágenes claras */
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
     }
 
     .featured-image {
         width: 100%;
-        height: auto;
-        display: block;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.7s cubic-bezier(0.2, 1, 0.3, 1);
     }
 
-    .image-caption {
-        background: var(--color-surface);
-        padding: 1.25rem 2rem;
-        font-size: 0.95rem;
-        color: var(--color-muted);
+    /* Efecto Hover Principal */
+    .main-image-wrapper:hover .featured-image {
+        transform: scale(1.03);
+    }
+
+    /* --- Galería Lateral --- */
+    .side-gallery {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        height: 100%;
+    }
+
+    .side-image-wrapper {
+        flex: 1; /* Ocupan espacio equitativo */
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .side-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .side-image-wrapper:hover .side-image {
+        transform: scale(1.05);
+    }
+
+    /* --- Overlays & Hinting --- */
+
+    /* Hint sutil (ícono que aparece al hover) */
+    .overlay-hint {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.2);
         display: flex;
         align-items: center;
-        gap: 1rem;
-        border-top: 1px solid var(--color-line);
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s;
+        color: white;
+        font-size: 2rem;
+    }
+
+    .image-trigger:hover .overlay-hint {
+        opacity: 1;
+    }
+
+    /* Overlay de conteo (+N) */
+    .more-images-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(3px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        transition: background 0.3s;
+    }
+
+    .more-images-overlay:hover {
+        background: rgba(0, 0, 0, 0.5); /* Aclara un poco al hover */
+    }
+
+    .count {
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .text {
+        font-size: 0.85rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        opacity: 0.9;
+        margin-top: 0.25rem;
+    }
+
+    /* --- Botón "Ver Galería" Flotante --- */
+    .view-gallery-btn {
+        position: absolute;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        background: rgba(255, 255, 255, 0.9);
+        color: #111;
+        border: none;
+        padding: 0.75rem 1.25rem;
+        border-radius: 100px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+        z-index: 10;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+
+        /* Estado inicial Desktop: Oculto/Desplazado */
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    .main-image-wrapper:hover .view-gallery-btn {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .view-gallery-btn:hover {
+        background: white;
+        transform: scale(1.05);
+        color: var(--color-accent);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 1024px) {
+        .hero-gallery-grid {
+            grid-template-columns: 1fr; /* Columna única */
+            height: auto; /* Altura automática basada en contenido */
+        }
+
+        .main-image-wrapper {
+            aspect-ratio: 16 / 9;
+        }
+
+        .side-gallery {
+            flex-direction: row; /* Fila en tablets */
+            height: 250px;
+        }
+
+        /* En tablet seguimos queriendo el botón visible siempre o al hover?
+       Generalmente al hover está bien, pero en touch mejor visible */
+        .view-gallery-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 640px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .main-image-wrapper {
+            aspect-ratio: 4 / 3; /* Más cuadrado en móvil para llenar pantalla */
+            border-radius: 16px;
+        }
+
+        /* Ocultamos la galería lateral en móvil para limpieza */
+        .side-gallery {
+            display: none;
+        }
+
+        /* Botón SIEMPRE visible en móvil */
+        .view-gallery-btn {
+            opacity: 1;
+            transform: translateY(0);
+            bottom: 1rem;
+            right: 1rem;
+            padding: 0.6rem 1rem;
+            font-size: 0.8rem;
+        }
     }
 </style>

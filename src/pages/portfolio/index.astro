@@ -1,7 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Header from "../../components/common/Header.astro";
-import Footer from "../../components/common/Footer.astro";
 import StickyCTA from "../../components/common/StickyCTA.astro";
 import { getEntries } from "@/lib/contentful";
 import { adaptPortfolioCase } from "@/lib/contentful-adapters";
@@ -21,7 +19,9 @@ const cases = entries.items.map(adaptPortfolioCase);
 const hasCases = cases.length > 0;
 
 // Derive unique industries
-const allIndustries = hasCases ? [...new Set(cases.map((c) => c.industry))].sort() : [];
+const allIndustries = hasCases
+    ? [...new Set(cases.map((c) => c.industry))].sort()
+    : [];
 
 const title = "Portfolio — Agencia Zutra";
 const description =
@@ -29,8 +29,6 @@ const description =
 ---
 
 <Layout title={title} description={description}>
-    <Header />
-
     <main class="portfolio-page">
         <section class="portfolio-hero">
             <div class="container">
@@ -47,20 +45,24 @@ const description =
                     <!-- Placeholder para futuros filtros dinámicos -->
                     <span class="filter-label">Explora por industria:</span>
                     <div class="filter-tags">
-                        {hasCases ? (
-                            (allIndustries as string[])
-                                .slice(0, 4)
-                                .map((ind: string) => (
-                                    <a
-                                        href={`/portfolio/tag/${slugify(ind)}`}
-                                        class="filter-tag"
-                                    >
-                                        {ind}
-                                    </a>
-                                ))
-                        ) : (
-                            <span class="no-cases">No hay industrias disponibles</span>
-                        )}
+                        {
+                            hasCases ? (
+                                (allIndustries as string[])
+                                    .slice(0, 4)
+                                    .map((ind: string) => (
+                                        <a
+                                            href={`/portfolio/tag/${slugify(ind)}`}
+                                            class="filter-tag"
+                                        >
+                                            {ind}
+                                        </a>
+                                    ))
+                            ) : (
+                                <span class="no-cases">
+                                    No hay industrias disponibles
+                                </span>
+                            )
+                        }
                     </div>
                 </div>
             </div>
@@ -69,71 +71,76 @@ const description =
         <section class="portfolio-grid-section">
             <div class="container">
                 <div class="portfolio-grid">
-                    {hasCases ? (
-                        cases.map((project: ZutraCaseStudy) => (
-                            <a
-                                href={`/portfolio/${project.slug}`}
-                                class="project-card"
-                            >
-                                <div class="project-image-wrapper">
-                                    <Image
-                                        src={project.featuredImage.src}
-                                        alt={project.title}
-                                        width={800}
-                                        height={600}
-                                        class="project-image"
-                                    />
-                                    <div class="project-overlay">
-                                        <span class="view-project-btn">
-                                            Ver Caso{" "}
-                                            <i class="ph-duotone ph-arrow-right" />
-                                        </span>
+                    {
+                        hasCases ? (
+                            cases.map((project: ZutraCaseStudy) => (
+                                <a
+                                    href={`/portfolio/${project.slug}`}
+                                    class="project-card"
+                                >
+                                    <div class="project-image-wrapper">
+                                        <Image
+                                            src={project.featuredImage.src}
+                                            alt={project.title}
+                                            width={800}
+                                            height={600}
+                                            class="project-image"
+                                        />
+                                        <div class="project-overlay">
+                                            <span class="view-project-btn">
+                                                Ver Caso{" "}
+                                                <i class="ph-duotone ph-arrow-right" />
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="project-content">
-                                    <div class="project-meta">
-                                        <span class="project-industry">
-                                            {project.industry}
-                                        </span>
-                                        <span class="project-year">
-                                            {project.year}
-                                        </span>
+                                    <div class="project-content">
+                                        <div class="project-meta">
+                                            <span class="project-industry">
+                                                {project.industry}
+                                            </span>
+                                            <span class="project-year">
+                                                {project.year}
+                                            </span>
+                                        </div>
+                                        <h3 class="project-title">
+                                            {project.title}
+                                        </h3>
+                                        <p class="project-desc">
+                                            {project.description}
+                                        </p>
+                                        <div class="project-tags">
+                                            {project.techStack
+                                                .slice(0, 3)
+                                                .map((tag: string) => (
+                                                    <span class="tech-tag">
+                                                        <Icon
+                                                            name={getTechIcon(
+                                                                tag,
+                                                            )}
+                                                            class="tech-tag-icon"
+                                                        />
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                        </div>
                                     </div>
-                                    <h3 class="project-title">
-                                        {project.title}
-                                    </h3>
-                                    <p class="project-desc">
-                                        {project.description}
-                                    </p>
-                                    <div class="project-tags">
-                                        {project.techStack
-                                            .slice(0, 3)
-                                            .map((tag: string) => (
-                                                <span class="tech-tag">
-                                                    <Icon
-                                                        name={getTechIcon(tag)}
-                                                        class="tech-tag-icon"
-                                                    />
-                                                    {tag}
-                                                </span>
-                                            ))}
-                                    </div>
-                                </div>
-                            </a>
-                        ))
-                    ) : (
-                        <div class="no-cases">
-                            <p>No hay casos de estudio disponibles en este momento.</p>
-                        </div>
-                    )}
+                                </a>
+                            ))
+                        ) : (
+                            <div class="no-cases">
+                                <p>
+                                    No hay casos de estudio disponibles en este
+                                    momento.
+                                </p>
+                            </div>
+                        )
+                    }
                 </div>
             </div>
         </section>
 
         <StickyCTA />
     </main>
-
-    <Footer />
 </Layout>
 
 <style>
