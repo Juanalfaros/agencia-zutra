@@ -8,42 +8,43 @@ interface Props {
 const { project } = Astro.props;
 ---
 
-<section class="case-challenge">
-    <div class="container">
-        <div class="challenge-layout">
-            <div class="challenge-main">
-                <h2 class="section-title">El Desafío</h2>
-                <div class="text-content">
-                    <p class="description-text">{project.challenge}</p>
-                    {
-                        project.problemStatement && (
-                            <div class="problem-statement">
-                                <h3 class="subsection-title">
-                                    Problem Statement
-                                </h3>
-                                <p>{project.problemStatement}</p>
-                            </div>
-                        )
-                    }
+{
+    project.challenge && (
+        <section class="case-challenge">
+            <div class="container">
+                <div class="challenge-layout">
+                    <div class="challenge-main">
+                        <h2 class="section-title">El Desafío</h2>
+                        <div class="text-content">
+                            <p class="description-text">{project.challenge}</p>
+                            {project.problemStatement && (
+                                <div class="problem-statement">
+                                    <h3 class="subsection-title">
+                                        Problem Statement
+                                    </h3>
+                                    <p>{project.problemStatement}</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    {project.challenges && project.challenges.length > 0 && (
+                        <div class="challenge-sidebar">
+                            <h3 class="subsection-title">Puntos Críticos</h3>
+                            <ul class="challenge-list">
+                                {project.challenges.map((item: string) => (
+                                    <li>
+                                        <i class="ph ph-warning-circle" />{" "}
+                                        {item}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </div>
-            {
-                project.challenges && project.challenges.length > 0 && (
-                    <div class="challenge-sidebar">
-                        <h3 class="subsection-title">Puntos Críticos</h3>
-                        <ul class="challenge-list">
-                            {project.challenges.map((item: string) => (
-                                <li>
-                                    <i class="ph ph-warning-circle" /> {item}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )
-            }
-        </div>
-    </div>
-</section>
+        </section>
+    )
+}
 
 <style>
     .container {

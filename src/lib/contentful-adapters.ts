@@ -143,6 +143,37 @@ export function adaptBlogPost(entry: Entry<any, undefined, string>): Post {
 /**
  * Adapt Portfolio Case from Contentful
  */
+/**
+ * Adapt Project Phase from Contentful
+ */
+export function adaptProjectPhase(entry: Entry<any, undefined, string>): any { // Returns ProjectPhase but using any to avoid circular strictness issues here
+    if (!entry || !entry.fields) return null;
+    const fields = entry.fields;
+    return {
+        name: typeof fields.name === 'string' ? fields.name : '',
+        duration: typeof fields.duration === 'string' ? fields.duration : undefined,
+        highlights: typeof fields.highlights === 'string' ? fields.highlights : undefined,
+        deliverables: Array.isArray(fields.deliverables) ? fields.deliverables.filter((d): d is string => typeof d === 'string') : undefined,
+    };
+}
+
+/**
+ * Adapt Key Feature from Contentful
+ */
+export function adaptKeyFeature(entry: Entry<any, undefined, string>): any { // Returns KeyFeature
+    if (!entry || !entry.fields) return null;
+    const fields = entry.fields;
+    return {
+        title: typeof fields.title === 'string' ? fields.title : '',
+        description: typeof fields.description === 'string' ? fields.description : '',
+        impact: typeof fields.impact === 'string' ? fields.impact : undefined,
+        icon: typeof fields.icon === 'string' ? fields.icon : undefined,
+    };
+}
+
+/**
+ * Adapt Portfolio Case from Contentful
+ */
 export function adaptPortfolioCase(entry: Entry<any, undefined, string>): ZutraCaseStudy {
     if (!entry || !entry.fields) {
         throw new Error('Invalid portfolio case entry');
@@ -154,11 +185,8 @@ export function adaptPortfolioCase(entry: Entry<any, undefined, string>): ZutraC
         id: entry.sys.id,
         slug: typeof fields.slug === 'string' ? fields.slug : '',
         title: typeof fields.title === 'string' ? fields.title : '',
-        subtitle: typeof fields.subtitle === 'string' ? fields.subtitle : undefined,
-        tagline: typeof fields.tagline === 'string' ? fields.tagline : undefined,
         description: typeof fields.description === 'string' ? fields.description : '',
         industry: typeof fields.industry === 'string' ? fields.industry : '',
-        subIndustry: typeof fields.subIndustry === 'string' ? fields.subIndustry : undefined,
         year: typeof fields.year === 'string' ? fields.year : new Date().getFullYear().toString(),
         projectType: (typeof fields.projectType === 'string' ? fields.projectType : undefined) as any,
 
@@ -168,33 +196,23 @@ export function adaptPortfolioCase(entry: Entry<any, undefined, string>): ZutraC
             caption: typeof fields.featuredImageCaption === 'string' ? fields.featuredImageCaption : undefined,
         },
 
-        role: typeof fields.role === 'string' ? fields.role : '',
-        duration: typeof fields.duration === 'string' ? fields.duration : undefined,
-        context: typeof fields.context === 'string' ? fields.context : '',
-        websiteUrl: typeof fields.websiteUrl === 'string' ? fields.websiteUrl : undefined,
-
         challenge: typeof fields.challenge === 'string' ? fields.challenge : '',
         problemStatement: typeof fields.problemStatement === 'string' ? fields.problemStatement : undefined,
         challenges: Array.isArray(fields.challenges) ? fields.challenges.filter((c): c is string => typeof c === 'string') : undefined,
 
-        approach: typeof fields.approach === 'string' ? fields.approach : undefined,
         solution: typeof fields.solution === 'string' ? fields.solution : '',
-        designPhilosophy: typeof fields.designPhilosophy === 'string' ? fields.designPhilosophy : undefined,
 
         techStack: Array.isArray(fields.techStack) ? fields.techStack.filter((t): t is string => typeof t === 'string') : [],
-        platforms: Array.isArray(fields.platforms) ? fields.platforms.filter((p): p is string => typeof p === 'string') : undefined,
-        integrations: Array.isArray(fields.integrations) ? fields.integrations.filter((i): i is string => typeof i === 'string') : undefined,
         services: (Array.isArray(fields.services) ? fields.services.filter((s): s is string => typeof s === 'string') : []) as string[],
 
-        team: fields.team as any,
-        process: fields.process as any,
-        userPersonas: fields.userPersonas as any,
+        // Map resolved references. Contentful returns strict Entry types, so we check and map.
+        process: Array.isArray(fields.processList)
+            ? fields.processList.map((p: any) => adaptProjectPhase(p)).filter((p: any) => p !== null)
+            : undefined,
 
-        metrics: fields.metrics as any,
-        performanceMetrics: fields.performanceMetrics as any,
-        businessImpact: fields.businessImpact as any,
-
-        keyFeatures: fields.keyFeatures as any,
+        keyFeatures: Array.isArray(fields.keyFeaturesList)
+            ? fields.keyFeaturesList.map((k: any) => adaptKeyFeature(k)).filter((k: any) => k !== null)
+            : undefined,
 
         gallery: Array.isArray(fields.gallery)
             ? fields.gallery.map((asset: any) => ({
@@ -205,19 +223,7 @@ export function adaptPortfolioCase(entry: Entry<any, undefined, string>): ZutraC
             }))
             : [],
 
-        testimonial: fields.testimonial as any,
-
-        lessonsLearned: Array.isArray(fields.lessonsLearned) ? fields.lessonsLearned.filter((l): l is string => typeof l === 'string') : undefined,
-        futureEnhancements: Array.isArray(fields.futureEnhancements) ? fields.futureEnhancements.filter((f): f is string => typeof f === 'string') : undefined,
-        awards: fields.awards as any,
-        press: fields.press as any,
-
-        tags: Array.isArray(fields.tags) ? fields.tags.filter((t): t is string => typeof t === 'string') : [],
-        featured: typeof fields.featured === 'boolean' ? fields.featured : false,
-        trending: typeof fields.trending === 'boolean' ? fields.trending : false,
         order: typeof fields.order === 'number' ? fields.order : 999,
-        status: 'published',
-        visibility: 'public',
     };
 }
 

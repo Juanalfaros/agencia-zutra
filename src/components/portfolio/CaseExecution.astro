@@ -10,74 +10,77 @@ interface Props {
 const { project } = Astro.props;
 ---
 
-<section class="case-execution">
-    <div class="container">
-        <div class="execution-layout">
-            <div class="process-main">
-                <h2 class="section-title">Ejecución y Proceso</h2>
-                <div class="text-content">
-                    <p class="description-text">{project.solution}</p>
-                </div>
-                {
-                    project.process && project.process.length > 0 && (
-                        <div class="process-timeline">
-                            {project.process.map(
-                                (phase: ProjectPhase, index: number) => (
-                                    <div class="process-phase">
-                                        <div class="phase-number">
-                                            0{index + 1}
-                                        </div>
-                                        <div class="phase-content">
-                                            <h4 class="phase-name">
-                                                {phase.name}
-                                            </h4>
-                                            <span class="phase-duration">
-                                                {phase.duration}
-                                            </span>
-                                            {phase.highlights && (
-                                                <p class="phase-highlights">
-                                                    {phase.highlights}
-                                                </p>
-                                            )}
-                                            <div class="phase-deliverables">
-                                                {phase.deliverables.map(
-                                                    (item: string) => (
-                                                        <span class="deliverable-tag">
-                                                            {item}
-                                                        </span>
-                                                    ),
+{
+    (project.solution || (project.process && project.process.length > 0)) && (
+        <section class="case-execution">
+            <div class="container">
+                <div class="execution-layout">
+                    <div class="process-main">
+                        <h2 class="section-title">Ejecución y Proceso</h2>
+                        <div class="text-content">
+                            <p class="description-text">{project.solution}</p>
+                        </div>
+                        {project.process && project.process.length > 0 && (
+                            <div class="process-timeline">
+                                {project.process.map(
+                                    (phase: ProjectPhase, index: number) => (
+                                        <div class="process-phase">
+                                            <div class="phase-number">
+                                                0{index + 1}
+                                            </div>
+                                            <div class="phase-content">
+                                                <h4 class="phase-name">
+                                                    {phase.name}
+                                                </h4>
+                                                <span class="phase-duration">
+                                                    {phase.duration}
+                                                </span>
+                                                {phase.highlights && (
+                                                    <p class="phase-highlights">
+                                                        {phase.highlights}
+                                                    </p>
                                                 )}
+                                                <div class="phase-deliverables">
+                                                    {phase.deliverables &&
+                                                        phase.deliverables.map(
+                                                            (item: string) => (
+                                                                <span class="deliverable-tag">
+                                                                    {item}
+                                                                </span>
+                                                            ),
+                                                        )}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ),
-                            )}
-                        </div>
-                    )
-                }
-            </div>
-            <div class="tech-sidebar">
-                <h3 class="subsection-title">Tech Stack</h3>
-                <div class="tech-grid">
-                    {
-                        project.techStack.map((tech: string) => (
-                            <div
-                                class="tech-badge"
-                                data-tooltip={tech}
-                                aria-label={tech}
-                            >
-                                <Icon
-                                    name={getTechIcon(tech)}
-                                    class="tech-icon"
-                                />
+                                    ),
+                                )}
                             </div>
-                        ))
-                    }
+                        )}
+                    </div>
+                    {project.techStack && project.techStack.length > 0 && (
+                        <div class="tech-sidebar">
+                            <h3 class="subsection-title">Tech Stack</h3>
+                            <div class="tech-grid">
+                                {project.techStack.map((tech: string) => (
+                                    <div
+                                        class="tech-badge"
+                                        data-tooltip={tech}
+                                        aria-label={tech}
+                                    >
+                                        <Icon
+                                            name={getTechIcon(tech)}
+                                            class="tech-icon"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
-        </div>
-    </div>
-</section>
+        </section>
+    )
+}
 
 <style>
     .container {

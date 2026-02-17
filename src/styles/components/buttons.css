@@ -41,8 +41,24 @@
   font-size: 0.875rem;
 }
 
+.button--small {
+  padding: 0.45rem 1rem;
+  font-size: 0.9rem;
+}
+
 .button--full-width {
   width: 100%;
+}
+
+.button--ghost {
+  background-color: transparent;
+  color: var(--color-secondary);
+  border: 1px solid var(--color-line);
+}
+
+.button--ghost:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .button:disabled {

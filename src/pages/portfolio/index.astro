@@ -47,16 +47,16 @@ const description =
                     <div class="filter-tags">
                         {
                             hasCases ? (
-                                (allIndustries as string[])
-                                    .slice(0, 4)
-                                    .map((ind: string) => (
+                                (allIndustries as string[]).map(
+                                    (ind: string) => (
                                         <a
                                             href={`/portfolio/tag/${slugify(ind)}`}
                                             class="filter-tag"
                                         >
                                             {ind}
                                         </a>
-                                    ))
+                                    ),
+                                )
                             ) : (
                                 <span class="no-cases">
                                     No hay industrias disponibles
@@ -151,11 +151,6 @@ const description =
     .portfolio-hero {
         padding: 6rem 0 4rem;
         text-align: center;
-        background: radial-gradient(
-            circle at top right,
-            var(--color-accent-subtle),
-            transparent 40%
-        );
     }
 
     .portfolio-title {

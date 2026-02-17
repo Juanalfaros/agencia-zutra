@@ -1,34 +1,76 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
 import StickyCTA from "../../../components/common/StickyCTA.astro";
-import { cases, allIndustries, allServices } from "../../../data/legacy/casos";
+import { getEntries } from "@/lib/contentful";
+import { adaptPortfolioCase } from "@/lib/contentful-adapters";
+import type { ZutraCaseStudy } from "@/types/project-types";
 import { Image } from "astro:assets";
 import { slugify } from "@/lib/slugify.js";
 import { Icon } from "astro-icon/components";
 import { getTechIcon } from "../../../data/techIcons";
 
 export async function getStaticPaths() {
-    const industries = allIndustries.map((tag: string) => ({
-        params: { tag: slugify(tag) },
-        props: { tag, type: "Industria" },
-    }));
+    // 1. Fetch all cases from Contentful
+    const entries = await getEntries("portfolioCase", {
+        order: "fields.order",
+    });
+    const allCases = entries.items.map(adaptPortfolioCase);
 
-    const services = allServices.map((tag: string) => ({
-        params: { tag: slugify(tag) },
-        props: { tag, type: "Servicio" },
-    }));
+    // 2. Extract unique Industries
+    const industries = [...new Set(allCases.map((c) => c.industry))];
 
-    return [...industries, ...services];
+    // 3. Extract unique Services (flatten the arrays)
+    const services = [...new Set(allCases.flatMap((c) => c.services || []))];
+
+    // 4. Generate paths for Industries
+    const industryPaths = industries.map((tag) => {
+        const filtered = allCases.filter(
+            (c) =>
+                slugify(c.industry) === slugify(tag) ||
+                c.services.some((s) => slugify(s) === slugify(tag)),
+        ); // Keep broadly matching logic or strict?
+        // Actually, for "Industry" filter, we usually just match industry. But the original code matched both.
+        // Let's stick to the original logic: "Filtrar casos que coincidan con el tag (ya sea en industry o services)"
+        // But distinguish the *Type* of the page.
+
+        // Actually, if it's an Industry page, we probably only want cases of that industry?
+        // The original code was: `slugify(c.industry) === slugify(tag) || c.services.some(...)` for BOTH types.
+        // This means /tag/education shows projects with industry=education OR service=education.
+        // Let's preserve that flexible logic for now, or refine it if needed.
+        // To be safe and consistent with the "Explore by industry" link in index, we should ensure those tags exist.
+
+        const matchingCases = allCases.filter(
+            (c) => slugify(c.industry) === slugify(tag),
+        );
+
+        return {
+            params: { tag: slugify(tag) },
+            props: { tag, type: "Industria", cases: matchingCases },
+        };
+    });
+
+    // 5. Generate paths for Services
+    const servicePaths = services.map((tag) => {
+        const matchingCases = allCases.filter((c) =>
+            (c.services || []).some((s) => slugify(s) === slugify(tag)),
+        );
+
+        return {
+            params: { tag: slugify(tag) },
+            props: { tag, type: "Servicio", cases: matchingCases },
+        };
+    });
+
+    return [...industryPaths, ...servicePaths];
 }
 
-const { tag, type } = Astro.props;
+interface Props {
+    tag: string;
+    type: string;
+    cases: ZutraCaseStudy[];
+}
 
-// Filtrar casos que coincidan con el tag (ya sea en industry o services)
-const filteredCases = cases.filter(
-    (c: any) =>
-        slugify(c.industry) === slugify(tag) ||
-        c.services.some((s: string) => slugify(s) === slugify(tag)),
-);
+const { tag, type, cases: filteredCases } = Astro.props;
 ---
 
 <Layout
@@ -57,7 +99,7 @@ const filteredCases = cases.filter(
             <div class="container">
                 <div class="portfolio-grid">
                     {
-                        filteredCases.map((project: any) => (
+                        filteredCases.map((project: ZutraCaseStudy) => (
                             <a
                                 href={`/portfolio/${project.slug}`}
                                 class="project-card"
