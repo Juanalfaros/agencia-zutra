@@ -24,23 +24,10 @@ export async function getStaticPaths() {
 
     // 4. Generate paths for Industries
     const industryPaths = industries.map((tag) => {
-        const filtered = allCases.filter(
+        const matchingCases = allCases.filter(
             (c) =>
                 slugify(c.industry) === slugify(tag) ||
                 c.services.some((s) => slugify(s) === slugify(tag)),
-        ); // Keep broadly matching logic or strict?
-        // Actually, for "Industry" filter, we usually just match industry. But the original code matched both.
-        // Let's stick to the original logic: "Filtrar casos que coincidan con el tag (ya sea en industry o services)"
-        // But distinguish the *Type* of the page.
-
-        // Actually, if it's an Industry page, we probably only want cases of that industry?
-        // The original code was: `slugify(c.industry) === slugify(tag) || c.services.some(...)` for BOTH types.
-        // This means /tag/education shows projects with industry=education OR service=education.
-        // Let's preserve that flexible logic for now, or refine it if needed.
-        // To be safe and consistent with the "Explore by industry" link in index, we should ensure those tags exist.
-
-        const matchingCases = allCases.filter(
-            (c) => slugify(c.industry) === slugify(tag),
         );
 
         return {

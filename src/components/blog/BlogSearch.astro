@@ -1,6 +1,12 @@
 ---
-// src/components/blog/BlogSearch.astro
-import { blogPosts, categories } from "../../data/legacy/blog";
+import { getEntries } from "@/lib/contentful";
+import { adaptCategory } from "@/lib/contentful-adapters";
+
+// Fetch categories from Contentful
+const entries = await getEntries("category", {
+    order: "fields.order",
+});
+const categories = entries.items.map(adaptCategory);
 ---
 
 <div class="blog-controls">
@@ -18,8 +24,8 @@ import { blogPosts, categories } from "../../data/legacy/blog";
         <a href="/blog" class="filter-chip active">Todos</a>
         {
             categories.map((cat) => (
-                <a href={`/blog/category/${cat.slug}`} class="filter-chip">
-                    {cat.name}
+                <a href={`/blog/category/${cat.id}`} class="filter-chip">
+                    {cat.label}
                 </a>
             ))
         }

@@ -1,22 +1,34 @@
 ---
-// src/pages/blog/category/[category].astro
 import Layout from "@/layouts/Layout.astro";
 import BlogCard from "@/components/blog/BlogCard.astro";
 import BlogSearch from "@/components/blog/BlogSearch.astro";
-import { blogPosts, categories } from "../../../data/legacy/blog";
+import { getEntries } from "@/lib/contentful";
+import { adaptBlogPost, adaptCategory } from "@/lib/contentful-adapters";
+import type { Post } from "@/types/blog-types";
+import type { ServiceCategory } from "@/types/service-types";
 
 export async function getStaticPaths() {
-    return categories.map((cat) => ({
-        params: { category: cat.slug },
-        props: { category: cat },
-    }));
+    const entries = await getEntries("category");
+    return entries.items.map((item) => {
+        const category = adaptCategory(item);
+        return {
+            params: { category: category.id }, // id is the slug in adapter
+            props: { category },
+        };
+    });
 }
 
-const { category } = Astro.props;
-const posts = blogPosts.filter((post) => post.category === category.id);
+const { category } = Astro.props as { category: ServiceCategory };
 
-const title = `Categoría: ${category.name} | Blog ZUTRA`;
-const description = `Explora todos los artículos sobre ${category.name} en el blog de ZUTRA.`;
+// Fetch posts for this category
+const entries = await getEntries("blogPost", {
+    "fields.category": category.id,
+    order: "-fields.publishDate",
+});
+const posts = entries.items.map(adaptBlogPost);
+
+const title = `Categoría: ${category.label} | Blog ZUTRA`;
+const description = `Explora todos los artículos sobre ${category.label} en el blog de ZUTRA.`;
 ---
 
 <Layout title={title} description={description}>
@@ -24,10 +36,10 @@ const description = `Explora todos los artículos sobre ${category.name} en el b
         <section class="blog-hero">
             <div class="container">
                 <span class="section-label">Categoría</span>
-                <h1 class="blog-hero__title">{category.name}</h1>
+                <h1 class="blog-hero__title">{category.label}</h1>
                 <p class="blog-hero__subtitle">
                     Artículos y estrategias enfocados en el mundo de {
-                        category.name.toLowerCase()
+                        category.label.toLowerCase()
                     }.
                 </p>
             </div>

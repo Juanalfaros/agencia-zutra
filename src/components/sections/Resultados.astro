@@ -1,13 +1,24 @@
 ---
 import { Image } from "astro:assets";
-import { cases } from "../../data/legacy/casos"; // Importamos la data real
 import { Icon } from "astro-icon/components";
 import { getTechIcon } from "../../data/techIcons";
+import { getEntries } from "@/lib/contentful";
+import { adaptPortfolioCase } from "@/lib/contentful-adapters";
 import type { ZutraCaseStudy } from "@/types/project-types";
 
-// Seleccionamos los casos principales (por orden o IDs específicos)
-// Aquí tomamos los primeros 4 definidos en el orden del archivo
-const selectedProjects = cases.sort((a, b) => a.order - b.order).slice(0, 4);
+// Check for preview cookie
+const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+
+// Fetch projects from Contentful
+const entries = await getEntries(
+  "portfolioCase",
+  {
+    order: "fields.order",
+    limit: 4,
+  },
+  isPreview,
+);
+const selectedProjects = entries.items.map(adaptPortfolioCase);
 ---
 
 <section id="proyectos" class="section">

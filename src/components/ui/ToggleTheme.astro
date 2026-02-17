@@ -59,8 +59,9 @@
                 // @ts-ignore
                 const transition = document.startViewTransition(() => {
                     setTheme(newTheme);
-                    // Actualizar favicon si existe la función global o está disponible
-                    if (window.__ZUTRA_ACCENT__) {
+                    // Actualizar favicon
+                    const currentWindow = window as any;
+                    if (currentWindow.__ZUTRA_ACCENT__) {
                         const updateFavicon = (color: string) => {
                             const faviconLink = document.getElementById(
                                 "dynamic-favicon",
@@ -82,7 +83,7 @@
                             faviconLink.href = `data:image/svg+xml,${encodedSvg}`;
                         };
                         // @ts-ignore
-                        updateFavicon(window.__ZUTRA_ACCENT__);
+                        updateFavicon(currentWindow.__ZUTRA_ACCENT__);
                     }
                 });
 

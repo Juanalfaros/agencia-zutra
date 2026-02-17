@@ -2,8 +2,7 @@
 import Layout from "@/layouts/Layout.astro";
 import { getEntries } from "@/lib/contentful";
 import { adaptService, adaptCategory } from "@/lib/contentful-adapters";
-import { categories as legacyCategories } from "@/data/legacy/servicios";
-import type { Service, ServiceCategory } from "@/data/legacy/servicios";
+import type { Service, ServiceCategory } from "@/types/service-types";
 
 // Check for preview cookie
 const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
@@ -16,7 +15,7 @@ const categoryEntries = await getEntries(
     },
     isPreview,
 );
-const dynamicCategories = categoryEntries.items.map(adaptCategory);
+const categories = categoryEntries.items.map(adaptCategory);
 
 // Fetch services from Contentful
 const entries = await getEntries(
@@ -29,27 +28,14 @@ const entries = await getEntries(
 );
 const services = entries.items.map(adaptService);
 
-// Use dynamic categories if available, otherwise fallback
-const categories =
-    dynamicCategories.length > 0 ? dynamicCategories : legacyCategories;
-
-// Handle case when no services are available (Contentful not configured)
-const hasServices = services.length > 0;
-
 // Group services by category for a structured view
-const servicesByCategory = hasServices
-    ? categories.map((cat: ServiceCategory) => ({
-          ...cat,
-          items: services
-              .filter((s: Service) => s.category === cat.id)
-              .sort(
-                  (a: Service, b: Service) => (a.order || 99) - (b.order || 99),
-              ),
-      }))
-    : categories.map((cat: ServiceCategory) => ({
-          ...cat,
-          items: [],
-      }));
+const hasServices = services.length > 0;
+const servicesByCategory = categories.map((cat: ServiceCategory) => ({
+    ...cat,
+    items: services
+        .filter((s: Service) => s.category === cat.id)
+        .sort((a: Service, b: Service) => (a.order || 99) - (b.order || 99)),
+}));
 ---
 
 <Layout

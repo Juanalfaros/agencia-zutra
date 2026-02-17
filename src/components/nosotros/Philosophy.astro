@@ -3,18 +3,21 @@ const items = [
     {
         icon: "ph-lightning",
         title: "Ejecución Obsesiva",
-        description: "Menos reuniones, más lanzamientos. Nos movemos en ciclos cortos para que veas avance real (código, diseño), no solo reportes de intención."
+        description:
+            "Menos reuniones, más lanzamientos. Nos movemos en ciclos cortos para que veas avance real (código, diseño), no solo reportes de intención.",
     },
     {
         icon: "ph-code",
         title: "Maestría Técnica",
-        description: "No tercerizamos la ejecución web. Construimos nuestras propias infraestructuras con Astro y código moderno para asegurar que cada página vuele y convierta."
+        description:
+            "No tercerizamos la ejecución web. Construimos nuestras propias infraestructuras con Astro y código moderno para asegurar que cada página vuele y convierta.",
     },
     {
         icon: "ph-target",
         title: "Foco en el Bottom Line",
-        description: "Los \"likes\" no pagan nóminas. Optimizamos para ventas, automatización y eficiencia operativa. Hablamos el lenguaje de tu negocio, no el de las vanidades."
-    }
+        description:
+            'Los "likes" no pagan nóminas. Optimizamos para ventas, automatización y eficiencia operativa. Hablamos el lenguaje de tu negocio, no el de las vanidades.',
+    },
 ];
 ---
 
@@ -22,25 +25,32 @@ const items = [
     <div class="container">
         <div class="philosophy-grid">
             <div class="phi-content">
-                <h2 id="philosophy-title" class="section-title">¿Por qué Zutra?</h2>
+                <h2 id="philosophy-title" class="section-title">
+                    ¿Por qué Zutra?
+                </h2>
                 <ul class="phi-items" role="list">
-                    {items.map((item, index) => (
-                        <li class="phi-item reveal">
-                            <i class={`ph-duotone ${item.icon}`} aria-hidden="true"></i>
-                            <div class="phi-item__body">
-                                <h3>{item.title}</h3>
-                                <p>{item.description}</p>
-                            </div>
-                        </li>
-                    ))}
+                    {
+                        items.map((item) => (
+                            <li class="phi-item reveal">
+                                <i
+                                    class={`ph-duotone ${item.icon}`}
+                                    aria-hidden="true"
+                                />
+                                <div class="phi-item__body">
+                                    <h3>{item.title}</h3>
+                                    <p>{item.description}</p>
+                                </div>
+                            </li>
+                        ))
+                    }
                 </ul>
             </div>
             <div class="phi-visual reveal">
                 <figure class="phi-box">
                     <span class="phi-tag">VALIENTE</span>
                     <blockquote class="phi-quote">
-                        "El riesgo más grande es no arriesgar nada en
-                        una campaña que nadie recordará."
+                        "El riesgo más grande es no arriesgar nada en una
+                        campaña que nadie recordará."
                     </blockquote>
                 </figure>
             </div>

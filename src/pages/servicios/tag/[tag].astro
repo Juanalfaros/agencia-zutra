@@ -1,36 +1,49 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { services, categories } from "../../../data/legacy/servicios";
+import { getEntries } from "@/lib/contentful";
+import { adaptService } from "@/lib/contentful-adapters";
+import type { Service } from "@/types/service-types";
 
 export async function getStaticPaths() {
+    const entries = await getEntries("service");
+    const services = entries.items.map(adaptService);
     const allTags = [...new Set(services.flatMap((s) => s.tags))];
 
-    // Creates a URL-friendly slug for the tag
     const slugify = (text: string) =>
         text
             .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
             .replace(/\s+/g, "-")
             .replace(/[^\w-]/g, "");
 
     return allTags.map((tag) => ({
         params: { tag: slugify(tag) },
-        props: { tag, tagName: tag },
+        props: { tagName: tag },
     }));
 }
 
 const { tagName } = Astro.props;
 
-// Re-slugify to match (in a real app we might want to store tag objects with IDs)
 const slugify = (text: string) =>
     text
         .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
         .replace(/\s+/g, "-")
         .replace(/[^\w-]/g, "");
+
 const currentSlug = slugify(tagName);
 
-const tagServices = services
-    .filter((s) => s.tags.some((t) => slugify(t) === currentSlug))
-    .sort((a, b) => a.order - b.order);
+// Fetch all services and filter by tag in JS to be safe and avoid query errors
+const entries = await getEntries("service", {
+    order: "fields.order",
+    include: 2,
+});
+
+const tagServices = entries.items
+    .map(adaptService)
+    .filter((s: Service) => s.tags.some((t) => slugify(t) === currentSlug));
 ---
 
 <Layout

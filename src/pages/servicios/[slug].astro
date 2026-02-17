@@ -2,45 +2,28 @@
 import Layout from "@/layouts/Layout.astro";
 import { getEntries } from "@/lib/contentful";
 import { adaptService } from "@/lib/contentful-adapters";
-import { services, categories } from "../../data/legacy/servicios";
+import type { Service } from "@/types/service-types";
 
 export async function getStaticPaths() {
-    try {
-        const entries = await getEntries("service", {
-            order: "fields.order",
-            include: 2,
-        });
-        const services = entries.items.map(adaptService);
-
-        // If no services available, return empty paths array
-        if (services.length === 0) {
-            return [];
-        }
-
-        return services.map((service: any) => ({
+    const entries = await getEntries("service", { include: 2 });
+    return entries.items.map((item) => {
+        const service = adaptService(item);
+        return {
             params: { slug: service.slug },
             props: { service },
-        }));
-    } catch (error) {
-        console.warn("No services available for static paths generation");
-        return [];
-    }
+        };
+    });
 }
 
 import { adaptCategory } from "@/lib/contentful-adapters";
-import { categories as legacyCategories } from "../../data/legacy/servicios";
-
-const { service } = Astro.props as { service: any };
-
-// Fetch categories to get the label
 const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
 const categoryEntries = await getEntries("category", {}, isPreview);
-const dynamicCategories = categoryEntries.items.map(adaptCategory);
-const allCategories =
-    dynamicCategories.length > 0 ? dynamicCategories : legacyCategories;
+const categories = categoryEntries.items.map(adaptCategory);
+
+const { service } = Astro.props as { service: Service };
 
 const categoryLabel =
-    allCategories.find((c) => c.id === service.category)?.label ||
+    categories.find((c) => c.id === service.category)?.label ||
     service.category;
 ---
 

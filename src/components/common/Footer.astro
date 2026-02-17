@@ -1,13 +1,33 @@
 ---
 import Logo from "./Logo.astro";
 import { socialMedia } from "../../data/socialmedia";
-import { blogPosts } from "@/data/legacy/blog";
-import { cases } from "@/data/legacy/casos";
-import { services } from "@/data/legacy/servicios";
+import { getEntries } from "@/lib/contentful";
+import { adaptPortfolioCase, adaptService } from "@/lib/contentful-adapters";
 
-// Seleccionamos algunos servicios y casos para mostrar en el footer
-const footerServices = services.slice(0, 4);
-const footerCases = cases.slice(0, 4);
+// Check for preview cookie
+const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+
+// Fetch 4 recent cases
+const caseEntries = await getEntries(
+  "portfolioCase",
+  {
+    order: "fields.order",
+    limit: 4,
+  },
+  isPreview,
+);
+const footerCases = caseEntries.items.map(adaptPortfolioCase);
+
+// Fetch 4 recent services
+const serviceEntries = await getEntries(
+  "service",
+  {
+    order: "fields.order",
+    limit: 4,
+  },
+  isPreview,
+);
+const footerServices = serviceEntries.items.map(adaptService);
 
 const currentYear = new Date().getFullYear();
 ---

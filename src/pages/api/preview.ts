@@ -6,7 +6,12 @@ export const GET: APIRoute = async ({ request, redirect, cookies }) => {
     const params = url.searchParams;
     const slug = params.get('slug');
     const type = params.get('type');
+    const entryId = params.get('entryId');
     const secret = params.get('secret');
+
+    if (entryId) {
+        await getEntry(entryId, true);
+    }
 
     // Simple security check (optional, but recommended)
     // You can set a PREVIEW_SECRET in your .env

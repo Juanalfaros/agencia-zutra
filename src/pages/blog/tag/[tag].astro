@@ -1,11 +1,14 @@
 ---
-// src/pages/blog/tag/[tag].astro
 import Layout from "@/layouts/Layout.astro";
 import BlogCard from "@/components/blog/BlogCard.astro";
 import BlogSearch from "@/components/blog/BlogSearch.astro";
-import { blogPosts } from "../../../data/legacy/blog";
+import { getEntries } from "@/lib/contentful";
+import { adaptBlogPost } from "@/lib/contentful-adapters";
+import type { Post } from "@/types/blog-types";
 
 export async function getStaticPaths() {
+    const entries = await getEntries("blogPost");
+    const blogPosts = entries.items.map(adaptBlogPost);
     const allTags = [...new Set(blogPosts.flatMap((post) => post.tags))];
     return allTags.map((tag) => ({
         params: { tag: tag },
@@ -14,7 +17,14 @@ export async function getStaticPaths() {
 }
 
 const { tag } = Astro.props;
-const posts = blogPosts.filter((post) => post.tags.includes(tag));
+
+// Fetch all posts and filter by tag in JS to avoid query 422 errors
+const entries = await getEntries("blogPost", {
+    order: "-fields.publishDate",
+});
+const posts = entries.items
+    .map(adaptBlogPost)
+    .filter((post: Post) => post.tags.includes(tag));
 
 const title = `Etiqueta: #${tag} | Blog ZUTRA`;
 const description = `Artículos etiquetados con #${tag} en el blog de ZUTRA.`;

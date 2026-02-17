@@ -6,9 +6,8 @@ import { Image } from "astro:assets";
 export const prerender = true; // Still prerender for production
 
 import { getEntries, getEntriesByField } from "@/lib/contentful";
-import { adaptBlogPost } from "@/lib/contentful-adapters";
-import type { Post } from "@/data/legacy/blog";
-import { categories } from "../../data/legacy/blog";
+import { adaptBlogPost, adaptCategory } from "@/lib/contentful-adapters";
+import type { Post } from "@/types/blog-types";
 
 export async function getStaticPaths() {
     try {
@@ -66,8 +65,13 @@ if (relatedPosts.length < 3) {
     relatedPosts.push(...others);
 }
 
+// Fetch all categories for labeling
+const categoryEntries = await getEntries("category", {}, isPreview);
+const allCategories = categoryEntries.items.map(adaptCategory);
+
 const categoryName =
-    categories.find((c) => c.id === post.category)?.name || post.category;
+    allCategories.find((c: any) => c.id === post.category)?.label ||
+    post.category;
 
 // SEO Data
 const seoMeta = {

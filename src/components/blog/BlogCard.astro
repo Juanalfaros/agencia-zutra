@@ -1,6 +1,6 @@
 ---
 // src/components/blog/BlogCard.astro
-import type { Post } from "../../data/legacy/blog";
+import type { Post } from "@/types/blog-types";
 import { Image } from "astro:assets";
 
 interface Props {
@@ -41,7 +41,7 @@ const { post, featured = false } = Astro.props;
         <div class="card__footer">
             <div class="card__author">
                 <Image
-                    src={post.author.avatar}
+                    src={post.author.avatar as any}
                     alt={post.author.name}
                     class="author__avatar"
                     width={40}

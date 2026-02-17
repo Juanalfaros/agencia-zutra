@@ -1,18 +1,30 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { services, categories } from "../../../data/legacy/servicios";
+import { getEntries } from "@/lib/contentful";
+import { adaptService, adaptCategory } from "@/lib/contentful-adapters";
+import type { Service, ServiceCategory } from "@/types/service-types";
 
 export async function getStaticPaths() {
-    return categories.map((cat) => ({
-        params: { category: cat.id },
-        props: { category: cat },
-    }));
+    const entries = await getEntries("category");
+    return entries.items.map((item) => {
+        const category = adaptCategory(item);
+        return {
+            params: { category: category.id },
+            props: { category },
+        };
+    });
 }
 
-const { category } = Astro.props;
-const categoryServices = services
-    .filter((s) => s.category === category.id)
-    .sort((a, b) => a.order - b.order);
+const { category } = Astro.props as { category: ServiceCategory };
+
+// Fetch all services and filter by category in JS to avoid complex query errors
+const entries = await getEntries("service", {
+    order: "fields.order",
+    include: 2,
+});
+const categoryServices = entries.items
+    .map(adaptService)
+    .filter((s: Service) => s.category === category.id);
 ---
 
 <Layout

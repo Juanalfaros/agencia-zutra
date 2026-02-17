@@ -1,7 +1,7 @@
 ---
 import { getEntries } from "@/lib/contentful";
 import { adaptService } from "@/lib/contentful-adapters";
-import type { Service } from "@/data/legacy/servicios";
+import type { Service } from "@/types/service-types";
 
 // Check for preview cookie
 const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
