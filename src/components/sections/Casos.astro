@@ -24,7 +24,7 @@ const sortedCases = entries.items.map(adaptPortfolioCase);
 <section id="casos" class="section">
 	<div class="container">
 		<div class="section-header">
-			<h2 class="section-title">PortFolio de Casos</h2>
+			<h2 class="section-title">Portfolio de Casos</h2>
 		</div>
 		<div class="portfolio-grid">
 			{
@@ -37,6 +37,7 @@ const sortedCases = entries.items.map(adaptPortfolioCase);
 								width={800}
 								height={600}
 								class="project-image"
+								transition:name={`image-${project.slug}`}
 							/>
 							<div class="project-overlay">
 								<span class="view-project-btn">
@@ -52,7 +53,12 @@ const sortedCases = entries.items.map(adaptPortfolioCase);
 								</span>
 								<span class="project-year">{project.year}</span>
 							</div>
-							<h3 class="project-title">{project.title}</h3>
+							<h3
+								class="project-title"
+								transition:name={`title-${project.slug}`}
+							>
+								{project.title}
+							</h3>
 							<p class="project-desc">{project.description}</p>
 							<div class="project-tags">
 								{project.techStack

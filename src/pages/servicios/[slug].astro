@@ -47,6 +47,7 @@ const categoryLabel =
 <Layout
     title={`${service.title} | Agencia Zutra`}
     description={service.description}
+    image={service.featuredImage?.src?.src}
 >
     <main class="page-services-detail">
         {/* --- HERO SECTION: Impacto Visual Puro --- */}
@@ -69,7 +70,12 @@ const categoryLabel =
                                 )
                             }
                         </div>
-                        <h1 class="hero-title">{service.title}</h1>
+                        <h1
+                            class="hero-title"
+                            transition:name={`title-${service.slug}`}
+                        >
+                            {service.title}
+                        </h1>
                     </div>
                     <p class="hero-lead">{service.description}</p>
                 </div>

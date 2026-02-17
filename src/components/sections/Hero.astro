@@ -14,52 +14,55 @@ const heroSlides = entries.items.map(adaptHeroSlide);
 <section id="hero" class="hero-carousel">
   <div class="hero-carousel__slides-container">
     {
-      heroSlides.map((slide, index) => (
-        <div
-          class={`hero-carousel__slide ${index === 0 ? "active" : ""}`}
-          data-slide-index={index}
-        >
-          <div class="container hero-carousel__slide-inner">
-            {/* Texto */}
-            <div class="hero-carousel__text-content">
-              <h1 class="hero__title" set:html={slide.title} />
-              <p class="hero__subtitle">{slide.subtitle}</p>
-              <div class="hero__actions">
-                <a href={slide.buttonLink} class="button button--primary">
-                  {slide.buttonText}
-                </a>
+      heroSlides.map((slide, index) => {
+        const TitleTag = index === 0 ? "h1" : "h2";
+        return (
+          <div
+            class={`hero-carousel__slide ${index === 0 ? "active" : ""}`}
+            data-slide-index={index}
+          >
+            <div class="container hero-carousel__slide-inner">
+              {/* Texto */}
+              <div class="hero-carousel__text-content">
+                <TitleTag class="hero__title" set:html={slide.title} />
+                <p class="hero__subtitle">{slide.subtitle}</p>
+                <div class="hero__actions">
+                  <a href={slide.buttonLink} class="button button--primary">
+                    {slide.buttonText}
+                  </a>
+                </div>
               </div>
-            </div>
 
-            {/* Imagen + Blob */}
-            <div class="hero-carousel__image-content">
-              <div class="hero-carousel__composition">
-                <svg
-                  class="hero-carousel__blob"
-                  viewBox="0 0 390.49 363.11"
-                  aria-hidden="true"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"
-                  />
-                </svg>
-                <div class="hero-carousel__image-wrapper">
-                  <Image
-                    src={slide.image}
-                    alt={slide.imageAlt}
-                    class="hero-carousel__photo"
-                    width={600}
-                    height={600}
-                    loading={index === 0 ? "eager" : "lazy"}
-                    decoding={index === 0 ? "auto" : "async"}
-                  />
+              {/* Imagen + Blob */}
+              <div class="hero-carousel__image-content">
+                <div class="hero-carousel__composition">
+                  <svg
+                    class="hero-carousel__blob"
+                    viewBox="0 0 390.49 363.11"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M390.49,181.55c0,152.14-48.18,181.55-195.24,181.55S0,333.7,0,181.55,48.18,0,195.25,0s195.24,29.41,195.24,181.55Z"
+                    />
+                  </svg>
+                  <div class="hero-carousel__image-wrapper">
+                    <Image
+                      src={slide.image}
+                      alt={slide.imageAlt}
+                      class="hero-carousel__photo"
+                      width={600}
+                      height={600}
+                      loading={index === 0 ? "eager" : "lazy"}
+                      decoding={index === 0 ? "auto" : "async"}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      ))
+        );
+      })
     }
   </div>
 

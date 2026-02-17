@@ -18,6 +18,7 @@ import Header from "@/components/common/Header.astro";
 import Footer from "@/components/common/Footer.astro";
 import StickyCTA from "@/components/common/StickyCTA.astro";
 import { isPreviewEnabled } from "@/lib/contentful";
+import { ClientRouter } from 'astro:transitions';
 import "@/styles/main.css";
 import "@phosphor-icons/web/regular";
 import "@phosphor-icons/web/bold";
@@ -51,6 +52,7 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
       keywords={keywords} 
     />
     <JsonLD />
+    <ClientRouter />
     
     {/* GTM Script - Solo si existe ID */}
 
@@ -71,24 +73,29 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
       href="/favicon.svg"
       type="image/svg+xml"
     />
-
     <script is:inline>
-      const getTheme = () => {
-        if (
-          typeof localStorage !== "undefined" &&
-          localStorage.getItem("theme")
-        ) {
-          return localStorage.getItem("theme");
-        }
-        return window.matchMedia("(prefers-color-scheme: dark)").matches
-          ? "dark"
-          : "light";
-      };
-      document.documentElement.setAttribute("data-theme", getTheme());
-      document.documentElement.classList.add("js-loaded");
+      // 1. Lógica de Tema (Modo Oscuro/Claro)
+      // Definimos la función para que sea reutilizable tras una transición
+      function applyTheme() {
+        const getTheme = () => {
+          if (
+            typeof localStorage !== "undefined" &&
+            localStorage.getItem("theme")
+          ) {
+            return localStorage.getItem("theme");
+          }
+          return window.matchMedia("(prefers-color-scheme: dark)").matches
+            ? "dark"
+            : "light";
+        };
+        const theme = getTheme();
+        document.documentElement.setAttribute("data-theme", theme);
+        document.documentElement.classList.add("js-loaded");
+      }
 
-      // Zutra: Random Accent Color Initialization
-      (function() {
+      // 2. Lógica de Acento (Zutra Energy)
+      // El usuario quiere que los colores cambien en CADA navegación
+      function applyAccent() {
         const palettes = [
           { main: '#EFD319', hover: '#FACC15', onAccent: '#080501' }, // Amarillo
           { main: '#19EFB5', hover: '#15C999', onAccent: '#080501' }, // Verde Menta
@@ -109,7 +116,7 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
         const b = parseInt(randomPalette.main.slice(5, 7), 16);
         root.style.setProperty('--color-accent-rgb', `${r}, ${g}, ${b}`);
         
-        // Zutra: Dynamic Favicon Update (Immediate)
+        // Función interna para el favicon dinámico
         const updateFavicon = (color) => {
           const faviconLink = document.getElementById('dynamic-favicon');
           if (!faviconLink) return;
@@ -127,10 +134,18 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
           faviconLink.href = `data:image/svg+xml,${encodedSvg}`;
         };
         updateFavicon(randomPalette.main);
-
-        console.log('Zutra: Accent color initialized in head:', randomPalette.main);
         window.__ZUTRA_ACCENT__ = randomPalette.main;
-      })();
+      }
+
+      // Ejecución INICIAL (Evita FOUC en carga fría)
+      applyTheme();
+      applyAccent();
+
+      // Ejecución tras cada transición de página (View Transitions)
+      document.addEventListener('astro:after-swap', () => {
+        applyTheme();
+        applyAccent();
+      });
     </script>
 
 

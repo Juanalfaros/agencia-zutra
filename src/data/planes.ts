@@ -35,7 +35,7 @@ export const plans: Plan[] = [
         recommended: true,
         badge: "CORE",
         features: [
-            "Hosting alta velocidad incluido",
+            "Soporte técnico especializado",
             "Bolsa de horas: Diseño y cambios",
             "Monitoreo, seguridad y respaldos",
         ],

@@ -21,6 +21,7 @@ const { post, featured = false } = Astro.props;
             alt={post.title}
             class="card__image"
             loading="lazy"
+            transition:name={`image-${post.slug}`}
         />
         <span class="card__category">{post.category}</span>
     </div>
@@ -32,7 +33,9 @@ const { post, featured = false } = Astro.props;
             <span class="card__time">{post.readingTime}</span>
         </div>
 
-        <h3 class="card__title">{post.title}</h3>
+        <h3 class="card__title" transition:name={`title-${post.slug}`}>
+            {post.title}
+        </h3>
         <p class="card__excerpt">{post.excerpt}</p>
 
         <div class="card__footer">

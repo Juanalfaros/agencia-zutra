@@ -28,7 +28,7 @@ const description =
     "Nuestros casos de éxito. Estrategia, diseño y métricas reales.";
 ---
 
-<Layout title={title} description={description}>
+<Layout title={title} description={description} image="/og-portfolio.jpg">
     <main class="portfolio-page">
         <section class="portfolio-hero">
             <div class="container">
@@ -85,6 +85,7 @@ const description =
                                             width={800}
                                             height={600}
                                             class="project-image"
+                                            transition:name={`image-${project.slug}`}
                                         />
                                         <div class="project-overlay">
                                             <span class="view-project-btn">
@@ -102,7 +103,10 @@ const description =
                                                 {project.year}
                                             </span>
                                         </div>
-                                        <h3 class="project-title">
+                                        <h3
+                                            class="project-title"
+                                            transition:name={`title-${project.slug}`}
+                                        >
                                             {project.title}
                                         </h3>
                                         <p class="project-desc">
