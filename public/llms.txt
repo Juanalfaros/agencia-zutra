@@ -1,5 +1,5 @@
 Zutra - La Estética Valiente
-Zutra es una agencia de Diseño y Tecnología con base en Chile, reestructurada para enfocarse en la ejecución técnica directa y la rentabilidad inmediata, eliminando la burocracia de agencia tradicional.
+Zutra es una agencia de Diseño y Tecnología con base en Chile, creada para enfocarse en la ejecución técnica directa y la rentabilidad inmediata, eliminando la burocracia de agencia tradicional.
 
 Enfoque (La Estética Valiente)
 Trato Directo y Ejecución: Sin intermediarios ni reuniones innecesarias. Hablas directo con quien diseña y programa.
@@ -8,16 +8,23 @@ Maestría Técnica: Desarrollo web nativo (Astro) y maquetación de email (HTML/
 
 Anti-Vanidad: Priorizamos activos que venden (Web, Mail, Marca) sobre métricas de "likes" o viralidad orgánica sin inversión.
 
-Servicios Principales (Por Prioridad)
-Partner Digital (Mantenimiento): El servicio "Core" para estabilidad financiera. Soporte técnico (hosting/seguridad) y bolsa de horas gráfica mensual para operar sin interrupciones.
+Servicios y Precios (Actualizado)
+Desarrollo & Web (Módulos Tácticos):
+- Web Corporativa & Institucional: $650.000. Arquitectura digital de clase mundial.
+- Landing Pages de Alto Impacto: $450.000. Diseñadas para convertir tráfico en dinero.
+- E-Commerce & Tiendas Online: $950.000. Sistemas robustos con pasarelas de pago y gestión de stock.
+- SEO Técnico & Posicionamiento: $550.000. Ingeniería de contenidos para dominar Google.
 
-Desarrollo Web & Landings: Sitios corporativos ultrarrápidos y páginas de aterrizaje enfocadas 100% en conversión.
+Creatividad & Estrategia:
+- Branding & Identidad Visual: $350.000. Sistemas visuales que polarizan y comunican autoridad.
+- Kits Visuales para RRSS: $350.000. Plantillas editables para autonomía visual total.
+- Presentaciones de Venta (Pitch Decks): $250.000. Storytelling estratégico para cerrar tratos.
 
-Email Marketing & Automatización: Diseño de newsletters en HTML puro y configuración de flujos automatizados de venta (el canal más rentable).
+Marketing Directo:
+- Email Marketing & Newsletters: $250.000. Automatización de ventas y diseño HTML perfecto.
 
-Identidad & Branding: Creación de logotipos y sistemas visuales con carácter para diferenciación radical.
-
-Kits Visuales para RRSS: Diseño de plantillas y activos para que el cliente gestione sus redes con autonomía (sin gestión diaria de agencia).
+Evolución & Soporte:
+- Partner Digital (Mantenimiento): $250.000/mes. Tu departamento digital externo. Soporte, seguridad y evolución gráfica constante.
 
 Equipo
 Camilo Bustamante: Director Creativo & Estrategia.

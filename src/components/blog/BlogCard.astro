@@ -28,7 +28,15 @@ const { post, featured = false } = Astro.props;
 
     <div class="card__content">
         <div class="card__meta">
-            <span class="card__date">{post.publishDate}</span>
+            <span class="card__date">
+                {
+                    new Intl.DateTimeFormat("es-ES", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                    }).format(new Date(post.publishDate))
+                }
+            </span>
             <span class="card__dot">•</span>
             <span class="card__time">{post.readingTime}</span>
         </div>

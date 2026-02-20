@@ -150,7 +150,13 @@ const seoMeta = {
                             <div class="author-meta">
                                 <span class="meta-item">
                                     <i class="ph-duotone ph-calendar-blank"></i>
-                                    {post.publishDate}
+                                    {
+                                        new Intl.DateTimeFormat("es-ES", {
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "numeric",
+                                        }).format(new Date(post.publishDate))
+                                    }
                                 </span>
                                 <span class="meta-item">
                                     <i class="ph-duotone ph-clock"></i>
@@ -391,6 +397,57 @@ const seoMeta = {
     }
 
     generateTOC();
+
+    generateTOC();
+
+    // --- Sistema de Reveal (Micro-animaciones al hacer scroll) ---
+    function initReveal() {
+        const revealElements = document.querySelectorAll(".reveal");
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px",
+        };
+
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("reveal--active");
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        revealElements.forEach((el) => revealObserver.observe(el));
+    }
+
+    // --- Lógica del Comparison Slider (Hidratación Selectiva) ---
+    function initComparisons() {
+        const sliders = document.querySelectorAll("[data-comparison]");
+
+        sliders.forEach((slider) => {
+            const range = slider.querySelector(
+                ".comparison-range",
+            ) as HTMLInputElement;
+            const before = slider.querySelector(
+                ".comparison-before",
+            ) as HTMLElement;
+
+            if (!range || !before) return;
+
+            const updateSlider = () => {
+                const value = range.value;
+                before.style.clipPath = `inset(0 ${100 - parseInt(value)}% 0 0)`;
+            };
+
+            range.addEventListener("input", updateSlider);
+            // Inicializar al 50%
+            updateSlider();
+        });
+    }
+
+    // Inicializar todo
+    initReveal();
+    initComparisons();
 
     // Lógica simple para la barra de progreso
     window.addEventListener("scroll", () => {
@@ -769,10 +826,58 @@ const seoMeta = {
 
     .prose :global(img) {
         border-radius: var(--radius-xl);
-        margin: 4rem 0;
+        margin: 3rem auto;
         width: 100%;
+        max-width: 100%;
+        height: auto;
+        display: block;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
         border: 1px solid var(--color-line);
+    }
+
+    /* --- Table Styling --- */
+    .prose :global(.table-container) {
+        width: 100%;
+        overflow-x: auto;
+        margin: 3rem 0;
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--color-line);
+    }
+
+    .prose :global(table) {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: var(--font-sans);
+        font-size: 0.95rem;
+        background: var(--color-surface);
+    }
+
+    .prose :global(th) {
+        background: var(--color-subtle);
+        color: var(--color-secondary);
+        font-weight: 800;
+        text-align: left;
+        padding: 1rem 1.5rem;
+        border-bottom: 2px solid var(--color-line);
+    }
+
+    .prose :global(td) {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--color-line);
+        color: var(--color-muted);
+        line-height: 1.5;
+    }
+
+    .prose :global(tr:last-child td) {
+        border-bottom: none;
+    }
+
+    .prose :global(tr:nth-child(even)) {
+        background: color-mix(in srgb, var(--color-subtle), transparent 50%);
+    }
+
+    .prose :global(td strong) {
+        color: var(--color-secondary);
     }
 
     .prose :global(a) {
@@ -787,6 +892,199 @@ const seoMeta = {
     .prose :global(a:hover) {
         color: var(--color-secondary);
         text-decoration-color: var(--color-secondary);
+    }
+
+    /* --- Bloques Creativos (Pro) --- */
+
+    /* Reveal Animation Base */
+    .prose :global(.reveal) {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+            opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+            transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .prose :global(.reveal--active) {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Split Block */
+    .prose :global(.split-block) {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        align-items: center;
+        margin: 6rem 0;
+    }
+
+    .prose :global(.split-block--reverse) {
+        direction: rtl;
+    }
+
+    .prose :global(.split-block--reverse > *) {
+        direction: ltr;
+    }
+
+    .prose :global(.split-image img) {
+        margin: 0 !important;
+        width: 100%;
+        border-radius: var(--radius-2xl);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25);
+    }
+
+    .prose :global(.split-content) {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .prose :global(.split-content > *) {
+        margin: 0 !important;
+    }
+
+    /* Custom Quote */
+    .prose :global(.custom-quote) {
+        margin: 6rem 0;
+        padding: 4rem;
+        background: var(--color-subtle);
+        border-radius: var(--radius-2xl);
+        text-align: center;
+        position: relative;
+        border: 1px solid var(--color-line);
+        border-left: none; /* Override default blockquote */
+    }
+
+    .prose :global(.custom-quote p) {
+        font-family: var(--font-sans);
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1.3;
+        color: var(--color-secondary);
+        font-style: italic;
+        margin-bottom: 2rem;
+    }
+
+    .prose :global(.custom-quote cite) {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--color-accent);
+        font-style: normal;
+    }
+
+    /* Stat Block */
+    .prose :global(.stat-item) {
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        padding: 3rem;
+        border-radius: var(--radius-xl);
+        text-align: center;
+        margin: 4rem 0;
+        transition: transform 0.3s ease;
+    }
+
+    .prose :global(.stat-item:hover) {
+        transform: translateY(-10px);
+        border-color: var(--color-accent);
+    }
+
+    .prose :global(.stat-number) {
+        display: block;
+        font-size: 4.5rem;
+        font-weight: 950;
+        line-height: 1;
+        background: linear-gradient(
+            135deg,
+            var(--color-accent),
+            var(--color-secondary)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.05em;
+    }
+
+    .prose :global(.stat-label) {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--color-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    /* Comparison Slider */
+    .prose :global(.comparison-slider) {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        border-radius: var(--radius-2xl);
+        overflow: hidden;
+        margin: 6rem 0;
+        border: 1px solid var(--color-line);
+        box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+        cursor: ew-resize;
+    }
+
+    .prose :global(.comparison-before),
+    .prose :global(.comparison-after) {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .prose :global(.comparison-before) {
+        z-index: 2;
+        clip-path: inset(0 50% 0 0);
+    }
+
+    .prose :global(.comparison-slider img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .prose :global(.comparison-label) {
+        position: absolute;
+        bottom: 1.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        backdrop-filter: blur(4px);
+        border-radius: var(--radius-sm);
+        z-index: 10;
+    }
+
+    .prose :global(.comparison-before .comparison-label) {
+        left: 1.5rem;
+    }
+
+    .prose :global(.comparison-after .comparison-label) {
+        right: 1.5rem;
+    }
+
+    .prose :global(.comparison-range) {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        z-index: 3;
+        margin: 0;
+        cursor: ew-resize;
     }
 
     /* --- Footer del Post --- */
@@ -1178,6 +1476,36 @@ const seoMeta = {
             flex-direction: column;
             align-items: center;
             gap: 1rem;
+        }
+
+        /* Responsive Blocks */
+        .prose :global(.split-block) {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin: 4rem 0;
+        }
+
+        .prose :global(.split-block--reverse) {
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .prose :global(.custom-quote) {
+            padding: 2.5rem 1.5rem;
+            margin: 4rem 0;
+        }
+
+        .prose :global(.custom-quote p) {
+            font-size: 1.5rem;
+        }
+
+        .prose :global(.stat-number) {
+            font-size: 3.5rem;
+        }
+
+        .prose :global(.comparison-slider) {
+            margin: 4rem 0;
+            aspect-ratio: 4 / 3;
         }
     }
 </style>

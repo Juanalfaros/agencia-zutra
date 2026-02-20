@@ -8,23 +8,34 @@ export function initMobileNav() {
   const body = document.body;
 
   if (menuBtn && mobileNav) {
+    console.log('Mobile Nav initialized');
+
+    // Prevent duplicate listeners if script runs multiple times
+    if (menuBtn.dataset.listenerAttached) return;
+    menuBtn.dataset.listenerAttached = 'true';
+
     const openMenu = () => {
-      console.log('Opening mobile menu');
+      console.log('Mobile menu opened');
       mobileNav.classList.add('active');
       body.classList.add('menu-open');
       menuBtn.setAttribute('aria-expanded', 'true');
     };
 
     const closeMenu = () => {
+      console.log('Mobile menu closed');
       mobileNav.classList.remove('active');
       body.classList.remove('menu-open');
       menuBtn.setAttribute('aria-expanded', 'false');
     };
 
-    menuBtn.addEventListener('click', () => {
+    menuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
       const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
-      if (isExpanded) closeMenu();
-      else openMenu();
+      if (isExpanded) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
     });
 
     closeBtn?.addEventListener('click', closeMenu);
@@ -35,5 +46,7 @@ export function initMobileNav() {
     links.forEach(link => {
       link.addEventListener('click', closeMenu);
     });
+  } else {
+    console.warn('Mobile Nav elements not found:', { menuBtn: !!menuBtn, mobileNav: !!mobileNav });
   }
 }

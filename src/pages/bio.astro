@@ -1,0 +1,396 @@
+---
+// src/pages/bio.astro
+import Layout from "@/layouts/Layout.astro";
+import { getEntries } from "@/lib/contentful";
+import { adaptService, adaptBlogPost } from "@/lib/contentful-adapters";
+import type { Service } from "@/types/service-types";
+import type { Post } from "@/types/blog-types";
+import Logo from "@/components/common/Logo.astro";
+
+// Fetch data for the bio page
+const serviceEntries = await getEntries("service", {
+    order: "fields.order",
+    limit: 3,
+});
+const services: Service[] = serviceEntries.items.map(adaptService);
+
+const blogEntries = await getEntries("blogPost", {
+    order: "-fields.publishDate",
+    limit: 1,
+});
+const latestPost: Post | null =
+    blogEntries.items.length > 0 ? adaptBlogPost(blogEntries.items[0]) : null;
+
+const title = "Zutra | Conexiones Valientes";
+const description =
+    "Diseño, Tecnología y Ejecución. Todos nuestros enlaces en un solo lugar.";
+---
+
+<Layout
+    title={title}
+    description={description}
+    showHeader={false}
+    showFooter={false}
+    showCTA={false}
+>
+    <div class="bio-page">
+        <div class="bio-container">
+            <!-- Profile Header -->
+            <header class="bio-header">
+                <a href="/" class="bio-logo" aria-label="Volver al inicio">
+                    <Logo />
+                </a>
+                <h1 class="bio-title">Tu agencia Zutra</h1>
+                <p class="bio-tagline">
+                    Diseño Valiente & Tecnología de Alto Rendimiento
+                </p>
+            </header>
+
+            <!-- Main Links -->
+            <div class="bio-section">
+                <a
+                    href="https://wa.me/56942009050"
+                    class="bio-link bio-link--primary"
+                >
+                    <i class="ph-bold ph-whatsapp-logo"></i>
+                    <span>Agendar Consultoría Única</span>
+                </a>
+                <a href="/" class="bio-link">
+                    <i class="ph-bold ph-globe"></i>
+                    <span>Sitio Web Oficial</span>
+                </a>
+            </div>
+
+            <!-- Services Preview -->
+            <div class="bio-section">
+                <h2 class="section-title">Servicios de Ejecución</h2>
+                <div class="services-stack">
+                    {
+                        services.map((service) => (
+                            <a
+                                href={`/servicios/${service.slug}`}
+                                class="service-card"
+                            >
+                                <div class="service-card__icon">
+                                    <i
+                                        class={`ph-duotone ph-${service.icon || "sparkle"}`}
+                                    />
+                                </div>
+                                <div class="service-card__content">
+                                    <h3>{service.title}</h3>
+                                    <p>{service.description}</p>
+                                </div>
+                                <i class="ph-bold ph-caret-right" />
+                            </a>
+                        ))
+                    }
+                    <a href="/servicios" class="view-all"
+                        >Ver todos los servicios</a
+                    >
+                </div>
+            </div>
+
+            <!-- Latest Blog Post -->
+            {
+                latestPost && (
+                    <div class="bio-section">
+                        <h2 class="section-title">Último del Blog</h2>
+                        <a
+                            href={`/blog/${latestPost.slug}`}
+                            class="blog-preview"
+                        >
+                            <div class="blog-preview__image">
+                                <img
+                                    src={latestPost.image}
+                                    alt={latestPost.title}
+                                />
+                            </div>
+                            <div class="blog-preview__content">
+                                <h3>{latestPost.title}</h3>
+                                <p>{latestPost.excerpt}</p>
+                                <div class="blog-preview__footer">
+                                    <span>Leer artículo</span>
+                                    <i class="ph-bold ph-arrow-right" />
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                )
+            }
+
+            <!-- Social Links Grid -->
+            <div class="bio-section">
+                <div class="social-grid">
+                    <a
+                        href="https://instagram.com/zutra.agency"
+                        class="social-item"
+                    >
+                        <i class="ph-duotone ph-instagram-logo"></i>
+                    </a>
+                    <!-- <a
+                        href="https://linkedin.com/company/zutra"
+                        class="social-item"
+                    >
+                        <i class="ph-duotone ph-linkedin-logo"></i>
+                    </a> -->
+                    <a
+                        href="https://tiktok.com/@zutra.agency"
+                        class="social-item"
+                    >
+                        <i class="ph-duotone ph-tiktok-logo"></i>
+                    </a>
+                    <a href="mailto:hola@zutra.agency" class="social-item">
+                        <i class="ph-duotone ph-envelope"></i>
+                    </a>
+                </div>
+            </div>
+
+            <footer class="bio-footer">
+                <p>© 2026 Tu Agencia Zutra. Vamos a todas.</p>
+            </footer>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .bio-page {
+        min-height: 100vh;
+        color: var(--color-secondary);
+        padding: 2rem 1rem 4rem;
+        font-family: var(--font-sans);
+        position: relative;
+        z-index: 1;
+    }
+
+    .bio-container {
+        max-width: 480px;
+        margin: 0 auto;
+    }
+
+    .bio-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .bio-logo {
+        display: inline-block;
+        margin-bottom: 1.5rem;
+        /* padding: 1rem;
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        border-radius: 2rem; */
+        color: var(--color-accent);
+        transition: all 0.3s ease;
+        width: 10rem;
+    }
+
+    .bio-logo:hover {
+        transform: scale(1.05);
+        background: var(--color-accent-subtle);
+    }
+
+    .bio-title {
+        font-size: 1.75rem;
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    .bio-tagline {
+        font-size: 0.95rem;
+        color: var(--color-muted);
+    }
+
+    .bio-section {
+        margin-bottom: 2.5rem;
+    }
+
+    .section-title {
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--color-accent);
+        margin-bottom: 1.25rem;
+    }
+
+    /* Links */
+    .bio-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 1.25rem;
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-lg);
+        margin-bottom: 1rem;
+        text-decoration: none;
+        color: var(--color-secondary);
+        font-weight: 700;
+        transition: all 0.3s ease;
+    }
+
+    .bio-link:active {
+        transform: scale(0.98);
+        background: var(--color-subtle);
+    }
+
+    .bio-link--primary {
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        border: none;
+    }
+
+    .bio-link--primary:active {
+        background: var(--color-accent-hover);
+    }
+
+    /* Services */
+    .services-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .service-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-lg);
+        text-decoration: none;
+        color: var(--color-secondary);
+        transition: background 0.3s ease;
+    }
+
+    .service-card__icon {
+        width: 44px;
+        height: 44px;
+        background: var(--color-accent-subtle);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        color: var(--color-accent);
+    }
+
+    .service-card__content {
+        flex: 1;
+    }
+
+    .service-card__content h3 {
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+    }
+
+    .service-card__content p {
+        font-size: 0.8rem;
+        color: var(--color-muted);
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .view-all {
+        text-align: center;
+        font-size: 0.85rem;
+        color: var(--color-accent);
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 0.5rem;
+    }
+
+    /* Blog Preview */
+    .blog-preview {
+        display: block;
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        text-decoration: none;
+        color: var(--color-secondary);
+    }
+
+    .blog-preview__image img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+    }
+
+    .blog-preview__content {
+        padding: 1.25rem;
+    }
+
+    .blog-preview__content h3 {
+        font-size: 1.1rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+    }
+
+    .blog-preview__content p {
+        font-size: 0.85rem;
+        color: var(--color-muted);
+        margin-bottom: 1.25rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .blog-preview__footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: var(--color-accent);
+    }
+
+    /* Social Grid */
+    .social-grid {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+    }
+
+    .social-item {
+        width: 72px;
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-lg);
+        font-size: 1.5rem;
+        color: var(--color-secondary);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .social-item:hover {
+        background: var(--color-accent-subtle);
+        color: var(--color-accent);
+        transform: translateY(-2px);
+    }
+
+    .bio-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--color-line);
+    }
+
+    .bio-footer p {
+        font-size: 0.75rem;
+        color: var(--color-muted);
+    }
+</style>

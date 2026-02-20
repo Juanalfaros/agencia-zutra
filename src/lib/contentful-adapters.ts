@@ -10,9 +10,113 @@ import type { Post, Author } from "@/types/blog-types";
 import type { ZutraCaseStudy } from "@/types/project-types";
 import type { HeroSlide } from '@/data/hero';
 import type { Service, ServiceCategory } from '@/types/service-types';
-import { documentToHtmlString } from '@contentful/rich-text-html-renderer';
-import type { Document } from '@contentful/rich-text-types';
+import type { Testimonial } from '@/types/testimonial-types';
+import { documentToHtmlString, type Options } from '@contentful/rich-text-html-renderer';
+import { BLOCKS, INLINES, type Document } from '@contentful/rich-text-types';
 import { globalCTAs } from "@/data/ctas";
+
+/**
+ * Common rendering options for Contentful rich text
+ */
+const renderOptions: Options = {
+    renderNode: {
+        [BLOCKS.EMBEDDED_ASSET]: (node) => {
+            const { title, file } = node.data.target.fields;
+            if (!file) return '';
+            const imageUrl = `https:${file.url}`;
+            return `<img src="${imageUrl}" alt="${title || ''}" loading="lazy" />`;
+        },
+        [BLOCKS.TABLE]: (node, next) => {
+            return `<div class="table-container"><table>${next(node.content)}</table></div>`;
+        },
+    },
+};
+
+// Add shared handler for embedded entries (both block and inline)
+const renderEmbeddedEntry = (node: any) => {
+    if (!node.data || !node.data.target || !node.data.target.sys || !node.data.target.sys.contentType) {
+        return `<!-- Invalid embedded entry -->`;
+    }
+
+    const { sys, fields } = node.data.target;
+    // Handle the case where the entry might not be fully resolved
+    if (!fields) {
+        return `<!-- Unresolved embedded entry: ${sys.id} -->`;
+    }
+
+    const contentType = sys.contentType.sys.id;
+
+    switch (contentType) {
+        case 'blockSplit': {
+            const imageUrl = fields.image?.fields?.file?.url ? `https:${fields.image.fields.file.url}` : '';
+            const isReverse = fields.imagePosition === 'right' || fields.imagePosition === true;
+            const contentHtml = fields.content ? documentToHtmlString(fields.content, renderOptions) : '';
+            return `
+                <div class="split-block ${isReverse ? 'split-block--reverse' : ''} reveal">
+                    <div class="split-image">
+                        <img src="${imageUrl}" alt="${fields.title || ''}" loading="lazy" />
+                    </div>
+                    <div class="split-content prose">
+                        ${contentHtml}
+                    </div>
+                </div>
+            `;
+        }
+        case 'blockQuote': {
+            return `
+                <blockquote class="custom-quote reveal">
+                    <p>${fields.quote || ''}</p>
+                    ${fields.author ? `<cite>— ${fields.author}</cite>` : ''}
+                </blockquote>
+            `;
+        }
+        case 'blockCTA': {
+            const variant = fields.variant || 'accent';
+            return `
+                <div class="post-cta-block cta--${variant} reveal">
+                    <div class="cta-content">
+                        <h3>${fields.title || ''}</h3>
+                        <p>${fields.description || ''}</p>
+                    </div>
+                    <a href="${fields.buttonLink || '#'}" class="btn btn--cta">
+                        ${fields.buttonText || 'Saber más'}
+                        <i class="ph-duotone ph-arrow-right"></i>
+                    </a>
+                </div>
+            `;
+        }
+        case 'blockStat': {
+            return `
+                <div class="stat-item reveal">
+                    <span class="stat-number">${fields.number || ''}</span>
+                    <span class="stat-label">${fields.label || ''}</span>
+                </div>
+            `;
+        }
+        case 'blockComparison': {
+            const beforeUrl = fields.beforeImage?.fields?.file?.url ? `https:${fields.beforeImage.fields.file.url}` : '';
+            const afterUrl = fields.afterImage?.fields?.file?.url ? `https:${fields.afterImage.fields.file.url}` : '';
+            return `
+                <div class="comparison-slider reveal" data-comparison>
+                    <div class="comparison-before">
+                        <img src="${beforeUrl}" alt="Antes" />
+                        <span class="comparison-label">Antes</span>
+                    </div>
+                    <div class="comparison-after">
+                        <img src="${afterUrl}" alt="Después" />
+                        <span class="comparison-label">Después</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="50" class="comparison-range" aria-label="Deslizar para comparar" />
+                </div>
+            `;
+        }
+        default:
+            return `<!-- Unsupported block type: ${contentType} -->`;
+    }
+};
+
+renderOptions.renderNode![BLOCKS.EMBEDDED_ENTRY] = renderEmbeddedEntry;
+renderOptions.renderNode![INLINES.EMBEDDED_ENTRY] = renderEmbeddedEntry;
 
 /**
  * Adapt Contentful Asset to local image format
@@ -104,7 +208,7 @@ export function adaptBlogPost(entry: Entry<any, undefined, string>): Post {
     }
 
     const content = fields.content
-        ? documentToHtmlString(fields.content as Document)
+        ? documentToHtmlString(fields.content as Document, renderOptions)
         : '';
 
     // Get featured image URL
@@ -274,7 +378,7 @@ export function adaptService(entry: Entry<any, undefined, string>): Service {
 
     const fields = entry.fields;
     const content = fields.description
-        ? documentToHtmlString(fields.description as Document)
+        ? documentToHtmlString(fields.description as Document, renderOptions)
         : '';
 
     const deliverables = Array.isArray(fields.deliverables)
@@ -324,3 +428,27 @@ export function adaptService(entry: Entry<any, undefined, string>): Service {
         order: typeof fields.order === 'number' ? fields.order : 999,
     };
 }
+
+/**
+ * Adapt Testimonial from Contentful
+ */
+export function adaptTestimonial(entry: Entry<any, undefined, string>): Testimonial {
+    if (!entry || !entry.fields) {
+        throw new Error('Invalid testimonial entry');
+    }
+
+    const fields = entry.fields;
+    const avatar = fields.avatar ? adaptAsset(fields.avatar as Asset) : undefined;
+
+    return {
+        id: entry.sys.id,
+        author: typeof fields.author === 'string' ? fields.author : '',
+        role: typeof fields.role === 'string' ? fields.role : '',
+        company: typeof fields.company === 'string' ? fields.company : '',
+        quote: typeof fields.quote === 'string' ? fields.quote : '',
+        avatar: avatar && typeof avatar === 'object' ? { src: avatar.src, alt: avatar.alt } : undefined,
+        featured: typeof fields.featured === 'boolean' ? fields.featured : false,
+        order: typeof fields.order === 'number' ? fields.order : 999,
+    };
+}
+

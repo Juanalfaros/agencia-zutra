@@ -1,15 +1,15 @@
 ---
-import { plans, tableRows } from "../../data/planes";
+import { plans, tableRows } from "@/data/planes";
 ---
 
-<section id="planes" class="section">
+<section id="planes" class="section planes-section">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header text-center">
+      <span class="badge-pill">Modelos de Trabajo</span>
       <h2 class="section-title">Elige cómo empezamos</h2>
       <p class="section-subtitle">
-        Sprints cerrados o acompañamiento mensual. <strong
-          >Sin permanencia forzada</strong
-        >.
+        Sprints tácticos para inyectar caja o acompañamiento estratégico para escalar. 
+        <strong>Sin contratos forzosos, solo resultados.</strong>
       </p>
     </div>
     
@@ -20,188 +20,242 @@ import { plans, tableRows } from "../../data/planes";
             class={`plan-card ${plan.recommended ? "plan-card--recommended" : ""}`}
           >
             {plan.recommended && (
-              <span class="plan-card__badge">{plan.badge}</span>
+              <div class="recommended-badge">
+                <i class="ph-fill ph-star"></i> {plan.badge}
+              </div>
             )}
-            <div class="plan-card__header">
-              <h3 class="plan-card__title">{plan.title}</h3>
-              <p class="plan-card__meta">{plan.meta}</p>
-              <p class="plan-card__price">
-                {plan.price} <span class="price__meta">{plan.priceMeta}</span>
-              </p>
+            
+            <div class="plan-card__content">
+                <div class="plan-card__header">
+                  <h3 class="plan-card__title">{plan.title}</h3>
+                  <p class="plan-card__meta">{plan.meta}</p>
+                  
+                  <div class="price-container">
+                    <p class="plan-card__price">{plan.price}</p>
+                    <span class="price__meta">{plan.priceMeta}</span>
+                  </div>
+                </div>
+
+                <hr class="card-divider" />
+
+                <ul class="plan-card__list">
+                  {plan.features.map((feature) => (
+                    <li class="card__list-item">
+                      <i class="ph-bold ph-check-circle icon-check" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
             </div>
-            <ul class="plan-card__list">
-              {plan.features.map((feature) => (
-                <li class="card__list-item">
-                  <i class="ph-duotone ph-check-circle" />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-            <a
-              href="#contacto"
-              data-track="plan_click"
-              data-plan={plan.planId}
-              class="plan-card__cta button button--primary"
-            >
-              {plan.ctaText}
-            </a>
+
+            <div class="plan-card__footer">
+                <a
+                  href={`#contacto?plan=${plan.planId}`}
+                  data-track="plan_click"
+                  data-plan={plan.planId}
+                  class={`plan-card__cta button ${plan.recommended ? "button--primary" : "button--ghost"}`}
+                >
+                  {plan.ctaText}
+                </a>
+                {plan.planId === 'partner' && (
+                    <p class="stock-alert">
+                        <span class="dot-pulse"></span> Solo 3 cupos mensuales
+                    </p>
+                )}
+            </div>
           </div>
         ))
       }
     </div>
 
-    <div class="plans-table-wrapper">
-      <table class="plans-table">
-        <thead>
-          <tr>
-            <th>Incluye</th>
-            <th>Sprint de Leads</th>
-            <th>Partner Digital</th>
-            <th>Email Revenue</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            tableRows.map((row) => (
+    <div class="comparison-wrapper animate-fade-up delay-2">
+        <h3 class="comparison-title">Comparativa de Enfoque</h3>
+        
+        <div class="table-container">
+          <table class="plans-table">
+            <thead>
               <tr>
-                <td data-label="Incluye">{row.label}</td>
-                
-                {/* Columna Sprint */}
-                <td data-label="Sprint de Leads">
-                  {row.sprint === "✔" ? (
-                    <i
-                      class="ph-duotone ph-check-circle"
-                      style="color: var(--color-accent); font-size: 1.25rem;"
-                    />
-                  ) : row.sprint.includes("✔") ? (
-                    <>
-                      <i
-                        class="ph-duotone ph-check-circle"
-                        style="color: var(--color-accent); font-size: 1rem;"
-                      />{" "}
-                      {row.sprint.replace("✔", "").trim()}
-                    </>
-                  ) : (
-                    row.sprint
-                  )}
-                </td>
-
-                {/* Columna Partner (Antes Monthly) */}
-                <td data-label="Partner Digital">
-                  {row.partner === "✔" ? (
-                    <i
-                      class="ph-duotone ph-check-circle"
-                      style="color: var(--color-accent); font-size: 1.25rem;"
-                    />
-                  ) : row.partner.includes("✔") ? (
-                    <>
-                      <i
-                        class="ph-duotone ph-check-circle"
-                        style="color: var(--color-accent); font-size: 1rem;"
-                      />{" "}
-                      {row.partner.replace("✔", "").trim()}
-                    </>
-                  ) : (
-                    row.partner
-                  )}
-                </td>
-
-                {/* Columna Email (Antes Support) */}
-                <td data-label="Email Revenue">
-                  {row.email === "✔" ? (
-                    <i
-                      class="ph-duotone ph-check-circle"
-                      style="color: var(--color-accent); font-size: 1.25rem;"
-                    />
-                  ) : row.email.includes("✔") ? (
-                    <>
-                      <i
-                        class="ph-duotone ph-check-circle"
-                        style="color: var(--color-accent); font-size: 1rem;"
-                      />{" "}
-                      {row.email.replace("✔", "").trim()}
-                    </>
-                  ) : (
-                    row.email
-                  )}
-                </td>
+                <th class="feature-col">Característica</th>
+                <th>Sprint de Leads <span class="th-subtitle">Caza</span></th>
+                <th class="highlight-col">Partner Digital <span class="th-subtitle">Cultivo</span></th>
+                <th>Email Revenue <span class="th-subtitle">Cosecha</span></th>
               </tr>
-            ))
-          }
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {
+                tableRows.map((row) => (
+                  <tr>
+                    <td class="feature-name" data-label="Característica">{row.label}</td>
+                    
+                    <td data-label="Sprint de Leads">
+                        <span class="cell-content">{row.sprint}</span>
+                    </td>
+
+                    <td class="highlight-col" data-label="Partner Digital">
+                        <span class="cell-content font-bold text-accent">{row.partner}</span>
+                    </td>
+
+                    <td data-label="Email Revenue">
+                        <span class="cell-content">{row.email}</span>
+                    </td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
     </div>
   </div>
 </section>
 
 <style>
-  .plans-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 3rem;
+  /* --- VARIABLES & LAYOUT --- */
+  .planes-section {
+    padding: 6rem 0;
+    position: relative;
   }
 
+  .text-center { text-align: center; }
+
+  .badge-pill {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-accent);
+    border: 1px solid rgba(var(--color-accent-rgb), 0.3);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 900;
+    color: var(--color-secondary);
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+
+  .section-subtitle {
+    font-size: 1.1rem;
+    color: var(--color-muted);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* --- CARDS GRID --- */
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 4rem;
+    align-items: start;
+  }
+
+  /* --- CARD DESIGN --- */
   .plan-card {
+    background: var(--color-surface);
     border: 1px solid var(--color-line);
-    border-radius: var(--radius-lg);
-    padding: 2rem;
+    border-radius: 1.5rem;
+    padding: 2.5rem 2rem;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
     position: relative;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, border-color 0.3s ease;
   }
 
   .plan-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-8px);
+    border-color: var(--color-accent);
   }
 
+  /* Recommended Card Styling */
   .plan-card--recommended {
-    border: 2px solid var(--color-accent);
+    border: 0.3px solid var(--color-accent);
+    background: linear-gradient(to bottom, rgba(var(--color-accent-rgb), 0.03), var(--color-surface));
+    transform: scale(1.02);
+    z-index: 2;
+    box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
+  }
+  
+  @media (min-width: 1024px) {
+      .plan-card--recommended {
+          transform: scale(1.05); /* Make it pop more on desktop */
+      }
+      .plan-card--recommended:hover {
+          transform: scale(1.05) translateY(-8px);
+      }
   }
 
-  .plan-card__badge {
+  .recommended-badge {
     position: absolute;
-    top: -0.75rem;
-    left: 1.5rem;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
     background-color: var(--color-accent);
     color: var(--color-on-accent);
-    padding: 0.25rem 0.75rem;
-    border-radius: var(--radius-full);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
     font-size: 0.75rem;
     font-weight: 800;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 4px 12px rgba(var(--color-accent-rgb), 0.4);
   }
 
-  .plan-card__header {
-    margin-bottom: 2rem;
-  }
+  /* Header */
+  .plan-card__header { margin-bottom: 1.5rem; text-align: center; }
 
   .plan-card__title {
     font-size: 1.5rem;
     font-weight: 800;
-    margin: 0;
     color: var(--color-secondary);
+    margin-bottom: 0.5rem;
   }
 
   .plan-card__meta {
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     color: var(--color-muted);
-    margin-top: 0.5rem;
+    font-weight: 500;
+  }
+
+  .price-container {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .plan-card__price {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--color-accent);
-    margin: 1.5rem 0 0;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--color-secondary);
+    line-height: 1;
+    letter-spacing: -0.02em;
   }
 
   .price__meta {
-    font-size: 0.875rem;
+    font-size: 0.85rem;
     color: var(--color-muted);
-    font-weight: normal;
+    margin-top: 0.25rem;
   }
 
+  .card-divider {
+    border: 0;
+    height: 1px;
+    background: var(--color-line);
+    margin: 0 0 2rem 0;
+    width: 100%;
+  }
+
+  /* List */
   .plan-card__list {
     margin: 0;
     padding: 0;
@@ -210,76 +264,181 @@ import { plans, tableRows } from "../../data/planes";
     flex-direction: column;
     gap: 1rem;
     flex-grow: 1;
+    margin-bottom: 2.5rem;
   }
 
   .card__list-item {
     display: flex;
+    align-items: flex-start;
     gap: 0.75rem;
     color: var(--color-gray-300);
     font-size: 0.95rem;
+    line-height: 1.4;
   }
 
-  .card__list-item i {
+  .icon-check {
     color: var(--color-accent);
-    margin-top: 0.25rem;
+    font-size: 1.2rem;
     flex-shrink: 0;
+    margin-top: 0.1rem;
   }
+
+  /* Footer & CTA */
+  .plan-card__footer { text-align: center; }
 
   .plan-card__cta {
-    margin-top: 2rem;
     width: 100%;
-    text-align: center;
+    justify-content: center;
+  }
+  
+  .button--ghost {
+      background: transparent;
+      border: 1px solid var(--color-line);
+      color: var(--color-secondary);
+  }
+  .button--ghost:hover {
+      border-color: var(--color-secondary);
   }
 
-  .plans-table-wrapper {
-    margin-top: 4rem;
+  .stock-alert {
+      font-size: 0.75rem;
+      color: var(--color-accent);
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-weight: 600;
+  }
+  
+  .dot-pulse {
+      width: 8px;
+      height: 8px;
+      background-color: var(--color-accent);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+  }
+  
+  @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(var(--color-accent-rgb), 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(var(--color-accent-rgb), 0); }
+      100% { box-shadow: 0 0 0 0 rgba(var(--color-accent-rgb), 0); }
+  }
+
+  /* --- COMPARISON TABLE --- */
+  .comparison-wrapper {
+    margin-top: 6rem;
+  }
+  
+  .comparison-title {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 2rem;
+      color: var(--color-secondary);
+  }
+
+  .table-container {
     overflow-x: auto;
-    background-color: var(--color-subtle);
+    background-color: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--color-line);
-    border-radius: var(--radius-lg);
-    padding: 1px;
+    border-radius: 1rem;
   }
 
   .plans-table {
     width: 100%;
-    min-width: 700px;
+    min-width: 800px; /* Force scroll on small screens */
     border-collapse: collapse;
     font-size: 0.95rem;
   }
 
   .plans-table th,
   .plans-table td {
-    padding: 1.25rem;
-    text-align: left;
+    padding: 1.5rem;
+    text-align: center;
     border-bottom: 1px solid var(--color-line);
+  }
+  
+  .plans-table td.feature-name {
+      text-align: left;
+      font-weight: 600;
+      color: var(--color-secondary);
+      width: 25%;
   }
 
   .plans-table th {
     font-weight: 800;
     color: var(--color-secondary);
+    font-size: 1.1rem;
+    vertical-align: bottom;
+  }
+  
+  .th-subtitle {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--color-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      margin-top: 0.25rem;
+  }
+
+  .highlight-col {
+      background-color: rgba(var(--color-accent-rgb), 0.03);
   }
 
   .plans-table tr:last-child td {
     border-bottom: none;
   }
+  
+  .text-accent { color: var(--color-accent); }
+  .font-bold { font-weight: 700; }
 
-  .plans-table tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.02);
-  }
+  /* --- MOBILE RESPONSIVE TABLE --- */
+  @media (max-width: 768px) {
+    .plans-table thead { display: none; }
 
-  @media (min-width: 1024px) {
-    .plans-grid {
-      grid-template-columns: repeat(3, 1fr);
+    .plans-table, .plans-table tbody, .plans-table tr, .plans-table td {
+      display: block;
+      width: 100%;
     }
-  }
+    
+    .table-container { border: none; background: transparent; }
 
-  @media (max-width: 767px) {
+    .plans-table tr {
+      margin-bottom: 2rem;
+      border: 1px solid var(--color-line);
+      border-radius: 1rem;
+      background: var(--color-surface);
+      overflow: hidden;
+    }
+
+    .plans-table td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      text-align: right;
+      border-bottom: 1px solid var(--color-line);
+    }
+    
+    .plans-table td.feature-name {
+        background-color: var(--color-subtle);
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--color-accent);
+    }
+
     .plans-table td::before {
       content: attr(data-label);
-      font-weight: 700;
-      display: block;
-      margin-bottom: 0.5rem;
-      color: var(--color-accent);
+      font-weight: 600;
+      color: var(--color-muted);
+      text-align: left;
+      font-size: 0.85rem;
     }
+    
+    .highlight-col { background: transparent; }
   }
 </style>

@@ -1,0 +1,482 @@
+---
+import { getEntries } from "@/lib/contentful";
+import { adaptService } from "@/lib/contentful-adapters";
+import type { Service } from "@/types/service-types";
+
+const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+
+const entries = await getEntries(
+    "service",
+    { order: "fields.order", include: 2 },
+    isPreview,
+);
+const services: Service[] = entries.items.map(adaptService);
+
+// Triplicamos para garantizar el loop sin saltos visibles
+const carouselServices = [...services, ...services, ...services];
+---
+
+<section id="servicios" class="servicios-loop relative">
+    <div class="loop-bg"></div>
+
+    <div class="container-limit relative z-10">
+        <div class="section-header text-center mb-10">
+            <h2 class="section-title">
+                Servicios para <span class="text-accent"
+                    >dominar tu mercado</span
+                >
+            </h2>
+            <p class="section-subtitle">
+                Diseño y desarrollo para elevar tu marca al siguiente nivel.
+            </p>
+        </div>
+
+        <div class="carousel-wrapper" id="carouselWrapper">
+            <div class="carousel-track" id="carouselTrack">
+                {
+                    carouselServices.map((service: Service, idx: number) => (
+                        <article class="service-card group" data-idx={idx}>
+                            <div class="card__header">
+                                <div class="header-top">
+                                    <i
+                                        class={`${service.icon || "ph-duotone ph-cube"} card__icon`}
+                                    />
+                                    {service.badge && (
+                                        <span class="card__badge">
+                                            {service.badge}
+                                        </span>
+                                    )}
+                                </div>
+                                <h3 class="card__title">{service.title}</h3>
+                            </div>
+
+                            <p class="card__description">
+                                {service.description}
+                            </p>
+
+                            <hr class="card__divider" />
+
+                            {service.details && service.details.length > 0 && (
+                                <ul class="card__list">
+                                    {service.details
+                                        .slice(0, 3)
+                                        .map((detail: string) => (
+                                            <li>
+                                                <i class="ph-duotone ph-check-circle text-accent" />
+                                                <span>{detail}</span>
+                                            </li>
+                                        ))}
+                                </ul>
+                            )}
+
+                            <div class="card__footer">
+                                <div class="price-block">
+                                    <span class="price-label">Desde</span>
+                                    <span class="price-value">
+                                        {service.priceAmount || "A medida"}
+                                    </span>
+                                </div>
+                                <a
+                                    href={`/servicios/${service.slug}`}
+                                    class="card__link"
+                                    aria-label="Ver servicio"
+                                >
+                                    <i class="ph-bold ph-arrow-right" />
+                                </a>
+                            </div>
+                        </article>
+                    ))
+                }
+            </div>
+        </div>
+
+        <div class="text-center mt-12 cta-servicios gap-4">
+            <a href="/servicios" class="button">
+                Ver todos los servicios <i class="ph-bold ph-arrow-right"></i>
+            </a>
+            <a href="#contacto" class="button button--ghost">
+                Agendar Diagnóstico <i class="ph-duotone ph-stethoscope"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<style>
+    .servicios-loop {
+        padding: 6rem 0;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .container-limit {
+        max-width: 1380px;
+        margin: 0 auto;
+        padding: 0 1.5rem;
+        width: 100%;
+    }
+
+    .text-accent {
+        color: var(--color-accent);
+    }
+
+    .loop-bg {
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(
+            var(--color-line) 1px,
+            transparent 1px
+        );
+        background-size: 30px 30px;
+        opacity: 0.15;
+        pointer-events: none;
+    }
+
+    html[data-theme="light"] .loop-bg {
+        opacity: 0.08;
+    }
+
+    .section-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 900;
+        color: var(--color-secondary);
+    }
+
+    /* ─── Carrusel ─── */
+    .carousel-wrapper {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        /* Fade en los bordes */
+        mask-image: linear-gradient(
+            to right,
+            transparent,
+            black 10%,
+            black 90%,
+            transparent
+        );
+        -webkit-mask-image: linear-gradient(
+            to right,
+            transparent,
+            black 10%,
+            black 90%,
+            transparent
+        );
+        /* Necesario para que el cursor cambie sobre el wrapper */
+        cursor: default;
+    }
+
+    .carousel-track {
+        display: flex;
+        gap: 2rem;
+        width: max-content;
+        padding: 3rem 0;
+        /* Sin animation CSS — el JS lo maneja con requestAnimationFrame */
+        will-change: transform;
+        transform: translateZ(0); /* Fuerza capa GPU desde el inicio */
+    }
+
+    /* ─── Tarjetas ─── */
+    .service-card {
+        flex-shrink: 0;
+        width: 320px;
+        background: var(--color-surface);
+        border: 1px solid var(--color-line);
+        border-radius: 1.25rem;
+        padding: 1.75rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        transition:
+            transform 0.4s cubic-bezier(0.2, 0, 0.2, 1),
+            border-color 0.3s ease,
+            box-shadow 0.4s ease,
+            background-color 0.3s ease;
+        overflow: hidden;
+    }
+
+    .service-card:hover {
+        transform: translateY(-12px) scale(1.02);
+        z-index: 10;
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .card__icon {
+        font-size: 2rem;
+        color: var(--color-accent);
+        transition: transform 0.3s ease;
+    }
+
+    .service-card:hover .card__icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .card__badge {
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        background: var(--color-subtle);
+        color: var(--color-muted);
+        border: 1px solid var(--color-line);
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+
+    .service-card:hover .card__badge {
+        background: var(--color-accent);
+        color: var(--color-on-accent);
+        border-color: var(--color-accent);
+        transform: translateY(-2px);
+    }
+
+    .card__title {
+        font-size: 1.25rem;
+        font-weight: 800;
+        line-height: 1.2;
+        color: var(--color-secondary);
+        margin-bottom: 0.5rem;
+    }
+
+    .card__description {
+        font-size: 0.9rem;
+        color: var(--color-muted);
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .card__divider {
+        border: 0;
+        height: 1px;
+        background: var(--color-line);
+        margin-bottom: 1rem;
+        opacity: 0.5;
+        transition: all 0.3s ease;
+    }
+
+    .service-card:hover .card__divider {
+        opacity: 1;
+        background: var(--color-accent);
+    }
+
+    .card__list {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+
+    .card__list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        font-size: 0.85rem;
+        color: var(--color-gray-300);
+        transition: transform 0.2s ease;
+        line-height: 1.5;
+    }
+
+    .service-card:hover .card__list li {
+        transform: translateX(4px);
+    }
+
+    .card__list i {
+        font-size: 1rem;
+        margin-top: 0.19rem;
+    }
+
+    .card__footer {
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .price-block {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .price-label {
+        display: block;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: var(--color-muted);
+        font-weight: 600;
+    }
+
+    .price-value {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: var(--color-secondary);
+        transition: color 0.3s ease;
+    }
+
+    .service-card:hover .price-value {
+        color: var(--color-accent);
+    }
+
+    .card__link {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 1px solid var(--color-line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-muted);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        background: transparent;
+        flex-shrink: 0;
+    }
+
+    .service-card:hover .card__link {
+        background: var(--color-accent);
+        border-color: var(--color-accent);
+        color: var(--color-on-accent);
+        transform: rotate(-45deg) scale(1.1);
+    }
+
+    .cta-servicios {
+        margin-top: 4rem;
+        align-items: center;
+        justify-content: center;
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+        .service-card {
+            width: 280px;
+        }
+        .carousel-track {
+            gap: 1.5rem;
+            padding: 2rem 0;
+        }
+        .carousel-wrapper {
+            mask-image: linear-gradient(
+                to right,
+                transparent,
+                black 5%,
+                black 95%,
+                transparent
+            );
+            -webkit-mask-image: linear-gradient(
+                to right,
+                transparent,
+                black 5%,
+                black 95%,
+                transparent
+            );
+        }
+    }
+
+    /* Reduce motion */
+    @media (prefers-reduced-motion: reduce) {
+        .carousel-track {
+            animation: none !important;
+        }
+    }
+</style>
+
+<script>
+    /**
+     * Carrusel infinito con requestAnimationFrame
+     * ─────────────────────────────────────────────
+     * En lugar de usar animation CSS (que pausa abruptamente),
+     * usamos rAF para controlar la posición frame a frame.
+     * El hover desacelera suavemente hasta 0 y vuelve a acelerar.
+     */
+    (function () {
+        const wrapper = document.getElementById("carouselWrapper");
+        const track = document.getElementById("carouselTrack");
+        if (!wrapper || !track) return;
+
+        // ── Config ──────────────────────────────────────────
+        const SPEED = 0.6; // px por frame a 60fps (~36px/s)
+        const EASE_FACTOR = 0.1; // qué tan rápido acelera/desacelera (0-1)
+
+        // ── Estado ──────────────────────────────────────────
+        let currentX = 0;
+        let targetSpeed = SPEED;
+        let currentSpeed = SPEED;
+        let isHovered = false;
+        let rafId: number;
+
+        // Calculamos el ancho del bloque "original" (1/3 del track, ya que triplicamos)
+        function getLoopWidth(): number {
+            return track!.scrollWidth / 3;
+        }
+
+        // ── Loop principal ──────────────────────────────────
+        function tick() {
+            // Interpolar la velocidad suavemente
+            currentSpeed += (targetSpeed - currentSpeed) * EASE_FACTOR;
+
+            currentX += currentSpeed;
+
+            const loopWidth = getLoopWidth();
+
+            // Cuando avanzamos un bloque completo, reseteamos sin salto
+            if (currentX >= loopWidth) {
+                currentX -= loopWidth;
+            }
+
+            // Aplicamos con transform (GPU) — sin recalcular layout
+            track!.style.transform = `translate3d(-${currentX}px, 0, 0)`;
+
+            rafId = requestAnimationFrame(tick);
+        }
+
+        // ── Eventos hover ────────────────────────────────────
+        wrapper.addEventListener("mouseenter", () => {
+            isHovered = true;
+            targetSpeed = 0;
+        });
+
+        wrapper.addEventListener("mouseleave", () => {
+            isHovered = false;
+            targetSpeed = SPEED;
+        });
+
+        // Pausa cuando la pestaña está oculta (ahorra CPU)
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                cancelAnimationFrame(rafId);
+            } else {
+                rafId = requestAnimationFrame(tick);
+            }
+        });
+
+        // Respeta prefers-reduced-motion
+        const prefersReduced = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+        );
+        if (!prefersReduced.matches) {
+            rafId = requestAnimationFrame(tick);
+        }
+
+        prefersReduced.addEventListener("change", (e) => {
+            if (e.matches) {
+                cancelAnimationFrame(rafId);
+                track!.style.transform = "translate3d(0, 0, 0)";
+            } else {
+                rafId = requestAnimationFrame(tick);
+            }
+        });
+    })();
+</script>

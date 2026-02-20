@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zutra - Notificación de Lead</title>
+    <style>
+        /* 1. Variables Globales (Root) */
+        :root {
+            /* Paleta de Colores */
+            --color-bg-page: #F8F9FA;
+            --color-bg-card: #ffffff;
+            --color-bg-dark: #080501;
+            --color-accent: #EFD319;
+            --color-bg-subtle: #FDFDFD;
+            
+            /* Bordes y Lineas */
+            --color-border: #F3F4F6;
+            --color-border-outer: #E5E7EB;
+            
+            /* Tipografía */
+            --color-text-main: #111827;
+            --color-text-muted: #9CA3AF;
+            --color-text-label: #6B7280;
+            --color-text-light: #ffffff;
+            
+            /* Espaciado y Radios */
+            --spacing-sm: 12px;
+            --spacing-md: 25px;
+            --spacing-lg: 40px;
+            --radius-card: 16px;
+            --radius-element: 12px;
+            --radius-pill: 50px;
+            
+            /* Fuentes */
+            --font-stack: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* 2. Reset y Estilos Base */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-stack);
+            background-color: var(--color-bg-page);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: var(--spacing-lg) var(--spacing-sm);
+            -webkit-font-smoothing: antialiased;
+            color: var(--color-text-main);
+        }
+
+        a { text-decoration: none; transition: opacity 0.2s; }
+        ul, dl { list-style: none; }
+
+        /* 3. Contenedor Principal (Tarjeta) */
+        .card {
+            width: 100%;
+            max-width: 600px;
+            background-color: var(--color-bg-card);
+            border-radius: var(--radius-card);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid var(--color-border-outer);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 4. Header */
+        .card-header {
+            background-color: var(--color-bg-dark);
+            padding: var(--spacing-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .header-content { flex: 1; padding-right: 20px; }
+
+        .badge {
+            background-color: var(--color-accent);
+            color: var(--color-bg-dark);
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .card-header h1 {
+            color: var(--color-text-light);
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .card-header p {
+            color: var(--color-text-muted);
+            margin-top: 10px;
+            font-size: 0.95rem;
+        }
+
+        .logo {
+            width: 45px;
+            height: 45px;
+            /* filter: brightness(0) invert(1); */
+        }
+
+        /* 5. Contenido Principal */
+        .card-body {
+            padding: var(--spacing-lg);
+        }
+
+        .section-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        /* Lista de Datos (Description List) */
+        .data-list {
+            background-color: var(--color-bg-subtle);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-element);
+            padding: var(--spacing-md);
+            margin-bottom: 30px;
+        }
+
+        .data-item {
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: var(--spacing-sm);
+            margin-bottom: 15px;
+        }
+
+        .data-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        .data-item dt {
+            font-size: 0.8rem;
+            color: var(--color-text-label);
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .data-item dd {
+            font-size: 1rem;
+            color: var(--color-text-main);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .data-item dd a {
+            color: var(--color-text-main);
+            border-bottom: 2px solid var(--color-accent);
+        }
+
+        .icon {
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+
+        /* Bloque de Mensaje */
+        .message-box {
+            position: relative;
+            padding: var(--spacing-md);
+            background-color: var(--color-bg-dark);
+            border-radius: var(--radius-element);
+            color: var(--color-text-light);
+            margin-top: 20px;
+        }
+
+        .quote-mark {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 3rem;
+            color: var(--color-accent);
+            opacity: 0.5;
+            line-height: 0;
+            font-family: serif;
+        }
+
+        .message-text {
+            position: relative;
+            z-index: 1;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            font-style: italic;
+        }
+
+        /* Botón de Acción */
+        .actions { margin-top: 40px; }
+
+        .btn-primary {
+            background-color: var(--color-accent);
+            color: var(--color-bg-dark);
+            padding: 18px 30px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 211, 25, 0.4);
+        }
+
+        /* 6. Footer */
+        .card-footer {
+            padding: var(--spacing-lg);
+            text-align: center;
+            color: var(--color-text-muted);
+            font-size: 0.8rem;
+            line-height: 1.6;
+            border-top: 1px solid var(--color-border-outer);
+            background-color: var(--color-bg-card);
+        }
+
+        .copyright {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        /* 7. Responsive */
+        @media (max-width: 480px) {
+            .card-header { padding: 30px 25px; flex-direction: column-reverse; gap: 20px; }
+            .logo { align-self: flex-start; }
+            .card-body { padding: 25px; }
+            .card-footer { padding: 30px 25px; }
+        }
+    </style>
+</head>
+<body>
+
+    <main class="card">
+        <header class="card-header">
+            <div class="header-content">
+                <span class="badge">Nuevo Contacto</span>
+                <h1>¡Tienes un nuevo lead!</h1>
+                <p>Alguien está interesado en tus servicios de agencia.</p>
+            </div>
+            <img src="https://www.zutra.agency/favicon.svg" alt="Zutra Logo" class="logo">
+        </header>
+
+        <section class="card-body">
+            
+            <span class="section-title">Información del Prospecto</span>
+            
+            <dl class="data-list">
+                <div class="data-item">
+                    <dt>Nombre Completo</dt>
+                    <dd>
+                        <img src="https://api.iconify.design/ph:user-circle-duotone.svg?color=%23080501" class="icon" alt="user">
+                        {{ params.first_name }} {{ params.last_name }}
+                    </dd>
+                </div>
+                
+                <div class="data-item">
+                    <dt>Correo Electrónico</dt>
+                    <dd>
+                        <img src="https://api.iconify.design/ph:envelope-simple-duotone.svg?color=%23080501" class="icon" alt="email">
+                        <a href="mailto:{{ params.email }}">{{ params.email }}</a>
+                    </dd>
+                </div>
+                
+                <div class="data-item">
+                    <dt>WhatsApp / Teléfono</dt>
+                    <dd>
+                        <img src="https://api.iconify.design/ph:phone-duotone.svg?color=%23080501" class="icon" alt="phone">
+                        {{ params.phone }}
+                    </dd>
+                </div>
+                
+                <div class="data-item">
+                    <dt>Servicio de Interés</dt>
+                    <dd>
+                        <img src="https://api.iconify.design/ph:sparkle-duotone.svg?color=%23EFD319" class="icon" alt="sparkle">
+                        {{ params.service_interest }}
+                    </dd>
+                </div>
+            </dl>
+
+            <span class="section-title">Mensaje Recibido</span>
+            <figure class="message-box">
+                <span class="quote-mark">"</span>
+                <blockquote class="message-text">
+                    {{ params.message }}
+                </blockquote>
+            </figure>
+
+            <div class="actions">
+                <a href="https://wa.me/{{ params.phone_raw }}" class="btn-primary">
+                    <img src="https://api.iconify.design/ph:whatsapp-logo-fill.svg?color=%23080501" width="20" alt="whatsapp">
+                    Contactar por WhatsApp ahora
+                </a>
+            </div>
+        </section>
+
+        <footer class="card-footer">
+            <p>
+                Este es un mensaje automático enviado por tu ecosistema digital <strong>Zutra x Brevo</strong>. 
+                Asegúrate de responder en menos de 15 minutos para aumentar la tasa de conversión.
+            </p>
+            <div class="copyright">
+                <p>&copy; 2026 <strong>Agencia Zutra</strong>. Todos los derechos reservados.</p>
+            </div>
+        </footer>
+    </main>
+
+</body>
+</html>

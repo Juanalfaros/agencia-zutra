@@ -13,51 +13,50 @@ export interface Plan {
 export const plans: Plan[] = [
     {
         title: "Sprint de Leads",
-        meta: "30 días · Landing + Ads",
+        meta: "30 días · Inyección de Ventas",
         price: "$550.000",
-        priceMeta: "+ pauta",
-        ctaText: "Inyectar ventas",
+        priceMeta: "+ inversión en ads",
+        ctaText: "Iniciar Sprint",
         planId: "sprint",
         recommended: false,
         features: [
-            "Landing Page de alta conversión",
-            "Configuración Ads (Google/Meta)",
-            "Optimización semanal de pauta",
+            "Landing Page de Choque (SPA)",
+            "Estrategia Multi-Canal (Google/Meta)",
+            "Optimización Agresiva de Costos",
         ],
     },
     {
         title: "Partner Digital",
-        meta: "Soporte + Bolsa de horas",
+        meta: "Tu CTO & Diseño Fractional",
         price: "$200.000",
         priceMeta: "/ mes",
         ctaText: "Asegurar cupo",
-        planId: "partner", // Este es el plan "Core" de 200k
+        planId: "partner",
         recommended: true,
-        badge: "CORE",
+        badge: "MOTOR",
         features: [
-            "Soporte técnico especializado",
-            "Bolsa de horas: Diseño y cambios",
-            "Monitoreo, seguridad y respaldos",
+            "Bolsa de Horas (Evolución Web)",
+            "Infraestructura Gestionada (24/7)",
+            "Prioridad VIP en requerimientos",
         ],
     },
     {
         title: "Email Revenue",
-        meta: "Newsletter & Automatización",
+        meta: "Fidelización & Recompra",
         price: "$250.000",
         priceMeta: "/ mes",
-        ctaText: "Automatizar",
+        ctaText: "Activar canal",
         planId: "email",
         recommended: false,
-        badge: "NUEVO",
+        badge: "ROI",
         features: [
-            "Diseño HTML (MJML) perfecto",
-            "Gestión de lista y segmentos",
-            "4 envíos mensuales + reporte",
+            "4 Newsletters de Venta / mes",
+            "Ingeniería Anti-Spam (DNS)",
+            "Limpieza y Segmentación de Base",
         ],
     },
 ];
 
-// Actualizamos la interfaz para coincidir con los nuevos IDs de los planes
 export interface PlanComparisonRow {
     label: string;
     sprint: string;
@@ -67,33 +66,39 @@ export interface PlanComparisonRow {
 
 export const tableRows: PlanComparisonRow[] = [
     {
-        label: "Landing Page / Web",
-        sprint: "✔ (Ventas)",
-        partner: "—",
+        label: "Objetivo Principal",
+        sprint: "Captar Clientes Nuevos",
+        partner: "Mantener y Escalar",
+        email: "Fidelizar y Re-vender",
+    },
+    {
+        label: "Desarrollo Web",
+        sprint: "Landing Page de Venta",
+        partner: "Evolución continua (Bolsa)",
         email: "—",
     },
     {
-        label: "Hosting & Mantenimiento",
-        sprint: "—",
-        partner: "✔",
-        email: "—",
+        label: "Gestión Técnica",
+        sprint: "Setup Inicial",
+        partner: "Gestión 24/7 (SLA)",
+        email: "Entregabilidad (DNS)",
     },
     {
-        label: "Producción Gráfica",
-        sprint: "Creatividades Ads",
-        partner: "Bolsa de horas",
-        email: "Piezas HTML",
+        label: "Diseño Gráfico",
+        sprint: "Creativos para Ads",
+        partner: "A demanda (Banners/Web)",
+        email: "Piezas para Correo",
     },
     {
-        label: "Gestión de Campañas",
-        sprint: "✔ (Pauta)",
-        partner: "—",
-        email: "✔ (Mailing)",
+        label: "Reportabilidad",
+        sprint: "Cierre de Campaña",
+        partner: "Estado de Salud (Técnico)",
+        email: "Retorno de Inversión (ROI)",
     },
     {
-        label: "Reporte de Resultados",
-        sprint: "Al cierre",
-        partner: "Mensual (Técnico)",
-        email: "Mensual (ROI)",
+        label: "Ideal Para",
+        sprint: "Validar ofertas rápido",
+        partner: "Empresas operativas",
+        email: "E-commerce / B2B",
     },
 ];

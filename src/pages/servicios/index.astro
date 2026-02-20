@@ -10,9 +10,7 @@ const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
 // Fetch categories from Contentful
 const categoryEntries = await getEntries(
     "category",
-    {
-        order: "fields.order",
-    },
+    { order: "fields.order" },
     isPreview,
 );
 const categories = categoryEntries.items.map(adaptCategory);
@@ -22,118 +20,214 @@ const entries = await getEntries(
     "service",
     {
         order: "fields.order",
-        include: 2, // Ensure references are resolved
+        include: 2,
     },
     isPreview,
 );
 const services = entries.items.map(adaptService);
 
-// Group services by category for a structured view
+// Group services by category
 const hasServices = services.length > 0;
-const servicesByCategory = categories.map((cat: ServiceCategory) => ({
-    ...cat,
-    items: services
-        .filter((s: Service) => s.category === cat.id)
-        .sort((a: Service, b: Service) => (a.order || 99) - (b.order || 99)),
-}));
+const servicesByCategory = categories
+    .map((cat: ServiceCategory) => ({
+        ...cat,
+        items: services
+            .filter((s: Service) => s.category === cat.id)
+            .sort(
+                (a: Service, b: Service) => (a.order || 99) - (b.order || 99),
+            ),
+    }))
+    .filter((cat) => cat.items.length > 0);
 ---
 
 <Layout
     title="Servicios | Agencia Zutra"
-    description="Soluciones de marketing digital, diseño y tecnología para empresas que buscan crecimiento agresivo y resultados medibles."
+    description="Soluciones de marketing digital, diseño y tecnología para empresas que buscan crecimiento agresivo."
     image="/og-services.jpg"
 >
     <main class="page-content">
+        <div class="fixed-bg"></div>
+
         <section class="services-hero">
-            <div class="container text-center">
-                <h1 class="hero-title animate-fade-up">
-                    Arquitectura de Crecimiento
+            <div class="container hero-container">
+                <span class="badge-pill animate-fade-up"
+                    >Catálogo de Soluciones</span
+                >
+                <h1 class="hero-title animate-fade-up delay-1">
+                    Arquitectura de <span class="text-accent">Crecimiento.</span
+                    >
                 </h1>
-                <p class="hero-subtitle animate-fade-up delay-1">
-                    No vendemos 'horas hombre'. Vendemos sistemas, activos y
-                    resultados. Elige el módulo que tu negocio necesita para
-                    escalar.
+                <p class="hero-subtitle animate-fade-up delay-2">
+                    No vendemos 'horas hombre', vendemos activos digitales.
+                    Selecciona el módulo que tu negocio necesita para escalar
+                    hoy.
                 </p>
             </div>
         </section>
 
-        <div class="container container--wide">
+        {/* Mobile Category Bar — visible solo en mobile */}
+        {
+            hasServices && (
+                <div class="mobile-cats">
+                    <div class="mobile-cats-inner">
+                        {servicesByCategory.map((cat) => (
+                            <a href={`#cat-${cat.id}`} class="mobile-cat-chip">
+                                {cat.label}
+                                <span class="chip-count">
+                                    {cat.items.length}
+                                </span>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            )
+        }
+
+        <div class="container container--wide content-wrapper">
             {
                 hasServices ? (
-                    servicesByCategory.map((category) => (
-                        <section class="category-section animate-fade-up delay-2">
-                            <div class="category-header">
-                                <h2 class="category-title">{category.label}</h2>
-                                <div class="category-line" />
-                            </div>
+                    <div class="layout-grid">
+                        <aside class="sidebar animate-fade-in delay-3">
+                            <nav class="toc-nav">
+                                <span class="toc-title">Categorías</span>
+                                <ul class="toc-list">
+                                    {servicesByCategory.map((category) => (
+                                        <li>
+                                            <a
+                                                href={`#cat-${category.id}`}
+                                                class="toc-link"
+                                            >
+                                                {category.label}
+                                                <span class="toc-count">
+                                                    {category.items.length}
+                                                </span>
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </nav>
 
-                            <div class="services-grid">
-                                {category.items.map((service: any) => (
-                                    <a
-                                        href={`/servicios/${service.slug}`}
-                                        class="service-card-link"
-                                    >
-                                        <article class="service-card">
-                                            <div class="card-top">
-                                                <div class="card-meta">
-                                                    {/* <span class="card-badge">
-                                                        {service.badge}
-                                                    </span> */}
-                                                    {service.priceAmount && (
-                                                        <span class="card-price-sm">
-                                                            {
-                                                                service.priceAmount
+                            <div class="sidebar-cta">
+                                <p>¿Dudas?</p>
+                                <a href="#contacto" class="link-simple">
+                                    Hablemos{" "}
+                                    <i class="ph-bold ph-arrow-right" />
+                                </a>
+                            </div>
+                        </aside>
+
+                        <div class="content-area">
+                            {servicesByCategory.map((category) => (
+                                <section
+                                    id={`cat-${category.id}`}
+                                    class="category-section scroll-mt"
+                                >
+                                    <div class="category-header">
+                                        <h2 class="category-title">
+                                            <span class="hash text-accent">
+                                                #
+                                            </span>{" "}
+                                            {category.label}
+                                        </h2>
+                                        <span class="cat-count">
+                                            {category.items.length}{" "}
+                                            {category.items.length === 1
+                                                ? "servicio"
+                                                : "servicios"}
+                                        </span>
+                                    </div>
+
+                                    <div class="services-grid">
+                                        {category.items.map((service: any) => (
+                                            <a
+                                                href={`/servicios/${service.slug}`}
+                                                class="service-card"
+                                            >
+                                                <div class="card-glow" />
+
+                                                <div class="card-header">
+                                                    <div class="card-icon">
+                                                        <i
+                                                            class={
+                                                                service.icon ||
+                                                                "ph-duotone ph-cube"
                                                             }
+                                                        />
+                                                    </div>
+                                                    {service.badge && (
+                                                        <span class="card-badge">
+                                                            {service.badge}
                                                         </span>
                                                     )}
                                                 </div>
-                                                <h3
-                                                    class="card-title"
-                                                    transition:name={`title-${service.slug}`}
-                                                >
-                                                    {service.title}
-                                                </h3>
-                                                <p class="card-desc">
-                                                    {service.description}
-                                                </p>
-                                                {service.details &&
-                                                    service.details.length >
-                                                        0 && (
-                                                        <ul class="card-features">
-                                                            {service.details.map(
-                                                                (
-                                                                    detail: string,
-                                                                ) => (
-                                                                    <li>
-                                                                        <i class="ph-duotone ph-check-circle" />{" "}
-                                                                        {detail}
-                                                                    </li>
-                                                                ),
-                                                            )}
-                                                        </ul>
-                                                    )}
-                                                {service.result && (
-                                                    <div class="card-result">
-                                                        <i class="ph-duotone ph-sparkle" />{" "}
-                                                        {service.result}
+
+                                                <div class="card-body">
+                                                    <h3
+                                                        class="card-title"
+                                                        transition:name={`title-${service.slug}`}
+                                                    >
+                                                        {service.title}
+                                                    </h3>
+                                                    <p class="card-desc">
+                                                        {service.description}
+                                                    </p>
+
+                                                    {service.details &&
+                                                        service.details.length >
+                                                            0 && (
+                                                            <ul class="mini-features">
+                                                                {service.details
+                                                                    .slice(0, 3)
+                                                                    .map(
+                                                                        (
+                                                                            detail: string,
+                                                                        ) => (
+                                                                            <li>
+                                                                                <i class="ph-bold ph-check" />{" "}
+                                                                                {
+                                                                                    detail
+                                                                                }
+                                                                            </li>
+                                                                        ),
+                                                                    )}
+                                                            </ul>
+                                                        )}
+                                                </div>
+
+                                                <div class="card-footer">
+                                                    <div class="price-container">
+                                                        {service.priceAmount ? (
+                                                            <>
+                                                                <span class="price-label">
+                                                                    Desde
+                                                                </span>
+                                                                <span class="price-val">
+                                                                    {
+                                                                        service.priceAmount
+                                                                    }
+                                                                </span>
+                                                            </>
+                                                        ) : (
+                                                            <span class="price-val">
+                                                                Cotizar
+                                                            </span>
+                                                        )}
                                                     </div>
-                                                )}
-                                            </div>
-                                            <div class="card-bottom">
-                                                <span class="btn-text">
-                                                    Ver detalles{" "}
-                                                    <i class="ph-duotone ph-arrow-right" />
-                                                </span>
-                                            </div>
-                                        </article>
-                                    </a>
-                                ))}
-                            </div>
-                        </section>
-                    ))
+                                                    <span class="card-arrow">
+                                                        <i class="ph-bold ph-arrow-right" />
+                                                    </span>
+                                                </div>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </section>
+                            ))}
+                        </div>
+                    </div>
                 ) : (
                     <div class="no-services">
-                        <p>No hay servicios disponibles en este momento.</p>
+                        <i class="ph-duotone ph-ghost no-services-icon" />
+                        <p>Estamos actualizando nuestro catálogo.</p>
                     </div>
                 )
             }
@@ -142,14 +236,20 @@ const servicesByCategory = categories.map((cat: ServiceCategory) => ({
         <section class="cta-section">
             <div class="container">
                 <div class="cta-box">
-                    <h2>¿No sabes por dónde empezar?</h2>
-                    <p>
-                        Agenda una auditoría gratuita y descubramos el camino
-                        más corto a tus objetivos.
-                    </p>
-                    <a href="/#contacto" class="button button--primary"
-                        >Hablemos ahora</a
-                    >
+                    <div class="cta-content">
+                        <h2 class="cta-title">¿No sabes qué necesitas?</h2>
+                        <p class="cta-desc">
+                            A veces el problema no es la web, es la oferta. O el
+                            tráfico. Agenda una sesión de diagnóstico y te
+                            diremos la verdad, aunque duela.
+                        </p>
+                        <a
+                            href="/#contacto"
+                            class="button button--primary button--lg"
+                        >
+                            Agendar Diagnóstico
+                        </a>
+                    </div>
                 </div>
             </div>
         </section>
@@ -157,26 +257,99 @@ const servicesByCategory = categories.map((cat: ServiceCategory) => ({
 </Layout>
 
 <style>
+    /* --- UTILS --- */
+    .text-accent {
+        color: var(--color-accent);
+    }
+    .scroll-mt {
+        scroll-margin-top: 8rem;
+    }
+
     .page-content {
-        padding-top: 6rem;
+        padding-top: 8rem;
         padding-bottom: 4rem;
+        position: relative;
     }
 
+    /* --- GRID BACKGROUND --- */
+    .fixed-bg {
+        position: fixed;
+        inset: 0;
+        background-image:
+            linear-gradient(to right, var(--color-line) 1px, transparent 1px),
+            linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
+        background-size: 60px 60px;
+        opacity: 0.3;
+        mask-image: radial-gradient(
+            ellipse at 50% 0%,
+            black 20%,
+            transparent 70%
+        );
+        -webkit-mask-image: radial-gradient(
+            ellipse at 50% 0%,
+            black 20%,
+            transparent 70%
+        );
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .content-wrapper {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* --- HERO --- */
     .services-hero {
-        padding: 4rem 0 6rem;
+        padding: 2rem 0 6rem;
+        position: relative;
     }
 
-    .text-center {
+    .services-hero::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(
+            circle,
+            rgba(var(--color-accent-rgb), 0.06),
+            transparent 70%
+        );
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .hero-container {
         text-align: center;
         margin: 0 auto;
         max-width: 800px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .badge-pill {
+        display: inline-block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 700;
+        color: var(--color-accent);
+        border: 1px solid rgba(var(--color-accent-rgb), 0.3);
+        background: rgba(var(--color-accent-rgb), 0.05);
+        padding: 0.5rem 1rem;
+        border-radius: 100px;
+        margin-bottom: 1.5rem;
     }
 
     .hero-title {
-        font-size: clamp(2.5rem, 5vw, 4rem);
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
         font-weight: 900;
         margin-bottom: 1.5rem;
         line-height: 1.1;
+        letter-spacing: -0.02em;
         color: var(--color-secondary);
     }
 
@@ -187,196 +360,459 @@ const servicesByCategory = categories.map((cat: ServiceCategory) => ({
         text-wrap: balance;
     }
 
-    .container--wide {
-        max-width: 1400px;
+    /* --- MOBILE CATEGORY BAR --- */
+    .mobile-cats {
+        position: relative;
+        z-index: 1;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 1.5rem 3rem;
     }
 
-    .no-services {
-        text-align: center;
-        padding: 3rem 1rem;
+    .mobile-cats::-webkit-scrollbar {
+        display: none;
+    }
+
+    .mobile-cats-inner {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .mobile-cat-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--color-line);
+        border-radius: 100px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--color-secondary);
+        white-space: nowrap;
+        transition: all 0.2s;
+    }
+
+    .mobile-cat-chip:hover {
+        border-color: var(--color-accent);
+        color: var(--color-accent);
+    }
+
+    .chip-count {
+        font-size: 0.7rem;
+        font-weight: 800;
+        background: var(--color-subtle);
         color: var(--color-muted);
-        font-size: 1.1rem;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
     }
 
+    @media (min-width: 1024px) {
+        .mobile-cats {
+            display: none;
+        }
+    }
+
+    /* --- LAYOUT GRID (SIDEBAR + CONTENT) --- */
+    .container--wide {
+        max-width: 1200px;
+    }
+
+    .layout-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 4rem;
+    }
+
+    @media (min-width: 1024px) {
+        .layout-grid {
+            grid-template-columns: 220px 1fr;
+            gap: 5rem;
+        }
+    }
+
+    /* --- SIDEBAR --- */
+    .sidebar {
+        display: none;
+    }
+
+    @media (min-width: 1024px) {
+        .sidebar {
+            display: block;
+            position: sticky;
+            top: 8rem;
+            height: fit-content;
+        }
+    }
+
+    .toc-title {
+        display: block;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--color-muted);
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .toc-list {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        border-left: 1px solid var(--color-line);
+    }
+
+    .toc-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem 0 0.5rem 1.25rem;
+        color: var(--color-secondary);
+        font-size: 0.9rem;
+        border-left: 2px solid transparent;
+        margin-left: -1px;
+        transition: all 0.2s;
+        opacity: 0.7;
+    }
+
+    .toc-link:hover {
+        color: var(--color-accent);
+        border-left-color: var(--color-accent);
+        opacity: 1;
+        padding-left: 1.5rem;
+    }
+
+    .toc-count {
+        font-size: 0.7rem;
+        font-weight: 800;
+        background: var(--color-subtle);
+        color: var(--color-muted);
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .sidebar-cta {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--color-line);
+    }
+    .sidebar-cta p {
+        font-size: 0.85rem;
+        color: var(--color-muted);
+        margin-bottom: 0.5rem;
+    }
+    .link-simple {
+        font-weight: 700;
+        color: var(--color-accent);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    /* --- CATEGORIES --- */
     .category-section {
-        margin-bottom: 6rem;
+        margin-bottom: 5rem;
     }
 
     .category-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--color-line);
         display: flex;
         align-items: center;
-        gap: 1.5rem;
-        margin-bottom: 2.5rem;
+        justify-content: space-between;
     }
 
     .category-title {
         font-size: 1.5rem;
-        font-weight: 700;
+        font-weight: 800;
         color: var(--color-secondary);
-        white-space: nowrap;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-    .category-line {
-        height: 1px;
-        background: var(--color-line);
-        width: 100%;
-        opacity: 0.5;
+    .hash {
+        font-weight: 400;
+        opacity: 0.6;
     }
 
+    .cat-count {
+        font-size: 0.8rem;
+        color: var(--color-muted);
+        font-weight: 500;
+    }
+
+    /* --- SERVICES GRID --- */
     .services-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-        gap: 2rem;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
     }
 
-    .service-card-link {
-        display: block;
-        transition: transform 0.3s ease;
-    }
-
-    .service-card-link:hover {
-        transform: translateY(-5px);
-    }
-
+    /* --- CARD DESIGN --- */
     .service-card {
-        background: var(--color-surface);
+        background: rgba(255, 255, 255, 0.02);
         border: 1px solid var(--color-line);
-        border-radius: var(--radius-lg);
+        border-radius: 16px;
         padding: 2rem;
-        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        gap: 1.5rem;
+        position: relative;
+        overflow: hidden;
         transition:
-            border-color 0.3s,
-            box-shadow 0.3s;
+            transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+            border-color 0.3s ease,
+            background 0.3s ease;
     }
 
-    .service-card-link:hover .service-card {
+    .service-card:hover {
+        transform: translateY(-4px);
+        background: var(--color-surface);
         border-color: var(--color-accent);
-        box-shadow: 0 10px 30px -10px rgba(var(--color-accent-rgb), 0.2);
     }
 
-    .card-meta {
+    /* Card Glow Effect */
+    .card-glow {
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+            circle,
+            rgba(var(--color-accent-rgb), 0.08),
+            transparent 60%
+        );
+        opacity: 0;
+        transition: opacity 0.5s;
+        pointer-events: none;
+    }
+
+    .service-card:hover .card-glow {
+        opacity: 1;
+    }
+
+    .card-header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        margin-bottom: 1rem;
+    }
+
+    .card-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--color-subtle);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: var(--color-accent);
+        border: 1px solid var(--color-line);
+        transition: border-color 0.3s;
+    }
+
+    .service-card:hover .card-icon {
+        border-color: var(--color-accent);
     }
 
     .card-badge {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         font-weight: 800;
         text-transform: uppercase;
-        color: var(--color-accent);
-        border: 1px solid var(--color-accent);
-        padding: 0.2rem 0.6rem;
-        border-radius: var(--radius-full);
-    }
-
-    .card-price-sm {
-        font-size: 0.85rem;
-        color: var(--color-muted);
-        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: 100px;
+        background: var(--color-secondary);
+        color: var(--color-surface);
+        letter-spacing: 0.03em;
     }
 
     .card-title {
-        font-size: 1.75rem;
+        font-size: 1.35rem;
         font-weight: 800;
         margin-bottom: 0.75rem;
         line-height: 1.2;
         color: var(--color-secondary);
+        transition: color 0.2s;
+    }
+
+    .service-card:hover .card-title {
+        color: var(--color-accent);
     }
 
     .card-desc {
-        color: var(--color-gray-300);
-        margin-bottom: 1.5rem;
-        line-height: 1.5;
+        font-size: 0.9rem;
+        color: var(--color-muted);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
-    .card-features {
+    .mini-features {
         list-style: none;
         padding: 0;
-        margin: 0 0 1.5rem 0;
         display: flex;
         flex-direction: column;
-        gap: 0.75rem;
+        gap: 0.4rem;
     }
 
-    .card-features li {
+    .mini-features li {
+        font-size: 0.8rem;
+        color: var(--color-muted);
         display: flex;
-        gap: 0.75rem;
-        font-size: 0.9rem;
-        color: var(--color-secondary);
-        line-height: 1.4;
+        align-items: center;
+        gap: 0.5rem;
     }
 
-    .card-features li i {
+    .mini-features li i {
         color: var(--color-accent);
+        font-size: 0.75rem;
+    }
+
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding-top: 1.25rem;
+        border-top: 1px dashed var(--color-line);
+    }
+
+    .price-label {
+        display: block;
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--color-muted);
+        margin-bottom: 0.15rem;
+    }
+
+    .price-val {
+        display: block;
         font-size: 1.1rem;
-        flex-shrink: 0;
+        font-weight: 800;
+        color: var(--color-secondary);
     }
 
-    .card-result {
-        padding: 0.75rem 1rem;
-        background-color: var(--color-accent-subtle);
-        border-radius: var(--radius-md);
-        border: 1px dashed
-            color-mix(in srgb, var(--color-accent), transparent 70%);
+    .card-arrow {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1px solid var(--color-line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-muted);
         font-size: 0.85rem;
-        color: var(--color-accent);
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
+        transition: all 0.3s;
     }
 
-    .card-bottom {
-        border-top: 1px solid var(--color-line);
-        padding-top: 1.5rem;
+    .service-card:hover .card-arrow {
+        background: var(--color-accent);
+        border-color: var(--color-accent);
+        color: var(--color-on-accent);
+        transform: rotate(-45deg);
     }
 
-    .btn-text {
-        font-weight: 700;
-        color: var(--color-accent);
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .cta-section {
-        padding: 4rem 0;
+    /* --- NO SERVICES --- */
+    .no-services {
         text-align: center;
+        padding: 6rem 2rem;
+    }
+
+    .no-services-icon {
+        font-size: 3rem;
+        color: var(--color-muted);
+        margin-bottom: 1.5rem;
+        display: block;
+    }
+
+    .no-services p {
+        color: var(--color-muted);
+        font-size: 1.1rem;
+    }
+
+    /* --- CTA --- */
+    .cta-section {
+        padding: 2rem 0 4rem;
+        position: relative;
+        z-index: 1;
     }
 
     .cta-box {
         background: var(--color-subtle);
         border: 1px solid var(--color-line);
-        border-radius: var(--radius-xl);
-        padding: 3rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1.5rem;
+        border-radius: 24px;
+        padding: 4rem 2rem;
+        position: relative;
+        overflow: hidden;
+        text-align: center;
     }
 
-    .cta-box h2 {
-        font-size: 2rem;
+    .cta-box::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            var(--color-accent),
+            transparent
+        );
+        opacity: 0.5;
+    }
+
+    .cta-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .cta-title {
+        font-size: clamp(1.75rem, 4vw, 2.25rem);
         font-weight: 800;
-        margin: 0;
+        color: var(--color-secondary);
+        margin-bottom: 1rem;
     }
 
-    .cta-box p {
-        font-size: 1.1rem;
+    .cta-desc {
+        font-size: 1.05rem;
         color: var(--color-muted);
-        margin: 0;
+        max-width: 540px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
     }
 
-    /* Animation Utilities */
+    /* --- ANIMATIONS --- */
     .animate-fade-up {
         opacity: 0;
-        animation: fadeUp 0.6s ease-out forwards;
+        animation: fadeUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    .animate-fade-in {
+        opacity: 0;
+        animation: fadeIn 1s ease forwards;
     }
 
     .delay-1 {
@@ -385,11 +821,14 @@ const servicesByCategory = categories.map((cat: ServiceCategory) => ({
     .delay-2 {
         animation-delay: 0.2s;
     }
+    .delay-3 {
+        animation-delay: 0.4s;
+    }
 
     @keyframes fadeUp {
         from {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
         }
         to {
             opacity: 1;
@@ -397,12 +836,28 @@ const servicesByCategory = categories.map((cat: ServiceCategory) => ({
         }
     }
 
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* --- RESPONSIVE --- */
     @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
         .services-grid {
             grid-template-columns: 1fr;
         }
-        .hero-title {
-            font-size: 2.5rem;
+        .service-card {
+            padding: 1.5rem;
+        }
+        .cta-box {
+            padding: 3rem 1.5rem;
         }
     }
 </style>

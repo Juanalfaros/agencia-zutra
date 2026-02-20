@@ -75,26 +75,34 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
     />
     <script is:inline>
       // 1. Lógica de Tema (Modo Oscuro/Claro)
-      // Definimos la función para que sea reutilizable tras una transición
-      function applyTheme() {
-        const getTheme = () => {
-          if (
-            typeof localStorage !== "undefined" &&
-            localStorage.getItem("theme")
-          ) {
+      const themeManager = {
+        getTheme: () => {
+          if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
             return localStorage.getItem("theme");
           }
-          return window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light";
-        };
-        const theme = getTheme();
-        document.documentElement.setAttribute("data-theme", theme);
-        document.documentElement.classList.add("js-loaded");
-      }
+          return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        },
+        setTheme: (theme, save = true) => {
+          document.documentElement.setAttribute("data-theme", theme);
+          if (save && typeof localStorage !== "undefined") {
+            localStorage.setItem("theme", theme);
+          }
+        },
+        init: function() {
+          const theme = this.getTheme();
+          this.setTheme(theme, false); // No guardar en el init, solo aplicar
+          document.documentElement.classList.add("js-loaded");
+
+          // Escuchar cambios del sistema
+          window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
+            if (!localStorage.getItem("theme")) {
+              this.setTheme(e.matches ? "dark" : "light", false);
+            }
+          });
+        }
+      };
 
       // 2. Lógica de Acento (Zutra Energy)
-      // El usuario quiere que los colores cambien en CADA navegación
       function applyAccent() {
         const palettes = [
           { main: '#EFD319', hover: '#FACC15', onAccent: '#080501' }, // Amarillo
@@ -116,7 +124,6 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
         const b = parseInt(randomPalette.main.slice(5, 7), 16);
         root.style.setProperty('--color-accent-rgb', `${r}, ${g}, ${b}`);
         
-        // Función interna para el favicon dinámico
         const updateFavicon = (color) => {
           const faviconLink = document.getElementById('dynamic-favicon');
           if (!faviconLink) return;
@@ -130,20 +137,21 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
               </g>
             </svg>`;
 
-          const encodedSvg = encodeURIComponent(svgTemplate.trim());
-          faviconLink.href = `data:image/svg+xml,${encodedSvg}`;
+          faviconLink.href = `data:image/svg+xml,${encodeURIComponent(svgTemplate.trim())}`;
         };
         updateFavicon(randomPalette.main);
         window.__ZUTRA_ACCENT__ = randomPalette.main;
       }
 
-      // Ejecución INICIAL (Evita FOUC en carga fría)
-      applyTheme();
+      // Exponer el manager globalmente
+      window.__ZUTRA_THEME_MANAGER__ = themeManager;
+
+      // Inicialización
+      themeManager.init();
       applyAccent();
 
-      // Ejecución tras cada transición de página (View Transitions)
       document.addEventListener('astro:after-swap', () => {
-        applyTheme();
+        window.__ZUTRA_THEME_MANAGER__.init();
         applyAccent();
       });
     </script>

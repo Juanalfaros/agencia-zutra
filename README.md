@@ -21,14 +21,16 @@ Zutra es una agencia de **Growth Marketing & Tecnología** con base en Chile. Es
 ├── src/
 │   ├── components/      # Componentes UI organizados por secciones y comunes
 │   │   ├── common/      # Header, Footer, SEO, Logo, CookieConsent
-│   │   └── sections/    # Hero, Servicios, Casos, Metodo, etc.
-│   ├── data/            # Base de datos centralizada (Casos, Blog, Servicios)
+│   │   └── sections/    # Hero, Servicios, Casos, Testimonios, etc.
+│   ├── data/            # Datos estáticos y constantes
 │   ├── layouts/         # Layout.astro (Master Layout con SEO inyectable)
+│   ├── lib/             # Cliente Contentful y adaptadores de datos
 │   ├── pages/           # Rutas dinámicas y estáticas (.astro)
 │   │   ├── api/         # Endpoints dinámicos (Forms)
 │   │   ├── blog/        # Detalle de blog con Table of Contents dinámico
 │   │   └── portfolio/   # Casos de estudio con métricas y tech stack
-│   ├── scripts/         # Lógica JS (Mobile nav, forms, scroll animations)
+│   ├── scripts/         # Scripts de configuración y utilidad
+│   ├── types/           # Definiciones de interfaces TypeScript
 │   └── styles/          # CSS global y componentes
 ├── astro.config.mjs     # Configuración de Astro & Cloudflare
 ├── wrangler.toml        # Configuración de Cloudflare Pages
@@ -39,7 +41,7 @@ Zutra es una agencia de **Growth Marketing & Tecnología** con base en Chile. Es
 
 1. **Instalar dependencias**:
    ```bash
-   npm install
+   pnpm install
    ```
 
 2. **Configurar Entorno**:
@@ -50,23 +52,29 @@ Zutra es una agencia de **Growth Marketing & Tecnología** con base en Chile. Es
 
 3. **Ejecutar en modo Desarrollo**:
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 
 4. **Construir para Producción**:
    ```bash
-   npm run build
+   pnpm run build
    ```
 
 ### 📄 Gestión de Contenido (Contentful)
 
-El sitio utiliza Contentful para gestionar Blog, Portfolio y Servicios. 
+El sitio utiliza Contentful para gestionar Blog, Portfolio, Servicios y Testimonios. 
 
-1.  **Sincronización**: Para migrar datos locales a Contentful, usa:
+1.  **Configuración de Modelos**: Para inicializar o actualizar los tipos de contenido en un nuevo espacio de Contentful:
     ```bash
-    pnpm run migrate
+    # Configuración general (Blog, Portfolio, Servicios, Hero)
+    npx tsx scripts/setup-contentful-models.ts
+    
+    # Configuración específica de Testimonios
+    npx tsx scripts/setup-testimonial-model.ts
     ```
-2.  **Live Preview**: El sitio soporta previsualización en tiempo real. 
+
+2.  **Sincronización**: Para migrar datos locales a Contentful, usa el script de migración disponible.
+3.  **Live Preview**: El sitio soporta previsualización en tiempo real. 
     - Para habilitarlo en local, asegúrate de tener `CONTENTFUL_PREVIEW_TOKEN` en tu `.env`.
     - En producción, usa el botón "Open Live Preview" desde Contentful.
 
@@ -81,7 +89,7 @@ El proyecto incluye un sistema SEO integral:
 ## ☁️ Despliegue en Cloudflare
 
 El despliegue está automatizado vía GitHub Actions o conexión directa de Cloudflare Pages:
-- **Build Command**: `npm run build`
+- **Build Command**: `pnpm run build`
 - **Output Directory**: `dist`
 - **Compatibility Date**: `2024-04-03`
 
