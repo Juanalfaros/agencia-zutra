@@ -28,14 +28,14 @@ export const plans: Plan[] = [
     {
         title: "Partner Digital",
         meta: "Tu CTO & Diseño Fractional",
-        price: "$200.000",
+        price: "$250.000",
         priceMeta: "/ mes",
         ctaText: "Asegurar cupo",
         planId: "partner",
         recommended: true,
         badge: "MOTOR",
         features: [
-            "Bolsa de Horas (Evolución Web)",
+            "Bolsa de Horas (Según requerimientos)",
             "Infraestructura Gestionada (24/7)",
             "Prioridad VIP en requerimientos",
         ],
