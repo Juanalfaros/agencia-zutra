@@ -186,9 +186,10 @@ const { phone = "+56942009050" } = Astro.props;
         width: 360px;
         height: 500px;
         max-height: calc(100vh - 4rem);
-        background: rgba(var(--color-surface-rgb), 0.8);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(var(--color-accent-rgb), 0.2);
+        background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+        backdrop-filter: blur(12px);
+        /* background: var(--color-surface); */
+        border: 1px solid rgba(var(--color-accent-rgb), 0.08);
         border-radius: 1.5rem;
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         z-index: 100;
@@ -198,7 +199,10 @@ const { phone = "+56942009050" } = Astro.props;
         opacity: 0;
         transform: translateY(20px) scale(0.95);
         pointer-events: none;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition:
+            all 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            height 0.25s ease,
+            border-radius 0.25s ease;
         transform-origin: bottom right;
     }
 
@@ -297,7 +301,7 @@ const { phone = "+56942009050" } = Astro.props;
         background: color-mix(
             in srgb,
             var(--color-background),
-            transparent 50%
+            transparent 20%
         );
     }
 
@@ -417,7 +421,7 @@ const { phone = "+56942009050" } = Astro.props;
         padding: 0.75rem 1rem;
         border-radius: var(--radius-full);
         color: var(--color-secondary);
-        font-size: 0.9rem;
+        font-size: 16px; /* Prevent iOS auto-zoom on focus */
         outline: none;
         transition: border-color 0.2s;
     }
@@ -577,6 +581,23 @@ const { phone = "+56942009050" } = Astro.props;
             bottom: 7.5rem;
             width: auto;
             height: 400px; /* Un poco más bajo en mobile para dar espacio arriba */
+        }
+
+        .wa-bot-widget.fullscreen-mobile {
+            height: 100dvh;
+            max-height: 100dvh;
+            border-radius: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            width: 100%;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        .wa-bot-widget.fullscreen-mobile #wa-bot-messages {
+            flex: 1;
+            overflow-y: auto;
         }
     }
 </style>

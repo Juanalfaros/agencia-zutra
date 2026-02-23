@@ -253,6 +253,20 @@ export function initWhatsAppBot() {
                 input.focus();
             }
 
+            // Fullscreen mobile cuando sube el teclado virtual
+            input.addEventListener("focus", () => {
+                if (window.innerWidth <= 768) {
+                    widget.classList.add("fullscreen-mobile");
+                    setTimeout(scrollToBottom, 300);
+                }
+            });
+
+            input.addEventListener("blur", () => {
+                setTimeout(() => {
+                    widget.classList.remove("fullscreen-mobile");
+                }, 150);
+            });
+
             let isSubmitting = false;
             const handleSubmit = async () => {
                 if (isSubmitting) return;
