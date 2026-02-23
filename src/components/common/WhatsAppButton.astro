@@ -1,0 +1,146 @@
+---
+// src/components/common/WhatsAppButton.astro
+interface Props {
+    phone?: string;
+    message?: string;
+}
+
+const {
+    phone = "+56942009050",
+    message = "¡Hola! Me gustaría recibir información sobre los servicios de Zutra.",
+} = Astro.props;
+
+const whatsappUrl = `https://wa.me/${phone.replace(/\+/g, "")}?text=${encodeURIComponent(message)}`;
+---
+
+<a
+    href={whatsappUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="whatsapp-float"
+    aria-label="Contactar por WhatsApp"
+    id="whatsapp-btn"
+>
+    <div class="whatsapp-icon">
+        <i class="ph-fill ph-whatsapp-logo"></i>
+    </div>
+    <span class="whatsapp-tooltip">Chat con Zutra</span>
+</a>
+
+<style>
+    .whatsapp-float {
+        position: fixed;
+        right: 2rem;
+        bottom: 2rem;
+        z-index: 90; /* Just below StickyCTA if necessary, but we'll move it up on mobile */
+        display: flex;
+        align-items: center;
+        text-decoration: none;
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        opacity: 0;
+        transform: scale(0.5) translateY(20px);
+        pointer-events: none;
+    }
+
+    .whatsapp-float.visible {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        pointer-events: auto;
+    }
+
+    .whatsapp-icon {
+        width: 3.5rem;
+        height: 3.5rem;
+        background: #25d366;
+        color: white;
+        border-radius: var(--radius-full);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        box-shadow: 0 10px 25px -5px rgba(37, 211, 102, 0.4);
+        position: relative;
+        z-index: 2;
+        transition: all 0.3s ease;
+    }
+
+    .whatsapp-float:hover .whatsapp-icon {
+        transform: rotate(10deg) scale(1.1);
+        background: #20ba5a;
+    }
+
+    .whatsapp-tooltip {
+        position: absolute;
+        right: 100%;
+        margin-right: 1rem;
+        background: var(--color-surface);
+        color: var(--color-secondary);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-lg);
+        font-size: 0.875rem;
+        font-weight: 700;
+        white-space: nowrap;
+        box-shadow: var(--shadow-xl);
+        border: 1px solid var(--color-line);
+        opacity: 0;
+        transform: translateX(10px);
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .whatsapp-float:hover .whatsapp-tooltip {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* --- MOBILE LOGIC --- */
+    @media (max-width: 768px) {
+        .whatsapp-float {
+            right: 1.5rem;
+            bottom: 7.5rem; /* Safely above StickyCTA.astro */
+        }
+
+        .whatsapp-icon {
+            width: 3rem;
+            height: 3rem;
+            font-size: 1.75rem;
+        }
+
+        /* Hide tooltip on mobile to avoid clutter */
+        .whatsapp-tooltip {
+            display: none;
+        }
+    }
+
+    /* Entrance animation pulse */
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7);
+        }
+        70% {
+            box-shadow: 0 0 0 15px rgba(37, 211, 102, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+        }
+    }
+
+    .whatsapp-float.visible .whatsapp-icon {
+        animation: pulse 2s infinite;
+    }
+</style>
+
+<script>
+    function initWhatsApp() {
+        const btn = document.getElementById("whatsapp-btn");
+        if (!btn) return;
+
+        // Show after 1.5 seconds or scroll
+        setTimeout(() => {
+            btn.classList.add("visible");
+        }, 1500);
+    }
+
+    document.addEventListener("astro:page-load", initWhatsApp);
+    document.addEventListener("DOMContentLoaded", initWhatsApp);
+</script>

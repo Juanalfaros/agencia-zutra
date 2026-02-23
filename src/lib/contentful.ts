@@ -9,20 +9,17 @@ import { createClient, type EntrySkeletonType } from "contentful";
 import type { Entry, Asset, EntryCollection } from "contentful";
 import { env } from "node:process";
 
-function readEnv(key: string): string {
-  // Try to get variable from node:process (Reliable in SSG/Build)
+function readEnv(key: string, locals?: any): string {
+  // 1. Try locals.runtime.env (For Cloudflare Pages/Workers runtime)
+  const fromRuntime = locals?.runtime?.env?.[key];
+  if (typeof fromRuntime === "string" && fromRuntime.length > 0) return fromRuntime;
+
+  // 2. Try node:process (Reliable in SSG/Build)
   const fromProcess = env[key];
-
-  // Debug logging
-  // if (key === "CONTENTFUL_SPACE_ID" && !fromProcess) {
-  //   console.log(`DEBUG: node:process.env.${key} is missing/empty`);
-  // }
-
   if (typeof fromProcess === "string" && fromProcess.length > 0)
     return fromProcess;
 
-  // Fallback to import.meta.env (for Dev/Vite contexts)
-  // Note: Dynamic access import.meta.env[key] often fails in Vite for non-public vars
+  // 3. Fallback to import.meta.env (for Dev/Vite contexts)
   const fromImportMeta = (import.meta as any)?.env?.[key];
   if (typeof fromImportMeta === "string" && fromImportMeta.length > 0)
     return fromImportMeta;
@@ -41,9 +38,9 @@ let deliveryClient: ReturnType<typeof createClient> | null = null;
 // Preview Client (Draft content) - Lazy initialization
 let previewClient: ReturnType<typeof createClient> | null = null;
 
-function createDeliveryClient() {
-  const spaceId = readEnv("CONTENTFUL_SPACE_ID");
-  const accessToken = readEnv("CONTENTFUL_ACCESS_TOKEN");
+function createDeliveryClient(locals?: any) {
+  const spaceId = readEnv("CONTENTFUL_SPACE_ID", locals);
+  const accessToken = readEnv("CONTENTFUL_ACCESS_TOKEN", locals);
 
   if (!spaceId || !accessToken) {
     throw new Error(
@@ -55,14 +52,14 @@ function createDeliveryClient() {
     space: spaceId,
     accessToken: accessToken,
     host: "cdn.contentful.com",
-    environment: readEnv("CONTENTFUL_ENVIRONMENT") || "master",
+    environment: readEnv("CONTENTFUL_ENVIRONMENT", locals) || "master",
   });
 }
 
-function createPreviewClient() {
-  const spaceId = readEnv("CONTENTFUL_SPACE_ID");
+function createPreviewClient(locals?: any) {
+  const spaceId = readEnv("CONTENTFUL_SPACE_ID", locals);
   const accessToken =
-    readEnv("CONTENTFUL_PREVIEW_TOKEN") || readEnv("CONTENTFUL_ACCESS_TOKEN");
+    readEnv("CONTENTFUL_PREVIEW_TOKEN", locals) || readEnv("CONTENTFUL_ACCESS_TOKEN", locals);
 
   if (!spaceId || !accessToken) {
     throw new Error(
@@ -74,25 +71,26 @@ function createPreviewClient() {
     space: spaceId,
     accessToken: accessToken,
     host: "preview.contentful.com",
-    environment: readEnv("CONTENTFUL_ENVIRONMENT") || "master",
+    environment: readEnv("CONTENTFUL_ENVIRONMENT", locals) || "master",
   });
 }
 
 /**
  * Get the appropriate client
  * @param preview - Force preview mode
+ * @param locals - Cloudflare runtime locals
  */
-export function getClient(preview?: boolean) {
+export function getClient(preview?: boolean, locals?: any) {
   const usePreview = preview ?? isPreviewEnabled;
 
   if (usePreview) {
     if (!previewClient) {
-      previewClient = createPreviewClient();
+      previewClient = createPreviewClient(locals);
     }
     return previewClient;
   } else {
     if (!deliveryClient) {
-      deliveryClient = createDeliveryClient();
+      deliveryClient = createDeliveryClient(locals);
     }
     return deliveryClient;
   }
@@ -106,12 +104,14 @@ const cache = new Map<string, any>();
  * @param contentType - Content type ID
  * @param query - Additional query parameters
  * @param preview - Force preview mode
+ * @param locals - Cloudflare runtime locals
  * @returns Entry collection
  */
 export async function getEntries<T extends EntrySkeletonType>(
   contentType: string,
   query: Record<string, any> = {},
   preview?: boolean,
+  locals?: any,
 ): Promise<EntryCollection<T, undefined, string>> {
   try {
     const isPreview = preview ?? isPreviewEnabled;
@@ -121,7 +121,7 @@ export async function getEntries<T extends EntrySkeletonType>(
       return cache.get(cacheKey);
     }
 
-    const clientInstance = getClient(isPreview);
+    const clientInstance = getClient(isPreview, locals);
     const entries = await clientInstance.getEntries<T>({
       content_type: contentType,
       ...query,
@@ -150,11 +150,13 @@ export async function getEntries<T extends EntrySkeletonType>(
  * Get a single entry by ID with caching
  * @param entryId - Entry ID
  * @param preview - Force preview mode
+ * @param locals - Cloudflare runtime locals
  * @returns Single entry
  */
 export async function getEntry<T extends EntrySkeletonType>(
   entryId: string,
   preview?: boolean,
+  locals?: any,
 ): Promise<Entry<T, undefined, string>> {
   try {
     const isPreview = preview ?? isPreviewEnabled;
@@ -164,7 +166,7 @@ export async function getEntry<T extends EntrySkeletonType>(
       return cache.get(cacheKey);
     }
 
-    const clientInstance = getClient(isPreview);
+    const clientInstance = getClient(isPreview, locals);
     const entry = await clientInstance.getEntry<T>(entryId);
     cache.set(cacheKey, entry);
     return entry;

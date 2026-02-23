@@ -98,6 +98,54 @@ import { socialMedia } from "../../data/socialmedia";
                 Ingresa un correo válido.
               </p>
             </div>
+
+            <div class="form-group">
+              <label for="phone" class="form-label">WhatsApp / Teléfono</label>
+              <div class="input-wrapper">
+                <i class="ph-duotone ph-whatsapp-logo"></i>
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="+56 9 1234 5678"
+                  autocomplete="tel"
+                  required
+                  class="form-input"
+                />
+              </div>
+              <p id="err-phone" class="form-error hidden">Ingresa tu número.</p>
+            </div>
+
+            <div class="form-group">
+              <label for="service" class="form-label">Servicio de interés</label
+              >
+              <div class="input-wrapper">
+                <i class="ph-duotone ph-sparkle"></i>
+                <select
+                  id="service"
+                  name="service"
+                  required
+                  class="form-input select-input"
+                >
+                  <option value="" disabled selected
+                    >Selecciona un servicio</option
+                  >
+                  <option value="Diseño Web Premium">Diseño Web Premium</option>
+                  <option value="Desarrollo a Medida"
+                    >Desarrollo a Medida</option
+                  >
+                  <option value="E-commerce Pro">E-commerce Pro</option>
+                  <option value="Automatizaciones">Automatizaciones</option>
+                  <option value="Mantenimiento Digital"
+                    >Mantenimiento Digital</option
+                  >
+                  <option value="Consultoría / Otro">Consultoría / Otro</option>
+                </select>
+              </div>
+              <p id="err-service" class="form-error hidden">
+                Selecciona un servicio.
+              </p>
+            </div>
           </div>
 
           <div class="form-group">
@@ -127,6 +175,13 @@ import { socialMedia } from "../../data/socialmedia";
             </p>
           </div>
 
+          <div
+            class="cf-turnstile"
+            data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
+            data-theme="dark"
+          >
+          </div>
+
           <button
             id="submit-button"
             type="submit"
@@ -143,6 +198,9 @@ import { socialMedia } from "../../data/socialmedia";
     </div>
   </div>
 </section>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer
+></script>
 
 <script>
   const form = document.getElementById("contact-form") as HTMLFormElement;
@@ -171,6 +229,20 @@ import { socialMedia } from "../../data/socialmedia";
         isValid = false;
       }
 
+      const phoneInput = document.getElementById("phone") as HTMLInputElement;
+      if (!phoneInput.value.trim()) {
+        document.getElementById("err-phone")?.classList.remove("hidden");
+        isValid = false;
+      }
+
+      const serviceInput = document.getElementById(
+        "service",
+      ) as HTMLSelectElement;
+      if (!serviceInput.value) {
+        document.getElementById("err-service")?.classList.remove("hidden");
+        isValid = false;
+      }
+
       const msgInput = document.getElementById(
         "message",
       ) as HTMLTextAreaElement;
@@ -196,17 +268,40 @@ import { socialMedia } from "../../data/socialmedia";
         btn.disabled = true;
         btn.innerHTML = `<span>Enviando...</span> <i class="ph-duotone ph-spinner ph-spin"></i>`;
 
-        setTimeout(() => {
-          btn.innerHTML = `<span>¡Mensaje Enviado!</span> <i class="ph-duotone ph-check"></i>`;
-          btn.classList.add("success");
-          form.reset();
+        try {
+          const formData = new FormData(form);
+          const response = await fetch("/api/contact", {
+            method: "POST",
+            body: formData,
+          });
 
-          setTimeout(() => {
-            btn.disabled = false;
-            btn.innerHTML = originalText;
-            btn.classList.remove("success");
-          }, 3000);
-        }, 1500);
+          const result = await response.json();
+
+          if (response.ok) {
+            btn.innerHTML = `<span>¡Mensaje Enviado!</span> <i class="ph-duotone ph-check"></i>`;
+            btn.classList.add("success");
+
+            // Pequeña pausa para feedback visual antes del redirect
+            setTimeout(() => {
+              window.location.href = "/gracias";
+            }, 800);
+          } else {
+            throw new Error(result.message || "Error al enviar el mensaje");
+          }
+        } catch (error: any) {
+          console.error("Form error:", error);
+          if (statusMsg) {
+            statusMsg.textContent =
+              error.message || "Ocurrió un error. Inténtalo de nuevo.";
+            statusMsg.classList.remove("hidden");
+            statusMsg.style.color = "#ef4444";
+          }
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+          // Reset Turnstile widget on error to allow retry
+          // @ts-ignore
+          if (window.turnstile) window.turnstile.reset();
+        }
       }
     });
   }
@@ -447,6 +542,21 @@ import { socialMedia } from "../../data/socialmedia";
 
   .input-wrapper .form-input {
     padding-left: 3rem; /* Espacio para el icono */
+  }
+
+  .select-input {
+    appearance: none;
+    cursor: pointer;
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23999999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.2rem;
+  }
+
+  .select-input option {
+    background-color: var(--color-surface);
+    color: var(--color-text);
   }
 
   textarea.form-input {

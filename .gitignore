@@ -1,30 +1,78 @@
-# build output
+# ==========================================
+# BUILD OUTPUT
+# ==========================================
 dist/
+.output/
 
-# generated types
+# ==========================================
+# ASTRO GENERATED
+# ==========================================
 .astro/
 
-# dependencies
+# ==========================================
+# DEPENDENCIES
+# ==========================================
 node_modules/
 
-# logs
+# ==========================================
+# ENVIRONMENT VARIABLES (SENSITIVE)
+# Keep .env.example — it's safe to commit.
+# ==========================================
+.env
+.env.*
+!.env.example
+
+# ==========================================
+# LOGS
+# ==========================================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.log
 
-# environment variables
-.env
-.env.production
-.env.local
-
-# macOS-specific files
+# ==========================================
+# OS & EDITOR JUNK
+# ==========================================
 .DS_Store
+**/.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+*.sublime-project
+*.sublime-workspace
 
-# Cloudflare
+# ==========================================
+# CLOUDFLARE
+# ==========================================
 .wrangler/
 .netlify/
 
-# typescript
-*.tsbuildinfo
+# ==========================================
+# CONTENTFUL MIGRATION SCRIPTS (Internal)
+# Uses CONTENTFUL_MANAGEMENT_TOKEN — one-time use, not for deployment.
+# ==========================================
 scripts/
+
+# ==========================================
+# PERSONAL WORKSPACE (Not for deployment)
+# HTML email templates and other design drafts.
+# ==========================================
+src/templates/
+
+# ==========================================
+# TYPESCRIPT
+# ==========================================
+*.tsbuildinfo
+
+# ==========================================
+# TEST & COVERAGE
+# ==========================================
+coverage/
+.nyc_output/
+
+# ==========================================
+# MISC
+# ==========================================
+*.local
