@@ -38,12 +38,11 @@ export const founders: Founder[] = [
 export interface ValueChip {
     icon: string;
     text: string;
-    primary?: boolean;
 }
 
 export const chips: ValueChip[] = [
-    { icon: "ph-duotone ph-flag", text: "Sin permanencia", primary: true },
-    { icon: "ph-duotone ph-list-checks", text: "KPIs x escrito" },
-    { icon: "ph-duotone ph-charts", text: "Tableros compartidos" },
+    { icon: "ph-duotone ph-flag", text: "Sin permanencia"},
+    { icon: "ph-duotone ph-shield-check", text: "Cero deuda técnica" },
+    { icon: "ph-duotone ph-key", text: "Propiedad total" },
     { icon: "ph-duotone ph-handshake", text: "Entrega accionable" },
 ];

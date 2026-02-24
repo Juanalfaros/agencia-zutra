@@ -18,7 +18,7 @@ const sortedFaqs = faqs.sort((a, b) => a.order - b.order);
           <details class="faq-item">
             <summary class="faq-item__summary">
               <span class="faq-item__question">{faq.question}</span>
-              <i class="ph-duotone ph-caret-down faq-item__icon" />
+              <i class="ph-bold ph-caret-down faq-item__icon" />
             </summary>
             <div class="faq-item__answer" set:html={faq.answer} />
           </details>

@@ -56,13 +56,6 @@
       var(--color-red-400),
       transparent 92%);
 
-  /* --font-sans: "magistral", ui-sans-serif, system-ui, sans-serif; */
-  /* --font-sans: 'Azeret Mono', ui-sans-serif, system-ui, sans-serif; */
-  /* --font-sans: 'Bevellier', ui-sans-serif, system-ui, sans-serif; */
-  /* --font-sans: 'Unbounded', ui-sans-serif, system-ui, sans-serif; */
-  /* --font-sans: 'Orbitron', ui-sans-serif, system-ui, sans-serif; */
-  /* --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif; */
-  /* --font-sans: 'Oxanium', ui-sans-serif, system-ui, sans-serif; */
   --font-sans: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
   --font-blog: "Outfit", sans-serif;
   /* --- Border Radius System --- */
@@ -135,9 +128,9 @@ html[data-theme="light"] {
   --color-line: #e5e7eb;
   --color-muted: #4b5563;
   --color-gray-300: #4b5563;
-  /* Oscurecemos el color dinámico para mejor contraste sobre blanco */
-  --color-accent: color-mix(in srgb, var(--accent-main), black 18%);
-  --color-accent-hover: color-mix(in srgb, var(--accent-hover), black 18%);
+  /* Usamos los HEX específicos para modo claro definidos en Layout.astro */
+  --color-accent: var(--accent-light-main, var(--accent-main));
+  --color-accent-hover: var(--accent-light-hover, var(--accent-hover));
 }
 
 /* --- Estilos Base --- */
@@ -213,11 +206,11 @@ h6 {
 }
 
 .section-title {
-  font-size: 1.875rem;
-  font-weight: 800;
-  letter-spacing: -0.025em;
-  margin: 0;
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 900;
   color: var(--color-secondary);
+  margin-bottom: 0.75rem;
+  line-height: 1.1;
 }
 
 .section-subtitle {

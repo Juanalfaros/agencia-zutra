@@ -176,9 +176,8 @@ import { socialMedia } from "../../data/socialmedia";
           </div>
 
           <div
-            class="cf-turnstile"
+            id="turnstile-widget"
             data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
-            data-theme="dark"
           >
           </div>
 
@@ -199,12 +198,35 @@ import { socialMedia } from "../../data/socialmedia";
   </div>
 </section>
 
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer
-></script>
-
 <script>
+  function initTurnstile() {
+    const container = document.getElementById("turnstile-widget");
+    if (!container) return;
+
+    // @ts-ignore
+    if (window.turnstile) {
+      // @ts-ignore
+      window.turnstile.render("#turnstile-widget", {
+        sitekey: container.dataset.sitekey,
+        theme: "dark",
+      });
+    } else {
+      // Fallback if script not yet loaded
+      setTimeout(initTurnstile, 100);
+    }
+  }
+
   const form = document.getElementById("contact-form") as HTMLFormElement;
   const statusMsg = document.getElementById("form-status");
+
+  // Lifecycle initialization
+  document.addEventListener("astro:page-load", initTurnstile);
+  if (
+    document.readyState !== "loading" &&
+    !window.location.search.includes("astro-transition")
+  ) {
+    initTurnstile();
+  }
 
   if (form) {
     form.addEventListener("submit", async (e) => {
@@ -281,7 +303,7 @@ import { socialMedia } from "../../data/socialmedia";
             btn.innerHTML = `<span>¡Mensaje Enviado!</span> <i class="ph-duotone ph-check"></i>`;
             btn.classList.add("success");
 
-            // Pequeña pausa para feedback visual antes del redirect
+            // Pequeña pausa para feedback visual antes del redirect
             setTimeout(() => {
               window.location.href = "/gracias";
             }, 800);
