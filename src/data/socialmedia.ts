@@ -18,10 +18,10 @@ export const socialMedia: SocialMedia[] = [
         icon: "ph-duotone ph-tiktok-logo",
         ariaLabel: "TikTok",
     },
-    {
-        name: "LinkedIn",
-        url: "https://www.linkedin.com/company/agenciazutra", // Placeholder typical structure
-        icon: "ph-duotone ph-linkedin-logo",
-        ariaLabel: "LinkedIn",
-    }
+    // {
+    //     name: "LinkedIn",
+    //     url: "https://www.linkedin.com/company/agenciazutra",
+    //     icon: "ph-duotone ph-linkedin-logo",
+    //     ariaLabel: "LinkedIn",
+    // }
 ];

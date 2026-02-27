@@ -427,6 +427,7 @@ import { plans, tableRows } from "@/data/planes";
     .plans-table td {
       display: block;
       width: 100%;
+      min-width: auto;
     }
 
     .table-container {
@@ -459,6 +460,10 @@ import { plans, tableRows } from "@/data/planes";
       font-size: 1.1rem;
       font-weight: 800;
       color: var(--color-accent);
+    }
+
+    .plans-table td.feature-name::before {
+      content: none;
     }
 
     .plans-table td::before {
