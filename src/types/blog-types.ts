@@ -36,4 +36,7 @@ export interface Post {
     featured?: boolean;
     seo?: SEO;
     cta?: any;
+    internal?: {
+        entryId: string;
+    };
 }

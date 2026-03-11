@@ -241,6 +241,9 @@ export function adaptBlogPost(entry: Entry<any, undefined, string>): Post {
             keywords: Array.isArray(fields.seoKeywords) ? fields.seoKeywords.filter((k): k is string => typeof k === 'string') : undefined,
         },
         cta: typeof fields.ctaId === 'string' ? globalCTAs[fields.ctaId as keyof typeof globalCTAs] : undefined,
+        internal: {
+            entryId: entry.sys.id,
+        },
     };
 }
 
