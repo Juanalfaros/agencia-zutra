@@ -9,6 +9,7 @@ export const GET: APIRoute = async ({ request, redirect, cookies, locals }) => {
     const type = params.get('type');
     const entryId = params.get('entryId');
     const secret = params.get('secret');
+    const locale = params.get('locale') || 'es-ES'; // Default to es-ES
 
     // Simple security check
     const PREVIEW_SECRET = import.meta.env.CONTENTFUL_PREVIEW_SECRET;
@@ -34,16 +35,16 @@ export const GET: APIRoute = async ({ request, redirect, cookies, locals }) => {
         switch (type) {
             case 'blogPost':
                 // Redirect to a dedicated preview route that is NOT prerendered
-                redirectPath = `/preview/blog/${slug}`;
+                redirectPath = `/preview/blog/${slug}?locale=${locale}`;
                 break;
             case 'portfolioCase':
-                redirectPath = `/preview/portfolio/${slug}`;
+                redirectPath = `/preview/portfolio/${slug}?locale=${locale}`;
                 break;
             case 'service':
-                redirectPath = `/preview/servicios/${slug}`;
+                redirectPath = `/preview/servicios/${slug}?locale=${locale}`;
                 break;
             default:
-                redirectPath = '/';
+                redirectPath = `/?locale=${locale}`;
         }
 
         return redirect(redirectPath);
