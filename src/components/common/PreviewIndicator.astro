@@ -3,7 +3,7 @@ import { isPreviewEnabled } from "@/lib/contentful";
 ---
 
 {
-    isPreviewEnabled && (
+    isPreviewEnabled(Astro) && (
         <div class="preview-indicator">
             <div class="indicator-content">
                 <span class="indicator-dot" />
