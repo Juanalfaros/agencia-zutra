@@ -517,13 +517,7 @@ const seoMeta = {
     // --- Contentful Live Preview: Subscription for Real-time Updates ---
     // Only runs in the browser when preview is active
     (function() {
-        // Read initial data from a script tag or attribute if needed, 
-        // but for the subscription, the SDK needs the initial object.
-        // We'll use a dynamic import and check environment.
-        
         async function initLivePreview() {
-            // @ts-ignore
-            const { isPreviewEnabled } = await import("@/lib/contentful");
             const hasPreviewCookie = document.cookie.includes("contentful_preview=true");
             const isPreviewPath = window.location.pathname.startsWith("/preview/");
             

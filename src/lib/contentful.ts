@@ -7,7 +7,6 @@
 
 import { createClient, type EntrySkeletonType } from "contentful";
 import type { Entry, Asset, EntryCollection } from "contentful";
-import { env } from "node:process";
 
 function readEnv(key: string, locals?: any): string {
   // 1. Try locals.runtime.env (For Cloudflare Pages/Workers runtime)
@@ -16,17 +15,13 @@ function readEnv(key: string, locals?: any): string {
   const fromRuntime = envSource?.[key];
   if (typeof fromRuntime === "string" && fromRuntime.length > 0) return fromRuntime;
 
-  // 2. Try node:process (Reliable in SSG/Build)
-  const fromProcess = env[key];
-  if (typeof fromProcess === "string" && fromProcess.length > 0)
-    return fromProcess;
+  // 2. Try process.env (Reliable in SSG/Build)
+  // @ts-ignore
+  const fromProcess = typeof process !== "undefined" && process?.env ? process.env[key] : undefined;
+  if (typeof fromProcess === "string" && fromProcess.length > 0) return fromProcess;
 
-  // 3. Fallback to import.meta.env (for Dev/Vite contexts)
-  const fromImportMeta = (import.meta as any)?.env?.[key];
-  if (typeof fromImportMeta === "string" && fromImportMeta.length > 0)
-    return fromImportMeta;
-
-  return "";
+  // 3. Fallback to import.meta.env (Astro/Vite)
+  return (import.meta.env[key] as string) || "";
 }
 
 // Check if we should use the Preview API by default (env var)
