@@ -11,7 +11,9 @@ import { env } from "node:process";
 
 function readEnv(key: string, locals?: any): string {
   // 1. Try locals.runtime.env (For Cloudflare Pages/Workers runtime)
-  const fromRuntime = locals?.runtime?.env?.[key];
+  // Check if locals is the Astro object or the locals object itself
+  const envSource = locals?.locals?.runtime?.env || locals?.runtime?.env;
+  const fromRuntime = envSource?.[key];
   if (typeof fromRuntime === "string" && fromRuntime.length > 0) return fromRuntime;
 
   // 2. Try node:process (Reliable in SSG/Build)
@@ -91,12 +93,14 @@ export function getClient(preview?: boolean, locals?: any) {
   const usePreview = preview ?? isPreviewEnabled(locals);
 
   if (usePreview) {
-    if (!previewClient) {
+    // In serverless/dynamic contexts, re-initialize if environment variables change or if locals are provided
+    // to ensure we are using the correct credentials from the current request context.
+    if (!previewClient || locals) {
       previewClient = createPreviewClient(locals);
     }
     return previewClient;
   } else {
-    if (!deliveryClient) {
+    if (!deliveryClient || locals) {
       deliveryClient = createDeliveryClient(locals);
     }
     return deliveryClient;

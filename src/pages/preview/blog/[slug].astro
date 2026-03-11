@@ -15,9 +15,10 @@ if (!previewCookie) {
 }
 
 // Fetch the draft content explicitly
-const entries = await getEntriesByField("blogPost", "slug", slug!, true, Astro);
+const entries = await getEntriesByField("blogPost", "slug", slug!, true, Astro.locals);
 if (entries.items.length === 0) {
-    return new Response("Post not found in preview mode", { status: 404 });
+    console.error(`Preview: Post with slug "${slug}" not found in Contentful.`);
+    return new Response(`Post not found in preview mode (Slug: ${slug})`, { status: 404 });
 }
 
 const post = adaptBlogPost(entries.items[0]);
@@ -27,7 +28,7 @@ const allEntries = await getEntries(
     "blogPost", 
     { order: "-fields.publishDate" }, 
     true, 
-    Astro
+    Astro.locals
 );
 const allPosts = allEntries.items.map(adaptBlogPost);
 ---

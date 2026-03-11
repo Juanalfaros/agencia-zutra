@@ -38,7 +38,7 @@ let { post, allPosts } = Astro.props;
 // If we are in preview mode but don't have props (dynamic request)
 if (isPreview && !post) {
     const slug = Astro.params.slug;
-    const entries = await getEntriesByField("blogPost", "slug", slug, true, Astro);
+    const entries = await getEntriesByField("blogPost", "slug", slug, true, Astro.locals);
     if (entries.items.length > 0) {
         post = adaptBlogPost(entries.items[0]);
     }
@@ -48,7 +48,7 @@ if (isPreview && !post) {
         "blogPost",
         { order: "-fields.publishDate" },
         true,
-        Astro
+        Astro.locals
     );
     allPosts = allEntries.items.map(adaptBlogPost);
 }
