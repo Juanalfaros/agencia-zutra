@@ -32,14 +32,13 @@ export async function getStaticPaths() {
     }
 }
 
-const isPreview =
-    import.meta.env.DEV &&
-    Astro.cookies.get("contentful_preview")?.value === "true";
+const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
 let { post, allPosts } = Astro.props;
 
-if (isPreview) {
+// If we are in preview mode but don't have props (dynamic request)
+if (isPreview && !post) {
     const slug = Astro.params.slug;
-    const entries = await getEntriesByField("blogPost", "slug", slug, true);
+    const entries = await getEntriesByField("blogPost", "slug", slug, true, Astro);
     if (entries.items.length > 0) {
         post = adaptBlogPost(entries.items[0]);
     }
@@ -49,6 +48,7 @@ if (isPreview) {
         "blogPost",
         { order: "-fields.publishDate" },
         true,
+        Astro
     );
     allPosts = allEntries.items.map(adaptBlogPost);
 }

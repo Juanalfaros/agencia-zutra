@@ -31,5 +31,13 @@ export const globalCTAs: Record<string, CTA> = {
         buttonText: "Ser Partner Digital",
         buttonLink: "/#contacto",
         variant: "secondary"
+    },
+    geo_ready: {
+        id: "geo_ready",
+        title: "¿Tu marca es invisible para la IA?",
+        description: "Si no estás en el RAG, no existes. Preparamos tu arquitectura de datos para que seas la fuente que ChatGPT y Gemini recomiendan hoy.",
+        buttonText: "Zútrame el negocio",
+        buttonLink: "/servicios/geo-optimization",
+        variant: "accent"
     }
 };

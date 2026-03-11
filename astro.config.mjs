@@ -33,7 +33,7 @@ export default defineConfig({
       },
     ],
   },
-  output: "static",
+  output: "hybrid",
   adapter: cloudflare({
     imageService: "compile",
   }),

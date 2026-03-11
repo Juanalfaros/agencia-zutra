@@ -28,9 +28,16 @@ function readEnv(key: string, locals?: any): string {
 }
 
 // Check if we should use the Preview API by default (env var)
-export const isPreviewEnabled =
-  import.meta.env.CONTENTFUL_USE_PREVIEW === "true" ||
-  import.meta.env.NODE_ENV === "development";
+export const isPreviewEnabled = (locals?: any) => {
+  const cookieHeader = locals?.request?.headers?.get("cookie") || "";
+  const hasPreviewCookie = cookieHeader.includes("contentful_preview=true");
+  
+  return (
+    import.meta.env.CONTENTFUL_USE_PREVIEW === "true" ||
+    (import.meta.env.DEV && hasPreviewCookie) ||
+    hasPreviewCookie
+  );
+};
 
 // Delivery Client (Published content) - Lazy initialization
 let deliveryClient: ReturnType<typeof createClient> | null = null;
@@ -81,7 +88,7 @@ function createPreviewClient(locals?: any) {
  * @param locals - Cloudflare runtime locals
  */
 export function getClient(preview?: boolean, locals?: any) {
-  const usePreview = preview ?? isPreviewEnabled;
+  const usePreview = preview ?? isPreviewEnabled(locals);
 
   if (usePreview) {
     if (!previewClient) {
@@ -114,7 +121,7 @@ export async function getEntries<T extends EntrySkeletonType>(
   locals?: any,
 ): Promise<EntryCollection<T, undefined, string>> {
   try {
-    const isPreview = preview ?? isPreviewEnabled;
+    const isPreview = preview ?? isPreviewEnabled(locals);
     const cacheKey = `${contentType}-${JSON.stringify(query)}-${isPreview}`;
 
     if (cache.has(cacheKey)) {
@@ -159,7 +166,7 @@ export async function getEntry<T extends EntrySkeletonType>(
   locals?: any,
 ): Promise<Entry<T, undefined, string>> {
   try {
-    const isPreview = preview ?? isPreviewEnabled;
+    const isPreview = preview ?? isPreviewEnabled(locals);
     const cacheKey = `${entryId}-${isPreview}`;
 
     if (cache.has(cacheKey)) {
@@ -196,6 +203,7 @@ export async function getEntriesByField<T extends EntrySkeletonType>(
   field: string,
   value: any,
   preview?: boolean,
+  locals?: any,
 ): Promise<EntryCollection<T, undefined, string>> {
   return getEntries<T>(
     contentType,
@@ -203,6 +211,7 @@ export async function getEntriesByField<T extends EntrySkeletonType>(
       [`fields.${field}`]: value,
     },
     preview,
+    locals,
   );
 }
 
