@@ -8,11 +8,7 @@ import { adaptBlogPost } from "@/lib/contentful-adapters";
 export const prerender = false;
 
 const { slug } = Astro.params;
-const previewCookie = Astro.cookies.get("contentful_preview")?.value === "true";
-
-if (!previewCookie) {
-    return Astro.redirect(`/blog/${slug}`);
-}
+const locale = Astro.url.searchParams.get("locale") || "es-ES";
 
 // Fetch the draft content explicitly
 const entries = await getEntriesByField("blogPost", "slug", slug!, true, Astro.locals);

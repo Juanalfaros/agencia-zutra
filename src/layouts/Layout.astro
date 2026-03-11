@@ -203,8 +203,11 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
         // @ts-ignore
         import { ContentfulLivePreview } from '@contentful/live-preview';
         
+        const url = new URL(window.location.href);
+        const locale = url.searchParams.get('locale') || 'es-ES';
+
         ContentfulLivePreview.init({
-          locale: 'es-US',
+          locale: locale,
           enableInspectorMode: true,
           enableLiveUpdates: true,
         });

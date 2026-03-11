@@ -34,10 +34,14 @@ export const isPreviewEnabled = (locals?: any) => {
   const cookieHeader = locals?.request?.headers?.get("cookie") || "";
   const hasPreviewCookie = cookieHeader.includes("contentful_preview=true");
   
+  // Also trust the URL path if we are in a /preview/ route
+  const url = new URL(locals?.request?.url || "http://localhost");
+  const isPreviewPath = url.pathname.startsWith("/preview/");
+  
   return (
     import.meta.env.CONTENTFUL_USE_PREVIEW === "true" ||
-    (import.meta.env.DEV && hasPreviewCookie) ||
-    hasPreviewCookie
+    hasPreviewCookie ||
+    isPreviewPath
   );
 };
 
