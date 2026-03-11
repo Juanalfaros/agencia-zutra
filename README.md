@@ -4,13 +4,13 @@ Zutra es una agencia de **Growth Marketing & Tecnología** con base en Chile. Es
 
 ## 🚀 Tech Stack
 
-- **Framework**: [Astro 5.0](https://astro.build/) (Modo Estático con Rutas Dinámicas)
+- **Framework**: [Astro 5.0](https://astro.build/) (Modo Híbrido para soporte de Dynamic Previews)
 - **Despliegue**: [Cloudflare Pages](https://pages.cloudflare.com/)
 - **Estilos**: Vanilla CSS con un sistema de tokens globales y variables personalizadas
 - **Icons**: [Phosphor Icons](https://phosphoricons.com/) e [Iconify](https://iconify.design/)
 - **Email Service**: [Brevo](https://www.brevo.com/) (SMTP Transactional API)
 - **Security**: [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) (Bot Protection)
-- **CMS**: [Contentful](https://www.contentful.com/) (Headless CMS)
+- **CMS**: [Contentful](https://www.contentful.com/) (Headless CMS con sistema de Preview en tiempo real)
 
 ## 📁 Estructura del Proyecto
 
@@ -60,6 +60,14 @@ Botón flotante también integrado en el Layout. En dispositivos móviles, detec
 
 ### 🛡️ Cloudflare Turnstile
 Protección contra bots invisible integrada en el formulario de contacto, validada en el servidor mediante el endpoint `/api/contact`.
+
+### 👁️ Contentful Preview
+Sistema de vista previa en tiempo real para contenido borrador que funciona en producción (Cloudflare) y desarrollo.
+
+**Arquitectura**:
+- **Ruta API**: `/api/preview` establece una cookie de sesión para habilitar el modo preview.
+- **Ruta Dinámica**: `/preview/blog/[slug]` renderiza el contenido directamente desde la API de Preview de Contentful, saltándose el cache estático.
+- **Cliente SSR**: El cliente de Contentful es "context-aware" y detecta la cookie de preview en cada request dinámica.
 
 ## 🛠️ Desarrollo Local
 
