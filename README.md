@@ -4,7 +4,7 @@ Zutra es una agencia de **Growth Marketing & Tecnología** con base en Chile. Es
 
 ## 🚀 Tech Stack
 
-- **Framework**: [Astro 5.0](https://astro.build/) (Modo Híbrido para soporte de Dynamic Previews)
+- **Framework**: [Astro 5.0](https://astro.build/) (Modo Estático con SSR por página para Previews)
 - **Despliegue**: [Cloudflare Pages](https://pages.cloudflare.com/)
 - **Estilos**: Vanilla CSS con un sistema de tokens globales y variables personalizadas
 - **Icons**: [Phosphor Icons](https://phosphoricons.com/) e [Iconify](https://iconify.design/)

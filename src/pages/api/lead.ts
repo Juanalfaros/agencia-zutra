@@ -1,5 +1,7 @@
 import type { APIRoute } from "astro";
 
+export const prerender = false;
+
 export const POST: APIRoute = async ({ request, locals }) => {
     if (request.headers.get("Content-Type") !== "application/json") {
         return new Response(JSON.stringify({ error: "Invalid Content-Type" }), {
