@@ -198,7 +198,7 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
     <CookieConsent />
     <PreviewIndicator />
 
-    {isPreviewEnabled && (
+    {isPreviewEnabled(Astro) && (
       <script>
         // @ts-ignore
         import { ContentfulLivePreview } from '@contentful/live-preview';
