@@ -516,39 +516,48 @@ const seoMeta = {
 
     // --- Contentful Live Preview: Subscription for Real-time Updates ---
     // Only runs in the browser when preview is active
-    (async () => {
-        // @ts-ignore
-        const { isPreviewEnabled } = await import("@/lib/contentful");
-        // We use a small check because isPreviewEnabled(Astro) is server-side
-        // In client-side, we check for the cookie or URL
-        const hasPreviewCookie = document.cookie.includes("contentful_preview=true");
-        const isPreviewPath = window.location.pathname.startsWith("/preview/");
+    (function() {
+        // Read initial data from a script tag or attribute if needed, 
+        // but for the subscription, the SDK needs the initial object.
+        // We'll use a dynamic import and check environment.
         
-        if (hasPreviewCookie || isPreviewPath) {
-            try {
-                // @ts-ignore
-                const { ContentfulLivePreview } = await import('@contentful/live-preview');
-                
-                ContentfulLivePreview.subscribe('edit', {
-                    data: post,
-                    callback: (data: any) => {
-                        if (!data) return;
+        async function initLivePreview() {
+            // @ts-ignore
+            const { isPreviewEnabled } = await import("@/lib/contentful");
+            const hasPreviewCookie = document.cookie.includes("contentful_preview=true");
+            const isPreviewPath = window.location.pathname.startsWith("/preview/");
+            
+            if (hasPreviewCookie || isPreviewPath) {
+                try {
+                    // @ts-ignore
+                    const { ContentfulLivePreview } = await import('@contentful/live-preview');
+                    
+                    // Get entryId from DOM
+                    const article = document.querySelector('article[data-contentful-entry-id]');
+                    const entryId = article?.getAttribute('data-contentful-entry-id');
 
-                        // Update Title
-                        const titleEl = document.querySelector('[data-contentful-field-id="title"]');
-                        if (titleEl && data.title) titleEl.textContent = data.title;
+                    ContentfulLivePreview.subscribe('edit', {
+                        data: { sys: { id: entryId } }, // Minimum info for binding
+                        callback: (data: any) => {
+                            if (!data) return;
 
-                        // Update Content (Rich Text)
-                        // Note: Complex fields like Rich Text often require a refresh in Astro SSR
-                        if (data.content) {
-                            window.location.reload();
+                            // Update Title
+                            const titleEl = document.querySelector('[data-contentful-field-id="title"]');
+                            if (titleEl && data.title) titleEl.textContent = data.title;
+
+                            // Update Content (Rich Text)
+                            if (data.content) {
+                                window.location.reload();
+                            }
                         }
-                    }
-                });
-            } catch (e) {
-                console.error("Live Preview subscribe error:", e);
+                    });
+                } catch (e) {
+                    console.error("Live Preview subscribe error:", e);
+                }
             }
         }
+
+        initLivePreview();
     })();
 </script>
 
