@@ -302,6 +302,11 @@ import { socialMedia } from "../../data/socialmedia";
 
         try {
           const formData = new FormData(form);
+          
+          // Capturar datos para Enhanced Conversions (GA4) antes del envío
+          const email = formData.get('email') as string;
+          const phone = formData.get('phone') as string;
+          
           const response = await fetch("/api/contact", {
             method: "POST",
             body: formData,
@@ -310,6 +315,19 @@ import { socialMedia } from "../../data/socialmedia";
           const result = await response.json();
 
           if (response.ok) {
+            // Tracking Exitoso con Datos Hasheados
+            import("@/lib/gtm").then(async ({ hashData, trackLead }) => {
+                const hashedEmail = email ? await hashData(email) : undefined;
+                const hashedPhone = phone ? await hashData(phone) : undefined;
+                
+                trackLead({
+                    id: result.id || 'form_contact',
+                    email: hashedEmail,
+                    phone: hashedPhone,
+                    category: formData.get('service') as string
+                });
+            }).catch(err => console.error("Tracking error:", err));
+
             btn.innerHTML = `<span>¡Mensaje Enviado!</span> <i class="ph-duotone ph-check"></i>`;
             btn.classList.add("success");
 

@@ -32,6 +32,19 @@ const categoryLabel =
     description={service.description}
     image={service.featuredImage?.src}
 >
+    <script define:vars={{ service }}>
+        // Trigger view_item event for GA4
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'view_item',
+            items: [{
+                item_id: service.slug,
+                item_name: service.title,
+                item_category: service.category,
+                item_brand: 'Zutra Services'
+            }]
+        });
+    </script>
     <main class="page-services-detail">
         {/* --- HERO SECTION: Impacto Visual Puro --- */}
         <section class="service-hero">

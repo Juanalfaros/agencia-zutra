@@ -66,13 +66,29 @@ const currentIndex = allProjects.findIndex((c) => c.id === project.id);
 const nextProject = allProjects[(currentIndex + 1) % allProjects.length];
 const prevProject =
     allProjects[(currentIndex - 1 + allProjects.length) % allProjects.length];
+
+// Prepare tracking data
+const trackingData = {
+    item_id: project.slug,
+    item_name: project.title,
+    item_category: project.industry,
+    item_brand: 'Zutra Portfolio'
+};
 ---
 
 <Layout
-    title={`${project.title} — Portfolio Zutra`}
+    title={`${project.title} | Proyecto Zutra`}
     description={project.description}
     image={project.featuredImage.src.src}
 >
+    <script define:vars={{ trackingData }}>
+        // Trigger view_item event for GA4
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'view_item',
+            items: [trackingData]
+        });
+    </script>
     <main class="case-study">
         <CaseHero project={project} />
         <hr class="divider" />

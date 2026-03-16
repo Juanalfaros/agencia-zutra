@@ -90,6 +90,19 @@ const seoMeta = {
     keywords={seoMeta.keywords}
     type="article"
 >
+    <script define:vars={{ post }}>
+        // Trigger view_item event for GA4
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            event: 'view_item',
+            items: [{
+                item_id: post.slug,
+                item_name: post.title,
+                item_category: post.category,
+                item_brand: 'Zutra Blog'
+            }]
+        });
+    </script>
     <meta
         property="article:published_time"
         content={post.publishDate}

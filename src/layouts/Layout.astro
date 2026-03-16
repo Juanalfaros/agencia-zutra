@@ -260,12 +260,48 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
       }
 
       // Initialize on DOMContentLoaded and Astro page load
-      document.addEventListener('DOMContentLoaded', initRevealAnimations);
-      document.addEventListener('astro:page-load', initRevealAnimations);
+      document.addEventListener('DOMContentLoaded', () => {
+        initRevealAnimations();
+        initGlobalGTMTracker();
+      });
       
+      document.addEventListener('astro:page-load', () => {
+        initRevealAnimations();
+        initGlobalGTMTracker();
+      });
+      
+      function initGlobalGTMTracker() {
+        // Use event delegation on document to catch clicks even on dynamic elements
+        document.addEventListener('click', (event) => {
+          const target = event.target;
+          if (!(target instanceof HTMLElement)) return;
+
+          // Find the closest parent with data-track (or the element itself)
+          const trackable = target.closest('[data-track]');
+          if (trackable && trackable instanceof HTMLElement) {
+            const trackId = trackable.dataset.track;
+            if (!trackId) return;
+
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+              event: 'select_content',
+              content_type: trackable.tagName.toLowerCase(),
+              item_id: trackId,
+              item_name: trackable.innerText?.trim() || trackable.getAttribute('aria-label') || ''
+            });
+            
+            // Console log in dev for easy verification
+            if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+              console.log(`[GTM Track] select_content: ${trackId}`);
+            }
+          }
+        }, { passive: true });
+      }
+
       // Immediate call if already loaded
       if (document.readyState !== 'loading') {
         initRevealAnimations();
+        initGlobalGTMTracker();
       }
     </script>
 
