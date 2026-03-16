@@ -35,13 +35,14 @@ const sortedCases = entries.items.map(adaptPortfolioCase);
 				sortedCases.map((project: ZutraCaseStudy) => (
 					<a href={`/portfolio/${project.slug}`} class="project-card">
 						<div class="project-image-wrapper">
-							<Image
-								src={project.featuredImage.src}
+							<img
+								src={project.featuredImage.src.src}
 								alt={project.title}
 								width={800}
 								height={600}
 								class="project-image"
-								transition:name={`image-${project.slug}`}
+								loading="lazy"
+								decoding="async"
 							/>
 							<div class="project-overlay">
 								<span class="view-project-btn">

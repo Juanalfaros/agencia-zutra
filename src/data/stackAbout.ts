@@ -1,41 +1,41 @@
-import { getTechIcon } from "./techIcons";
+import { getTechIcon } from './techIcons';
 
 export const stackAbout: string[] = [
   // Core Frameworks
-  "Astro",
-  "WordPress",
+  'Astro',
+  'WordPress',
 
   // Frontend & Styling
-  "Tailwind CSS",
-  "TypeScript",
-  "JavaScript",
+  'Tailwind CSS',
+  'TypeScript',
+  'JavaScript',
 
   // Backend & CMS
-  "PHP Custom",
-  "Node.js",
-  "Contentful",
+  'PHP Custom',
+  'Node.js',
+  'Contentful',
 
   // E-commerce & Payments
-  "WooCommerce",
-  "Webpay Plus",
-  "Cal.com API",
+  'WooCommerce',
+  'Webpay Plus',
+  'Cal.com API',
 
   // Marketing & Automation
-  "Brevo CRM",
-  "Google Tag Manager",
-  "Google Analytics",
+  'Brevo CRM',
+  'Google Tag Manager',
+  'Google Analytics',
 
   // Design & Collaboration
-  "Figma",
-  "Notion",
-  "Slack",
-  "Linear",
+  'Figma',
+  'Notion',
+  'Slack',
+  'Linear',
 
   // Deployment & Hosting
-  "Vercel",
-  "AWS",
-  "GitHub Actions",
-  "Docker",
+  'Vercel',
+  'AWS',
+  'GitHub Actions',
+  'Docker',
 ];
 
 export const getStackIcon = (techName: string): string => {

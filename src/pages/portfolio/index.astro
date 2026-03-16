@@ -4,7 +4,6 @@ import StickyCTA from "../../components/common/StickyCTA.astro";
 import { getEntries } from "@/lib/contentful";
 import { adaptPortfolioCase } from "@/lib/contentful-adapters";
 import type { ZutraCaseStudy } from "@/types/project-types";
-import { Image } from "astro:assets";
 import { slugify } from "@/lib/slugify.js";
 import { Icon } from "astro-icon/components";
 import { getTechIcon } from "../../data/techIcons";
@@ -79,13 +78,14 @@ const description =
                                     class="project-card"
                                 >
                                     <div class="project-image-wrapper">
-                                        <Image
-                                            src={project.featuredImage.src}
+                                        <img
+                                            src={project.featuredImage.src.src}
                                             alt={project.title}
                                             width={800}
                                             height={600}
                                             class="project-image"
-                                            transition:name={`image-${project.slug}`}
+                                            loading="lazy"
+                                            decoding="async"
                                         />
                                         <div class="project-overlay">
                                             <span class="view-project-btn">

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://zutra.agency/sitemap-index.xml
+Sitemap: https://zutra.agency/sitemap-0.xml

@@ -5,36 +5,59 @@
  * Includes in-memory caching for build-time optimization.
  */
 
-import { createClient, type EntrySkeletonType } from "contentful";
-import type { Entry, Asset, EntryCollection } from "contentful";
+import { createClient, type EntrySkeletonType } from 'contentful';
+import type { Entry, Asset, EntryCollection } from 'contentful';
 
 function readEnv(key: string, locals?: any): string {
   // 1. Try locals.runtime.env (For Cloudflare Pages/Workers runtime)
   // Check if locals is the Astro object or the locals object itself
   const envSource = locals?.locals?.runtime?.env || locals?.runtime?.env;
   const fromRuntime = envSource?.[key];
-  if (typeof fromRuntime === "string" && fromRuntime.length > 0) return fromRuntime;
+  if (typeof fromRuntime === 'string' && fromRuntime.length > 0)
+    return fromRuntime;
 
   // 2. Try process.env (Reliable in SSG/Build)
-  // @ts-ignore
-  const fromProcess = typeof process !== "undefined" && process?.env ? process.env[key] : undefined;
-  if (typeof fromProcess === "string" && fromProcess.length > 0) return fromProcess;
+  const fromProcess =
+    (typeof globalThis !== 'undefined' &&
+      (globalThis as any).process?.env?.[key]) ||
+    undefined;
+  if (typeof fromProcess === 'string' && fromProcess.length > 0)
+    return fromProcess;
 
   // 3. Fallback to import.meta.env (Astro/Vite)
-  return (import.meta.env[key] as string) || "";
+  return (import.meta.env[key] as string) || '';
 }
 
-// Check if we should use the Preview API by default (env var)
 export const isPreviewEnabled = (locals?: any) => {
-  const cookieHeader = locals?.request?.headers?.get("cookie") || "";
-  const hasPreviewCookie = cookieHeader.includes("contentful_preview=true");
+  // Safe header check to avoid Astro warnings during prerendering
+  let hasPreviewCookie = false;
   
+  // Only attempt to access headers if we are in DEV or if they are explicitly provided
+  // In production builds, we avoid touching headers in static pages.
+  if (locals?.request?.headers) {
+    try {
+      // In some environments, accessing .get() might still warn, but we've seen 
+      // it's mainly the property access on the request proxy that warns.
+      const cookieHeader = locals.request.headers.get('cookie') || '';
+      hasPreviewCookie = cookieHeader.includes('contentful_preview=true');
+    } catch (e) {
+      hasPreviewCookie = false;
+    }
+  }
+
   // Also trust the URL path if we are in a /preview/ route
-  const url = new URL(locals?.request?.url || "http://localhost");
-  const isPreviewPath = url.pathname.startsWith("/preview/");
-  
+  let isPreviewPath = false;
+  try {
+    if (locals?.request?.url) {
+      const url = new URL(locals.request.url);
+      isPreviewPath = url.pathname.startsWith('/preview/');
+    }
+  } catch (e) {
+    isPreviewPath = false;
+  }
+
   return (
-    import.meta.env.CONTENTFUL_USE_PREVIEW === "true" ||
+    import.meta.env.CONTENTFUL_USE_PREVIEW === 'true' ||
     hasPreviewCookie ||
     isPreviewPath
   );
@@ -47,39 +70,40 @@ let deliveryClient: ReturnType<typeof createClient> | null = null;
 let previewClient: ReturnType<typeof createClient> | null = null;
 
 function createDeliveryClient(locals?: any) {
-  const spaceId = readEnv("CONTENTFUL_SPACE_ID", locals);
-  const accessToken = readEnv("CONTENTFUL_ACCESS_TOKEN", locals);
+  const spaceId = readEnv('CONTENTFUL_SPACE_ID', locals);
+  const accessToken = readEnv('CONTENTFUL_ACCESS_TOKEN', locals);
 
   if (!spaceId || !accessToken) {
     throw new Error(
-      "CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN are required",
+      'CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN are required'
     );
   }
 
   return createClient({
     space: spaceId,
     accessToken: accessToken,
-    host: "cdn.contentful.com",
-    environment: readEnv("CONTENTFUL_ENVIRONMENT", locals) || "master",
+    host: 'cdn.contentful.com',
+    environment: readEnv('CONTENTFUL_ENVIRONMENT', locals) || 'master',
   });
 }
 
 function createPreviewClient(locals?: any) {
-  const spaceId = readEnv("CONTENTFUL_SPACE_ID", locals);
+  const spaceId = readEnv('CONTENTFUL_SPACE_ID', locals);
   const accessToken =
-    readEnv("CONTENTFUL_PREVIEW_TOKEN", locals) || readEnv("CONTENTFUL_ACCESS_TOKEN", locals);
+    readEnv('CONTENTFUL_PREVIEW_TOKEN', locals) ||
+    readEnv('CONTENTFUL_ACCESS_TOKEN', locals);
 
   if (!spaceId || !accessToken) {
     throw new Error(
-      "CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN/CONTENTFUL_PREVIEW_TOKEN are required",
+      'CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN/CONTENTFUL_PREVIEW_TOKEN are required'
     );
   }
 
   return createClient({
     space: spaceId,
     accessToken: accessToken,
-    host: "preview.contentful.com",
-    environment: readEnv("CONTENTFUL_ENVIRONMENT", locals) || "master",
+    host: 'preview.contentful.com',
+    environment: readEnv('CONTENTFUL_ENVIRONMENT', locals) || 'master',
   });
 }
 
@@ -121,7 +145,7 @@ export async function getEntries<T extends EntrySkeletonType>(
   contentType: string,
   query: Record<string, any> = {},
   preview?: boolean,
-  locals?: any,
+  locals?: any
 ): Promise<EntryCollection<T, undefined, string>> {
   try {
     const isPreview = preview ?? isPreviewEnabled(locals);
@@ -141,14 +165,14 @@ export async function getEntries<T extends EntrySkeletonType>(
     return entries;
   } catch (error) {
     // If Contentful is not configured, return empty collection
-    if (error instanceof Error && error.message.includes("required")) {
-      console.warn("Contentful not configured, returning empty collection");
+    if (error instanceof Error && error.message.includes('required')) {
+      console.warn('Contentful not configured, returning empty collection');
       return {
         items: [],
         total: 0,
         skip: 0,
         limit: 0,
-        sys: { type: "Array" as const },
+        sys: { type: 'Array' as const },
       } as EntryCollection<T, undefined, string>;
     }
     console.error(`Error fetching entries for ${contentType}:`, error);
@@ -166,7 +190,7 @@ export async function getEntries<T extends EntrySkeletonType>(
 export async function getEntry<T extends EntrySkeletonType>(
   entryId: string,
   preview?: boolean,
-  locals?: any,
+  locals?: any
 ): Promise<Entry<T, undefined, string>> {
   try {
     const isPreview = preview ?? isPreviewEnabled(locals);
@@ -182,10 +206,10 @@ export async function getEntry<T extends EntrySkeletonType>(
     return entry;
   } catch (error) {
     // If Contentful is not configured, throw a more descriptive error
-    if (error instanceof Error && error.message.includes("required")) {
-      console.warn("Contentful not configured, cannot fetch entry");
+    if (error instanceof Error && error.message.includes('required')) {
+      console.warn('Contentful not configured, cannot fetch entry');
       throw new Error(
-        "Contentful is not configured. Please set CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN environment variables.",
+        'Contentful is not configured. Please set CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN environment variables.'
       );
     }
     console.error(`Error fetching entry ${entryId}:`, error);
@@ -206,7 +230,7 @@ export async function getEntriesByField<T extends EntrySkeletonType>(
   field: string,
   value: any,
   preview?: boolean,
-  locals?: any,
+  locals?: any
 ): Promise<EntryCollection<T, undefined, string>> {
   return getEntries<T>(
     contentType,
@@ -214,7 +238,7 @@ export async function getEntriesByField<T extends EntrySkeletonType>(
       [`fields.${field}`]: value,
     },
     preview,
-    locals,
+    locals
   );
 }
 

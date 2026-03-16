@@ -38,12 +38,14 @@ const selectedProjects = entries.items.map(adaptPortfolioCase);
           /* Ajustamos el link al slug del proyecto */
           <a href={`/portfolio/${project.slug}`} class="project-card group">
             <div class="project-card__image-wrap">
-              <Image
-                src={project.featuredImage.src}
+              <img
+                src={project.featuredImage.src.src}
                 alt={`Caso de éxito: ${project.title}`}
                 width={800}
                 height={600}
                 class="project-card__image"
+                loading="lazy"
+                decoding="async"
               />
               <div class="project-card__overlay">
                 <span class="view-case-btn">Ver Caso Completo</span>

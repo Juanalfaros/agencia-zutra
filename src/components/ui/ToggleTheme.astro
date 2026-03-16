@@ -18,6 +18,10 @@
         const manager = (window as any).__ZUTRA_THEME_MANAGER__;
 
         if (themeToggle && manager) {
+            // Inicializar aria-pressed
+            const currentTheme = document.documentElement.getAttribute("data-theme") || manager.getTheme();
+            themeToggle.setAttribute('aria-pressed', currentTheme === 'dark' ? 'true' : 'false');
+
             // Remover listeners anteriores para evitar duplicados
             const newToggle = themeToggle.cloneNode(true) as HTMLButtonElement;
             themeToggle.replaceWith(newToggle);
@@ -38,12 +42,14 @@
                         .matches
                 ) {
                     manager.setTheme(newTheme);
+                    newToggle.setAttribute('aria-pressed', newTheme === 'dark' ? 'true' : 'false');
                     return;
                 }
 
                 // @ts-ignore
                 const transition = document.startViewTransition(() => {
                     manager.setTheme(newTheme);
+                    newToggle.setAttribute('aria-pressed', newTheme === 'dark' ? 'true' : 'false');
                 });
 
                 try {

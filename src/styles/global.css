@@ -37,27 +37,39 @@
   --color-blue-400: #60a5fa;
 
   /* --- Global Mix Variants & Utilities --- */
-  --color-accent-subtle: color-mix(in srgb,
-      var(--color-accent),
-      transparent 92%);
-  --color-primary-subtle: color-mix(in srgb,
-      var(--color-primary),
-      transparent 92%);
-  --color-secondary-subtle: color-mix(in srgb,
-      var(--color-secondary),
-      transparent 92%);
-  --color-on-accent-subtle: color-mix(in srgb,
-      var(--color-on-accent),
-      transparent 90%);
-  --color-surface-subtle: color-mix(in srgb,
-      var(--color-surface),
-      transparent 10%);
-  --color-error-subtle: color-mix(in srgb,
-      var(--color-red-400),
-      transparent 92%);
+  --color-accent-subtle: color-mix(
+    in srgb,
+    var(--color-accent),
+    transparent 92%
+  );
+  --color-primary-subtle: color-mix(
+    in srgb,
+    var(--color-primary),
+    transparent 92%
+  );
+  --color-secondary-subtle: color-mix(
+    in srgb,
+    var(--color-secondary),
+    transparent 92%
+  );
+  --color-on-accent-subtle: color-mix(
+    in srgb,
+    var(--color-on-accent),
+    transparent 90%
+  );
+  --color-surface-subtle: color-mix(
+    in srgb,
+    var(--color-surface),
+    transparent 10%
+  );
+  --color-error-subtle: color-mix(
+    in srgb,
+    var(--color-red-400),
+    transparent 92%
+  );
 
   --font-sans: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
-  --font-blog: "Outfit", sans-serif;
+  --font-blog: 'Outfit', sans-serif;
   /* --- Border Radius System --- */
   --radius-sm: 0.25rem;
   /* 4px */
@@ -120,7 +132,7 @@
   margin-bottom: 0.5rem;
 }
 
-html[data-theme="light"] {
+html[data-theme='light'] {
   --color-primary: #fafafa;
   --color-secondary: #111827;
   --color-surface: #ffffff;
@@ -253,7 +265,6 @@ h6 {
 }
 
 @media (prefers-reduced-motion: reduce) {
-
   *,
   *::before,
   *::after {
@@ -318,10 +329,10 @@ h6 {
   background: #555;
 }
 
-html[data-theme="light"] ::-webkit-scrollbar-track {
+html[data-theme='light'] ::-webkit-scrollbar-track {
   background: #eee;
 }
 
-html[data-theme="light"] ::-webkit-scrollbar-thumb {
+html[data-theme='light'] ::-webkit-scrollbar-thumb {
   background: #cfcfcf;
 }

@@ -4,8 +4,8 @@ description: Interact with the Cal.com API v2 to manage scheduling, bookings, ev
 license: MIT
 metadata:
   author: calcom
-  version: "1.0.0"
-  api-version: "v2"
+  version: '1.0.0'
+  api-version: 'v2'
 ---
 
 # Cal.com API v2
@@ -15,6 +15,7 @@ This skill provides guidance for AI agents to interact with the Cal.com API v2, 
 ## Base URL
 
 All API requests should be made to:
+
 ```
 https://api.cal.com/v2
 ```
@@ -32,15 +33,19 @@ API keys must be prefixed with `cal_`. You can generate API keys from your Cal.c
 ## Core Concepts
 
 ### Event Types
+
 Event types define bookable meeting configurations (duration, location, availability rules). Each event type has a unique slug used in booking URLs.
 
 ### Bookings
+
 Bookings are confirmed appointments created when someone books an event type. Each booking has a unique UID for identification.
 
 ### Schedules
+
 Schedules define when a user is available for bookings. Users can have multiple schedules with different working hours.
 
 ### Slots
+
 Slots represent available time windows that can be booked based on event type configuration and user availability.
 
 ## Common Operations
@@ -54,8 +59,9 @@ GET /v2/slots?startTime=2024-01-15T00:00:00Z&endTime=2024-01-22T00:00:00Z&eventT
 ```
 
 Query parameters:
+
 - `startTime` (required): ISO 8601 start of range
-- `endTime` (required): ISO 8601 end of range  
+- `endTime` (required): ISO 8601 end of range
 - `eventTypeId` or `eventTypeSlug`: Identify the event type
 - `timeZone`: Timezone for slot display (default: UTC)
 
@@ -81,6 +87,7 @@ Content-Type: application/json
 ```
 
 Required fields:
+
 - `start`: ISO 8601 booking start time
 - `eventTypeId`: ID of the event type to book
 - `attendee.name`: Attendee's full name
@@ -96,6 +103,7 @@ GET /v2/bookings?status=upcoming&take=10
 ```
 
 Query parameters:
+
 - `status`: Filter by status (upcoming, recurring, past, cancelled, unconfirmed)
 - `attendeeEmail`: Filter by attendee email
 - `eventTypeId`: Filter by event type
@@ -225,6 +233,7 @@ GET /v2/organizations/{orgId}/teams/{teamId}/event-types
 ### Create Team Booking
 
 Team event types support different scheduling modes:
+
 - `COLLECTIVE`: All team members must attend
 - `ROUND_ROBIN`: Distributes bookings among team members
 
@@ -252,6 +261,7 @@ Content-Type: application/json
 ```
 
 Available triggers:
+
 - `BOOKING_CREATED`
 - `BOOKING_CANCELLED`
 - `BOOKING_RESCHEDULED`

@@ -74,6 +74,7 @@ import { socialMedia } from "../../data/socialmedia";
                   autocomplete="name"
                   required
                   class="form-input"
+                  aria-describedby="err-name"
                 />
               </div>
               <p id="err-name" class="form-error hidden">Ingresa tu nombre.</p>
@@ -92,6 +93,7 @@ import { socialMedia } from "../../data/socialmedia";
                   autocomplete="email"
                   required
                   class="form-input"
+                  aria-describedby="err-email"
                 />
               </div>
               <p id="err-email" class="form-error hidden">
@@ -126,6 +128,7 @@ import { socialMedia } from "../../data/socialmedia";
                   name="service"
                   required
                   class="form-input select-input"
+                  aria-describedby="err-service"
                 >
                   <option value="" disabled selected
                     >Selecciona un servicio</option
@@ -156,7 +159,8 @@ import { socialMedia } from "../../data/socialmedia";
               rows="4"
               placeholder="Cuéntanos brevemente qué necesitas. (Ej: 'Necesito una web nueva', 'Quiero mejorar mis correos', 'Busco soporte mensual'...)"
               required
-              class="form-input"></textarea>
+              class="form-input"
+              aria-describedby="err-message"></textarea>
             <p id="err-message" class="form-error hidden">
               Cuéntanos brevemente qué necesitas.
             </p>
@@ -164,7 +168,7 @@ import { socialMedia } from "../../data/socialmedia";
 
           <div class="form-consent-group">
             <label class="checkbox-container">
-              <input id="consent" name="consent" type="checkbox" required />
+              <input id="consent" name="consent" type="checkbox" required aria-describedby="err-consent" />
               <span class="checkmark"></span>
               <span class="form-consent-label"
                 >Acepto ser contactad@ por el equipo de Zutra.
@@ -199,15 +203,21 @@ import { socialMedia } from "../../data/socialmedia";
 </section>
 
 <script>
+  declare global {
+    interface Window {
+      turnstile?: {
+        render: (selector: string, options: { sitekey: string; theme: string }) => void;
+      };
+    }
+  }
+
   function initTurnstile() {
     const container = document.getElementById("turnstile-widget");
     if (!container) return;
 
-    // @ts-ignore
     if (window.turnstile) {
-      // @ts-ignore
       window.turnstile.render("#turnstile-widget", {
-        sitekey: container.dataset.sitekey,
+        sitekey: container.dataset.sitekey!,
         theme: "dark",
       });
     } else {

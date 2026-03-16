@@ -4,14 +4,14 @@ Detailed documentation for schedule management endpoints in the Cal.com API v2.
 
 ## Endpoints Overview
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /v2/schedules | List all schedules |
-| POST | /v2/schedules | Create a schedule |
-| GET | /v2/schedules/default | Get default schedule |
-| GET | /v2/schedules/{scheduleId} | Get a schedule |
-| PATCH | /v2/schedules/{scheduleId} | Update a schedule |
-| DELETE | /v2/schedules/{scheduleId} | Delete a schedule |
+| Method | Endpoint                   | Description          |
+| ------ | -------------------------- | -------------------- |
+| GET    | /v2/schedules              | List all schedules   |
+| POST   | /v2/schedules              | Create a schedule    |
+| GET    | /v2/schedules/default      | Get default schedule |
+| GET    | /v2/schedules/{scheduleId} | Get a schedule       |
+| PATCH  | /v2/schedules/{scheduleId} | Update a schedule    |
+| DELETE | /v2/schedules/{scheduleId} | Delete a schedule    |
 
 ## Understanding Schedules
 
@@ -95,29 +95,29 @@ POST /v2/schedules
 
 ### Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| name | string | Yes | Schedule name |
-| timeZone | string | Yes | IANA timezone identifier |
-| isDefault | boolean | No | Set as default schedule |
-| availability | array | Yes | Weekly availability rules |
-| dateOverrides | array | No | Date-specific overrides |
+| Field         | Type    | Required | Description               |
+| ------------- | ------- | -------- | ------------------------- |
+| name          | string  | Yes      | Schedule name             |
+| timeZone      | string  | Yes      | IANA timezone identifier  |
+| isDefault     | boolean | No       | Set as default schedule   |
+| availability  | array   | Yes      | Weekly availability rules |
+| dateOverrides | array   | No       | Date-specific overrides   |
 
 ### Availability Object
 
-| Field | Type | Description |
-|-------|------|-------------|
-| days | array | Days of week (0=Sunday, 1=Monday, ..., 6=Saturday) |
-| startTime | string | Start time in HH:MM format |
-| endTime | string | End time in HH:MM format |
+| Field     | Type   | Description                                        |
+| --------- | ------ | -------------------------------------------------- |
+| days      | array  | Days of week (0=Sunday, 1=Monday, ..., 6=Saturday) |
+| startTime | string | Start time in HH:MM format                         |
+| endTime   | string | End time in HH:MM format                           |
 
 ### Date Override Object
 
-| Field | Type | Description |
-|-------|------|-------------|
-| date | string | Date in YYYY-MM-DD format |
+| Field     | Type        | Description                     |
+| --------- | ----------- | ------------------------------- |
+| date      | string      | Date in YYYY-MM-DD format       |
 | startTime | string/null | Start time (null = unavailable) |
-| endTime | string/null | End time (null = unavailable) |
+| endTime   | string/null | End time (null = unavailable)   |
 
 ## Get Default Schedule
 
@@ -135,8 +135,8 @@ GET /v2/schedules/{scheduleId}
 
 ### Path Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter  | Type   | Description |
+| ---------- | ------ | ----------- |
 | scheduleId | number | Schedule ID |
 
 ## Update a Schedule
@@ -325,8 +325,8 @@ The API returns working hours in two formats:
 }
 ```
 
-- `540` = 9:00 AM (9 * 60 minutes)
-- `1020` = 5:00 PM (17 * 60 minutes)
+- `540` = 9:00 AM (9 \* 60 minutes)
+- `1020` = 5:00 PM (17 \* 60 minutes)
 
 ### ISO Time Format
 

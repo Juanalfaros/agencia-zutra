@@ -4,12 +4,12 @@ Detailed documentation for event type endpoints in the Cal.com API v2.
 
 ## Endpoints Overview
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /v2/event-types | List event types |
-| POST | /v2/event-types | Create an event type |
-| GET | /v2/event-types/{eventTypeId} | Get an event type |
-| PATCH | /v2/event-types/{eventTypeId} | Update an event type |
+| Method | Endpoint                      | Description          |
+| ------ | ----------------------------- | -------------------- |
+| GET    | /v2/event-types               | List event types     |
+| POST   | /v2/event-types               | Create an event type |
+| GET    | /v2/event-types/{eventTypeId} | Get an event type    |
+| PATCH  | /v2/event-types/{eventTypeId} | Update an event type |
 | DELETE | /v2/event-types/{eventTypeId} | Delete an event type |
 
 ## List Event Types
@@ -20,10 +20,10 @@ GET /v2/event-types
 
 ### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| take | number | No | Number of results (default: 10, max: 250) |
-| skip | number | No | Pagination offset |
+| Parameter | Type   | Required | Description                               |
+| --------- | ------ | -------- | ----------------------------------------- |
+| take      | number | No       | Number of results (default: 10, max: 250) |
+| skip      | number | No       | Pagination offset                         |
 
 ### Response
 
@@ -102,27 +102,27 @@ POST /v2/event-types
 
 ### Required Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| title | string | Display name of the event type |
-| slug | string | URL-friendly identifier |
-| lengthInMinutes | number | Duration of the event |
+| Field           | Type   | Description                    |
+| --------------- | ------ | ------------------------------ |
+| title           | string | Display name of the event type |
+| slug            | string | URL-friendly identifier        |
+| lengthInMinutes | number | Duration of the event          |
 
 ### Optional Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| description | string | Description shown on booking page |
-| locations | array | Meeting location options |
-| bookingFields | array | Custom form fields |
-| disableGuests | boolean | Prevent attendees from adding guests |
-| slotInterval | number | Minutes between available slots |
-| minimumBookingNotice | number | Minimum minutes before booking |
-| beforeEventBuffer | number | Buffer time before event (minutes) |
-| afterEventBuffer | number | Buffer time after event (minutes) |
-| scheduleId | number | ID of schedule to use |
-| requiresConfirmation | boolean | Require host confirmation |
-| hidden | boolean | Hide from public profile |
+| Field                | Type    | Description                          |
+| -------------------- | ------- | ------------------------------------ |
+| description          | string  | Description shown on booking page    |
+| locations            | array   | Meeting location options             |
+| bookingFields        | array   | Custom form fields                   |
+| disableGuests        | boolean | Prevent attendees from adding guests |
+| slotInterval         | number  | Minutes between available slots      |
+| minimumBookingNotice | number  | Minimum minutes before booking       |
+| beforeEventBuffer    | number  | Buffer time before event (minutes)   |
+| afterEventBuffer     | number  | Buffer time after event (minutes)    |
+| scheduleId           | number  | ID of schedule to use                |
+| requiresConfirmation | boolean | Require host confirmation            |
+| hidden               | boolean | Hide from public profile             |
 
 ## Location Types
 
@@ -284,8 +284,8 @@ GET /v2/event-types/{eventTypeId}
 
 ### Path Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter   | Type   | Description   |
+| ----------- | ------ | ------------- |
 | eventTypeId | number | Event type ID |
 
 ## Update an Event Type
@@ -345,11 +345,11 @@ Additional fields for team event types:
 
 ### Scheduling Types
 
-| Type | Description |
-|------|-------------|
-| ROUND_ROBIN | Distributes bookings among team members |
-| COLLECTIVE | All team members must attend |
-| MANAGED | Parent event type that creates child event types |
+| Type        | Description                                      |
+| ----------- | ------------------------------------------------ |
+| ROUND_ROBIN | Distributes bookings among team members          |
+| COLLECTIVE  | All team members must attend                     |
+| MANAGED     | Parent event type that creates child event types |
 
 ## Private Links
 

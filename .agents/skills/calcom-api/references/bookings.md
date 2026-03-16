@@ -4,19 +4,19 @@ Detailed documentation for booking-related endpoints in the Cal.com API v2.
 
 ## Endpoints Overview
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /v2/bookings | List bookings |
-| POST | /v2/bookings | Create a booking |
-| GET | /v2/bookings/{bookingUid} | Get a booking |
-| POST | /v2/bookings/{bookingUid}/cancel | Cancel a booking |
-| POST | /v2/bookings/{bookingUid}/reschedule | Reschedule a booking |
-| POST | /v2/bookings/{bookingUid}/confirm | Confirm a pending booking |
-| POST | /v2/bookings/{bookingUid}/decline | Decline a booking |
-| PATCH | /v2/bookings/{bookingUid}/location | Update booking location |
-| POST | /v2/bookings/{bookingUid}/mark-absent | Mark attendee as no-show |
-| POST | /v2/bookings/{bookingUid}/reassign | Reassign booking to another host |
-| GET | /v2/bookings/{bookingUid}/references | Get booking references |
+| Method | Endpoint                              | Description                      |
+| ------ | ------------------------------------- | -------------------------------- |
+| GET    | /v2/bookings                          | List bookings                    |
+| POST   | /v2/bookings                          | Create a booking                 |
+| GET    | /v2/bookings/{bookingUid}             | Get a booking                    |
+| POST   | /v2/bookings/{bookingUid}/cancel      | Cancel a booking                 |
+| POST   | /v2/bookings/{bookingUid}/reschedule  | Reschedule a booking             |
+| POST   | /v2/bookings/{bookingUid}/confirm     | Confirm a pending booking        |
+| POST   | /v2/bookings/{bookingUid}/decline     | Decline a booking                |
+| PATCH  | /v2/bookings/{bookingUid}/location    | Update booking location          |
+| POST   | /v2/bookings/{bookingUid}/mark-absent | Mark attendee as no-show         |
+| POST   | /v2/bookings/{bookingUid}/reassign    | Reassign booking to another host |
+| GET    | /v2/bookings/{bookingUid}/references  | Get booking references           |
 
 ## List Bookings
 
@@ -26,21 +26,21 @@ GET /v2/bookings
 
 ### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| status | string | No | Filter by status: `upcoming`, `recurring`, `past`, `cancelled`, `unconfirmed` |
-| attendeeEmail | string | No | Filter by attendee email |
-| attendeeName | string | No | Filter by attendee name |
-| eventTypeId | number | No | Filter by event type ID |
-| eventTypeIds | string | No | Comma-separated event type IDs |
-| teamsIds | string | No | Comma-separated team IDs |
-| afterStart | string | No | Filter bookings starting after this ISO 8601 date |
-| beforeEnd | string | No | Filter bookings ending before this ISO 8601 date |
-| sortStart | string | No | Sort by start time: `asc` or `desc` |
-| sortEnd | string | No | Sort by end time: `asc` or `desc` |
-| sortCreated | string | No | Sort by creation time: `asc` or `desc` |
-| take | number | No | Number of results (default: 10, max: 250) |
-| skip | number | No | Pagination offset |
+| Parameter     | Type   | Required | Description                                                                   |
+| ------------- | ------ | -------- | ----------------------------------------------------------------------------- |
+| status        | string | No       | Filter by status: `upcoming`, `recurring`, `past`, `cancelled`, `unconfirmed` |
+| attendeeEmail | string | No       | Filter by attendee email                                                      |
+| attendeeName  | string | No       | Filter by attendee name                                                       |
+| eventTypeId   | number | No       | Filter by event type ID                                                       |
+| eventTypeIds  | string | No       | Comma-separated event type IDs                                                |
+| teamsIds      | string | No       | Comma-separated team IDs                                                      |
+| afterStart    | string | No       | Filter bookings starting after this ISO 8601 date                             |
+| beforeEnd     | string | No       | Filter bookings ending before this ISO 8601 date                              |
+| sortStart     | string | No       | Sort by start time: `asc` or `desc`                                           |
+| sortEnd       | string | No       | Sort by end time: `asc` or `desc`                                             |
+| sortCreated   | string | No       | Sort by creation time: `asc` or `desc`                                        |
+| take          | number | No       | Number of results (default: 10, max: 250)                                     |
+| skip          | number | No       | Pagination offset                                                             |
 
 ### Response
 
@@ -111,22 +111,22 @@ POST /v2/bookings
 
 ### Required Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| start | string | ISO 8601 booking start time |
-| eventTypeId | number | ID of the event type to book |
-| attendee.name | string | Attendee's full name |
-| attendee.email | string | Attendee's email address |
+| Field             | Type   | Description                       |
+| ----------------- | ------ | --------------------------------- |
+| start             | string | ISO 8601 booking start time       |
+| eventTypeId       | number | ID of the event type to book      |
+| attendee.name     | string | Attendee's full name              |
+| attendee.email    | string | Attendee's email address          |
 | attendee.timeZone | string | Attendee's timezone (IANA format) |
 
 ### Optional Fields
 
-| Field | Type | Description |
-|-------|------|-------------|
-| attendee.language | string | Attendee's preferred language |
-| guests | array | Additional guest email addresses |
-| meetingUrl | string | Custom meeting URL |
-| metadata | object | Custom metadata |
+| Field                  | Type   | Description                        |
+| ---------------------- | ------ | ---------------------------------- |
+| attendee.language      | string | Attendee's preferred language      |
+| guests                 | array  | Additional guest email addresses   |
+| meetingUrl             | string | Custom meeting URL                 |
+| metadata               | object | Custom metadata                    |
 | bookingFieldsResponses | object | Responses to custom booking fields |
 
 ### Response
@@ -157,8 +157,8 @@ GET /v2/bookings/{bookingUid}
 
 ### Path Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
+| Parameter  | Type   | Description               |
+| ---------- | ------ | ------------------------- |
 | bookingUid | string | Unique booking identifier |
 
 ### Response
@@ -181,9 +181,9 @@ POST /v2/bookings/{bookingUid}/cancel
 
 ### Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| cancellationReason | string | No | Reason for cancellation |
+| Field              | Type   | Required | Description             |
+| ------------------ | ------ | -------- | ----------------------- |
+| cancellationReason | string | No       | Reason for cancellation |
 
 ## Reschedule a Booking
 
@@ -202,10 +202,10 @@ POST /v2/bookings/{bookingUid}/reschedule
 
 ### Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| start | string | Yes | New booking start time (ISO 8601) |
-| reschedulingReason | string | No | Reason for rescheduling |
+| Field              | Type   | Required | Description                       |
+| ------------------ | ------ | -------- | --------------------------------- |
+| start              | string | Yes      | New booking start time (ISO 8601) |
+| reschedulingReason | string | No       | Reason for rescheduling           |
 
 ## Confirm a Booking
 
@@ -297,12 +297,12 @@ GET /v2/bookings/{bookingUid}/references
 
 ## Booking Statuses
 
-| Status | Description |
-|--------|-------------|
-| accepted | Booking is confirmed |
-| pending | Awaiting confirmation |
+| Status    | Description           |
+| --------- | --------------------- |
+| accepted  | Booking is confirmed  |
+| pending   | Awaiting confirmation |
 | cancelled | Booking was cancelled |
-| rejected | Booking was declined |
+| rejected  | Booking was declined  |
 
 ## Common Use Cases
 

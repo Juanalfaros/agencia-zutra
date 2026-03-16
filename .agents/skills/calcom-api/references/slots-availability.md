@@ -4,12 +4,12 @@ Detailed documentation for checking availability and managing slots in the Cal.c
 
 ## Endpoints Overview
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /v2/slots | Get available time slots |
-| POST | /v2/slots/reservations | Reserve a slot temporarily |
-| DELETE | /v2/slots/reservations/{uid} | Release a reserved slot |
-| GET | /v2/calendars/busy-times | Get busy times from calendars |
+| Method | Endpoint                     | Description                   |
+| ------ | ---------------------------- | ----------------------------- |
+| GET    | /v2/slots                    | Get available time slots      |
+| POST   | /v2/slots/reservations       | Reserve a slot temporarily    |
+| DELETE | /v2/slots/reservations/{uid} | Release a reserved slot       |
+| GET    | /v2/calendars/busy-times     | Get busy times from calendars |
 
 ## Get Available Slots
 
@@ -21,16 +21,16 @@ GET /v2/slots
 
 ### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| startTime | string | Yes | ISO 8601 start of date range |
-| endTime | string | Yes | ISO 8601 end of date range |
-| eventTypeId | number | Conditional | Event type ID (required if no slug) |
-| eventTypeSlug | string | Conditional | Event type slug (required if no ID) |
-| usernameList | string | Conditional | Comma-separated usernames for team events |
-| timeZone | string | No | Timezone for slot display (default: UTC) |
-| duration | number | No | Override event duration in minutes |
-| rescheduleUid | string | No | Booking UID if rescheduling |
+| Parameter     | Type   | Required    | Description                               |
+| ------------- | ------ | ----------- | ----------------------------------------- |
+| startTime     | string | Yes         | ISO 8601 start of date range              |
+| endTime       | string | Yes         | ISO 8601 end of date range                |
+| eventTypeId   | number | Conditional | Event type ID (required if no slug)       |
+| eventTypeSlug | string | Conditional | Event type slug (required if no ID)       |
+| usernameList  | string | Conditional | Comma-separated usernames for team events |
+| timeZone      | string | No          | Timezone for slot display (default: UTC)  |
+| duration      | number | No          | Override event duration in minutes        |
+| rescheduleUid | string | No          | Booking UID if rescheduling               |
 
 ### Example Request
 
@@ -132,9 +132,9 @@ DELETE /v2/slots/reservations/{uid}
 
 ### Path Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| uid | string | Reservation UID |
+| Parameter | Type   | Description     |
+| --------- | ------ | --------------- |
+| uid       | string | Reservation UID |
 
 ## Get Busy Times
 
@@ -146,12 +146,12 @@ GET /v2/calendars/busy-times
 
 ### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| startTime | string | Yes | ISO 8601 start of date range |
-| endTime | string | Yes | ISO 8601 end of date range |
-| loggedInUsersTz | string | No | User's timezone |
-| credentialId | number | No | Specific calendar credential ID |
+| Parameter       | Type   | Required | Description                     |
+| --------------- | ------ | -------- | ------------------------------- |
+| startTime       | string | Yes      | ISO 8601 start of date range    |
+| endTime         | string | Yes      | ISO 8601 end of date range      |
+| loggedInUsersTz | string | No       | User's timezone                 |
+| credentialId    | number | No       | Specific calendar credential ID |
 
 ### Response
 

@@ -4,12 +4,12 @@ Detailed documentation for webhook management endpoints in the Cal.com API v2.
 
 ## Endpoints Overview
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /v2/webhooks | List webhooks |
-| POST | /v2/webhooks | Create a webhook |
-| GET | /v2/webhooks/{webhookId} | Get a webhook |
-| PATCH | /v2/webhooks/{webhookId} | Update a webhook |
+| Method | Endpoint                 | Description      |
+| ------ | ------------------------ | ---------------- |
+| GET    | /v2/webhooks             | List webhooks    |
+| POST   | /v2/webhooks             | Create a webhook |
+| GET    | /v2/webhooks/{webhookId} | Get a webhook    |
+| PATCH  | /v2/webhooks/{webhookId} | Update a webhook |
 | DELETE | /v2/webhooks/{webhookId} | Delete a webhook |
 
 ## List Webhooks
@@ -56,32 +56,32 @@ POST /v2/webhooks
 
 ### Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| subscriberUrl | string | Yes | URL to receive webhook payloads |
-| triggers | array | Yes | Events that trigger the webhook |
-| active | boolean | No | Enable/disable webhook (default: true) |
-| payloadTemplate | string | No | Custom payload template |
-| secret | string | No | Secret for signature verification |
+| Field           | Type    | Required | Description                            |
+| --------------- | ------- | -------- | -------------------------------------- |
+| subscriberUrl   | string  | Yes      | URL to receive webhook payloads        |
+| triggers        | array   | Yes      | Events that trigger the webhook        |
+| active          | boolean | No       | Enable/disable webhook (default: true) |
+| payloadTemplate | string  | No       | Custom payload template                |
+| secret          | string  | No       | Secret for signature verification      |
 
 ## Webhook Triggers
 
-| Trigger | Description |
-|---------|-------------|
-| BOOKING_CREATED | New booking created |
-| BOOKING_CANCELLED | Booking cancelled |
-| BOOKING_RESCHEDULED | Booking rescheduled |
-| BOOKING_CONFIRMED | Pending booking confirmed |
-| BOOKING_REJECTED | Booking rejected |
-| BOOKING_REQUESTED | Booking request received (requires confirmation) |
-| BOOKING_PAYMENT_INITIATED | Payment started |
-| BOOKING_NO_SHOW_UPDATED | Attendee marked as no-show |
-| MEETING_STARTED | Video meeting started |
-| MEETING_ENDED | Video meeting ended |
-| RECORDING_READY | Meeting recording available |
-| INSTANT_MEETING | Instant meeting created |
-| RECORDING_TRANSCRIPTION_GENERATED | Transcription ready |
-| FORM_SUBMITTED | Routing form submitted |
+| Trigger                           | Description                                      |
+| --------------------------------- | ------------------------------------------------ |
+| BOOKING_CREATED                   | New booking created                              |
+| BOOKING_CANCELLED                 | Booking cancelled                                |
+| BOOKING_RESCHEDULED               | Booking rescheduled                              |
+| BOOKING_CONFIRMED                 | Pending booking confirmed                        |
+| BOOKING_REJECTED                  | Booking rejected                                 |
+| BOOKING_REQUESTED                 | Booking request received (requires confirmation) |
+| BOOKING_PAYMENT_INITIATED         | Payment started                                  |
+| BOOKING_NO_SHOW_UPDATED           | Attendee marked as no-show                       |
+| MEETING_STARTED                   | Video meeting started                            |
+| MEETING_ENDED                     | Video meeting ended                              |
+| RECORDING_READY                   | Meeting recording available                      |
+| INSTANT_MEETING                   | Instant meeting created                          |
+| RECORDING_TRANSCRIPTION_GENERATED | Transcription ready                              |
+| FORM_SUBMITTED                    | Routing form submitted                           |
 
 ## Webhook Payload
 
@@ -180,7 +180,7 @@ function verifyWebhookSignature(payload, signature, secret) {
     .createHmac('sha256', secret)
     .update(payload)
     .digest('hex');
-  
+
   return `sha256=${expectedSignature}` === signature;
 }
 
@@ -188,15 +188,15 @@ function verifyWebhookSignature(payload, signature, secret) {
 app.post('/webhook', (req, res) => {
   const signature = req.headers['x-cal-signature-256'];
   const payload = JSON.stringify(req.body);
-  
+
   if (!verifyWebhookSignature(payload, signature, process.env.WEBHOOK_SECRET)) {
     return res.status(401).send('Invalid signature');
   }
-  
+
   // Process webhook
   const { triggerEvent, payload: data } = req.body;
   // ...
-  
+
   res.status(200).send('OK');
 });
 ```

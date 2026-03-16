@@ -16,7 +16,7 @@ export async function getStaticPaths() {
 }
 
 import { adaptCategory } from "@/lib/contentful-adapters";
-const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+const isPreview = import.meta.env.DEV && Astro.cookies.get("contentful_preview")?.value === "true";
 const categoryEntries = await getEntries("category", {}, isPreview);
 const categories = categoryEntries.items.map(adaptCategory);
 
@@ -30,7 +30,7 @@ const categoryLabel =
 <Layout
     title={`${service.title} | Agencia Zutra`}
     description={service.description}
-    image={service.featuredImage?.src?.src}
+    image={service.featuredImage?.src}
 >
     <main class="page-services-detail">
         {/* --- HERO SECTION: Impacto Visual Puro --- */}

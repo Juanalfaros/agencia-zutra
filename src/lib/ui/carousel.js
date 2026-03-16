@@ -1,17 +1,17 @@
 // src/scripts/ui/carousel.js
 
 export function initCarousel() {
-  const carousels = document.querySelectorAll(".hero-carousel");
+  const carousels = document.querySelectorAll('.hero-carousel');
 
   carousels.forEach((carousel) => {
     // Evitar doble inicialización
     if (carousel.dataset.initialized) return;
-    carousel.dataset.initialized = "true";
+    carousel.dataset.initialized = 'true';
 
-    const slides = carousel.querySelectorAll(".hero-carousel__slide");
-    const nextButton = carousel.querySelector(".nav-button--next");
-    const prevButton = carousel.querySelector(".nav-button--prev");
-    const dots = carousel.querySelectorAll(".pagination-dot");
+    const slides = carousel.querySelectorAll('.hero-carousel__slide');
+    const nextButton = carousel.querySelector('.nav-button--next');
+    const prevButton = carousel.querySelector('.nav-button--prev');
+    const dots = carousel.querySelectorAll('.pagination-dot');
 
     if (!slides.length || !nextButton || !prevButton) return;
 
@@ -25,11 +25,11 @@ export function initCarousel() {
         index = slides.length - 1;
       }
 
-      slides.forEach((slide) => slide.classList.remove("active"));
-      dots.forEach((dot) => dot.classList.remove("active"));
+      slides.forEach((slide) => slide.classList.remove('active'));
+      dots.forEach((dot) => dot.classList.remove('active'));
 
-      if (slides[index]) slides[index].classList.add("active");
-      if (dots[index]) dots[index].classList.add("active");
+      if (slides[index]) slides[index].classList.add('active');
+      if (dots[index]) dots[index].classList.add('active');
 
       currentSlide = index;
     }
@@ -58,18 +58,18 @@ export function initCarousel() {
       startAutoPlay();
     }
 
-    nextButton.addEventListener("click", () => {
+    nextButton.addEventListener('click', () => {
       next();
       resetAutoPlay();
     });
 
-    prevButton.addEventListener("click", () => {
+    prevButton.addEventListener('click', () => {
       prev();
       resetAutoPlay();
     });
 
     dots.forEach((dot, index) => {
-      dot.addEventListener("click", () => {
+      dot.addEventListener('click', () => {
         showSlide(index);
         resetAutoPlay();
       });

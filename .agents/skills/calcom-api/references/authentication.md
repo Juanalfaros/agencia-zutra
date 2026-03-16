@@ -32,6 +32,7 @@ Authorization: Bearer cal_live_abc123xyz...
 ### API Key Format
 
 All Cal.com API keys are prefixed with `cal_`:
+
 - `cal_live_...` - Production API keys
 - `cal_test_...` - Test/sandbox API keys (if available)
 
@@ -59,9 +60,9 @@ Content-Type: application/json
 
 ### Request Body
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| expiresAt | string | No | ISO 8601 expiration date for the new key |
+| Field     | Type   | Required | Description                              |
+| --------- | ------ | -------- | ---------------------------------------- |
+| expiresAt | string | No       | ISO 8601 expiration date for the new key |
 
 ### Response
 
@@ -82,11 +83,11 @@ For platform customers building integrations that manage multiple users.
 
 Platform customers use additional headers alongside or instead of the Bearer token:
 
-| Header | Description |
-|--------|-------------|
-| `x-cal-client-id` | OAuth client ID |
-| `x-cal-secret-key` | OAuth client secret key |
-| `Authorization` | Bearer token (managed user access token) |
+| Header             | Description                              |
+| ------------------ | ---------------------------------------- |
+| `x-cal-client-id`  | OAuth client ID                          |
+| `x-cal-secret-key` | OAuth client secret key                  |
+| `Authorization`    | Bearer token (managed user access token) |
 
 ### Example Platform Request
 
@@ -101,6 +102,7 @@ curl -X GET "https://api.cal.com/v2/bookings" \
 ### When to Use Each Header
 
 **For endpoints acting on behalf of a managed user:**
+
 ```http
 GET /v2/bookings
 x-cal-client-id: your_client_id
@@ -109,6 +111,7 @@ Authorization: Bearer managed_user_access_token
 ```
 
 **For platform-level operations (managing OAuth clients):**
+
 ```http
 GET /v2/oauth-clients
 Authorization: Bearer cal_live_platform_admin_key
@@ -149,6 +152,7 @@ Returned when authentication fails:
 ```
 
 Common causes:
+
 - Missing `Authorization` header
 - Invalid or expired API key
 - API key without `cal_` prefix
@@ -169,6 +173,7 @@ Returned when authenticated but lacking permissions:
 ```
 
 Common causes:
+
 - Accessing another user's resources
 - Missing required scopes for platform tokens
 - Organization/team permission restrictions
@@ -178,6 +183,7 @@ Common causes:
 1. **Never expose API keys in client-side code**: API keys should only be used in server-side applications
 
 2. **Use environment variables**: Store API keys in environment variables, not in code
+
    ```bash
    export CAL_API_KEY="cal_live_abc123..."
    ```
@@ -213,12 +219,12 @@ Retry-After: 60
 
 ### Rate Limit Headers
 
-| Header | Description |
-|--------|-------------|
-| `X-RateLimit-Limit` | Maximum requests per window |
-| `X-RateLimit-Remaining` | Remaining requests in current window |
-| `X-RateLimit-Reset` | Unix timestamp when the window resets |
-| `Retry-After` | Seconds to wait before retrying (on 429) |
+| Header                  | Description                              |
+| ----------------------- | ---------------------------------------- |
+| `X-RateLimit-Limit`     | Maximum requests per window              |
+| `X-RateLimit-Remaining` | Remaining requests in current window     |
+| `X-RateLimit-Reset`     | Unix timestamp when the window resets    |
+| `Retry-After`           | Seconds to wait before retrying (on 429) |
 
 ## Testing Authentication
 
@@ -255,19 +261,19 @@ const CAL_API_KEY = process.env.CAL_API_KEY;
 async function getBookings() {
   const response = await fetch('https://api.cal.com/v2/bookings', {
     headers: {
-      'Authorization': `Bearer ${CAL_API_KEY}`,
+      Authorization: `Bearer ${CAL_API_KEY}`,
       'Content-Type': 'application/json',
-      'cal-api-version': '2024-08-13'
-    }
+      'cal-api-version': '2024-08-13',
+    },
   });
-  
+
   if (!response.ok) {
     if (response.status === 401) {
       throw new Error('Invalid API key');
     }
     throw new Error(`API error: ${response.status}`);
   }
-  
+
   return response.json();
 }
 ```
@@ -280,21 +286,24 @@ async function makeAuthenticatedRequest(url, options = {}) {
     ...options,
     headers: {
       ...options.headers,
-      'Authorization': `Bearer ${apiKey}`
-    }
+      Authorization: `Bearer ${apiKey}`,
+    },
   });
-  
+
   if (response.status === 401) {
     // Refresh the API key
-    const refreshResponse = await fetch('https://api.cal.com/v2/api-keys/refresh', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
-    });
-    
+    const refreshResponse = await fetch(
+      'https://api.cal.com/v2/api-keys/refresh',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      }
+    );
+
     if (refreshResponse.ok) {
       const { data } = await refreshResponse.json();
       apiKey = data.apiKey;
@@ -303,12 +312,12 @@ async function makeAuthenticatedRequest(url, options = {}) {
         ...options,
         headers: {
           ...options.headers,
-          'Authorization': `Bearer ${apiKey}`
-        }
+          Authorization: `Bearer ${apiKey}`,
+        },
       });
     }
   }
-  
+
   return response;
 }
 ```

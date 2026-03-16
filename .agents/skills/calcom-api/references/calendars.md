@@ -4,16 +4,16 @@ Detailed documentation for calendar integration endpoints in the Cal.com API v2.
 
 ## Endpoints Overview
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | /v2/calendars | List connected calendars |
-| GET | /v2/calendars/busy-times | Get busy times |
-| GET | /v2/calendars/{calendar}/check | Check calendar connection |
-| POST | /v2/calendars/{calendar}/connect | Connect a calendar |
-| DELETE | /v2/calendars/{calendar}/disconnect | Disconnect a calendar |
-| GET | /v2/calendars/{calendar}/credentials | Get calendar credentials |
-| GET | /v2/destination-calendars | List destination calendars |
-| GET | /v2/selected-calendars | List selected calendars |
+| Method | Endpoint                             | Description                |
+| ------ | ------------------------------------ | -------------------------- |
+| GET    | /v2/calendars                        | List connected calendars   |
+| GET    | /v2/calendars/busy-times             | Get busy times             |
+| GET    | /v2/calendars/{calendar}/check       | Check calendar connection  |
+| POST   | /v2/calendars/{calendar}/connect     | Connect a calendar         |
+| DELETE | /v2/calendars/{calendar}/disconnect  | Disconnect a calendar      |
+| GET    | /v2/calendars/{calendar}/credentials | Get calendar credentials   |
+| GET    | /v2/destination-calendars            | List destination calendars |
+| GET    | /v2/selected-calendars               | List selected calendars    |
 
 ## List Connected Calendars
 
@@ -80,12 +80,12 @@ GET /v2/calendars/busy-times
 
 ### Query Parameters
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| startTime | string | Yes | ISO 8601 start of date range |
-| endTime | string | Yes | ISO 8601 end of date range |
-| loggedInUsersTz | string | No | User's timezone |
-| credentialId | number | No | Specific calendar credential ID |
+| Parameter       | Type   | Required | Description                     |
+| --------------- | ------ | -------- | ------------------------------- |
+| startTime       | string | Yes      | ISO 8601 start of date range    |
+| endTime         | string | Yes      | ISO 8601 end of date range      |
+| loggedInUsersTz | string | No       | User's timezone                 |
+| credentialId    | number | No       | Specific calendar credential ID |
 
 ### Example Request
 
@@ -125,9 +125,9 @@ GET /v2/calendars/{calendar}/check
 
 ### Path Parameters
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| calendar | string | Calendar type (e.g., `google-calendar`, `office365-calendar`) |
+| Parameter | Type   | Description                                                   |
+| --------- | ------ | ------------------------------------------------------------- |
+| calendar  | string | Calendar type (e.g., `google-calendar`, `office365-calendar`) |
 
 ### Connect a Calendar
 
@@ -145,12 +145,12 @@ DELETE /v2/calendars/{calendar}/disconnect
 
 ## Supported Calendar Types
 
-| Type | Slug | Description |
-|------|------|-------------|
-| Google Calendar | google-calendar | Google Workspace calendars |
-| Microsoft 365 | office365-calendar | Outlook/Microsoft 365 calendars |
-| Apple Calendar | apple-calendar | iCloud calendars (CalDAV) |
-| CalDAV | caldav-calendar | Generic CalDAV calendars |
+| Type            | Slug               | Description                     |
+| --------------- | ------------------ | ------------------------------- |
+| Google Calendar | google-calendar    | Google Workspace calendars      |
+| Microsoft 365   | office365-calendar | Outlook/Microsoft 365 calendars |
+| Apple Calendar  | apple-calendar     | iCloud calendars (CalDAV)       |
+| CalDAV          | caldav-calendar    | Generic CalDAV calendars        |
 
 ## Destination Calendars
 

@@ -7,7 +7,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "migrate": "tsx scripts/migrate-to-contentful.ts"
+    "migrate": "tsx scripts/migrate-to-contentful.ts",
+    "lint": "eslint . --ext .js,.ts,.astro",
+    "lint:fix": "eslint . --ext .js,.ts,.astro --fix",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@astrojs/check": "^0.9.6",
@@ -29,9 +32,17 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^20.11.28",
+    "@typescript-eslint/eslint-plugin": "^8.57.0",
+    "@typescript-eslint/parser": "^8.57.0",
     "contentful-management": "^11.69.1",
     "dotenv": "^17.2.4",
+    "eslint": "^10.0.3",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-astro": "^1.6.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.8.1",
     "tsx": "^4.21.0"
   }
 }

@@ -1,6 +1,5 @@
 ---
 import type { ZutraCaseStudy } from "@/types/project-types";
-import { Image } from "astro:assets";
 import LightboxGallery from "@/components/common/LightboxGallery.astro";
 
 interface Props {
@@ -13,11 +12,11 @@ const { project } = Astro.props;
 // Esto nos permite calcular índices globales fácilmente.
 const allImages = [
     {
-        src: project.featuredImage.src,
+        src: project.featuredImage.src.src,
         alt: project.featuredImage.alt || project.title,
     },
     ...(project.gallery || []).map((img) => ({
-        src: img.src,
+        src: img.src.src,
         alt: img.alt || `Galería ${project.title}`,
     })),
 ];
@@ -61,14 +60,14 @@ const remainingImages = hasGallery ? project.gallery.length - 2 : 0;
                     data-index="0"
                     aria-label="Ver imagen principal en pantalla completa"
                 >
-                    <Image
-                        src={project.featuredImage.src}
+                    <img
+                        src={project.featuredImage.src.src}
                         alt={project.featuredImage.alt}
                         width={1400}
                         height={800}
                         class="featured-image"
                         loading="eager"
-                        transition:name={`image-${project.slug}`}
+                        decoding="async"
                     />
 
                     <div class="overlay-hint">
@@ -107,12 +106,14 @@ const remainingImages = hasGallery ? project.gallery.length - 2 : 0;
                                         data-index={globalIndex}
                                         aria-label={`Ver imagen de galería ${globalIndex}`}
                                     >
-                                        <Image
-                                            src={img.src}
+                                        <img
+                                            src={img.src.src}
                                             alt={img.alt || ""}
                                             width={800}
                                             height={600}
                                             class="side-image"
+                                            loading="lazy"
+                                            decoding="async"
                                         />
 
                                         {/* Overlay de "+N fotos" o Icono de Zoom */}

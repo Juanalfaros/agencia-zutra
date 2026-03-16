@@ -27,6 +27,7 @@ export async function getStaticPaths() {
             props: { post, allPosts: blogPosts },
         }));
     } catch (error) {
+        console.error("Error fetching blog posts for static paths:", error);
         console.warn("No blog posts available for static paths generation");
         return [];
     }
@@ -131,12 +132,15 @@ const seoMeta = {
                 >
                     <div class="author-block">
                         <div class="author-avatar-wrapper">
-                            <Image
+                            <img
                                 src={post.author.avatar as any}
                                 alt={post.author.name}
                                 class="author-avatar"
                                 width={64}
                                 height={64}
+                                loading="lazy"
+                                decoding="async"
+                            />
                             />
                         </div>
                         <div class="author-info">
@@ -178,6 +182,10 @@ const seoMeta = {
                         alt={post.title}
                         class="hero-image"
                         transition:name={`image-${post.slug}`}
+                        loading="eager"
+                        width="1200"
+                        height="800"
+                        decoding="async"
                     />
                 </div>
             </div>
@@ -243,12 +251,14 @@ const seoMeta = {
                 }
 
                 <div class="author-bio-card">
-                    <Image
+                    <img
                         src={post.author.avatar as any}
                         alt={post.author.name}
                         class="bio-avatar"
                         width={128}
                         height={128}
+                        loading="lazy"
+                        decoding="async"
                     />
                     <div class="bio-content">
                         <div class="bio-header">

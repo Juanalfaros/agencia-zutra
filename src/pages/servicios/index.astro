@@ -5,7 +5,7 @@ import { adaptService, adaptCategory } from "@/lib/contentful-adapters";
 import type { Service, ServiceCategory } from "@/types/service-types";
 
 // Check for preview cookie
-const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+const isPreview = import.meta.env.DEV && Astro.cookies.get("contentful_preview")?.value === "true";
 
 // Fetch categories from Contentful
 const categoryEntries = await getEntries(
