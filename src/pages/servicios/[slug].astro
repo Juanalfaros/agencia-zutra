@@ -1,8 +1,10 @@
 ---
 import Layout from "@/layouts/Layout.astro";
 import { getEntries } from "@/lib/contentful";
-import { adaptService } from "@/lib/contentful-adapters";
+import { adaptService, adaptCategory } from "@/lib/contentful-adapters";
 import type { Service } from "@/types/service-types";
+import BreadcrumbSchema from "@/components/common/BreadcrumbSchema.astro";
+import { isPreviewEnabled } from "@/lib/contentful";
 
 export async function getStaticPaths() {
     const entries = await getEntries("service", { include: 2 });
@@ -15,8 +17,7 @@ export async function getStaticPaths() {
     });
 }
 
-import { adaptCategory } from "@/lib/contentful-adapters";
-const isPreview = import.meta.env.DEV && Astro.cookies.get("contentful_preview")?.value === "true";
+const isPreview = isPreviewEnabled(Astro);
 const categoryEntries = await getEntries("category", {}, isPreview);
 const categories = categoryEntries.items.map(adaptCategory);
 
@@ -45,6 +46,13 @@ const categoryLabel =
             }]
         });
     </script>
+    <BreadcrumbSchema 
+        items={[
+            { name: "Inicio", item: Astro.site?.toString() || "/" },
+            { name: "Servicios", item: new URL("/servicios", Astro.url).toString() },
+            { name: service.title, item: Astro.url.toString() }
+        ]} 
+    />
     <main class="page-services-detail">
         {/* --- HERO SECTION: Impacto Visual Puro --- */}
         <section class="service-hero">
@@ -160,7 +168,7 @@ const categoryLabel =
 
                                     <div class="cta-wrapper">
                                         <a
-                                            href="#contacto"
+                                            href="/#contacto"
                                             class="button button--primary button--full"
                                         >
                                             Solicitar Cotización <i

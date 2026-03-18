@@ -6,7 +6,7 @@ import BreadcrumbSchema from "@/components/common/BreadcrumbSchema.astro";
 import { Image } from "astro:assets";
 export const prerender = true; // Still prerender for production
 
-import { getEntries, getEntriesByField } from "@/lib/contentful";
+import { getEntries, getEntriesByField, isPreviewEnabled } from "@/lib/contentful";
 import { adaptBlogPost, adaptCategory } from "@/lib/contentful-adapters";
 import type { Post } from "@/types/blog-types";
 
@@ -34,7 +34,7 @@ export async function getStaticPaths() {
     }
 }
 
-const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+const isPreview = isPreviewEnabled(Astro);
 let { post, allPosts } = Astro.props;
 
 // If we are in preview mode but don't have props (dynamic request)

@@ -7,7 +7,7 @@ import CaseChallenge from "../../components/portfolio/CaseChallenge.astro";
 import CaseExecution from "../../components/portfolio/CaseExecution.astro";
 import CaseFeatures from "../../components/portfolio/CaseFeatures.astro";
 import NextProjectNav from "../../components/portfolio/NextProjectNav.astro";
-import { getEntries, getEntriesByField } from "@/lib/contentful";
+import { getEntries, getEntriesByField, isPreviewEnabled } from "@/lib/contentful";
 import { adaptPortfolioCase } from "@/lib/contentful-adapters";
 import type { ZutraCaseStudy } from "@/types/project-types";
 
@@ -34,9 +34,7 @@ export async function getStaticPaths() {
     }
 }
 
-const isPreview =
-    import.meta.env.DEV &&
-    Astro.cookies.get("contentful_preview")?.value === "true";
+const isPreview = isPreviewEnabled(Astro);
 let { project, allProjects } = Astro.props as {
     project: ZutraCaseStudy;
     allProjects: ZutraCaseStudy[];

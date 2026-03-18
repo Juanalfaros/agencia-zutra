@@ -29,15 +29,39 @@ function readEnv(key: string, locals?: any): string {
 }
 
 export const isPreviewEnabled = (locals?: any) => {
-  // Safe header check to avoid Astro warnings during prerendering
+  // 1. Always trust the Environment Variable (Build-time override)
+  if (import.meta.env.CONTENTFUL_USE_PREVIEW === 'true') return true;
+
+  // 2. In the browser, we can safely check cookies/searchParams
+  if (typeof document !== 'undefined') {
+    return document.cookie.includes('contentful_preview=true') || 
+           window.location.search.includes('preview=true') ||
+           window.location.pathname.startsWith('/preview/');
+  }
+
+  // 3. Server-side (during build or SSR)
   let hasPreviewCookie = false;
-  
-  // Only attempt to access headers if we are in DEV or if they are explicitly provided
-  // In production builds, we avoid touching headers in static pages.
-  if (locals?.request?.headers) {
+  let isPreviewPath = false;
+
+  // Safe check via Astro.url (doesn't trigger headers warning)
+  if (locals?.url) {
     try {
-      // In some environments, accessing .get() might still warn, but we've seen 
-      // it's mainly the property access on the request proxy that warns.
+      const url = typeof locals.url === 'string' ? new URL(locals.url) : locals.url;
+      isPreviewPath = 
+        url.pathname.startsWith('/preview/') || 
+        url.searchParams.get('preview') === 'true';
+    } catch (e) {
+      isPreviewPath = false;
+    }
+  }
+
+  // Header/Cookie check: ONLY if we are in a dynamic runtime context (SSR)
+  // Accessing headers/cookies on static pages triggers [WARN] in Astro.
+  // We check for locals.runtime (Cloudflare) or locals.locals.runtime.
+  const isDynamicRuntime = !!(locals?.runtime || locals?.locals?.runtime);
+
+  if (isDynamicRuntime && locals?.request?.headers) {
+    try {
       const cookieHeader = locals.request.headers.get('cookie') || '';
       hasPreviewCookie = cookieHeader.includes('contentful_preview=true');
     } catch (e) {
@@ -45,22 +69,10 @@ export const isPreviewEnabled = (locals?: any) => {
     }
   }
 
-  // Also trust the URL path if we are in a /preview/ route
-  let isPreviewPath = false;
-  try {
-    if (locals?.request?.url) {
-      const url = new URL(locals.request.url);
-      isPreviewPath = url.pathname.startsWith('/preview/');
-    }
-  } catch (e) {
-    isPreviewPath = false;
-  }
+  // In DEV mode, we might want to be more lenient, but Astro still warns.
+  // So we stick to URL and Env vars for static pages.
 
-  return (
-    import.meta.env.CONTENTFUL_USE_PREVIEW === 'true' ||
-    hasPreviewCookie ||
-    isPreviewPath
-  );
+  return isPreviewPath || hasPreviewCookie;
 };
 
 // Delivery Client (Published content) - Lazy initialization

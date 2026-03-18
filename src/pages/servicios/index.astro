@@ -1,11 +1,11 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { getEntries } from "@/lib/contentful";
+import { getEntries, isPreviewEnabled } from "@/lib/contentful";
 import { adaptService, adaptCategory } from "@/lib/contentful-adapters";
 import type { Service, ServiceCategory } from "@/types/service-types";
 
 // Check for preview cookie
-const isPreview = import.meta.env.DEV && Astro.cookies.get("contentful_preview")?.value === "true";
+const isPreview = isPreviewEnabled(Astro);
 
 // Fetch categories from Contentful
 const categoryEntries = await getEntries(
@@ -109,7 +109,7 @@ const servicesByCategory = categories
 
                             <div class="sidebar-cta">
                                 <p>¿Dudas?</p>
-                                <a href="#contacto" class="link-simple">
+                                <a href="/#contacto" class="link-simple">
                                     Hablemos{" "}
                                     <i class="ph-bold ph-arrow-right" />
                                 </a>
