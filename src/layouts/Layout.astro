@@ -72,6 +72,11 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
+    {/* Favicons estáticos para SEO y Redes (Google prefiere PNG/ICO) */}
+    <link rel="icon" type="image/png" href="/apple-touch-icon.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/pwa-192x192.png" sizes="192x192" />
+    
+    {/* Favicon dinámico para usuarios con JS habilitado */}
     <link
       rel="icon"
       id="dynamic-favicon"
