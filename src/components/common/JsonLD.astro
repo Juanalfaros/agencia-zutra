@@ -1,5 +1,10 @@
 ---
 // src/components/landing/JsonLD.astro
+interface Props {
+  showFAQ?: boolean;
+}
+
+const { showFAQ = false } = Astro.props;
 ---
 <script type="application/ld+json" is:inline>
   {
@@ -21,6 +26,7 @@
     "sameAs": []
   }
 </script>
+{showFAQ && (
 <script type="application/ld+json" is:inline>
   {
     "@context": "https://schema.org",
@@ -61,3 +67,4 @@
     ]
   }
 </script>
+)}

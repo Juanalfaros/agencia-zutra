@@ -1,6 +1,7 @@
 ---
 import { getEntries } from "@/lib/contentful";
 import { adaptHeroSlide } from "@/lib/contentful-adapters";
+import { Image } from "astro:assets";
 
 // Fetch hero slides from Contentful
 const entries = await getEntries("heroSlide", {
@@ -46,12 +47,12 @@ const heroSlides = entries.items.map(adaptHeroSlide);
                     />
                   </svg>
                   <div class="hero-carousel__image-wrapper">
-                    <img
+                    <Image
                       src={slide.image}
                       alt={slide.imageAlt}
                       class="hero-carousel__photo"
-                      width="600"
-                      height="600"
+                      width={600}
+                      height={600}
                       loading={index === 0 ? "eager" : "lazy"}
                       decoding={index === 0 ? "auto" : "async"}
                       fetchpriority={index === 0 ? "high" : "auto"}

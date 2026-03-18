@@ -8,6 +8,7 @@ interface Props {
   showHeader?: boolean;
   showFooter?: boolean;
   showCTA?: boolean;
+  showFAQ?: boolean;
 }
 
 import SEO from "@/components/common/SEO.astro";
@@ -36,7 +37,8 @@ const {
   keywords,
   showHeader = true,
   showFooter = true,
-  showCTA = true
+  showCTA = true,
+  showFAQ = false
 } = Astro.props;
 
 const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
@@ -52,7 +54,7 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
       type={type} 
       keywords={keywords} 
     />
-    <JsonLD />
+    <JsonLD showFAQ={showFAQ} />
     <ClientRouter />
     
     {/* Google Tag Manager - Script Injection */}
@@ -76,6 +78,8 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
       href="/favicon.svg"
       type="image/svg+xml"
     />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <script is:inline>
       // 1. Lógica de Tema (Modo Oscuro/Claro)
       const themeManager = {

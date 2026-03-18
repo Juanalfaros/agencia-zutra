@@ -1,6 +1,7 @@
 ---
 export const prerender = true;
 import Layout from "../../layouts/Layout.astro";
+import BreadcrumbSchema from "../../components/common/BreadcrumbSchema.astro";
 import CaseHero from "../../components/portfolio/CaseHero.astro";
 import CaseChallenge from "../../components/portfolio/CaseChallenge.astro";
 import CaseExecution from "../../components/portfolio/CaseExecution.astro";
@@ -81,6 +82,13 @@ const trackingData = {
     description={project.description}
     image={project.featuredImage.src.src}
 >
+    <BreadcrumbSchema 
+        items={[
+            { name: "Inicio", item: Astro.site?.toString() || "/" },
+            { name: "Portfolio", item: new URL("/portfolio", Astro.url).toString() },
+            { name: project.title, item: Astro.url.toString() }
+        ]} 
+    />
     <script define:vars={{ trackingData }}>
         // Trigger view_item event for GA4
         window.dataLayer = window.dataLayer || [];

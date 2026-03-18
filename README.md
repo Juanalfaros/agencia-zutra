@@ -19,8 +19,8 @@ Zutra es una agencia de **Growth Marketing & Tecnología** con base en Chile. Es
 ├── public/              # Assets estáticos, manifest, robots.txt, llms.txt
 ├── src/
 │   ├── components/
-│   │   ├── common/      # Header, Footer, SEO, WhatsAppBot, WhatsAppButton, StickyCTA
-│   │   └── sections/    # Hero, Servicios, Casos, Testimonios, Contacto
+│   │   ├── common/      # Header, Footer, SEO, WhatsAppBot, JsonLD, BreadcrumbSchema
+│   │   └── sections/    # Hero, Servicios, Casos, Testimonios, Contacto, Faqs
 │   ├── data/            # Contenido centralizado del bot y constantes
 │   ├── layouts/         # Layout.astro (Master Layout con GTM y SEO)
 │   ├── lib/             # Cliente Contentful, Brevo API logic y adaptadores
@@ -95,9 +95,11 @@ Sistema de vista previa en tiempo real para contenido borrador que funciona en p
 
 ## 🌐 SEO & Indexación
 
-- **Robots.txt**: Configurado con el dominio principal `zutra.agency`.
-- **JsonLD**: Datos estructurados centralizados en el Layout.
+- **Robots.txt**: Configurado con el dominio principal `zutra.agency` y sitemap sincronizado.
+- **JsonLD**: Datos estructurados modulares (Organization, FAQPage condicional, BreadcrumbList).
 - **Sitemap**: Generación automática de `sitemap-index.xml` en cada build.
+- **Asset Optimization**: Uso masivo de Astro `<Image />` para optimización automática de formatos (WebP/AVIF) y redimensionamiento dinámico.
+- **PWA Ready**: Soporte nativo para iOS y Android con iconos generados a medida y `manifest.webmanifest`.
 
 ---
 

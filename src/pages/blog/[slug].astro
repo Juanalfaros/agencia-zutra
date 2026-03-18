@@ -2,6 +2,7 @@
 // src/pages/blog/[slug].astro
 import Layout from "@/layouts/Layout.astro";
 import BlogCard from "@/components/blog/BlogCard.astro";
+import BreadcrumbSchema from "@/components/common/BreadcrumbSchema.astro";
 import { Image } from "astro:assets";
 export const prerender = true; // Still prerender for production
 
@@ -118,6 +119,13 @@ const seoMeta = {
         )
     }
     <div id="reading-progress" class="reading-progress"></div>
+    <BreadcrumbSchema 
+        items={[
+            { name: "Inicio", item: Astro.site?.toString() || "/" },
+            { name: "Blog", item: new URL("/blog", Astro.url).toString() },
+            { name: post.title, item: Astro.url.toString() }
+        ]} 
+    />
 
     <article class="post-detail" data-contentful-entry-id={post.internal?.entryId}>
         <header class="post-header">
@@ -190,14 +198,14 @@ const seoMeta = {
         <div class="post-hero animate-fade-up" style="animation-delay: 0.3s;">
             <div class="container">
                 <div class="hero-wrapper">
-                    <img
+                    <Image
                         src={post.image}
                         alt={post.title}
                         class="hero-image"
                         transition:name={`image-${post.slug}`}
                         loading="eager"
-                        width="1200"
-                        height="800"
+                        width={1200}
+                        height={800}
                         decoding="async"
                     />
                 </div>
