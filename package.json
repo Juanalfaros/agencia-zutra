@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && cp -r dist/server/* dist/client/ && rm -f dist/client/wrangler.json && mv dist/client/entry.mjs dist/client/_worker.js",
     "preview": "astro preview",
     "astro": "astro",
     "migrate": "tsx scripts/migrate-to-contentful.ts",

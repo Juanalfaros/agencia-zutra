@@ -33,12 +33,12 @@ export default defineConfig({
       },
     ],
   },
-  output: 'static',
+  output: 'server',
   devToolbar: {
     enabled: false,
   },
   adapter: cloudflare({
-    imageService: 'none', // Desactiva completamente el binding de imágenes para evitar conflicto con 'ASSETS'
+    imageService: 'passthrough',
     prerenderEnvironment: 'node',
   }),
   vite: {
