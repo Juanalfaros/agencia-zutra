@@ -38,9 +38,8 @@ export default defineConfig({
     enabled: false,
   },
   adapter: cloudflare({
-    imageService: 'passthrough', // Evita el binding automático de 'IMAGES' si no está configurado
+    imageService: 'passthrough', // Previene el uso de 'IMAGES' o configuraciones automáticas de imagen
     prerenderEnvironment: 'node',
-    sessionKVBindingName: '', // Desactiva el binding automático de 'SESSION' que fallaba por falta de ID
   }),
   vite: {
     optimizeDeps: {
