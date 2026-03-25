@@ -38,7 +38,7 @@ export default defineConfig({
     enabled: false,
   },
   adapter: cloudflare({
-    imageService: 'passthrough', // Previene el uso de 'IMAGES' o configuraciones automáticas de imagen
+    imageService: 'none', // Desactiva completamente el binding de imágenes para evitar conflicto con 'ASSETS'
     prerenderEnvironment: 'node',
   }),
   vite: {
