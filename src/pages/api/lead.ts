@@ -12,7 +12,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
   }
 
   try {
-    const data = await request.json();
+    const data = (await request.json()) as {
+      name: string;
+      email: string;
+      service: string;
+      urgency: string;
+    };
     const { name, email, service, urgency } = data;
 
     // Sanitizar inputs
@@ -41,10 +46,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    // --- GESTIÓN DE VARIABLES DE ENTORNO (Priorizar Cloudflare Runtime) ---
-    const runtimeEnv = (locals as any)?.runtime?.env || {};
+    // --- GESTIÓN DE VARIABLES DE ENTORNO (Astro 6 / Cloudflare v13) ---
+    const runtimeEnv = (locals?.runtime as any)?.env || {};
     const getEnv = (key: string) =>
-      runtimeEnv[key] || import.meta.env[key] || '';
+      runtimeEnv[key] || (import.meta.env as any)[key] || (process.env as any)[key] || '';
 
     const BREVO_API_KEY = getEnv('BREVO_API_KEY').trim();
     // Lista opcional específica para leads del bot de WhatsApp

@@ -122,21 +122,40 @@
 </div>
 
 <script is:inline>
+    // --- CONFIGURACIÓN DE PRIVACIDAD ---
+    // Cambiar a 'true' cuando la ley exija obligatoriamente mostrar el banner.
+    // Al estar en 'false', se otorgan permisos completos por defecto y el banner no aparece.
+    const REQUIRE_CONSENT = false;
+    // -----------------------------------
+
     window.dataLayer = window.dataLayer || [];
     function gtag() {
         window.dataLayer.push(arguments);
     }
 
-    // Default denied
-    gtag("consent", "default", {
-        ad_storage: "denied",
-        ad_user_data: "denied",
-        ad_personalization: "denied",
-        analytics_storage: "denied",
-        wait_for_update: 500,
-    });
+    if (REQUIRE_CONSENT) {
+        // Default denied
+        gtag("consent", "default", {
+            ad_storage: "denied",
+            ad_user_data: "denied",
+            ad_personalization: "denied",
+            analytics_storage: "denied",
+            wait_for_update: 500,
+        });
+    } else {
+        // Default granted (medición completa por defecto)
+        gtag("consent", "default", {
+            ad_storage: "granted",
+            ad_user_data: "granted",
+            ad_personalization: "granted",
+            analytics_storage: "granted",
+            wait_for_update: 500,
+        });
+    }
 
     document.addEventListener("DOMContentLoaded", () => {
+        if (!REQUIRE_CONSENT) return; // Romper ejecución si no es necesario mostrar el banner
+
         const banner = document.getElementById("cookie-consent-banner");
         const modal = document.getElementById("cookie-settings-modal");
 

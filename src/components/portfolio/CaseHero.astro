@@ -63,8 +63,6 @@ const remainingImages = hasGallery ? project.gallery.length - 2 : 0;
                     <img
                         src={project.featuredImage.src.src}
                         alt={project.featuredImage.alt}
-                        width={1400}
-                        height={800}
                         class="featured-image"
                         loading="eager"
                         decoding="async"
@@ -109,8 +107,6 @@ const remainingImages = hasGallery ? project.gallery.length - 2 : 0;
                                         <img
                                             src={img.src.src}
                                             alt={img.alt || ""}
-                                            width={800}
-                                            height={600}
                                             class="side-image"
                                             loading="lazy"
                                             decoding="async"

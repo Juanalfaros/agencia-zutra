@@ -8,15 +8,13 @@
 import { createClient, type EntrySkeletonType } from 'contentful';
 import type { Entry, Asset, EntryCollection } from 'contentful';
 
-function readEnv(key: string, locals?: any): string {
-  // 1. Try locals.runtime.env (For Cloudflare Pages/Workers runtime)
-  // Check if locals is the Astro object or the locals object itself
-  const envSource = locals?.locals?.runtime?.env || locals?.runtime?.env;
-  const fromRuntime = envSource?.[key];
-  if (typeof fromRuntime === 'string' && fromRuntime.length > 0)
-    return fromRuntime;
+function readEnv(key: string, _locals?: any): string {
+  // 1. Try import.meta.env (Astro/Vite - inlined at build time)
+  const fromImportMeta = (import.meta.env as any)[key];
+  if (typeof fromImportMeta === 'string' && fromImportMeta.length > 0)
+    return fromImportMeta;
 
-  // 2. Try process.env (Reliable in SSG/Build)
+  // 2. Try process.env (Node.js/Build)
   const fromProcess =
     (typeof globalThis !== 'undefined' &&
       (globalThis as any).process?.env?.[key]) ||
@@ -24,8 +22,7 @@ function readEnv(key: string, locals?: any): string {
   if (typeof fromProcess === 'string' && fromProcess.length > 0)
     return fromProcess;
 
-  // 3. Fallback to import.meta.env (Astro/Vite)
-  return (import.meta.env[key] as string) || '';
+  return '';
 }
 
 export const isPreviewEnabled = (locals?: any) => {
@@ -57,8 +54,8 @@ export const isPreviewEnabled = (locals?: any) => {
 
   // Header/Cookie check: ONLY if we are in a dynamic runtime context (SSR)
   // Accessing headers/cookies on static pages triggers [WARN] in Astro.
-  // We check for locals.runtime (Cloudflare) or locals.locals.runtime.
-  const isDynamicRuntime = !!(locals?.runtime || locals?.locals?.runtime);
+  // In Astro 6 / Cloudflare v13, we check for request.headers directly.
+  const isDynamicRuntime = !!locals?.request?.headers;
 
   if (isDynamicRuntime && locals?.request?.headers) {
     try {

@@ -12,7 +12,9 @@ export const GET: APIRoute = async ({ request, redirect, cookies, locals }) => {
   const locale = params.get('locale') || 'es-ES'; // Default to es-ES
 
   // Simple security check
-  const PREVIEW_SECRET = import.meta.env.CONTENTFUL_PREVIEW_SECRET;
+  const runtimeEnv = (locals?.runtime as any)?.env || {};
+  const PREVIEW_SECRET = runtimeEnv.CONTENTFUL_PREVIEW_SECRET || import.meta.env.CONTENTFUL_PREVIEW_SECRET;
+  
   if (!PREVIEW_SECRET || secret !== PREVIEW_SECRET) {
     return new Response('Invalid secret', { status: 401 });
   }

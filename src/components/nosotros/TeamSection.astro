@@ -22,11 +22,9 @@ import { Image } from "astro:assets";
                             <div class="team-card__image">
                                 <div class="team-card__image-bg" aria-hidden="true"></div>
                                 <div class="team-card__image-inner">
-                                    <Image
-                                        src={founder.image}
+                                    <img
+                                        src={founder.image.src}
                                         alt={founder.name}
-                                        width={420}
-                                        height={520}
                                         class="team-img"
                                     />
                                 </div>

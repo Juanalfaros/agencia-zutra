@@ -34,14 +34,27 @@ export default defineConfig({
     ],
   },
   output: 'static',
+  devToolbar: {
+    enabled: false,
+  },
   adapter: cloudflare({
-    imageService: 'compile',
+    imageService: 'cloudflare-binding',
+    prerenderEnvironment: 'node',
   }),
   vite: {
+    optimizeDeps: {
+      include: ['astro-icon/components', '@contentful/live-preview', 'astro/virtual-modules/transitions.js'],
+      exclude: ['astro', '@astrojs/toolbar'],
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
+        'debug': path.resolve(__dirname, './src/lib/mock-debug.js'),
       },
+    },
+    ssr: {
+      external: ['node:fs', 'node:path', 'node:util', 'node:events', 'node:stream', 'node:string_decoder', 'node:buffer', 'node:url'],
+      noExternal: ['debug', 'contentful', 'axios'],
     },
   },
 });

@@ -1,6 +1,5 @@
 ---
 // src/pages/preview/blog/[slug].astro
-import Layout from "@/layouts/Layout.astro";
 import BlogPage from "@/pages/blog/[slug].astro";
 import { getEntries, getEntriesByField } from "@/lib/contentful";
 import { adaptBlogPost } from "@/lib/contentful-adapters";
@@ -8,7 +7,6 @@ import { adaptBlogPost } from "@/lib/contentful-adapters";
 export const prerender = false;
 
 const { slug } = Astro.params;
-const locale = Astro.url.searchParams.get("locale") || "es-ES";
 
 // Fetch the draft content explicitly
 const entries = await getEntriesByField("blogPost", "slug", slug!, true, Astro.locals);

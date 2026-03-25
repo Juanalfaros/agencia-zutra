@@ -20,3 +20,14 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+declare namespace App {
+  interface Locals extends Record<string, any> {
+    runtime: {
+      env: ImportMetaEnv;
+      cfContext: {
+        waitUntil: (promise: Promise<any>) => void;
+      };
+    };
+  }
+}

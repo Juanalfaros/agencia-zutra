@@ -9,21 +9,37 @@ const { showFAQ = false } = Astro.props;
 <script type="application/ld+json" is:inline>
   {
     "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Zutra",
-    "url": "https://www.zutra.cl/",
-    "logo": "https://www.zutra.cl/og-image.jpg",
+    "@type": "ProfessionalService",
+    "name": "Zutra Agency",
+    "alternateName": "Agencia Zutra",
+    "brand": {
+      "@type": "Brand",
+      "name": "Zutra"
+    },
+    "description": "Zutra Agency es una firma de diseño y tecnología basada en Chile, especializada en marketing digital, desarrollo web de alto rendimiento y branding estratégico para negocios que buscan escalar con activos digitales sólidos.",
+    "url": "https://zutra.agency/",
+    "logo": "https://zutra.agency/og-image.jpg",
+    "priceRange": "$$",
     "founders": [
       { "@type": "Person", "name": "Camilo Bustamante" },
       { "@type": "Person", "name": "Juan Alfaro" }
     ],
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": "Puente Alto",
+      "addressLocality": "Santiago",
       "addressRegion": "RM",
       "addressCountry": "CL"
     },
-    "sameAs": []
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -33.4489,
+      "longitude": -70.6693
+    },
+    "sameAs": [
+      "https://www.instagram.com/tuagenciazutra/",
+      "https://www.tiktok.com/@tuagenciazutra",
+      "https://www.linkedin.com/company/agenciazutra"
+    ]
   }
 </script>
 {showFAQ && (
