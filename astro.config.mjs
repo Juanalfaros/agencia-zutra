@@ -39,6 +39,7 @@ export default defineConfig({
   },
   adapter: cloudflare({
     imageService: 'passthrough',
+    sessionKVBindingName: undefined,
     prerenderEnvironment: 'node',
   }),
   vite: {
