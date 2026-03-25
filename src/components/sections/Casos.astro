@@ -3,7 +3,7 @@ import { getEntries } from "@/lib/contentful";
 import { adaptPortfolioCase } from "@/lib/contentful-adapters";
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
-import { getTechIcon } from "../../data/techIcons";
+import { getTechIcon, isSimpleIcon, getSimpleIconUrl } from "../../data/techIcons";
 import type { ZutraCaseStudy } from "@/types/project-types";
 
 // Check for preview cookie
@@ -68,10 +68,19 @@ const sortedCases = entries.items.map(adaptPortfolioCase);
 									.slice(0, 3)
 									.map((tag: string) => (
 										<span class="tech-tag">
-											<Icon
-												name={getTechIcon(tag)}
-												class="tech-tag-icon"
-											/>
+											{isSimpleIcon(getTechIcon(tag)) ? (
+												<img 
+													src={getSimpleIconUrl(getTechIcon(tag))} 
+													alt="" 
+													class="tech-tag-icon"
+													style="width: 14px; height: 14px; filter: brightness(0) saturate(100%) invert(47%) sepia(90%) saturate(1637%) hue-rotate(185deg) brightness(98%) contrast(101%);"
+												/>
+											) : (
+												<Icon
+													name={getTechIcon(tag)}
+													class="tech-tag-icon"
+												/>
+											)}
 											{tag}
 										</span>
 									))}

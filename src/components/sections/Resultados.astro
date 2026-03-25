@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
-import { getTechIcon } from "../../data/techIcons";
+import { getTechIcon, isSimpleIcon, getSimpleIconUrl } from "../../data/techIcons";
 import { getEntries } from "@/lib/contentful";
 import { adaptPortfolioCase } from "@/lib/contentful-adapters";
 import type { ZutraCaseStudy } from "@/types/project-types";
@@ -71,12 +71,24 @@ const selectedProjects = entries.items.map(adaptPortfolioCase);
 
               <div class="project-tags">
                 {/* Mostramos el Tech Stack o Servicios como tags (max 3) */}
-                {project.techStack.slice(0, 3).map((tag: string) => (
-                  <span class="tag">
-                    <Icon name={getTechIcon(tag)} class="tag-icon" />
-                    {tag}
-                  </span>
-                ))}
+                {project.techStack.slice(0, 3).map((tag: string) => {
+                  const iconName = getTechIcon(tag);
+                  return (
+                    <span class="tag">
+                      {isSimpleIcon(iconName) ? (
+                        <img 
+                          src={getSimpleIconUrl(iconName, 'currentColor')} 
+                          alt="" 
+                          class="tag-icon"
+                          style="width: 14px; height: 14px; filter: brightness(0) saturate(100%) invert(47%) sepia(90%) saturate(1637%) hue-rotate(185deg) brightness(98%) contrast(101%);"
+                        />
+                      ) : (
+                        <Icon name={iconName} class="tag-icon" />
+                      )}
+                      {tag}
+                    </span>
+                  );
+                })}
               </div>
             </div>
           </a>

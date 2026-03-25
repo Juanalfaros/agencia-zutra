@@ -15,7 +15,16 @@ export default defineConfig({
   integrations: [
     icon({
       include: {
-        phosphor: ['ph-lightning', 'ph-lightning-fill'],
+        ph: [
+          'lightning',
+          'lightning-fill',
+          'swatches-duotone',
+          'credit-card-duotone',
+          'trend-up-duotone',
+          'plus-circle-duotone',
+          'check-circle-duotone',
+          'crown-duotone',
+        ],
       },
     }),
     sitemap(),
