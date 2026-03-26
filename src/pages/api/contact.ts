@@ -49,10 +49,11 @@ export const POST = async ({
       );
     }
 
-    // --- GESTIÓN DE VARIABLES DE ENTORNO (Priorizar Cloudflare Runtime) ---
-    const runtimeEnv = (locals as any)?.runtime?.env || {};
+    // --- GESTIÓN DE VARIABLES DE ENTORNO (Astro 6 / Cloudflare v13) ---
+    // En Cloudflare Pages, las variables de entorno están en locals.runtime.env
+    const runtimeEnv = (locals?.runtime as any)?.env || {};
     const getEnv = (key: string) =>
-      runtimeEnv[key] || import.meta.env[key] || '';
+      runtimeEnv[key] || (import.meta.env as any)[key] || (process.env as any)[key] || '';
 
     const TURNSTILE_SECRET_KEY = getEnv('TURNSTILE_SECRET_KEY');
     const BREVO_API_KEY = getEnv('BREVO_API_KEY').trim();
@@ -97,7 +98,10 @@ export const POST = async ({
       }
     );
 
-    const verifyData = await verifyResponse.json();
+    const verifyData = (await verifyResponse.json()) as {
+      success: boolean;
+      'error-codes'?: string[];
+    };
 
     if (!verifyData.success) {
       return new Response(

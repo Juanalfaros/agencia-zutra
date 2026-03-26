@@ -38,6 +38,7 @@ export const founders: Founder[] = [
 export interface ValueChip {
   icon: string;
   text: string;
+  primary?: boolean;
 }
 
 export const chips: ValueChip[] = [

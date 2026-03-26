@@ -1,7 +1,7 @@
 ---
 import type { ZutraCaseStudy, ProjectPhase } from "@/types/project-types";
 import { Icon } from "astro-icon/components";
-import { getTechIcon } from "../../data/techIcons";
+import { getTechIcon, isSimpleIcon, getSimpleIconUrl } from "../../data/techIcons";
 
 interface Props {
     project: ZutraCaseStudy;
@@ -67,10 +67,19 @@ const { project } = Astro.props;
                                         data-tooltip={tech}
                                         aria-label={tech}
                                     >
-                                        <Icon
-                                            name={getTechIcon(tech)}
-                                            class="tech-icon"
-                                        />
+                                        {isSimpleIcon(getTechIcon(tech)) ? (
+                                            <img 
+                                                src={getSimpleIconUrl(getTechIcon(tech))} 
+                                                alt="" 
+                                                class="tech-icon"
+                                                style="width: 24px; height: 24px; filter: brightness(0) saturate(100%) invert(47%) sepia(90%) saturate(1637%) hue-rotate(185deg) brightness(98%) contrast(101%);"
+                                            />
+                                        ) : (
+                                            <Icon
+                                                name={getTechIcon(tech)}
+                                                class="tech-icon"
+                                            />
+                                        )}
                                     </div>
                                 ))}
                             </div>

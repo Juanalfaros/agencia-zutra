@@ -1,6 +1,7 @@
 ---
 import { stackAbout, getStackIcon } from "../../data/stackAbout";
 import { Icon } from "astro-icon/components";
+import { isSimpleIcon, getSimpleIconUrl } from "../../data/techIcons";
 
 const stackItems = stackAbout;
 ---
@@ -19,11 +20,24 @@ const stackItems = stackAbout;
             <div class="stack-marquee__mask">
                 <div class="stack-marquee__track">
                     {
-                        [...stackItems, ...stackItems].map((tech) => (
-                            <button class="stack-pill" type="button" data-tooltip={tech} aria-label={tech}>
-                                <Icon name={getStackIcon(tech)} />
-                            </button>
-                        ))
+                        [...stackItems, ...stackItems].map((tech) => {
+                            const iconName = getStackIcon(tech);
+                            return (
+                                <button class="stack-pill" type="button" data-tooltip={tech} aria-label={tech}>
+                                    {isSimpleIcon(iconName) ? (
+                                        <img 
+                                            src={getSimpleIconUrl(iconName)} 
+                                            alt="" 
+                                            width="24" 
+                                            height="24"
+                                            loading="lazy"
+                                        />
+                                    ) : (
+                                        <Icon name={iconName} />
+                                    )}
+                                </button>
+                            );
+                        })
                     }
                 </div>
             </div>

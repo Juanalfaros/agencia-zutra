@@ -142,6 +142,9 @@ import { socialMedia } from "../../data/socialmedia";
                   <option value="Mantenimiento Digital"
                     >Mantenimiento Digital</option
                   >
+                  <option value="Sprint de Leads">Sprint de Leads</option>
+                  <option value="Partner Digital">Partner Digital</option>
+                  <option value="Email Revenue">Email Revenue</option>
                   <option value="Consultoría / Otro">Consultoría / Otro</option>
                 </select>
               </div>
@@ -226,16 +229,90 @@ import { socialMedia } from "../../data/socialmedia";
     }
   }
 
+  /**
+   * Selects a plan in the form and pre-fills the message.
+   */
+  function selectPlan(planId: string | null) {
+    if (!planId) return;
+
+    const serviceSelect = document.getElementById("service") as HTMLSelectElement;
+    const messageTextarea = document.getElementById("message") as HTMLTextAreaElement;
+
+    if (!serviceSelect || !messageTextarea) return;
+
+    const planMap: Record<string, { service: string; message: string }> = {
+      sprint: {
+        service: "Sprint de Leads",
+        message: "Hola Zutra, me interesa agendar un Sprint de Leads para inyectar ventas en mi proyecto/negocio.",
+      },
+      partner: {
+        service: "Partner Digital",
+        message: "Hola Zutra, busco asegurar mi cupo como Partner Digital. ¿Me cuentan sobre la bolsa de horas y disponibilidad?",
+      },
+      email: {
+        service: "Email Revenue",
+        message: "Hola Zutra, quiero activar el canal de Email Revenue para fidelizar clientes y aumentar el ROI.",
+      },
+    };
+
+    const selectedPlan = planMap[planId];
+    if (selectedPlan) {
+      serviceSelect.value = selectedPlan.service;
+      messageTextarea.value = selectedPlan.message;
+      
+      // Visual feedback: brief highlight
+      const wrapper = serviceSelect.closest('.form-wrapper');
+      if (wrapper) {
+        wrapper.classList.add('flash-highlight');
+        setTimeout(() => wrapper.classList.remove('flash-highlight'), 1000);
+      }
+    }
+  }
+
+  /**
+   * Detects plan selection from URL hash OR search params
+   */
+  function syncPlanFromURL() {
+    // 1. Check search params (e.g., ?plan=sprint)
+    const urlParams = new URLSearchParams(window.location.search);
+    let planId = urlParams.get('plan');
+
+    // 2. Check hash (legacy support or direct link, e.g., #contacto?plan=sprint)
+    const hash = window.location.hash;
+    if (!planId && hash && hash.includes("?plan=")) {
+      planId = hash.split("?plan=")[1];
+    }
+
+    if (planId) {
+      selectPlan(planId);
+    }
+  }
+
+  // Intercept clicks on plan buttons to sync before scrolling
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const planBtn = target.closest('[data-plan]');
+    if (planBtn) {
+      const planId = (planBtn as HTMLElement).dataset.plan;
+      if (planId) selectPlan(planId);
+    }
+  });
+
   const form = document.getElementById("contact-form") as HTMLFormElement;
   const statusMsg = document.getElementById("form-status");
 
   // Lifecycle initialization
-  document.addEventListener("astro:page-load", initTurnstile);
+  document.addEventListener("astro:page-load", () => {
+    initTurnstile();
+    syncPlanFromURL();
+  });
+
   if (
     document.readyState !== "loading" &&
     !window.location.search.includes("astro-transition")
   ) {
     initTurnstile();
+    syncPlanFromURL();
   }
 
   if (form) {
@@ -312,7 +389,10 @@ import { socialMedia } from "../../data/socialmedia";
             body: formData,
           });
 
-          const result = await response.json();
+          const result = (await response.json()) as {
+            id?: string;
+            message?: string;
+          };
 
           if (response.ok) {
             // Tracking Exitoso con Datos Hasheados

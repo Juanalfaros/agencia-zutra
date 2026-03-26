@@ -10,17 +10,20 @@ interface Props {
     type?: string;
 }
 
+// Con un 301 activo de .cl a .agency, la URL base siempre debe ser .agency
+const siteBase = "https://zutra.agency";
+const canonicalURL = new URL(Astro.url.pathname, siteBase);
+
 const {
-    title = "Zutra — Diseño Valiente & Tecnología de Alto Rendimiento",
+    title = "Zutra Agency — Diseño Valiente & Tecnología de Alto Rendimiento",
     description = "Tu partner digital de ejecución. Desarrollo web ultrarrápido, automatización de ventas y branding con carácter. Sin humo: creamos los activos que tu negocio necesita.",
-    image = "/og-image.jpg", // Recomendación: Crea una imagen de 1200x630px que diga "ZUTRA" en grande
-    canonicalURL = new URL(Astro.url.pathname, Astro.site),
-    keywords = "desarrollo web chile, diseño web, email marketing, branding corporativo, automatización, astro web, agencia digital santiago, partner digital",
+    image = "/og-image.jpg",
+    keywords = "Zutra Agency, Agencia Zutra Chile, desarrollo web chile, diseño web santiago, email marketing, branding corporativo, automatización, astro web, partner digital",
     type = "website",
 } = Astro.props;
 
-const siteName = "Zutra Agency";
-const twitterHandle = "@tuagenciazutra"; // Ajustado al usuario de TikTok/IG por si acaso
+const siteName = "Zutra Agency Chile";
+const twitterHandle = "@tuagenciazutra"; 
 ---
 
 <meta charset="utf-8" />

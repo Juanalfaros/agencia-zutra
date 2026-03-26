@@ -1,0 +1,7 @@
+name = "agencia-zutra"
+pages_build_output_dir = "dist"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# Required at runtime: BREVO_API_KEY, TURNSTILE_SECRET_KEY, etc.

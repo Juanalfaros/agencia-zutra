@@ -33,7 +33,7 @@ const categoryLabel =
     description={service.description}
     image={service.featuredImage?.src}
 >
-    <script define:vars={{ service }}>
+    <script is:inline define:vars={{ service }}>
         // Trigger view_item event for GA4
         window.dataLayer = window.dataLayer || [];
         window.dataLayer.push({

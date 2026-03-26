@@ -51,9 +51,10 @@ import { plans, tableRows } from "@/data/planes";
 
             <div class="plan-card__footer">
               <a
-                href={`#contacto?plan=${plan.planId}`}
+                href="#contacto"
                 data-track="plan_click"
                 data-plan={plan.planId}
+                aria-label={`Seleccionar el plan ${plan.title}: ${plan.ctaText}`}
                 class={`plan-card__cta button ${plan.recommended ? "button--primary" : "button--ghost"}`}
               >
                 {plan.ctaText}
@@ -108,6 +109,18 @@ import { plans, tableRows } from "@/data/planes";
                 </tr>
               ))
             }
+            <tr class="table-cta-row">
+              <td class="feature-name"></td>
+              <td>
+                <a href="#contacto" data-plan="sprint" aria-label="Seleccionar plan Sprint de Leads" class="button button--ghost button--small">Cazar Leads</a>
+              </td>
+              <td class="highlight-col">
+                <a href="#contacto" data-plan="partner" aria-label="Seleccionar plan Partner Digital" class="button button--primary button--small">Asegurar Cupo</a>
+              </td>
+              <td>
+                <a href="#contacto" data-plan="email" aria-label="Seleccionar plan Email Revenue" class="button button--ghost button--small">Activar Canal</a>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -408,6 +421,15 @@ import { plans, tableRows } from "@/data/planes";
     border-bottom: none;
   }
 
+  .table-cta-row td {
+    padding: 2rem 1rem !important;
+  }
+
+  .button--small {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+  }
+
   .text-accent {
     color: var(--color-accent);
   }
@@ -476,6 +498,10 @@ import { plans, tableRows } from "@/data/planes";
 
     .highlight-col {
       background: transparent;
+    }
+
+    .table-cta-row {
+      display: none !important;
     }
   }
 </style>

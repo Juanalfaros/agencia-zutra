@@ -15,7 +15,16 @@ export default defineConfig({
   integrations: [
     icon({
       include: {
-        phosphor: ['ph-lightning', 'ph-lightning-fill'],
+        ph: [
+          'lightning',
+          'lightning-fill',
+          'swatches-duotone',
+          'credit-card-duotone',
+          'trend-up-duotone',
+          'plus-circle-duotone',
+          'check-circle-duotone',
+          'crown-duotone',
+        ],
       },
     }),
     sitemap(),
@@ -33,15 +42,29 @@ export default defineConfig({
       },
     ],
   },
-  output: 'static',
+  output: 'server',
+  devToolbar: {
+    enabled: false,
+  },
   adapter: cloudflare({
-    imageService: 'compile',
+    imageService: 'passthrough',
+    sessionKVBindingName: undefined,
+    prerenderEnvironment: 'node',
   }),
   vite: {
+    optimizeDeps: {
+      include: ['astro-icon/components', '@contentful/live-preview', 'astro/virtual-modules/transitions.js'],
+      exclude: ['astro', '@astrojs/toolbar'],
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
+        'debug': path.resolve(__dirname, './src/lib/mock-debug.js'),
       },
+    },
+    ssr: {
+      external: ['node:fs', 'node:path', 'node:util', 'node:events', 'node:stream', 'node:string_decoder', 'node:buffer', 'node:url'],
+      noExternal: ['debug', 'contentful', 'axios'],
     },
   },
 });
