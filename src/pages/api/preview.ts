@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ request, cookies, locals }) => {
+export const GET: APIRoute = async ({ request, cookies }) => {
   try {
     const url = new URL(request.url);
     const params = url.searchParams;
@@ -12,7 +12,7 @@ export const GET: APIRoute = async ({ request, cookies, locals }) => {
     const locale = params.get('locale') || 'es-ES';
     const isExit = params.get('exit') === 'true';
 
-    // Helper for raw redirect response (bypassing Astro's redirect which might throw)
+    // Helper for raw redirect response
     const rawRedirect = (location: string) => {
       return new Response(null, {
         status: 302,
@@ -20,7 +20,6 @@ export const GET: APIRoute = async ({ request, cookies, locals }) => {
       });
     };
 
-    // Exit preview mode: clear cookie and redirect to home
     if (isExit) {
       if (cookies.has('contentful_preview')) {
         cookies.delete('contentful_preview', { path: '/' });
@@ -29,7 +28,16 @@ export const GET: APIRoute = async ({ request, cookies, locals }) => {
     }
 
     // Read secret from Cloudflare runtime bindings OR build-time env
-    const runtimeEnv = (locals as any)?.runtime?.env ?? {};
+    let runtimeEnv: any = {};
+    try {
+      // Astro v6 replaced locals.runtime.env with cloudflare:workers
+      // We use await import to ensure it doesn't break local dev if the module is missing
+      const cfWorkers = await import('cloudflare:workers');
+      runtimeEnv = cfWorkers.env || {};
+    } catch (e) {
+      // Fallback for local development or environments without cloudflare:workers
+    }
+
     const PREVIEW_SECRET =
       runtimeEnv.CONTENTFUL_PREVIEW_SECRET ||
       import.meta.env.CONTENTFUL_PREVIEW_SECRET ||
@@ -48,17 +56,15 @@ export const GET: APIRoute = async ({ request, cookies, locals }) => {
       return new Response('Missing slug or type', { status: 400 });
     }
 
-    // sameSite: 'none' + secure: true required so Contentful iframe can send the cookie cross-origin
     cookies.set('contentful_preview', 'true', {
       path: '/',
       httpOnly: true,
       sameSite: 'none',
       secure: true,
-      maxAge: 3600, // 1 hour
+      maxAge: 3600 * 24, // 24 hours
     });
 
     let redirectPath = '/';
-
     switch (type) {
       case 'blogPost':
         redirectPath = `/preview/blog/${slug}?locale=${locale}`;
@@ -76,8 +82,6 @@ export const GET: APIRoute = async ({ request, cookies, locals }) => {
     return rawRedirect(redirectPath);
   } catch (error) {
     console.error('API Preview Fatal Error:', error);
-    // Return a raw Response to prevent Astro from trying to render the 500.astro page
-    // and potentially failing or obscuring the error.
     return new Response(
       `Fatal Error enabling preview: ${error instanceof Error ? error.message : String(error)}`,
       { status: 500 }
