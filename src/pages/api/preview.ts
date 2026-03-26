@@ -7,15 +7,29 @@ export const GET: APIRoute = async ({ request, redirect, cookies, locals }) => {
   const params = url.searchParams;
   const slug = params.get('slug');
   const type = params.get('type');
-  const entryId = params.get('entryId');
   const secret = params.get('secret');
-  const locale = params.get('locale') || 'es-ES'; // Default to es-ES
+  const locale = params.get('locale') || 'es-ES';
+  const isExit = params.get('exit') === 'true';
 
-  // Simple security check
-  const runtimeEnv = (locals?.runtime as any)?.env || {};
-  const PREVIEW_SECRET = runtimeEnv.CONTENTFUL_PREVIEW_SECRET || import.meta.env.CONTENTFUL_PREVIEW_SECRET;
-  
-  if (!PREVIEW_SECRET || secret !== PREVIEW_SECRET) {
+  // Exit preview mode: clear cookie and redirect to home
+  if (isExit) {
+    cookies.delete('contentful_preview', { path: '/' });
+    return redirect('/');
+  }
+
+  // Read secret from Cloudflare runtime bindings OR build-time env
+  const runtimeEnv = (locals as any)?.runtime?.env ?? {};
+  const PREVIEW_SECRET =
+    runtimeEnv.CONTENTFUL_PREVIEW_SECRET ||
+    import.meta.env.CONTENTFUL_PREVIEW_SECRET ||
+    '';
+
+  if (!PREVIEW_SECRET) {
+    console.error('CONTENTFUL_PREVIEW_SECRET is not configured');
+    return new Response('Preview is not configured', { status: 503 });
+  }
+
+  if (secret !== PREVIEW_SECRET) {
     return new Response('Invalid secret', { status: 401 });
   }
 
@@ -24,11 +38,12 @@ export const GET: APIRoute = async ({ request, redirect, cookies, locals }) => {
   }
 
   try {
-    // Set a cookie to enable preview mode for the browser session
+    // sameSite: 'none' + secure: true required so Contentful iframe can send the cookie cross-origin
     cookies.set('contentful_preview', 'true', {
       path: '/',
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
+      secure: true,
       maxAge: 3600, // 1 hour
     });
 
@@ -36,7 +51,6 @@ export const GET: APIRoute = async ({ request, redirect, cookies, locals }) => {
 
     switch (type) {
       case 'blogPost':
-        // Redirect to a dedicated preview route that is NOT prerendered
         redirectPath = `/preview/blog/${slug}?locale=${locale}`;
         break;
       case 'portfolioCase':

@@ -1,0 +1,10 @@
+# Allow Contentful Live Preview to embed the site in its iframe
+/preview/*
+  X-Frame-Options: ALLOWALL
+  Content-Security-Policy: frame-ancestors 'self' https://app.contentful.com https://*.contentful.com
+
+# Restrict all other pages
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
