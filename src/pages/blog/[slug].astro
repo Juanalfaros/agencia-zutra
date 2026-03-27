@@ -4,7 +4,7 @@ import Layout from "@/layouts/Layout.astro";
 import BlogCard from "@/components/blog/BlogCard.astro";
 import BreadcrumbSchema from "@/components/common/BreadcrumbSchema.astro";
 import { Image } from "astro:assets";
-export const prerender = true; // Still prerender for production
+// export const prerender = true; // Disabled to allow immediate visibility of new posts via SSR
 
 import { getEntries, getEntriesByField, isPreviewEnabled } from "@/lib/contentful";
 import { adaptBlogPost, adaptCategory } from "@/lib/contentful-adapters";
@@ -36,23 +36,28 @@ export async function getStaticPaths() {
 
 const isPreview = isPreviewEnabled(Astro);
 let { post, allPosts } = Astro.props;
+const { slug } = Astro.params;
 
-// If we are in preview mode but don't have props (dynamic request)
-if (isPreview && !post) {
-    const slug = Astro.params.slug;
-    const entries = await getEntriesByField("blogPost", "slug", slug, true, Astro.locals);
+// If we don't have props (dynamic request in SSR or preview)
+if (!post && slug) {
+    const entries = await getEntriesByField("blogPost", "slug", slug, isPreview, Astro.locals);
     if (entries.items.length > 0) {
         post = adaptBlogPost(entries.items[0]);
     }
 
-    // Also fetch all posts in preview mode for the related section
+    // Also fetch all posts for the related section
     const allEntries = await getEntries(
         "blogPost",
         { order: "-fields.publishDate" },
-        true,
+        isPreview,
         Astro.locals
     );
     allPosts = allEntries.items.map(adaptBlogPost);
+}
+
+// Redirect if post not found
+if (!post) {
+    return Astro.redirect('/404');
 }
 
 // Artículos relacionados

@@ -1,5 +1,5 @@
 ---
-export const prerender = true;
+// export const prerender = true; // Disabled to allow immediate visibility of new projects via SSR
 import Layout from "../../layouts/Layout.astro";
 import BreadcrumbSchema from "../../components/common/BreadcrumbSchema.astro";
 import CaseHero from "../../components/portfolio/CaseHero.astro";
@@ -39,14 +39,16 @@ let { project, allProjects } = Astro.props as {
     project: ZutraCaseStudy;
     allProjects: ZutraCaseStudy[];
 };
+const { slug } = Astro.params;
 
-if (isPreview) {
-    const slug = Astro.params.slug;
+// If we don't have props (dynamic request in SSR or preview)
+if (!project && slug) {
     const entries = await getEntriesByField(
         "portfolioCase",
         "slug",
         slug,
-        true,
+        isPreview,
+        Astro.locals
     );
     if (entries.items.length > 0) {
         project = adaptPortfolioCase(entries.items[0]);
@@ -55,9 +57,15 @@ if (isPreview) {
     const allEntries = await getEntries(
         "portfolioCase",
         { order: "fields.order" },
-        true,
+        isPreview,
+        Astro.locals
     );
     allProjects = allEntries.items.map(adaptPortfolioCase);
+}
+
+// Redirect if project not found
+if (!project) {
+    return Astro.redirect('/404');
 }
 
 // Find next project for navigation

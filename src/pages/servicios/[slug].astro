@@ -1,10 +1,9 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import { getEntries } from "@/lib/contentful";
+import { getEntries, getEntriesByField, isPreviewEnabled } from "@/lib/contentful";
 import { adaptService, adaptCategory } from "@/lib/contentful-adapters";
 import type { Service } from "@/types/service-types";
 import BreadcrumbSchema from "@/components/common/BreadcrumbSchema.astro";
-import { isPreviewEnabled } from "@/lib/contentful";
 
 export async function getStaticPaths() {
     const entries = await getEntries("service", { include: 2 });
@@ -18,10 +17,24 @@ export async function getStaticPaths() {
 }
 
 const isPreview = isPreviewEnabled(Astro);
+let { service } = Astro.props as { service: Service };
+const { slug } = Astro.params;
+
+// If we don't have props (dynamic request in SSR)
+if (!service && slug) {
+    const entries = await getEntriesByField("service", "slug", slug, isPreview, Astro.locals);
+    if (entries.items.length > 0) {
+        service = adaptService(entries.items[0]);
+    }
+}
+
+// Redirect if service not found
+if (!service) {
+    return Astro.redirect('/404');
+}
+
 const categoryEntries = await getEntries("category", {}, isPreview);
 const categories = categoryEntries.items.map(adaptCategory);
-
-const { service } = Astro.props as { service: Service };
 
 const categoryLabel =
     categories.find((c) => c.id === service.category)?.label ||
