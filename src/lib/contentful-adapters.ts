@@ -38,6 +38,22 @@ type KeyFeature = {
 };
 
 /**
+ * Helper to safely render Rich Text content to HTML
+ */
+function renderRichText(content: any): string {
+  if (!content) return '';
+  // Check if it's a Rich Text Document (has nodeType and content)
+  if (typeof content === 'object' && content.nodeType === 'document') {
+    return documentToHtmlString(content as Document, renderOptions);
+  }
+  // Fallback to string if it's plain text
+  if (typeof content === 'string') {
+    return content;
+  }
+  return '';
+}
+
+/**
  * Common rendering options for Contentful rich text
  */
 const renderOptions: Options = {
@@ -340,8 +356,7 @@ export function adaptProjectPhase(entry: Entry<any>): ProjectPhase | null {
   return {
     name: typeof fields.name === 'string' ? fields.name : '',
     duration: typeof fields.duration === 'string' ? fields.duration : undefined,
-    highlights:
-      typeof fields.highlights === 'string' ? fields.highlights : undefined,
+    highlights: renderRichText(fields.highlightsRich || fields.highlights),
     deliverables: Array.isArray(fields.deliverables)
       ? fields.deliverables.filter((d): d is string => typeof d === 'string')
       : undefined,
@@ -397,16 +412,16 @@ export function adaptPortfolioCase(
           : undefined,
     },
 
-    challenge: typeof fields.challenge === 'string' ? fields.challenge : '',
+    challenge: renderRichText(fields.challengeRich || fields.challenge),
     problemStatement:
-      typeof fields.problemStatement === 'string'
-        ? fields.problemStatement
+      fields.problemStatementRich || fields.problemStatement
+        ? renderRichText(fields.problemStatementRich || fields.problemStatement)
         : undefined,
     challenges: Array.isArray(fields.challenges)
       ? fields.challenges.filter((c): c is string => typeof c === 'string')
       : undefined,
 
-    solution: typeof fields.solution === 'string' ? fields.solution : '',
+    solution: renderRichText(fields.solutionRich || fields.solution),
 
     techStack: Array.isArray(fields.techStack)
       ? fields.techStack.filter((t): t is string => typeof t === 'string')

@@ -111,7 +111,7 @@ const description =
                                         <p class="project-desc">
                                             {project.description}
                                         </p>
-                                        <div class="project-tags">
+                                        {/* <div class="project-tags">
                                             {project.techStack
                                                 .slice(0, 3)
                                                 .map((tag: string) => (
@@ -121,7 +121,7 @@ const description =
                                                                 src={getSimpleIconUrl(getTechIcon(tag))} 
                                                                 alt="" 
                                                                 class="tech-tag-icon"
-                                                                style="width: 14px; height: 14px; filter: brightness(0) saturate(100%) invert(47%) sepia(90%) saturate(1637%) hue-rotate(185deg) brightness(98%) contrast(101%);"
+                                                                style="width: 14px; height: 14px;"
                                                             />
                                                         ) : (
                                                             <Icon
@@ -132,7 +132,7 @@ const description =
                                                         {tag}
                                                     </span>
                                                 ))}
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </a>
                             ))
@@ -366,6 +366,7 @@ const description =
     .tech-tag-icon {
         font-size: 0.9rem;
         color: var(--color-accent);
+        filter: brightness(0) invert(1);
     }
 
     @media (max-width: 640px) {

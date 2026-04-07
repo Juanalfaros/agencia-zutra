@@ -80,7 +80,7 @@ const selectedProjects = entries.items.map(adaptPortfolioCase);
                           src={getSimpleIconUrl(iconName, 'currentColor')} 
                           alt="" 
                           class="tag-icon"
-                          style="width: 14px; height: 14px; filter: brightness(0) saturate(100%) invert(47%) sepia(90%) saturate(1637%) hue-rotate(185deg) brightness(98%) contrast(101%);"
+                          style="width: 14px; height: 14px;"
                         />
                       ) : (
                         <Icon name={iconName} class="tag-icon" />
@@ -268,6 +268,7 @@ const selectedProjects = entries.items.map(adaptPortfolioCase);
   .tag-icon {
     font-size: 0.9rem;
     color: var(--color-accent);
+    filter: brightness(0) invert(1);
   }
 
   .section-footer {

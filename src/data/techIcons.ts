@@ -76,7 +76,7 @@ export const techIcons: Record<string, string> = {
   Prisma: 'prisma',
 
   // DevOps & Cloud
-  AWS: 'amazonwebservices',
+  AWS: 'aws',
   'Google Cloud': 'googlecloud',
   GCP: 'googlecloud',
   Azure: 'microsoftazure',
@@ -92,33 +92,35 @@ export const techIcons: Record<string, string> = {
   Apache: 'apache',
   Git: 'git',
   GitHub: 'github',
+  'GitHub Actions': 'githubactions',
   GitLab: 'gitlab',
 
   // Design
   Figma: 'figma',
-  'Adobe XD': 'adobexd',
+  'Adobe XD': 'xd',
   Sketch: 'sketch',
   Storybook: 'storybook',
   Canva: 'canva',
   Blender: 'blender',
   Inkscape: 'inkscape',
-  'Adobe Photoshop': 'adobephotoshop',
-  Photoshop: 'adobephotoshop',
-  'Adobe Illustrator': 'adobeillustrator',
-  Illustrator: 'adobeillustrator',
-  'Adobe After Effects': 'adobeaftereffects',
-  'After Effects': 'adobeaftereffects',
-  'Adobe Premiere Pro': 'adobepremierepro',
-  Premiere: 'adobepremierepro',
-  'Adobe InDesign': 'adobeindesign',
-  InDesign: 'adobeindesign',
-  Indesign: 'adobeindesign',
-  'Adobe Lightroom': 'adobelightroom',
-  Lightroom: 'adobelightroom',
+  'Adobe Photoshop': 'photoshop',
+  Photoshop: 'photoshop',
+  'Adobe Illustrator': 'ilustrator',
+  Illustrator: 'ilustrator',
+  'Adobe After Effects': 'after-effects',
+  'After Effects': 'after-effects',
+  'Adobe Premiere Pro': 'adobe',
+  Premiere: 'adobe',
+  'Adobe InDesign': 'indesign',
+  InDesign: 'indesign',
+  Indesign: 'indesign',
+  'Adobe Lightroom': 'adobe',
+  Lightroom: 'adobe',
   'Adobe Suite': 'adobe',
   SketchUp: 'sketchup',
   AutoCAD: 'autodesk',
   'Design Systems': 'ph:swatches-duotone',
+  Procreate: 'procreate',
 
   // Marketing & Analytics
   'Google Analytics': 'googleanalytics',
@@ -162,7 +164,7 @@ export const techIcons: Record<string, string> = {
   // Other Tools
   Stripe: 'stripe',
   PayPal: 'paypal',
-  'Webpay Plus': 'ph:credit-card-duotone',
+  'Webpay Plus': 'webpay',
   Algolia: 'algolia',
   Postman: 'postman',
   Sentry: 'sentry',
@@ -174,20 +176,41 @@ export const techIcons: Record<string, string> = {
   Ubuntu: 'ubuntu',
   Linux: 'linux',
   Windows: 'windows11',
-  'Cal.com': 'caldotcom',
-  'Cal.com API': 'caldotcom',
+  'Cal.com': 'calcom',
+  'Cal.com API': 'calcom',
   Calendly: 'calendly',
+  Linear: 'Linear',
 };
 
 export const getTechIcon = (techName: string) => {
   return techIcons[techName] || 'codeigniter'; // Fallback slug
 };
 
+const LOCAL_ICONS = new Set([
+  'Linear',
+  'adobe',
+  'after-effects',
+  'aws',
+  'brevo',
+  'calcom',
+  'github',
+  'ilustrator',
+  'indesign',
+  'photoshop',
+  'procreate',
+  'slack',
+  'webpay',
+  'woocommerce',
+  'wordpress',
+  'xd',
+]);
+
 /**
- * We consider "Simple Icons" any icon that DOES NOT have a prefix (like ph:).
- * This way, the bundler doesn't see "simple-icons:..." and doesn't try to bundle it.
+ * We consider "Simple Icons" any icon that DOES NOT have a prefix (like ph:)
+ * AND is not mapped to a local SVG in our codebase.
  */
 export const isSimpleIcon = (name: string): boolean => {
+  if (LOCAL_ICONS.has(name)) return false;
   return !name.includes(':');
 };
 
@@ -196,10 +219,7 @@ export const getSimpleIconSlug = (name: string): string => {
 };
 
 // CDN de Simple Icons para evitar bundle masivo en el Worker (3MB limit)
-export const getSimpleIconUrl = (name: string, color: string = 'currentColor') => {
+export const getSimpleIconUrl = (name: string, color: string = 'fff') => {
   const slug = getSimpleIconSlug(name);
-  if (color === 'currentColor') {
-    return `https://cdn.simpleicons.org/${slug}`;
-  }
   return `https://cdn.simpleicons.org/${slug}/${color}`;
 };

@@ -13,20 +13,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   site: 'https://zutra.agency',
   integrations: [
-    icon({
-      include: {
-        ph: [
-          'lightning',
-          'lightning-fill',
-          'swatches-duotone',
-          'credit-card-duotone',
-          'trend-up-duotone',
-          'plus-circle-duotone',
-          'check-circle-duotone',
-          'crown-duotone',
-        ],
-      },
-    }),
+    icon(),
     sitemap(),
   ],
   image: {

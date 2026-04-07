@@ -28,6 +28,7 @@ const stackItems = stackAbout;
                                         <img 
                                             src={getSimpleIconUrl(iconName)} 
                                             alt="" 
+                                            class="tech-icon-img"
                                             width="24" 
                                             height="24"
                                             loading="lazy"
@@ -252,9 +253,11 @@ const stackItems = stackAbout;
     }
 
     .stack-pill i,
-    .stack-pill svg {
+    .stack-pill svg,
+    .stack-pill img {
         font-size: 1.25rem;
         color: var(--color-accent);
+        filter: brightness(0) invert(1);
     }
 
     @keyframes stack-marquee-scroll {

@@ -132,7 +132,7 @@ const { tag, type, cases: filteredCases } = Astro.props;
                                                             src={getSimpleIconUrl(getTechIcon(t))} 
                                                             alt="" 
                                                             class="tech-tag-icon"
-                                                            style="width: 14px; height: 14px; filter: brightness(0) saturate(100%) invert(47%) sepia(90%) saturate(1637%) hue-rotate(185deg) brightness(98%) contrast(101%);"
+                                                            style="width: 14px; height: 14px;"
                                                         />
                                                     ) : (
                                                         <Icon
@@ -353,6 +353,7 @@ const { tag, type, cases: filteredCases } = Astro.props;
     .tech-tag-icon {
         font-size: 0.9rem;
         color: var(--color-accent);
+        filter: brightness(0) invert(1);
     }
 
     @media (max-width: 640px) {
