@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && echo '{\"name\":\"agencia-zutra\",\"compatibility_date\":\"2025-01-01\",\"pages_build_output_dir\":\"../client\",\"compatibility_flags\":[\"nodejs_compat\"]}' > dist/server/wrangler.json",
+    "build": "astro build && echo '{\"name\":\"agencia-zutra\",\"compatibility_date\":\"2025-01-01\",\"pages_build_output_dir\":\"../client\",\"compatibility_flags\":[\"nodejs_compat\"]}' > dist/server/wrangler.json && cp -r dist/server/* dist/client/ && mv dist/client/entry.mjs dist/client/_worker.js",
     "preview": "astro preview",
     "astro": "astro",
     "migrate": "tsx scripts/migrate-to-contentful.ts",
