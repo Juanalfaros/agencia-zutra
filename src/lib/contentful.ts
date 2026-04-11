@@ -87,7 +87,7 @@ export const isPreviewEnabled = (locals?: any) => {
     const cookieHeader = locals.request?.headers?.get('cookie') || '';
     hasPreviewCookie = cookieHeader.includes('contentful_preview=true');
   } catch {
-    hasPreviewCookie = false;
+    /* ignore */
   }
 
   return isPreviewPath || hasPreviewCookie;
@@ -255,7 +255,8 @@ export async function getEntry<T extends EntrySkeletonType>(
     if (error instanceof Error && error.message.includes('required')) {
       console.warn('Contentful not configured, cannot fetch entry');
       throw new Error(
-        'Contentful is not configured. Please set CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN environment variables.'
+        'Contentful is not configured. Please set CONTENTFUL_SPACE_ID and CONTENTFUL_ACCESS_TOKEN environment variables.',
+        { cause: error }
       );
     }
     console.error(`Error fetching entry ${entryId}:`, error);

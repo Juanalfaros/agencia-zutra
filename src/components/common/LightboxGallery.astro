@@ -1,5 +1,6 @@
 ---
-import { Image } from "astro:assets";
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 
 interface Props {
   images: {
@@ -63,7 +64,7 @@ const { images, id } = Astro.props;
                   height={1080}
                   class="lightbox-image"
                   draggable="false"
-                  loading={index === 0 ? "eager" : "lazy"}
+                  loading={index === 0 ? 'eager' : 'lazy'}
                   decoding="async"
                 />
               </div>
@@ -106,9 +107,9 @@ const { images, id } = Astro.props;
       this.isOpen = false;
 
       // UI Elements
-      this.track = this.dialog.querySelector(".lightbox-track");
-      this.slides = this.dialog.querySelectorAll(".lightbox-slide");
-      this.counter = this.dialog.querySelector(".current");
+      this.track = this.dialog.querySelector('.lightbox-track');
+      this.slides = this.dialog.querySelectorAll('.lightbox-slide');
+      this.counter = this.dialog.querySelector('.current');
 
       // Touch state
       this.touchStartX = 0;
@@ -122,58 +123,58 @@ const { images, id } = Astro.props;
       document
         .querySelectorAll(`[data-lightbox-trigger="${this.dialog.id}"]`)
         .forEach((btn) => {
-          btn.addEventListener("click", (e) => {
+          btn.addEventListener('click', (e) => {
             e.preventDefault();
-            const idx = parseInt(btn.dataset.index || "0");
+            const idx = parseInt(btn.dataset.index || '0');
             this.open(idx);
           });
         });
 
       // Controles internos
       this.dialog
-        .querySelector(".close-btn")
-        .addEventListener("click", () => this.close());
+        .querySelector('.close-btn')
+        .addEventListener('click', () => this.close());
       this.dialog
-        .querySelector(".prev")
-        .addEventListener("click", () => this.prev());
+        .querySelector('.prev')
+        .addEventListener('click', () => this.prev());
       this.dialog
-        .querySelector(".next")
-        .addEventListener("click", () => this.next());
+        .querySelector('.next')
+        .addEventListener('click', () => this.next());
 
       // Click en backdrop para cerrar
-      this.dialog.addEventListener("click", (e) => {
+      this.dialog.addEventListener('click', (e) => {
         if (
           e.target === this.dialog ||
-          e.target.classList.contains("lightbox-backdrop")
+          e.target.classList.contains('lightbox-backdrop')
         ) {
           this.close();
         }
       });
 
       // Teclado
-      document.addEventListener("keydown", (e) => {
+      document.addEventListener('keydown', (e) => {
         if (!this.isOpen) return;
-        if (e.key === "Escape") this.close();
-        if (e.key === "ArrowLeft") this.prev();
-        if (e.key === "ArrowRight") this.next();
+        if (e.key === 'Escape') this.close();
+        if (e.key === 'ArrowLeft') this.prev();
+        if (e.key === 'ArrowRight') this.next();
       });
 
       // Gestos (Swipe)
       this.track.addEventListener(
-        "touchstart",
+        'touchstart',
         (e) => {
           this.touchStartX = e.changedTouches[0].screenX;
         },
-        { passive: true },
+        { passive: true }
       );
 
       this.track.addEventListener(
-        "touchend",
+        'touchend',
         (e) => {
           this.touchEndX = e.changedTouches[0].screenX;
           this.handleSwipe();
         },
-        { passive: true },
+        { passive: true }
       );
     }
 
@@ -194,12 +195,12 @@ const { images, id } = Astro.props;
       // Gestionar carga perezosa de imágenes adyacentes (opcional pero recomendado)
       this.slides.forEach((slide, idx) => {
         const isVisible = idx === this.currentIndex;
-        slide.setAttribute("aria-hidden", !isVisible);
+        slide.setAttribute('aria-hidden', !isVisible);
         // Pequeño efecto de escala en la imagen activa
-        const img = slide.querySelector("img");
+        const img = slide.querySelector('img');
         if (img) {
-          img.style.transform = isVisible ? "scale(1)" : "scale(0.95)";
-          img.style.opacity = isVisible ? "1" : "0.5";
+          img.style.transform = isVisible ? 'scale(1)' : 'scale(0.95)';
+          img.style.opacity = isVisible ? '1' : '0.5';
         }
       });
     }
@@ -210,22 +211,22 @@ const { images, id } = Astro.props;
       this.updateUI();
 
       this.dialog.showModal();
-      document.body.style.overflow = "hidden"; // Bloquear scroll página
+      document.body.style.overflow = 'hidden'; // Bloquear scroll página
 
       // Animación de entrada
       requestAnimationFrame(() => {
-        this.dialog.setAttribute("data-state", "open");
+        this.dialog.setAttribute('data-state', 'open');
       });
     }
 
     close() {
-      this.dialog.setAttribute("data-state", "closed");
+      this.dialog.setAttribute('data-state', 'closed');
       this.isOpen = false;
 
       // Esperar a que termine la animación CSS (300ms) antes de cerrar nativamente
       setTimeout(() => {
         this.dialog.close();
-        document.body.style.overflow = "";
+        document.body.style.overflow = '';
       }, 300);
     }
 
@@ -241,7 +242,7 @@ const { images, id } = Astro.props;
   }
 
   // Inicialización compatible con View Transitions de Astro
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener('astro:page-load', () => {
     new LightboxController(id, totalImages);
   });
 
@@ -281,7 +282,7 @@ const { images, id } = Astro.props;
   }
 
   /* Estado Abierto (Animación de entrada) */
-  .lightbox-dialog[data-state="open"] {
+  .lightbox-dialog[data-state='open'] {
     opacity: 1;
   }
 

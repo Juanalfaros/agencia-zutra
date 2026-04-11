@@ -85,31 +85,22 @@ export function initWhatsAppBot() {
     sender: 'bot' | 'user',
     immediate = false
   ): Promise<void> => {
-    return new Promise(async (resolve) => {
-      if (!messagesArea) {
-        resolve();
-        return;
-      }
-      if (sender === 'bot' && !immediate) {
-        const typingObj = document.createElement('div');
-        typingObj.className = 'msg-bubble msg-bot typing-indicator';
-        typingObj.innerHTML =
-          '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
-        messagesArea.appendChild(typingObj);
-        scrollToBottom();
+    if (!messagesArea) return;
+    if (sender === 'bot' && !immediate) {
+      const typingObj = document.createElement('div');
+      typingObj.className = 'msg-bubble msg-bot typing-indicator';
+      typingObj.innerHTML =
+        '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+      messagesArea.appendChild(typingObj);
+      scrollToBottom();
 
-        await new Promise<void>((r) => setTimeout(r, 600));
-        typingObj.remove();
-        _renderMsg(text, sender);
-        await new Promise<void>((r) =>
-          setTimeout(r, 400 + Math.random() * 400)
-        );
-        resolve();
-      } else {
-        _renderMsg(text, sender);
-        resolve();
-      }
-    });
+      await new Promise<void>((r) => setTimeout(r, 600));
+      typingObj.remove();
+      _renderMsg(text, sender);
+      await new Promise<void>((r) => setTimeout(r, 400 + Math.random() * 400));
+    } else {
+      _renderMsg(text, sender);
+    }
   };
 
   const checkEasterEggs = async (text: string) => {
@@ -213,7 +204,7 @@ export function initWhatsAppBot() {
     // 1. Abrir WA inmediatamente (sincrónico al click para evitar popup blocker)
     const currentUrl = window.location.href;
     const msg = `Hola 👋 Soy *${botState.data.name}* (${botState.data.email}).\n\nMe interesa ayuda con: *${botState.data.service}*.\nDisponibilidad para arrancar: *${botState.data.urgency}*.\n\n_(Vengo desde: ${currentUrl})_`;
-    const cleanedPhone = phone.replace(/[^0-9\+]/g, '');
+    const cleanedPhone = phone.replace(/[^0-9+]/g, '');
     const waUrl = `https://wa.me/${cleanedPhone}?text=${encodeURIComponent(msg)}`;
 
     window.open(waUrl, '_blank');

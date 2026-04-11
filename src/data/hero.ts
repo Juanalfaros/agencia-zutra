@@ -1,7 +1,6 @@
-import type { ImageMetadata } from 'astro';
-import produccionImg from '../assets/img/hero/produccion.webp'; // Usada ahora para Email/Automatización
-import landingImg from '../assets/img/hero/landing.webp'; // Usada para Web/Performance
-import logoImg from '../assets/img/hero/logo.webp'; // Usada para Branding
+import produccionImg from '../assets/img/hero/produccion.webp';
+import landingImg from '../assets/img/hero/landing.webp';
+import logoImg from '../assets/img/hero/logo.webp';
 
 export interface HeroSlide {
   title: string;
