@@ -1,12 +1,12 @@
 ---
-import Layout from "../../../layouts/Layout.astro";
-import StickyCTA from "../../../components/common/StickyCTA.astro";
+import Layout from "@/layouts/Layout.astro";
+import StickyCTA from "@/components/common/StickyCTA.astro";
 import { getEntries } from "@/lib/contentful";
 import { adaptPortfolioCase } from "@/lib/contentful-adapters";
 import type { ZutraCaseStudy } from "@/types/project-types";
 import { slugify } from "@/lib/slugify.js";
 import { Icon } from "astro-icon/components";
-import { getTechIcon, isSimpleIcon, getSimpleIconUrl } from "../../../data/techIcons";
+import { getTechIcon, isSimpleIcon, getSimpleIconUrl } from "@/data/techIcons";
 
 export async function getStaticPaths() {
     // 1. Fetch all cases from Contentful

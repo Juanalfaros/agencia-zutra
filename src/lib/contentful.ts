@@ -2,19 +2,43 @@
  * Contentful Client
  *
  * Singleton client for fetching content from Contentful CMS.
- * Includes in-memory caching for build-time optimization.
+ * Includes in-memory caching with TTL for build-time and SSR optimization.
  */
 
 import { createClient, type EntrySkeletonType } from 'contentful';
 import type { Entry, Asset, EntryCollection } from 'contentful';
 
-function readEnv(key: string, _locals?: any): string {
-  // 1. Try import.meta.env (Astro/Vite - inlined at build time)
+// Cloudflare Workers env binding (Astro v6 / Cloudflare adapter v13+)
+let cfEnv: Record<string, string> | null = null;
+
+async function getCfEnv(): Promise<Record<string, string>> {
+  if (cfEnv) return cfEnv;
+  try {
+    const { env } = await import('cloudflare:workers');
+    cfEnv = env as Record<string, string>;
+  } catch {
+    cfEnv = {};
+  }
+  return cfEnv;
+}
+
+/**
+ * Read environment variables with proper fallback chain:
+ * 1. Cloudflare Workers env (cloudflare:workers)
+ * 2. import.meta.env (Astro/Vite - inlined at build time)
+ * 3. process.env (Node.js/Build)
+ */
+async function readEnv(key: string): Promise<string> {
+  // 1. Cloudflare Workers/Pages runtime
+  const cf = await getCfEnv();
+  if (cf[key]) return cf[key];
+
+  // 2. Astro/Vite build-time env
   const fromImportMeta = (import.meta.env as any)[key];
   if (typeof fromImportMeta === 'string' && fromImportMeta.length > 0)
     return fromImportMeta;
 
-  // 2. Try process.env (Node.js/Build)
+  // 3. Node.js process env
   const fromProcess =
     (typeof globalThis !== 'undefined' &&
       (globalThis as any).process?.env?.[key]) ||
@@ -31,43 +55,40 @@ export const isPreviewEnabled = (locals?: any) => {
 
   // 2. In the browser, we can safely check cookies/searchParams
   if (typeof document !== 'undefined') {
-    return document.cookie.includes('contentful_preview=true') || 
-           window.location.search.includes('preview=true') ||
-           window.location.pathname.startsWith('/preview/');
+    return (
+      document.cookie.includes('contentful_preview=true') ||
+      window.location.search.includes('preview=true') ||
+      window.location.pathname.startsWith('/preview/')
+    );
   }
 
   // 3. Server-side (during build or SSR)
-  let hasPreviewCookie = false;
   let isPreviewPath = false;
 
-  // Safe check via Astro.url (doesn't trigger headers warning)
+  // Safe check via URL
   if (locals?.url) {
     try {
-      const url = typeof locals.url === 'string' ? new URL(locals.url) : locals.url;
-      isPreviewPath = 
-        url.pathname.startsWith('/preview/') || 
+      const url =
+        typeof locals.url === 'string' ? new URL(locals.url) : locals.url;
+      isPreviewPath =
+        url.pathname.startsWith('/preview/') ||
         url.searchParams.get('preview') === 'true';
     } catch (e) {
       isPreviewPath = false;
     }
   }
 
-  // Header/Cookie check: ONLY if we are in a dynamic runtime context (SSR)
-  // Accessing headers/cookies on static pages triggers [WARN] in Astro.
-  // In Astro 6 / Cloudflare v13, we check for request.headers directly.
-  const isDynamicRuntime = !!locals?.request?.headers;
+  // During prerender, we skip header checks entirely (Astro warns otherwise)
+  if (!locals?.url) return isPreviewPath;
 
-  if (isDynamicRuntime && locals?.request?.headers) {
-    try {
-      const cookieHeader = locals.request.headers.get('cookie') || '';
-      hasPreviewCookie = cookieHeader.includes('contentful_preview=true');
-    } catch (e) {
-      hasPreviewCookie = false;
-    }
+  // Header/Cookie check: ONLY in dynamic SSR runtime
+  let hasPreviewCookie = false;
+  try {
+    const cookieHeader = locals.request?.headers?.get('cookie') || '';
+    hasPreviewCookie = cookieHeader.includes('contentful_preview=true');
+  } catch {
+    hasPreviewCookie = false;
   }
-
-  // In DEV mode, we might want to be more lenient, but Astro still warns.
-  // So we stick to URL and Env vars for static pages.
 
   return isPreviewPath || hasPreviewCookie;
 };
@@ -78,9 +99,9 @@ let deliveryClient: ReturnType<typeof createClient> | null = null;
 // Preview Client (Draft content) - Lazy initialization
 let previewClient: ReturnType<typeof createClient> | null = null;
 
-function createDeliveryClient(locals?: any) {
-  const spaceId = readEnv('CONTENTFUL_SPACE_ID', locals);
-  const accessToken = readEnv('CONTENTFUL_ACCESS_TOKEN', locals);
+async function createDeliveryClient() {
+  const spaceId = await readEnv('CONTENTFUL_SPACE_ID');
+  const accessToken = await readEnv('CONTENTFUL_ACCESS_TOKEN');
 
   if (!spaceId || !accessToken) {
     throw new Error(
@@ -88,19 +109,20 @@ function createDeliveryClient(locals?: any) {
     );
   }
 
+  const environment = await readEnv('CONTENTFUL_ENVIRONMENT');
   return createClient({
     space: spaceId,
     accessToken: accessToken,
     host: 'cdn.contentful.com',
-    environment: readEnv('CONTENTFUL_ENVIRONMENT', locals) || 'master',
+    environment: environment || 'master',
   });
 }
 
-function createPreviewClient(locals?: any) {
-  const spaceId = readEnv('CONTENTFUL_SPACE_ID', locals);
+async function createPreviewClient() {
+  const spaceId = await readEnv('CONTENTFUL_SPACE_ID');
   const accessToken =
-    readEnv('CONTENTFUL_PREVIEW_TOKEN', locals) ||
-    readEnv('CONTENTFUL_ACCESS_TOKEN', locals);
+    (await readEnv('CONTENTFUL_PREVIEW_TOKEN')) ||
+    (await readEnv('CONTENTFUL_ACCESS_TOKEN'));
 
   if (!spaceId || !accessToken) {
     throw new Error(
@@ -108,39 +130,56 @@ function createPreviewClient(locals?: any) {
     );
   }
 
+  const environment = await readEnv('CONTENTFUL_ENVIRONMENT');
   return createClient({
     space: spaceId,
     accessToken: accessToken,
     host: 'preview.contentful.com',
-    environment: readEnv('CONTENTFUL_ENVIRONMENT', locals) || 'master',
+    environment: environment || 'master',
   });
 }
 
 /**
  * Get the appropriate client
  * @param preview - Force preview mode
- * @param locals - Cloudflare runtime locals
+ * @param locals - Cloudflare runtime locals (used only for preview detection)
  */
-export function getClient(preview?: boolean, locals?: any) {
+export async function getClient(
+  preview?: boolean,
+  locals?: any
+): Promise<ReturnType<typeof createClient>> {
   const usePreview = preview ?? isPreviewEnabled(locals);
 
   if (usePreview) {
-    // In serverless/dynamic contexts, re-initialize if environment variables change or if locals are provided
-    // to ensure we are using the correct credentials from the current request context.
-    if (!previewClient || locals) {
-      previewClient = createPreviewClient(locals);
+    if (!previewClient) {
+      previewClient = await createPreviewClient();
     }
     return previewClient;
   } else {
-    if (!deliveryClient || locals) {
-      deliveryClient = createDeliveryClient(locals);
+    if (!deliveryClient) {
+      deliveryClient = await createDeliveryClient();
     }
     return deliveryClient;
   }
 }
 
-// Simple in-memory cache for build-time optimization
-const cache = new Map<string, any>();
+// Cache with TTL support (default 5 minutes)
+const CACHE_TTL_MS = 5 * 60 * 1000;
+const cache = new Map<string, { data: any; timestamp: number }>();
+
+function getCached<T>(key: string): T | null {
+  const entry = cache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.timestamp > CACHE_TTL_MS) {
+    cache.delete(key);
+    return null;
+  }
+  return entry.data as T;
+}
+
+function setCache(key: string, data: any): void {
+  cache.set(key, { data, timestamp: Date.now() });
+}
 
 /**
  * Get entries from Contentful with caching
@@ -160,17 +199,16 @@ export async function getEntries<T extends EntrySkeletonType>(
     const isPreview = preview ?? isPreviewEnabled(locals);
     const cacheKey = `${contentType}-${JSON.stringify(query)}-${isPreview}`;
 
-    if (cache.has(cacheKey)) {
-      return cache.get(cacheKey);
-    }
+    const cached = getCached<EntryCollection<T, undefined, string>>(cacheKey);
+    if (cached) return cached;
 
-    const clientInstance = getClient(isPreview, locals);
+    const clientInstance = await getClient(isPreview, locals);
     const entries = await clientInstance.getEntries<T>({
       content_type: contentType,
       ...query,
     });
 
-    cache.set(cacheKey, entries);
+    setCache(cacheKey, entries);
     return entries;
   } catch (error) {
     // If Contentful is not configured, return empty collection
@@ -205,13 +243,12 @@ export async function getEntry<T extends EntrySkeletonType>(
     const isPreview = preview ?? isPreviewEnabled(locals);
     const cacheKey = `${entryId}-${isPreview}`;
 
-    if (cache.has(cacheKey)) {
-      return cache.get(cacheKey);
-    }
+    const cached = getCached<Entry<T, undefined, string>>(cacheKey);
+    if (cached) return cached;
 
-    const clientInstance = getClient(isPreview, locals);
+    const clientInstance = await getClient(isPreview, locals);
     const entry = await clientInstance.getEntry<T>(entryId);
-    cache.set(cacheKey, entry);
+    setCache(cacheKey, entry);
     return entry;
   } catch (error) {
     // If Contentful is not configured, throw a more descriptive error

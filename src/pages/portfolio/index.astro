@@ -1,13 +1,13 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import Layout from "@/layouts/Layout.astro";
 import { Image } from "astro:assets";
-import StickyCTA from "../../components/common/StickyCTA.astro";
+import StickyCTA from "@/components/common/StickyCTA.astro";
 import { getEntries } from "@/lib/contentful";
 import { adaptPortfolioCase } from "@/lib/contentful-adapters";
 import type { ZutraCaseStudy } from "@/types/project-types";
 import { slugify } from "@/lib/slugify.js";
 import { Icon } from "astro-icon/components";
-import { getTechIcon, isSimpleIcon, getSimpleIconUrl } from "../../data/techIcons";
+import { getTechIcon, isSimpleIcon, getSimpleIconUrl } from "@/data/techIcons";
 
 // Fetch portfolio cases from Contentful
 const entries = await getEntries("portfolioCase", {
@@ -42,6 +42,7 @@ const description =
                 </p>
 
                 <div class="filter-bar">
+                    <h2 class="sr-only">Filtrar por industria</h2>
                     <!-- Placeholder para futuros filtros dinámicos -->
                     <span class="filter-label">Explora por industria:</span>
                     <div class="filter-tags">

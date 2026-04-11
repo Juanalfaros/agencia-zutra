@@ -2,9 +2,23 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
-import { sanitizeInput } from '../../lib/utils/sanitize';
+import { sanitizeInput } from '@/lib/utils/sanitize';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export const POST: APIRoute = async ({ request, locals }) => {
+  // Rate limiting: 10 requests per 15 minutes per IP
+  const clientIP =
+    request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-forwarded-for') ||
+    'unknown';
+  const rateLimit = checkRateLimit(`lead:${clientIP}`, 10, 15 * 60 * 1000);
+
+  if (!rateLimit.allowed) {
+    return new Response(
+      JSON.stringify({ error: 'Too many requests. Try again later.' }),
+      { status: 429 }
+    );
+  }
   if (request.headers.get('Content-Type') !== 'application/json') {
     return new Response(JSON.stringify({ error: 'Invalid Content-Type' }), {
       status: 400,
@@ -49,7 +63,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
     // --- GESTIÓN DE VARIABLES DE ENTORNO (Astro 6 / Cloudflare v13) ---
     const runtimeEnv = (locals?.runtime as any)?.env || {};
     const getEnv = (key: string) =>
-      runtimeEnv[key] || (import.meta.env as any)[key] || (process.env as any)[key] || '';
+      runtimeEnv[key] ||
+      (import.meta.env as any)[key] ||
+      (process.env as any)[key] ||
+      '';
 
     const BREVO_API_KEY = getEnv('BREVO_API_KEY').trim();
     // Lista opcional específica para leads del bot de WhatsApp

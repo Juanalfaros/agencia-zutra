@@ -45,11 +45,11 @@ export const GET: APIRoute = async ({ request, cookies }) => {
 
     if (!PREVIEW_SECRET) {
       console.error('CONTENTFUL_PREVIEW_SECRET is not configured');
-      return new Response('Preview is not configured [Missing Secret]', { status: 503 });
+      return new Response('Preview not available', { status: 503 });
     }
 
     if (secret !== PREVIEW_SECRET) {
-      return new Response('Invalid secret Key', { status: 401 });
+      return new Response('Unauthorized', { status: 401 });
     }
 
     if (!slug || !type) {
@@ -82,9 +82,6 @@ export const GET: APIRoute = async ({ request, cookies }) => {
     return rawRedirect(redirectPath);
   } catch (error) {
     console.error('API Preview Fatal Error:', error);
-    return new Response(
-      `Fatal Error enabling preview: ${error instanceof Error ? error.message : String(error)}`,
-      { status: 500 }
-    );
+    return new Response('Internal server error', { status: 500 });
   }
 };

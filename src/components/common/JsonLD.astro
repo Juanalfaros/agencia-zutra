@@ -1,5 +1,8 @@
 ---
-// src/components/landing/JsonLD.astro
+// src/components/common/JsonLD.astro
+import { faqs } from "@/data/faqs";
+import { founders } from "@/data/founders";
+
 interface Props {
   showFAQ?: boolean;
 }
@@ -9,25 +12,102 @@ const { showFAQ = false } = Astro.props;
 <script type="application/ld+json" is:inline>
   {
     "@context": "https://schema.org",
-    "@type": "ProfessionalService",
+    "@type": "LocalBusiness",
+    "@id": "https://zutra.agency/#organization",
     "name": "Zutra Agency",
     "alternateName": "Agencia Zutra",
     "brand": {
       "@type": "Brand",
+      "@id": "https://zutra.agency/#brand",
       "name": "Zutra"
     },
     "description": "Zutra Agency es una firma de diseño y tecnología basada en Chile, especializada en marketing digital, desarrollo web de alto rendimiento y branding estratégico para negocios que buscan escalar con activos digitales sólidos.",
     "url": "https://zutra.agency/",
-    "logo": "https://zutra.agency/og-image.jpg",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://zutra.agency/og-image.jpg"
+    },
+    "image": "https://zutra.agency/og-home.jpg",
     "priceRange": "$$",
+    "telephone": "+56942009050",
+    "email": "hola@zutra.agency",
     "founders": [
-      { "@type": "Person", "name": "Camilo Bustamante" },
-      { "@type": "Person", "name": "Juan Alfaro" }
+      {
+        "@type": "Person",
+        "name": "Camilo Bustamante",
+        "jobTitle": "Co-Fundador & Director Creativo",
+        "worksFor": { "@id": "https://zutra.agency/#organization" }
+      },
+      {
+        "@type": "Person",
+        "name": "Juan Alfaro",
+        "jobTitle": "Co-Fundador & Director Técnico",
+        "worksFor": { "@id": "https://zutra.agency/#organization" }
+      }
+    ],
+    "employee": [
+      {
+        "@type": "Person",
+        "name": "Camilo Bustamante",
+        "jobTitle": "Co-Fundador & Director Creativo"
+      },
+      {
+        "@type": "Person",
+        "name": "Juan Alfaro",
+        "jobTitle": "Co-Fundador & Director Técnico"
+      }
+    ],
+    "knowsAbout": [
+      "Desarrollo Web",
+      "E-commerce",
+      "Branding Corporativo",
+      "Email Marketing",
+      "Marketing Digital",
+      "SEO",
+      "Astro Framework",
+      "React",
+      "Shopify",
+      "WooCommerce"
+    ],
+    "makesOffer": [
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Desarrollo Web",
+          "description": "Sitios web ultrarrápidos con Astro y React"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "E-commerce",
+          "description": "Tiendas online con Shopify o WooCommerce"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Branding",
+          "description": "Identidad visual con carácter y estrategia"
+        }
+      },
+      {
+        "@type": "Offer",
+        "itemOffered": {
+          "@type": "Service",
+          "name": "Email Marketing",
+          "description": "Automatización y campañas de correo"
+        }
+      }
     ],
     "address": {
       "@type": "PostalAddress",
+      "streetAddress": "Puente Alto",
       "addressLocality": "Santiago",
-      "addressRegion": "RM",
+      "addressRegion": "Región Metropolitana",
       "addressCountry": "CL"
     },
     "geo": {
@@ -35,11 +115,26 @@ const { showFAQ = false } = Astro.props;
       "latitude": -33.4489,
       "longitude": -70.6693
     },
+    "areaServed": {
+      "@type": "Country",
+      "name": "Chile"
+    },
     "sameAs": [
-      "https://www.instagram.com/tuagenciazutra/",
-      "https://www.tiktok.com/@tuagenciazutra",
-      "https://www.linkedin.com/company/agenciazutra"
-    ]
+      "https://www.instagram.com/zutra.agency/",
+      "https://www.tiktok.com/@zutra.agency"
+    ],
+    "potentialAction": {
+      "@type": "CommunicateAction",
+      "name": "Contactar a Zutra Agency",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": "https://zutra.agency/#contacto",
+        "actionPlatform": [
+          "https://schema.org/DesktopWebPlatform",
+          "https://schema.org/MobileWebPlatform"
+        ]
+      }
+    }
   }
 </script>
 {showFAQ && (
@@ -47,40 +142,15 @@ const { showFAQ = false } = Astro.props;
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Si Zutra es nueva, ¿por qué confiar?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Mostramos trabajo real previo de los fundadores (rol, contexto, aportes), fijamos KPIs por escrito y trabajamos con tableros compartidos. La auditoría entrega valor inmediato y no exige permanencia."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Trabajan fuera de Santiago?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Sí. Operamos remoto con sesiones en vivo y tableros compartidos. Producciones presenciales según ciudad."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Hay permanencia mínima?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "No. Sprints cerrados y planes mensuales cancelables con 15 días de aviso."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "¿Cómo medimos éxito?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Definimos métricas al inicio (leads, CAC, ROAS, tráfico orgánico) y reportamos en ciclos quincenales o mensuales. Lo que funciona, se escala."
-        }
+    "@id": "https://zutra.agency/#faq",
+    "mainEntity": {JSON.parse(JSON.stringify(faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
       }
-    ]
+    }))))}
   }
 </script>
 )}

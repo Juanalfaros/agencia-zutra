@@ -1,0 +1,21 @@
+---
+// src/pages/preview/servicios/[slug].astro
+import ServicePage from "@/pages/servicios/[slug].astro";
+import { getEntriesByField } from "@/lib/contentful";
+import { adaptService } from "@/lib/contentful-adapters";
+import type { Service } from "@/types/service-types";
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+// Fetch the draft content explicitly
+const entries = await getEntriesByField("service", "slug", slug!, true, Astro.locals);
+if (entries.items.length === 0) {
+    return new Response(`Service not found in preview mode (Slug: ${slug})`, { status: 404 });
+}
+
+const service = adaptService(entries.items[0]);
+---
+
+<ServicePage service={service} />

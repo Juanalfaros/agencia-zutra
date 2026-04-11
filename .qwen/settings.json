@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm run *)",
+      "Bash(npx *)",
+      "Bash(rm *)",
+      "Bash(find *)",
+      "Bash(diff *)",
+      "Bash(file *)",
+      "Bash(pkill *)",
+      "Bash(sleep *)",
+      "Bash(pnpm *)",
+      "Bash(curl *)",
+      "Bash(kill *)",
+      "Bash(lsof *)",
+      "Bash(xargs *)",
+      "Bash(git add *)"
+    ]
+  },
+  "$version": 3
+}

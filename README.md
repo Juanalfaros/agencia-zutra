@@ -1,105 +1,195 @@
-# Zutra — La Estética Valiente
+# Zutra Agency — La Estética Valiente
 
-Zutra es una agencia de **Growth Marketing & Tecnología** con base en Chile. Este es su sitio web oficial, diseñado para alto performance, conversiones optimizadas y una estética premium.
+Sitio web oficial de **Zutra**, agencia de Growth Marketing & Tecnología con base en Santiago, Chile.
+
+**[zutra.agency](https://zutra.agency)**
+
+---
 
 ## 🚀 Tech Stack
 
-- **Framework**: [Astro 6.0](https://astro.build/) (Modo Estático con Assets dinámicos)
-- **Despliegue**: [Cloudflare Workers](https://workers.cloudflare.com/) (Arquitectura de alto rendimiento)
-- **Estilos**: Vanilla CSS con un sistema de tokens globales, variables personalizadas y "Zutra Energy" (Acentos dinámicos)
-- **Icons**: [Phosphor Icons](https://phosphoricons.com/) e [Iconify](https://iconify.design/)
-- **Email Service**: [Brevo](https://www.brevo.com/) (SMTP Transactional API)
-- **Security**: [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) (Bot Protection)
-- **CMS**: [Contentful](https://www.contentful.com/) (Headless CMS con sistema de Preview en tiempo real)
+| Capa          | Tecnología                                                                              |
+| ------------- | --------------------------------------------------------------------------------------- |
+| **Framework** | [Astro 6.0](https://astro.build/) (SSR + Prerendering híbrido)                          |
+| **Deploy**    | [Cloudflare Pages](https://pages.cloudflare.com/) (Edge SSR con `nodejs_compat`)        |
+| **CMS**       | [Contentful](https://www.contentful.com/) (Headless CMS + Preview en tiempo real)       |
+| **Email**     | [Brevo](https://www.brevo.com/) (SMTP Transactional API)                                |
+| **Seguridad** | [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) (Bot protection) |
+| **Testing**   | [Vitest](https://vitest.dev/)                                                           |
+| **CI/CD**     | GitHub Actions + Cloudflare Pages auto-deploy                                           |
+| **Estilos**   | Vanilla CSS + Design tokens + acentos dinámicos ("Zutra Energy")                        |
+| **Iconos**    | [Phosphor Icons](https://phosphoricons.com/) + [Iconify](https://iconify.design/)       |
 
 ## 📁 Estructura del Proyecto
 
 ```text
-/
-├── public/              # Assets estáticos, manifest, robots.txt, llms.txt
+agencia-zutra/
+├── .github/workflows/ci.yml      # CI: lint + typecheck + test
+├── astro.config.mjs              # Configuración Astro + Cloudflare adapter
+├── tsconfig.json                 # TypeScript con alias @/*
+├── vitest.config.ts              # Configuración de Vitest
+├── wrangler.toml                 # Cloudflare Pages config
+│
+├── public/                       # Assets estáticos
+│   ├── robots.txt
+│   ├── llms.txt                  # Machine-readable summary para IAs
+│   ├── favicon.svg
+│   └── manifest.webmanifest
+│
 ├── src/
 │   ├── components/
-│   │   ├── common/      # Header, Footer, SEO, WhatsAppBot, JsonLD, BreadcrumbSchema
-│   │   └── sections/    # Hero, Servicios, Casos, Testimonios, Contacto, Faqs
-│   ├── data/            # Contenido centralizado del bot y constantes
-│   ├── layouts/         # Layout.astro (Master Layout con GTM y SEO)
-│   ├── lib/             # Cliente Contentful, Brevo API logic y adaptadores
-│   └── pages/
-│       ├── api/         # Endpoints dinámicos (contact.ts, lead.ts)
-│       └── ...
+│   │   ├── blog/                 # BlogCard, BlogSearch
+│   │   ├── common/               # Header, Footer, SEO, JsonLD, WhatsAppBot...
+│   │   ├── nosotros/             # ManifestoHero, Philosophy, TeamSection...
+│   │   ├── portfolio/            # CaseHero, CaseChallenge, CaseExecution...
+│   │   ├── sections/             # Hero, Metodo, Planes, Faqs, Contacto...
+│   │   └── ui/                   # ToggleTheme
+│   ├── content/                  # Astro Content Layer (blog Markdown)
+│   ├── data/                     # Contenido estático (CTAs, faqs, founders...)
+│   ├── icons/                    # SVGs locales para astro-icon
+│   ├── layouts/                  # Layout.astro (Master con GTM, SEO, tema)
+│   ├── lib/
+│   │   ├── contentful.ts         # Cliente Contentful con cache TTL
+│   │   ├── contentful-adapters.ts# Transform Contentful entries → tipos locales
+│   │   ├── rate-limit.ts         # Rate limiter en memoria
+│   │   └── utils/                # Sanitización, slugify
+│   ├── pages/
+│   │   ├── api/                  # /api/contact, /api/lead, /api/preview
+│   │   ├── blog/                 # /blog, /blog/[slug], /blog/categoria/[cat]
+│   │   ├── preview/              # /preview/blog/[slug], /preview/portfolio/[slug]
+│   │   ├── portfolio/            # /portfolio, /portfolio/[slug], /portfolio/tag/[tag]
+│   │   ├── servicios/            # /servicios, /servicios/[slug], /servicios/categoria/[cat]
+│   │   └── *.astro               # index, nosotros, 404, gracias, legales...
+│   ├── styles/                   # Design tokens, componentes, responsive
+│   └── types/                    # Blog, Portfolio, Services, Testimonials
+│
+└── scripts/                      # Migraciones a Contentful (uso interno)
 ```
 
-## 🔌 Integraciones Clave
+## 🔌 Integraciones
 
 ### 🤖 El Zutro — WhatsApp Lead Bot
 
-Mini-bot conversacional flotante que califica leads de forma interactiva y los redirige a WhatsApp con contexto completo.
+Bot conversacional flotante que califica leads antes de derivarlos a WhatsApp.
 
-**Flujo**: Nombre → Email → Servicio → Urgencia → Redirect a WhatsApp + captura en Brevo.
+**Flujo**: Nombre → Email → Servicio → Urgencia → Redirect a WhatsApp + captura silenciosa en Brevo.
 
-**Características:**
+| Archivo                                   | Rol                      |
+| ----------------------------------------- | ------------------------ |
+| `src/components/common/WhatsAppBot.astro` | Widget UI                |
+| `src/components/common/whatsapp-bot.ts`   | Motor de conversación    |
+| `src/data/bot-content.ts`                 | Pasos, easter eggs, tono |
+| `src/pages/api/lead.ts`                   | Captura en Brevo         |
 
-- **Boss Mode**: Detecta a los jefes (Juan/Camilo) y cambia el tono a respetuoso.
-- **Easter Eggs**: Respuestas personalizadas para palabras clave como "precio" o "agencia".
-- **Reiteración Fluida**: Tras un desvío, el bot retoma la conversación sin repetir saludos.
-- **Persistencia**: Estado guardado en `sessionStorage` para retomar la conversación al reabrir.
-- **Anti-Popup Blocker**: Redirección a WhatsApp sincrónica para compatibilidad total.
+### 📨 Formulario de Contacto
 
-| Archivo                                   | Rol                                          |
-| ----------------------------------------- | -------------------------------------------- |
-| `src/components/common/WhatsAppBot.astro` | Estructura HTML y estilos del widget         |
-| `src/components/common/whatsapp-bot.ts`   | Motor de conversación y gestión de estado    |
-| `src/data/bot-content.ts`                 | Contenido, easter eggs y pasos centralizados |
-| `src/pages/api/lead.ts`                   | Captura silenciosa de leads en Brevo         |
+Formulario con Turnstile (anti-bot) y envío dual vía Brevo SMTP:
 
-### 📨 Brevo (Email Marketing)
+1. **Notificación admin** → `hola@zutra.agency` con datos del lead
+2. **Confirmación usuario** → Email de bienvenida personalizado
 
-El formulario de contacto utiliza la API SMTP de Brevo para enviar dos notificaciones:
+### �️ Contentful Preview
 
-1.  **Admin Notify**: Alerta instantánea a `hola@zutra.agency` con los detalles del lead.
-2.  **User Confirm**: Confirmación automática al usuario con un diseño premium.
+Sistema de vista previa en tiempo real para contenido borrador:
 
-### 💬 WhatsApp Button
+- **`/api/preview`** → Establece cookie de sesión preview
+- **`/preview/blog/[slug]`** → Renderiza draft del blog
+- **`/preview/portfolio/[slug]`** → Renderiza draft del portfolio
+- **`/preview/servicios/[slug]`** → Renderiza draft del servicio
+- Cliente Contentful "context-aware" que detecta cookie automáticamente
 
-Botón flotante también integrado en el Layout. En dispositivos móviles, detecta el `StickyCTA` y ajusta su posición para evitar colisiones visuales.
+### 🎨 Zutra Energy
 
-### 🛡️ Cloudflare Turnstile
+Acento de color aleatorio en cada carga (amarillo, verde menta, magenta o púrpura) — genera una experiencia de marca única y memorable.
 
-Protección contra bots invisible integrada en el formulario de contacto, validada en el servidor mediante el endpoint `/api/contact`.
+## �️ Desarrollo Local
 
-### 👁️ Contentful Preview
+### Requisitos
 
-Sistema de vista previa en tiempo real para contenido borrador que funciona en producción (Cloudflare) y desarrollo.
+- Node.js ≥ 22.12.0 (ver `.nvmrc`)
+- pnpm
 
-**Arquitectura**:
+### Setup
 
-- **Ruta API**: `/api/preview` establece una cookie de sesión para habilitar el modo preview.
-- **Ruta Dinámica**: `/preview/blog/[slug]` renderiza el contenido directamente desde la API de Preview de Contentful, saltándose el cache estático.
-- **Cliente SSR**: El cliente de Contentful es "context-aware" y detecta la cookie de preview en cada request dinámica.
+```bash
+# 1. Instalar dependencias
+pnpm install
 
-## 🛠️ Desarrollo Local
+# 2. Configurar variables de entorno
+cp .env.example .env
+# Editar .env con las keys reales
 
-1. **Instalar dependencias**:
+# 3. Correr servidor de desarrollo
+pnpm dev
+```
 
-   ```bash
-   pnpm install
-   ```
+### Scripts disponibles
 
-2. **Configurar Entorno**:
-   Crea un archivo `.env` basado en `.env.example`. Requiere keys de Brevo, Turnstile y Contentful.
+| Comando           | Descripción                           |
+| ----------------- | ------------------------------------- |
+| `pnpm dev`        | Servidor de desarrollo con hot reload |
+| `pnpm build`      | Construir para producción             |
+| `pnpm preview`    | Preview local del build               |
+| `pnpm lint`       | Ejecutar ESLint                       |
+| `pnpm lint:fix`   | ESLint con auto-fix                   |
+| `pnpm format`     | Formatear con Prettier                |
+| `pnpm typecheck`  | Validar tipos TypeScript              |
+| `pnpm test`       | Ejecutar tests (Vitest)               |
+| `pnpm test:watch` | Tests en modo watch                   |
+| `pnpm deploy`     | Build + deploy a Cloudflare Pages     |
+| `pnpm deploy:dry` | Build + simulación de deploy          |
 
-3. **Correr en Local**:
-   ```bash
-   pnpm dev
-   ```
+## 🧪 Testing
 
-## 🌐 SEO & Indexación
+```bash
+# Ejecutar todos los tests
+pnpm test
 
-- **Robots.txt**: Configurado con el dominio principal `zutra.agency` y sitemap sincronizado.
-- **JsonLD**: Datos estructurados modulares (Organization, FAQPage condicional, BreadcrumbList).
-- **Sitemap**: Generación automática de `sitemap-index.xml` en cada build.
-- **Asset Optimization**: Uso masivo de Astro `<Image />` para optimización automática de formatos (WebP/AVIF) y redimensionamiento dinámico.
-- **PWA Ready**: Soporte nativo para iOS y Android con iconos generados a medida y `manifest.webmanifest`.
+# Tests con coverage
+pnpm test:coverage
+
+# Modo watch (desarrollo)
+pnpm test:watch
+```
+
+Tests cubren: sanitización de inputs, rate limiter, slugify, y adaptadores de Contentful.
+
+## 🚀 Deploy
+
+El sitio se despliega automáticamente en **Cloudflare Pages** al hacer push a `main`.
+
+### Variables de entorno (Cloudflare)
+
+Configurar en Cloudflare Dashboard → Pages → Settings → Environment Variables:
+
+| Variable                      | Propósito                                |
+| ----------------------------- | ---------------------------------------- |
+| `CONTENTFUL_SPACE_ID`         | ID del espacio en Contentful             |
+| `CONTENTFUL_ACCESS_TOKEN`     | Token de lectura (delivery)              |
+| `CONTENTFUL_PREVIEW_TOKEN`    | Token de vista previa                    |
+| `CONTENTFUL_ENVIRONMENT`      | Entorno (`master` por defecto)           |
+| `CONTENTFUL_PREVIEW_SECRET`   | Secreto para habilitar preview           |
+| `BREVO_API_KEY`               | Key de Brevo para emails transaccionales |
+| `BREVO_LIST_ID`               | Lista de contactos por defecto           |
+| `BREVO_LIST_WHATSAPP`         | Lista para leads del bot                 |
+| `BREVO_TEMPLATE_CONFIRMATION` | ID template confirmación usuario         |
+| `BREVO_TEMPLATE_ADMIN`        | ID template notificación admin           |
+| `TURNSTILE_SECRET_KEY`        | Validación server-side de Turnstile      |
+| `PUBLIC_GTM_ID`               | Google Tag Manager ID                    |
+| `SENTRY_DSN`                  | Error tracking (opcional)                |
+
+## 📊 SEO & Accesibilidad
+
+- **Structured data**: `LocalBusiness`, `FAQPage`, `BlogPosting`, `BreadcrumbList`
+- **Open Graph + Twitter Cards**: Generados dinámicamente por página
+- **Canonical URLs**: Siempre apuntan a `zutra.agency`
+- **Sitemap**: Generado automáticamente (`/sitemap-index.xml`)
+- **llms.txt**: Resumen machine-readable para IAs y LLM crawlers
+- **Skip links**, **aria labels**, **semántica HTML5**
+
+## 📝 Changelog
+
+Ver [CHANGELOG.md](./CHANGELOG.md) para el historial completo de cambios.
 
 ---
 

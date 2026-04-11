@@ -1,18 +1,18 @@
 ---
 // src/pages/index.astro
 
-import Layout from "../layouts/Layout.astro";
-import Hero from "../components/sections/Hero.astro";
-import Experiencia from "../components/sections/Experiencia.astro";
-import Metodo from "../components/sections/Metodo.astro";
-import Planes from "../components/sections/Planes.astro";
-import Servicios from "../components/sections/Servicios.astro";
-import QuienesSomos from "../components/sections/QuienesSomos.astro";
-import Casos from "../components/sections/Casos.astro";
-import Faqs from "../components/sections/Faqs.astro";
-import Contacto from "../components/sections/Contacto.astro";
-import Testimonios from "../components/sections/Testimonials.astro";
-import ServiciosCar from "../components/sections/ServiciosCar.astro";
+import Layout from "@/layouts/Layout.astro";
+import Hero from "@/components/sections/Hero.astro";
+import Experiencia from "@/components/sections/Experiencia.astro";
+import Metodo from "@/components/sections/Metodo.astro";
+import Planes from "@/components/sections/Planes.astro";
+import Servicios from "@/components/sections/Servicios.astro";
+import QuienesSomos from "@/components/sections/QuienesSomos.astro";
+import Casos from "@/components/sections/Casos.astro";
+import Faqs from "@/components/sections/Faqs.astro";
+import Contacto from "@/components/sections/Contacto.astro";
+import Testimonios from "@/components/sections/Testimonials.astro";
+import ServiciosCar from "@/components/sections/ServiciosCar.astro";
 ---
 
 <Layout
@@ -21,33 +21,29 @@ import ServiciosCar from "../components/sections/ServiciosCar.astro";
   image="/og-home.jpg"
   showFAQ={true}
 >
-  <a href="#main" class="skip-link">Saltar al contenido</a>
+  {/* 1. El Gancho: ¿Qué problema solucionan? */}
+  <Hero />
 
-  <main id="main">
-    {/* 1. El Gancho: ¿Qué problema solucionan? */}
-    <Hero />
+  {/* 2. El Método: ¿Cómo lo hacen y por qué son diferentes? */}
+  <Metodo />
 
-    {/* 2. El Método: ¿Cómo lo hacen y por qué son diferentes? */}
-    <Metodo />
+  {/* 3. La Solución: ¿Qué ofrecen exactamente? */}
 
-    {/* 3. La Solución: ¿Qué ofrecen exactamente? */}
+  <Planes />
+  <!-- <Servicios /> -->
+  <ServiciosCar />
 
-    <Planes />
-    <!-- <Servicios /> -->
-    <ServiciosCar />
+  {/* 4. La Prueba: ¿Pueden demostrarlo? (Prueba social consolidada) */}
+  <Testimonios />
+  <!-- <Experiencia /> -->
 
-    {/* 4. La Prueba: ¿Pueden demostrarlo? (Prueba social consolidada) */}
-    <Testimonios />
-    <!-- <Experiencia /> -->
+  {/* 5. Las Caras: ¿Quién está detrás de esto? */}
+  <QuienesSomos />
 
-    {/* 5. Las Caras: ¿Quién está detrás de esto? */}
-    <QuienesSomos />
+  {/* 6. Muestra Visual: Portfolio de trabajos */}
+  <Casos />
 
-    {/* 6. Muestra Visual: Portfolio de trabajos */}
-    <Casos />
-
-    {/* 7. Resolver Dudas y Convertir (El Cierre) */}
-    <Faqs />
-    <Contacto />
-  </main>
+  {/* 7. Resolver Dudas y Convertir (El Cierre) */}
+  <Faqs />
+  <Contacto />
 </Layout>

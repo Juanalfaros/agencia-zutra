@@ -96,6 +96,36 @@ const seoMeta = {
     keywords={seoMeta.keywords}
     type="article"
 >
+    <script type="application/ld+json" is:inline define:vars={{ post }}>
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "@id": `https://zutra.agency/blog/${post.slug}#article`,
+      "headline": post.title,
+      "description": post.excerpt,
+      "image": post.image,
+      "datePublished": post.publishDate,
+      "dateModified": post.updatedDate || post.publishDate,
+      "author": {
+        "@type": "Person",
+        "name": post.author.name,
+        "jobTitle": post.author.role
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Zutra Agency",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://zutra.agency/og-image.jpg"
+        }
+      },
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `https://zutra.agency/blog/${post.slug}`
+      },
+      "keywords": post.tags.join(", ")
+    }
+    </script>
     <script define:vars={{ post }}>
         // Trigger view_item event for GA4
         window.dataLayer = window.dataLayer || [];
@@ -188,6 +218,18 @@ const seoMeta = {
                                         }).format(new Date(post.publishDate))
                                     }
                                 </span>
+                                {post.updatedDate && (
+                                    <span class="meta-item">
+                                        <i class="ph-duotone ph-pencil-simple"></i>
+                                        Actualizado: {
+                                            new Intl.DateTimeFormat("es-ES", {
+                                                year: "numeric",
+                                                month: "long",
+                                                day: "numeric",
+                                            }).format(new Date(post.updatedDate))
+                                        }
+                                    </span>
+                                )}
                                 <span class="meta-item" data-contentful-field-id="readingTime">
                                     <i class="ph-duotone ph-clock"></i>
                                     {post.readingTime}

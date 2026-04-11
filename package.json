@@ -7,13 +7,20 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && echo '{\"name\":\"agencia-zutra\",\"compatibility_date\":\"2025-01-01\",\"pages_build_output_dir\":\"../client\",\"compatibility_flags\":[\"nodejs_compat\"]}' > dist/server/wrangler.json && cp -r dist/server/* dist/client/ && mv dist/client/entry.mjs dist/client/_worker.js",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "migrate": "tsx scripts/migrate-to-contentful.ts",
     "lint": "eslint . --ext .js,.ts,.astro",
     "lint:fix": "eslint . --ext .js,.ts,.astro --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "typecheck": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepare": "simple-git-hooks",
+    "deploy": "pnpm build && wrangler pages deploy dist/client",
+    "deploy:dry": "pnpm build && wrangler pages publish dist/client --dry-run"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
@@ -37,14 +44,32 @@
     "@types/node": "^20.19.37",
     "@typescript-eslint/eslint-plugin": "^8.57.2",
     "@typescript-eslint/parser": "^8.57.2",
+    "@vitest/coverage-v8": "^4.1.4",
     "contentful-management": "^11.75.0",
     "dotenv": "^17.3.1",
     "eslint": "^10.1.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-astro": "^1.6.0",
     "eslint-plugin-prettier": "^5.5.5",
+    "jsdom": "^29.0.2",
+    "lint-staged": "^16.4.0",
     "prettier": "^3.8.1",
+    "simple-git-hooks": "^2.13.1",
     "tsx": "^4.21.0",
+    "vitest": "^4.1.4",
     "wrangler": "^4.77.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,astro}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,json,md}": [
+      "prettier --write"
+    ]
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged",
+    "pre-push": "pnpm typecheck && pnpm test"
   }
 }

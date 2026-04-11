@@ -7,12 +7,14 @@ import { adaptBlogPost, adaptCategory } from "@/lib/contentful-adapters";
 import type { Post } from "@/types/blog-types";
 import type { ServiceCategory } from "@/types/service-types";
 
+export const prerender = true;
+
 export async function getStaticPaths() {
     const entries = await getEntries("category");
     return entries.items.map((item) => {
         const category = adaptCategory(item);
         return {
-            params: { category: category.id }, // id is the slug in adapter
+            params: { categoria: category.id }, // id is the slug in adapter
             props: { category },
         };
     });

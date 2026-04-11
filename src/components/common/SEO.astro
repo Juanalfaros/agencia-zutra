@@ -23,7 +23,7 @@ const {
 } = Astro.props;
 
 const siteName = "Zutra Agency Chile";
-const twitterHandle = "@tuagenciazutra"; 
+const twitterHandle = "@zutra_agency"; 
 ---
 
 <meta charset="utf-8" />
@@ -46,6 +46,12 @@ const twitterHandle = "@tuagenciazutra";
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(image, Astro.url)} />
 <meta property="og:site_name" content={siteName} />
+{type === "article" && (
+    <>
+        <meta property="article:published_time" content={new Date().toISOString()} />
+        <meta property="article:modified_time" content={new Date().toISOString()} />
+    </>
+)}
 
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />

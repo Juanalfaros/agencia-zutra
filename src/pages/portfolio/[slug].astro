@@ -1,12 +1,12 @@
 ---
 // export const prerender = true; // Disabled to allow immediate visibility of new projects via SSR
-import Layout from "../../layouts/Layout.astro";
-import BreadcrumbSchema from "../../components/common/BreadcrumbSchema.astro";
-import CaseHero from "../../components/portfolio/CaseHero.astro";
-import CaseChallenge from "../../components/portfolio/CaseChallenge.astro";
-import CaseExecution from "../../components/portfolio/CaseExecution.astro";
-import CaseFeatures from "../../components/portfolio/CaseFeatures.astro";
-import NextProjectNav from "../../components/portfolio/NextProjectNav.astro";
+import Layout from "@/layouts/Layout.astro";
+import BreadcrumbSchema from "@/components/common/BreadcrumbSchema.astro";
+import CaseHero from "@/components/portfolio/CaseHero.astro";
+import CaseChallenge from "@/components/portfolio/CaseChallenge.astro";
+import CaseExecution from "@/components/portfolio/CaseExecution.astro";
+import CaseFeatures from "@/components/portfolio/CaseFeatures.astro";
+import NextProjectNav from "@/components/portfolio/NextProjectNav.astro";
 import { getEntries, getEntriesByField, isPreviewEnabled } from "@/lib/contentful";
 import { adaptPortfolioCase } from "@/lib/contentful-adapters";
 import type { ZutraCaseStudy } from "@/types/project-types";

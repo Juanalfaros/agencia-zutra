@@ -8,15 +8,11 @@
     "jsxImportSource": "astro",
     "strict": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
-    }
+      "@/*": ["./src/*"]
+    },
+    "ignoreDeprecations": "6.0"
   },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": [
-    "dist",
-    "src/pages/portfolio/demo-zutra.astro",
-    "src/pages/schedule.astro"
-  ]
+  "exclude": ["dist"]
 }

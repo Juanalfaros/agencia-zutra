@@ -12,10 +12,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   site: 'https://zutra.agency',
-  integrations: [
-    icon(),
-    sitemap(),
-  ],
+  integrations: [icon(), sitemap()],
   image: {
     service: { entrypoint: 'astro/assets/services/sharp' }, // Forzar sharp si es posible
     remotePatterns: [
@@ -40,18 +37,32 @@ export default defineConfig({
   }),
   vite: {
     optimizeDeps: {
-      include: ['astro-icon/components', '@contentful/live-preview', 'astro/virtual-modules/transitions.js'],
+      include: [
+        'astro-icon/components',
+        '@contentful/live-preview',
+        'astro/virtual-modules/transitions.js',
+        'debug',
+      ],
       exclude: ['astro', '@astrojs/toolbar'],
     },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
-        'debug': path.resolve(__dirname, './src/lib/mock-debug.js'),
+        debug: path.resolve(__dirname, './src/lib/mock-debug.js'),
       },
     },
     ssr: {
-      external: ['node:fs', 'node:path', 'node:util', 'node:events', 'node:stream', 'node:string_decoder', 'node:buffer', 'node:url'],
-      noExternal: ['debug', 'contentful', 'axios'],
+      external: [
+        'node:fs',
+        'node:path',
+        'node:util',
+        'node:events',
+        'node:stream',
+        'node:string_decoder',
+        'node:buffer',
+        'node:url',
+      ],
+      noExternal: ['contentful'],
     },
   },
 });

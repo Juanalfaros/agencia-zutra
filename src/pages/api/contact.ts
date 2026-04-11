@@ -1,6 +1,7 @@
 export const prerender = false;
 
-import { sanitizeInput } from '../../lib/utils/sanitize';
+import { sanitizeInput } from '@/lib/utils/sanitize';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export const POST = async ({
   request,
@@ -9,6 +10,19 @@ export const POST = async ({
   request: Request;
   locals: any;
 }) => {
+  // Rate limiting: 5 requests per 15 minutes per IP
+  const clientIP =
+    request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-forwarded-for') ||
+    'unknown';
+  const rateLimit = checkRateLimit(`contact:${clientIP}`, 5, 15 * 60 * 1000);
+
+  if (!rateLimit.allowed) {
+    return new Response(
+      JSON.stringify({ message: 'Demasiados intentos. Inténtalo más tarde.' }),
+      { status: 429 }
+    );
+  }
   // Aceptamos multipart/form-data para Turnstile automático o application/json
   const contentType = request.headers.get('Content-Type') || '';
 
@@ -53,7 +67,10 @@ export const POST = async ({
     // En Cloudflare Pages, las variables de entorno están en locals.runtime.env
     const runtimeEnv = (locals?.runtime as any)?.env || {};
     const getEnv = (key: string) =>
-      runtimeEnv[key] || (import.meta.env as any)[key] || (process.env as any)[key] || '';
+      runtimeEnv[key] ||
+      (import.meta.env as any)[key] ||
+      (process.env as any)[key] ||
+      '';
 
     const TURNSTILE_SECRET_KEY = getEnv('TURNSTILE_SECRET_KEY');
     const BREVO_API_KEY = getEnv('BREVO_API_KEY').trim();
@@ -188,23 +205,23 @@ export const POST = async ({
     if (!adminRes.ok || !userRes.ok) {
       const adminStatus = adminRes.status;
       const userStatus = userRes.status;
-      const adminError = !adminRes.ok ? await adminRes.json() : null;
-      const userError = !userRes.ok ? await userRes.json() : null;
 
-      console.error('Error Brevo SMTP Admin:', adminError);
-      console.error('Error Brevo SMTP User:', userError);
+      // Log full errors internally but don't expose to client
+      if (!adminRes.ok) {
+        const adminError = await adminRes.json();
+        console.error('Error Brevo SMTP Admin:', adminError);
+      }
+      if (!userRes.ok) {
+        const userError = await userRes.json();
+        console.error('Error Brevo SMTP User:', userError);
+      }
 
       return new Response(
         JSON.stringify({
-          message: 'Error al enviar correos transaccionales',
-          details: { adminError, userError },
-          status:
-            adminStatus !== 201 && adminStatus !== 200
-              ? adminStatus
-              : userStatus,
+          message: 'Error al enviar correos. Inténtalo más tarde.',
         }),
         {
-          status: 400,
+          status: 500,
         }
       );
     }

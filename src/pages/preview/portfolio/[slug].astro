@@ -1,0 +1,30 @@
+---
+// src/pages/preview/portfolio/[slug].astro
+import PortfolioPage from "@/pages/portfolio/[slug].astro";
+import { getEntriesByField, getEntries } from "@/lib/contentful";
+import { adaptPortfolioCase } from "@/lib/contentful-adapters";
+import type { ZutraCaseStudy } from "@/types/project-types";
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+// Fetch the draft content explicitly
+const entries = await getEntriesByField("portfolioCase", "slug", slug!, true, Astro.locals);
+if (entries.items.length === 0) {
+    return new Response(`Portfolio case not found in preview mode (Slug: ${slug})`, { status: 404 });
+}
+
+const project = adaptPortfolioCase(entries.items[0]);
+
+// Fetch all cases for navigation
+const allEntries = await getEntries(
+    "portfolioCase",
+    { order: "fields.order" },
+    true,
+    Astro.locals
+);
+const allProjects = allEntries.items.map(adaptPortfolioCase) as ZutraCaseStudy[];
+---
+
+<PortfolioPage project={project} allProjects={allProjects} />

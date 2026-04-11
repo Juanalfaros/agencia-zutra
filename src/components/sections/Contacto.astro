@@ -1,5 +1,5 @@
 ---
-import { socialMedia } from "../../data/socialmedia";
+import { socialMedia } from "@/data/socialmedia";
 ---
 
 <section id="contacto" class="section contacto-section">
@@ -111,6 +111,7 @@ import { socialMedia } from "../../data/socialmedia";
                   type="tel"
                   placeholder="+56 9 1234 5678"
                   autocomplete="tel"
+                  aria-describedby="err-phone"
                   required
                   class="form-input"
                 />
@@ -395,19 +396,6 @@ import { socialMedia } from "../../data/socialmedia";
           };
 
           if (response.ok) {
-            // Tracking Exitoso con Datos Hasheados
-            import("@/lib/gtm").then(async ({ hashData, trackLead }) => {
-                const hashedEmail = email ? await hashData(email) : undefined;
-                const hashedPhone = phone ? await hashData(phone) : undefined;
-                
-                trackLead({
-                    id: result.id || 'form_contact',
-                    email: hashedEmail,
-                    phone: hashedPhone,
-                    category: formData.get('service') as string
-                });
-            }).catch(err => console.error("Tracking error:", err));
-
             btn.innerHTML = `<span>¡Mensaje Enviado!</span> <i class="ph-duotone ph-check"></i>`;
             btn.classList.add("success");
 
