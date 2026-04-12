@@ -7,22 +7,12 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 
 import sitemap from '@astrojs/sitemap';
-import sentry from '@sentry/astro';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   site: 'https://zutra.agency',
-  integrations: [
-    icon(),
-    sitemap(),
-    sentry.sentry({
-      dsn: process.env.SENTRY_DSN,
-      tracesSampleRate: 0.1,
-      replaysSessionSampleRate: 0.05,
-      replaysOnErrorSampleRate: 1.0,
-    }),
-  ],
+  integrations: [icon(), sitemap()],
   image: {
     service: { entrypoint: 'astro/assets/services/sharp' }, // Forzar sharp si es posible
     remotePatterns: [
