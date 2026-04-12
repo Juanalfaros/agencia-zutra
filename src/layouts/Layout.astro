@@ -42,7 +42,6 @@ const {
 } = Astro.props;
 
 const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
-const SENTRY_DSN = import.meta.env.SENTRY_DSN;
 ---
 
 <!doctype html>
@@ -66,32 +65,6 @@ const SENTRY_DSN = import.meta.env.SENTRY_DSN;
         j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
         })(window,document,'script','dataLayer',GTM_ID);
-      </script>
-    )}
-
-    {/* Sentry Error Tracking */}
-    { SENTRY_DSN && (
-      <script
-        is:inline
-        src="https://browser.sentry-cdn.com/9.0.0/bundle.tracing.replay.min.js"
-        integrity="sha384-7kKjF7lB0Gq4L1a6Y7Vn8F1lM6q3x3x8x8x8x8x8x8x8x8x8x8x8x8x8x8x8x8x8x8"
-        crossorigin="anonymous"
-        async
-        defer
-      ></script>
-      <script is:inline define:vars={{ dsn: SENTRY_DSN }}>
-        if (typeof Sentry !== 'undefined') {
-          Sentry.init({
-            dsn: dsn,
-            tracesSampleRate: 0.1,
-            replaysSessionSampleRate: 0.05,
-            replaysOnErrorSampleRate: 1.0,
-            integrations: [
-              Sentry.replayIntegration(),
-              Sentry.browserTracingIntegration(),
-            ],
-          });
-        }
       </script>
     )}
 

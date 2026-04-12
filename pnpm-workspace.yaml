@@ -1,4 +1,5 @@
 ignoredBuiltDependencies:
+  - '@sentry/cli'
   - simple-git-hooks
 onlyBuiltDependencies:
   - esbuild
