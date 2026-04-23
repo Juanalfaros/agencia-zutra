@@ -232,10 +232,14 @@ const { slug, title, category, expired = false } = Astro.props;
       submitBtn.querySelector('.btn-icon').setAttribute('hidden', 'true');
 
       try {
+        const accentColor = getComputedStyle(document.documentElement)
+          .getPropertyValue('--accent-main')
+          .trim();
+
         const res = await fetch('/api/consultoria-request-otp', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, slug }),
+          body: JSON.stringify({ email, slug, accentColor }),
         });
 
         if (res.status === 429) {
