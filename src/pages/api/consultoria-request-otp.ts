@@ -5,95 +5,91 @@ import { getEntry } from 'astro:content';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { signToken } from '@/lib/report-auth';
 
-export const POST: APIRoute = async (context) => {
-  const { request, locals } = context;
+export const POST: APIRoute = async ({ request, locals }) => {
+  // 1. Obtener variables de entorno de forma ultra-segura
+  const getVar = (key: string): string => {
+    try {
+      const rEnv = (locals as any)?.runtime?.env;
+      const lEnv = (locals as any)?.env;
+      const val =
+        rEnv?.[key] ||
+        lEnv?.[key] ||
+        (globalThis as any)[key] ||
+        (import.meta.env as any)[key];
+      return String(val || '').trim();
+    } catch {
+      return '';
+    }
+  };
+
+  const BREVO_API_KEY = getVar('BREVO_API_KEY');
+  const OTP_SECRET = getVar('OTP_SECRET');
+
+  // Si faltan llaves, devolvemos diagnóstico para el desarrollador
+  if (!BREVO_API_KEY || !OTP_SECRET) {
+    const runtimeEnv = (locals as any)?.runtime?.env || {};
+    return new Response(
+      JSON.stringify({
+        error: 'Incomplete Configuration',
+        message: 'No se encontraron las credenciales necesarias.',
+        diagnostic: {
+          has_brevo: !!BREVO_API_KEY,
+          has_otp_secret: !!OTP_SECRET,
+          detected_keys: Object.keys(runtimeEnv),
+        },
+      }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
 
   try {
-    const clientIP =
-      request.headers.get('cf-connecting-ip') ||
-      request.headers.get('x-forwarded-for') ||
-      'unknown';
+    const clientIP = request.headers.get('cf-connecting-ip') || '127.0.0.1';
 
-    // 1. Rate Limit
-    const rateLimit = checkRateLimit(`otp-req:${clientIP}`, 3, 15 * 60 * 1000);
+    // 2. Rate Limit
+    const rateLimit = checkRateLimit(`otp-req:${clientIP}`, 5, 15 * 60 * 1000);
     if (!rateLimit.allowed) {
       return new Response(
-        JSON.stringify({
-          message: 'Demasiados intentos. Espera unos minutos.',
-        }),
+        JSON.stringify({ message: 'Demasiados intentos. Espera 15 minutos.' }),
         { status: 429 }
       );
     }
 
-    // 2. Env Variables - Compatibilidad extendida para Cloudflare Workers/Pages
-    const env =
-      (locals as any)?.runtime?.env ||
-      (locals as any)?.env ||
-      (globalThis as any) ||
-      import.meta.env ||
-      {};
-    const BREVO_API_KEY = (env.BREVO_API_KEY || '').trim();
-    const OTP_SECRET = (env.OTP_SECRET || '').trim();
+    // 3. Validar Body
+    const body = await request.json().catch(() => ({}));
+    const email = String(body.email || '')
+      .toLowerCase()
+      .trim();
+    const slug = String(body.slug || '').trim();
 
-    if (!OTP_SECRET || !BREVO_API_KEY) {
-      console.error('[OTP Error] Configuración incompleta:', {
-        secret: !!OTP_SECRET,
-        brevo: !!BREVO_API_KEY,
-      });
-      return new Response(
-        JSON.stringify({
-          message: 'Error de configuración del servidor.',
-          debug: { s: !!OTP_SECRET, b: !!BREVO_API_KEY },
-        }),
-        { status: 500 }
-      );
-    }
-
-    // 3. Payload Validation
-    let email: string, slug: string;
-    try {
-      const data = await request.json();
-      email = String(data.email || '')
-        .toLowerCase()
-        .trim();
-      slug = String(data.slug || '').trim();
-    } catch {
-      return new Response(JSON.stringify({ message: 'Solicitud inválida.' }), {
+    if (!email || !slug || !email.includes('@')) {
+      return new Response(JSON.stringify({ message: 'Datos incompletos.' }), {
         status: 400,
       });
     }
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return new Response(JSON.stringify({ message: 'Email inválido.' }), {
-        status: 400,
-      });
-    }
-    if (!slug) {
-      return new Response(JSON.stringify({ message: 'Slug requerido.' }), {
-        status: 400,
-      });
-    }
-
-    // 4. Content Check
+    // 4. Verificar Reporte
     const entry = await getEntry('consultoria', slug);
-    if (!entry || !entry.data.protected) {
+    if (!entry) {
       return new Response(JSON.stringify({ ok: true }), { status: 200 });
     }
 
-    const allowedEmails = (entry.data.allowedEmails ?? []).map((e: string) =>
-      e.toLowerCase()
-    );
-    const adminEmails = (entry.data.adminEmails ?? []).map((e: string) =>
-      e.toLowerCase()
-    );
-    const isAllowed =
-      allowedEmails.includes(email) || adminEmails.includes(email);
-
-    if (!isAllowed) {
+    // Si no es protegido, no enviamos email (ya tiene acceso directo)
+    if (!entry.data.protected) {
       return new Response(JSON.stringify({ ok: true }), { status: 200 });
     }
 
-    // 5. Generate Token
+    // Verificar si el email está en la lista
+    const allowed = [
+      ...(entry.data.allowedEmails || []),
+      ...(entry.data.adminEmails || []),
+    ].map((e) => String(e).toLowerCase());
+
+    if (!allowed.includes(email)) {
+      // Retornamos OK para no dar pistas de qué emails existen
+      return new Response(JSON.stringify({ ok: true }), { status: 200 });
+    }
+
+    // 5. Generar Token de Acceso Temporal (10 min)
     const otpToken = await signToken(
       { email, slug, exp: Date.now() + 10 * 60 * 1000 },
       OTP_SECRET
@@ -102,49 +98,47 @@ export const POST: APIRoute = async (context) => {
     const origin = new URL(request.url).origin;
     const verifyLink = `${origin}/consultoria/verify?t=${encodeURIComponent(otpToken)}&s=${encodeURIComponent(slug)}`;
 
-    // 6. Send Email via Brevo
+    // 6. Enviar Email
     const emailRes = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
         'api-key': BREVO_API_KEY,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
       body: JSON.stringify({
         sender: { name: 'Agencia Zutra', email: 'hola@zutra.agency' },
         to: [{ email }],
-        subject: `Acceso al reporte de ${entry.data.client} — Zutra`,
+        subject: `Llave de acceso: ${entry.data.client}`,
         htmlContent: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; border: 1px solid #e4e4e7; border-radius: 12px; background: #fff;">
-            <h1 style="color: #09090b; font-size: 24px; font-weight: 800; margin-bottom: 16px;">Verifica tu acceso</h1>
-            <p style="color: #52525b; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
-              Has solicitado acceso al reporte de <strong>${entry.data.client}</strong>. Haz clic en el botón de abajo para entrar. El enlace es válido por 10 minutos.
-            </p>
-            <a href="${verifyLink}" style="display: inline-block; background: #3b82f6; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 16px;">
-              Acceder al reporte ahora →
-            </a>
-            <p style="color: #a1a1aa; font-size: 13px; margin-top: 32px; border-top: 1px solid #f4f4f5; padding-top: 24px;">
-              Si no solicitaste este acceso, puedes ignorar este correo.
-            </p>
+          <div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:20px;border:1px solid #eee;border-radius:12px;">
+            <h2 style="margin-top:0;">Tu acceso al reporte</h2>
+            <p>Hola, has solicitado entrar al reporte <strong>${entry.data.title}</strong>.</p>
+            <p>Este enlace es válido por 10 minutos:</p>
+            <a href="${verifyLink}" style="display:inline-block;padding:12px 24px;background:#3b82f6;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">Entrar al reporte →</a>
+            <p style="font-size:12px;color:#999;margin-top:20px;">Si no fuiste tú, ignora este mensaje.</p>
           </div>
         `,
       }),
     });
 
     if (!emailRes.ok) {
-      const errBody = await emailRes.json().catch(() => ({}));
-      console.error('[OTP] Brevo API Error:', errBody);
+      const err = await emailRes.json().catch(() => ({}));
+      console.error('[Brevo Error]', err);
       return new Response(
-        JSON.stringify({ message: 'Error en el servicio de correo.' }),
+        JSON.stringify({ message: 'Error en el proveedor de email.' }),
         { status: 500 }
       );
     }
 
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
-  } catch (error) {
-    console.error('[OTP Critical Error]:', error);
+  } catch (err: any) {
+    console.error('[Critical Error]', err);
     return new Response(
-      JSON.stringify({ message: 'Error interno del servidor.' }),
+      JSON.stringify({
+        message: 'Error interno inesperado.',
+        error: err.message,
+      }),
       { status: 500 }
     );
   }
