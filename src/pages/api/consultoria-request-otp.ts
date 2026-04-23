@@ -21,6 +21,13 @@ export const POST = async ({ request }: any) => {
       });
     }
 
+    console.log('[OTP] Key debug:', {
+      length: BREVO_API_KEY.length,
+      prefix: BREVO_API_KEY.substring(0, 15),
+      suffix: BREVO_API_KEY.slice(-4),
+      startsCorrectly: BREVO_API_KEY.startsWith('xkeysib-'),
+    });
+
     if (!BREVO_API_KEY) {
       console.error(
         '[OTP] BREVO_API_KEY no definida — configura .dev.vars (local) o CF Pages dashboard (producción)'
