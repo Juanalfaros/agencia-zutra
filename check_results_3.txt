@@ -1,0 +1,381 @@
+(node:15737) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+02:10:22 [@astrojs/cloudflare] Enabling sessions with Cloudflare KV with the "SESSION" KV binding.
+02:10:22 [vite] Re-optimizing dependencies because lockfile has changed
+02:10:22 [WARN] [vite] Default inspector port 9229 not available, using 9230 instead
+
+Using secrets defined in .env
+02:10:24 [vite] ✨ new dependencies optimized: @astrojs/cloudflare/entrypoints/server
+02:10:24 [vite] ✨ optimized dependencies changed. reloading
+02:10:24 [vite] [vite] program reload
+02:10:25 [vite] Re-optimizing dependencies because lockfile has changed
+02:10:25 [vite] Re-optimizing dependencies because lockfile has changed
+02:10:26 [content] Syncing content
+02:10:26 [WARN] [glob-loader] No files found matching "**/*.md" in directory "src/content/blog"
+02:10:26 [content] Synced content
+02:10:26 [types] Generated 3.79s
+02:10:26 [check] Getting diagnostics for Astro files in /Users/juanalfaro/Projects/agencia-zutra...
+[96mscripts/cleanup-contentful.ts[0m:[93m83[0m:[93m19[0m - [93mwarning[0m[90m ts(6133): [0m'keep' is declared but its value is never read.
+
+[7m83[0m             const keep = sorted[0];
+[7m  [0m [93m                  ~~~~[0m
+
+[96msrc/content.config.ts[0m:[93m58[0m:[93m22[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m58[0m             ctaLink: z.string().optional(),
+[7m  [0m [93m                     ~[0m
+[96msrc/content.config.ts[0m:[93m57[0m:[93m22[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m57[0m             ctaText: z.string().optional(),
+[7m  [0m [93m                     ~[0m
+[96msrc/content.config.ts[0m:[93m53[0m:[93m28[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m53[0m                   ctaText: z.string().optional(),
+[7m  [0m [93m                           ~[0m
+[96msrc/content.config.ts[0m:[93m52[0m:[93m33[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m52[0m                   cons: z.array(z.string()).optional(),
+[7m  [0m [93m                                ~[0m
+[96msrc/content.config.ts[0m:[93m52[0m:[93m25[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m52[0m                   cons: z.array(z.string()).optional(),
+[7m  [0m [93m                        ~[0m
+[96msrc/content.config.ts[0m:[93m51[0m:[93m33[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m51[0m                   pros: z.array(z.string()).optional(),
+[7m  [0m [93m                                ~[0m
+[96msrc/content.config.ts[0m:[93m51[0m:[93m25[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m51[0m                   pros: z.array(z.string()).optional(),
+[7m  [0m [93m                        ~[0m
+[96msrc/content.config.ts[0m:[93m50[0m:[93m32[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m50[0m                   recommended: z.boolean().optional(),
+[7m  [0m [93m                               ~[0m
+[96msrc/content.config.ts[0m:[93m49[0m:[93m32[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m49[0m                   description: z.string(),
+[7m  [0m [93m                               ~[0m
+[96msrc/content.config.ts[0m:[93m48[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m48[0m                   title: z.string(),
+[7m  [0m [93m                         ~[0m
+[96msrc/content.config.ts[0m:[93m47[0m:[93m28[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m47[0m                   variant: z.string(),
+[7m  [0m [93m                           ~[0m
+[96msrc/content.config.ts[0m:[93m46[0m:[93m17[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m46[0m                 z.object({
+[7m  [0m [93m                ~[0m
+[96msrc/content.config.ts[0m:[93m44[0m:[93m22[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m44[0m             options: z
+[7m  [0m [93m                     ~[0m
+[96msrc/content.config.ts[0m:[93m43[0m:[93m30[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m43[0m             bullets: z.array(z.string()).optional(),
+[7m  [0m [93m                             ~[0m
+[96msrc/content.config.ts[0m:[93m43[0m:[93m22[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m43[0m             bullets: z.array(z.string()).optional(),
+[7m  [0m [93m                     ~[0m
+[96msrc/content.config.ts[0m:[93m41[0m:[93m19[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m41[0m             type: z.string(),
+[7m  [0m [93m                  ~[0m
+[96msrc/content.config.ts[0m:[93m40[0m:[93m24[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m40[0m             highlight: z.string().optional(),
+[7m  [0m [93m                       ~[0m
+[96msrc/content.config.ts[0m:[93m39[0m:[93m22[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m39[0m             content: z.string(),
+[7m  [0m [93m                     ~[0m
+[96msrc/content.config.ts[0m:[93m38[0m:[93m20[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m38[0m             title: z.string(),
+[7m  [0m [93m                   ~[0m
+[96msrc/content.config.ts[0m:[93m37[0m:[93m11[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m37[0m           z.object({
+[7m  [0m [93m          ~[0m
+[96msrc/content.config.ts[0m:[93m35[0m:[93m15[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m35[0m       slides: z
+[7m  [0m [93m              ~[0m
+[96msrc/content.config.ts[0m:[93m34[0m:[93m15[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m34[0m       status: z.string(),
+[7m  [0m [93m              ~[0m
+[96msrc/content.config.ts[0m:[93m33[0m:[93m22[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m33[0m       slidesEnabled: z.boolean().optional(),
+[7m  [0m [93m                     ~[0m
+[96msrc/content.config.ts[0m:[93m32[0m:[93m28[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m32[0m       adminEmails: z.array(z.string()).optional(),
+[7m  [0m [93m                           ~[0m
+[96msrc/content.config.ts[0m:[93m32[0m:[93m20[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m32[0m       adminEmails: z.array(z.string()).optional(),
+[7m  [0m [93m                   ~[0m
+[96msrc/content.config.ts[0m:[93m31[0m:[93m30[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m31[0m       allowedEmails: z.array(z.string()).optional(),
+[7m  [0m [93m                             ~[0m
+[96msrc/content.config.ts[0m:[93m31[0m:[93m22[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m31[0m       allowedEmails: z.array(z.string()).optional(),
+[7m  [0m [93m                     ~[0m
+[96msrc/content.config.ts[0m:[93m30[0m:[93m21[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m30[0m       accessExpiry: z.coerce.date().optional(),
+[7m  [0m [93m                    ~[0m
+[96msrc/content.config.ts[0m:[93m29[0m:[93m18[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m29[0m       protected: z.boolean().optional(),
+[7m  [0m [93m                 ~[0m
+[96msrc/content.config.ts[0m:[93m27[0m:[93m17[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m27[0m       category: z.string(),
+[7m  [0m [93m                ~[0m
+[96msrc/content.config.ts[0m:[93m26[0m:[93m20[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m26[0m       description: z.string(),
+[7m  [0m [93m                   ~[0m
+[96msrc/content.config.ts[0m:[93m25[0m:[93m16[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m25[0m       analyst: z.string(),
+[7m  [0m [93m               ~[0m
+[96msrc/content.config.ts[0m:[93m24[0m:[93m13[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m24[0m       date: z.coerce.date(),
+[7m  [0m [93m            ~[0m
+[96msrc/content.config.ts[0m:[93m23[0m:[93m15[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m23[0m       client: z.string(),
+[7m  [0m [93m              ~[0m
+[96msrc/content.config.ts[0m:[93m22[0m:[93m14[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m22[0m       title: z.string(),
+[7m  [0m [93m             ~[0m
+[96msrc/content.config.ts[0m:[93m21[0m:[93m5[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m21[0m     z.object({
+[7m  [0m [93m    ~[0m
+[96msrc/content.config.ts[0m:[93m14[0m:[93m16[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m14[0m     heroImage: z.string().optional(),
+[7m  [0m [93m               ~[0m
+[96msrc/content.config.ts[0m:[93m13[0m:[93m18[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m13[0m     updatedDate: z.coerce.date().optional(),
+[7m  [0m [93m                 ~[0m
+[96msrc/content.config.ts[0m:[93m12[0m:[93m14[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m12[0m     pubDate: z.coerce.date().optional(),
+[7m  [0m [93m             ~[0m
+[96msrc/content.config.ts[0m:[93m11[0m:[93m18[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m11[0m     description: z.string().optional(),
+[7m  [0m [93m                 ~[0m
+[96msrc/content.config.ts[0m:[93m10[0m:[93m12[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m10[0m     title: z.string(),
+[7m  [0m [93m           ~[0m
+[96msrc/content.config.ts[0m:[93m9[0m:[93m11[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m9[0m   schema: z.object({
+[7m [0m [93m          ~[0m
+[96msrc/content.config.ts[0m:[93m1[0m:[93m28[0m - [93mwarning[0m[90m ts(6385): [0m'z' is deprecated.
+
+[7m1[0m import { defineCollection, z } from 'astro:content';
+[7m [0m [93m                           ~[0m
+
+[96msrc/components/blog/BlogCard.astro[0m:[93m4[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Image' is declared but its value is never read.
+
+[7m4[0m import { Image } from "astro:assets";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/common/BreadcrumbSchema.astro[0m:[93m27[0m:[93m9[0m - [93mwarning[0m[90m astro(4000): [0mThis script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+[7m27[0m <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+[7m  [0m [93m        ~~~~[0m
+
+[96msrc/components/common/JsonLD.astro[0m:[93m4[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'founders' is declared but its value is never read.
+
+[7m4[0m import { founders } from "@/data/founders";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/common/JsonLD.astro[0m:[93m3[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'faqs' is declared but its value is never read.
+
+[7m3[0m import { faqs } from "@/data/faqs";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/common/LightboxGallery.astro[0m:[93m2[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Image' is declared but its value is never read.
+
+[7m2[0m import { Image } from 'astro:assets';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/consultoria/ReportGate.astro[0m:[93m151[0m:[93m9[0m - [93mwarning[0m[90m astro(4000): [0mThis script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+[7m151[0m <script define:vars={{ slug }}>
+[7m   [0m [93m        ~~~~~~~~~~~[0m
+
+[96msrc/components/consultoria/SlidesModal.astro[0m:[93m1062[0m:[93m7[0m - [93mwarning[0m[90m ts(80009): [0mJSDoc typedef may be converted to TypeScript type.
+
+[7m1062[0m   /** @typedef {import('astro').AstroGlobal} Astro */
+[7m    [0m [93m      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/nosotros/TeamSection.astro[0m:[93m3[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Image' is declared but its value is never read.
+
+[7m3[0m import { Image } from "astro:assets";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/sections/Casos.astro[0m:[93m6[0m:[93m1[0m - [93mwarning[0m[90m ts(6192): [0mAll imports in import declaration are unused.
+
+[7m6[0m import { getTechIcon, isSimpleIcon, getSimpleIconUrl } from "@/data/techIcons";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/sections/Casos.astro[0m:[93m5[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Icon' is declared but its value is never read.
+
+[7m5[0m import { Icon } from "astro-icon/components";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/sections/Casos.astro[0m:[93m4[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Image' is declared but its value is never read.
+
+[7m4[0m import { Image } from "astro:assets";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/sections/Contacto.astro[0m:[93m386[0m:[93m17[0m - [93mwarning[0m[90m ts(6133): [0m'phone' is declared but its value is never read.
+
+[7m386[0m           const phone = formData.get('phone') as string;
+[7m   [0m [93m                ~~~~~[0m
+[96msrc/components/sections/Contacto.astro[0m:[93m385[0m:[93m17[0m - [93mwarning[0m[90m ts(6133): [0m'email' is declared but its value is never read.
+
+[7m385[0m           const email = formData.get('email') as string;
+[7m   [0m [93m                ~~~~~[0m
+
+[96msrc/components/sections/Hero.astro[0m:[93m4[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Image' is declared but its value is never read.
+
+[7m4[0m import { Image } from "astro:assets";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/sections/QuienesSomos.astro[0m:[93m2[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Image' is declared but its value is never read.
+
+[7m2[0m import { Image } from "astro:assets";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/sections/ServiciosCar.astro[0m:[93m411[0m:[93m13[0m - [93mwarning[0m[90m ts(6133): [0m'isHovered' is declared but its value is never read.
+
+[7m411[0m         let isHovered = false;
+[7m   [0m [93m            ~~~~~~~~~[0m
+
+[96msrc/data/bot-content.ts[0m:[93m60[0m:[93m26[0m - [93mwarning[0m[90m ts(6133): [0m'botState' is declared but its value is never read.
+
+[7m60[0m export const getSteps = (botState: BotState): Step[] => [
+[7m  [0m [93m                         ~~~~~~~~[0m
+
+[96msrc/layouts/Layout.astro[0m:[93m216[0m:[93m13[0m - [93mwarning[0m[90m astro(4000): [0mThis script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+[7m216[0m     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+[7m   [0m [93m            ~~~[0m
+
+[96msrc/lib/contentful-adapters.ts[0m:[93m198[0m:[93m9[0m - [93mwarning[0m[90m ts(6133): [0m'contentType' is declared but its value is never read.
+
+[7m198[0m   const contentType =
+[7m   [0m [93m        ~~~~~~~~~~~[0m
+
+[96msrc/lib/report-auth.ts[0m:[93m35[0m:[93m47[0m - [93mwarning[0m[90m ts(6133): [0m'secret' is declared but its value is never read.
+
+[7m35[0m export async function signToken(payload: any, secret: string): Promise<string> {
+[7m  [0m [93m                                              ~~~~~~[0m
+[96msrc/lib/report-auth.ts[0m:[93m11[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'secret' is declared but its value is never read.
+
+[7m11[0m   secret: string
+[7m  [0m [93m  ~~~~~~[0m
+
+[96msrc/pages/index.astro[0m:[93m9[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Servicios' is declared but its value is never read.
+
+[7m9[0m import Servicios from "@/components/sections/Servicios.astro";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/index.astro[0m:[93m6[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Experiencia' is declared but its value is never read.
+
+[7m6[0m import Experiencia from "@/components/sections/Experiencia.astro";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/api/contact.ts[0m:[93m207[0m:[93m13[0m - [93mwarning[0m[90m ts(6133): [0m'userStatus' is declared but its value is never read.
+
+[7m207[0m       const userStatus = userRes.status;
+[7m   [0m [93m            ~~~~~~~~~~[0m
+[96msrc/pages/api/contact.ts[0m:[93m206[0m:[93m13[0m - [93mwarning[0m[90m ts(6133): [0m'adminStatus' is declared but its value is never read.
+
+[7m206[0m       const adminStatus = adminRes.status;
+[7m   [0m [93m            ~~~~~~~~~~~[0m
+
+[96msrc/pages/blog/[slug].astro[0m:[93m129[0m:[93m13[0m - [93mwarning[0m[90m astro(4000): [0mThis script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+[7m129[0m     <script define:vars={{ post }}>
+[7m   [0m [93m            ~~~~~~~~~~~[0m
+
+[96msrc/pages/blog/categoria/[categoria].astro[0m:[93m7[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Post' is declared but its value is never read.
+
+[7m7[0m import type { Post } from "@/types/blog-types";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/consultoria/verify.astro[0m:[93m99[0m:[93m2[0m - [91merror[0m[90m ts(2322): [0mType '{ children: any; title: string; showFooter: false; showCTA: false; }' is not assignable to type 'IntrinsicAttributes & Props'.
+  Property 'description' is missing in type '{ children: any; title: string; showFooter: false; showCTA: false; }' but required in type 'Props'.
+
+[7m99[0m <Layout title="Verificando acceso | Zutra" showFooter={false} showCTA={false}>
+[7m  [0m [91m ~~~~~~[0m
+[96msrc/pages/consultoria/verify.astro[0m:[93m5[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'signToken' is declared but its value is never read.
+
+[7m5[0m import { signToken } from '@/lib/report-auth'; // Seguimos usando esto para la sesión de browser que sí funciona
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/portfolio/[slug].astro[0m:[93m98[0m:[93m13[0m - [93mwarning[0m[90m astro(4000): [0mThis script will be treated as if it has the `is:inline` directive because it contains an attribute. Therefore, features that require processing (e.g. using TypeScript or npm packages in the script) are unavailable.
+
+See docs for more details: https://docs.astro.build/en/guides/client-side-scripts/#script-processing.
+
+Add the `is:inline` directive explicitly to silence this hint.
+
+[7m98[0m     <script define:vars={{ trackingData }}>
+[7m  [0m [93m            ~~~~~~~~~~~[0m
+
+[96msrc/pages/portfolio/index.astro[0m:[93m10[0m:[93m1[0m - [93mwarning[0m[90m ts(6192): [0mAll imports in import declaration are unused.
+
+[7m10[0m import { getTechIcon, isSimpleIcon, getSimpleIconUrl } from "@/data/techIcons";
+[7m  [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/portfolio/index.astro[0m:[93m9[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Icon' is declared but its value is never read.
+
+[7m9[0m import { Icon } from "astro-icon/components";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/portfolio/index.astro[0m:[93m3[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Image' is declared but its value is never read.
+
+[7m3[0m import { Image } from "astro:assets";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/preview/servicios/[slug].astro[0m:[93m6[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Service' is declared but its value is never read.
+
+[7m6[0m import type { Service } from "@/types/service-types";
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+Result (119 files): 
+- 1 error
+- 0 warnings
+- 77 hints
+
