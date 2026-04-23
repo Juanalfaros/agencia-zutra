@@ -1,0 +1,479 @@
+---
+title: "Auditoría Digital Integral — sifup.cl"
+client: "SIFUP"
+imageHeader: "./sifup/homesifup.webp"
+date: 2026-04-23
+analyst: "Juan Alfaro"
+description: "Análisis del estado técnico, de seguridad, rendimiento, UX/SEO y presencia digital del Sindicato de Futbolistas Profesionales de Chile. Incluye diagnóstico de la app móvil y plan de acción priorizado."
+category: auditoria-web
+protected: true
+accessExpiry: 2027-04-23
+allowedEmails:
+  - eduardovidelapavisic@gmail.com
+adminEmails:
+  - juan@zutra.cl
+  - hola@zutra.cl
+  - camilo@zutra.cl
+slidesEnabled: true
+status: published
+slides:
+  - title: "Calificación F en Seguridad"
+    content: "securityheaders.com asignó la peor calificación posible: seis headers HTTP de seguridad completamente ausentes. El sitio gestiona datos laborales, fondos de retiro y beneficios económicos de cientos de jugadores profesionales."
+    highlight: "Calificación F — con Cloudflare instalado y sin configurar"
+    type: finding
+    image: "./sifup/clasificacion.png"
+  - title: "La App Oficial: +500 descargas"
+    content: "La SIFUP APP tiene +500 descargas totales — no activas, totales. en Android. Lleva casi 20 meses sin actualización. Su descripción habla de fotos y galerías, no de los beneficios reales que ofrece el sindicato."
+    highlight: "500 descargas · Solo Android · 8 meses sin actualizar"
+    type: finding
+    image: "./sifup/app-sifup.png"
+  - title: "LCP móvil de 8.6 s — causa conocida"
+    content: "El Largest Contentful Paint de laboratorio en móvil es 8.6 segundos. La causa más probable es que el caché de Cloudflare está desactivado: cada visita al sitio va directo al servidor de origen. La infraestructura para resolverlo ya está pagada — solo requiere configuración."
+    highlight: "cf-cache-status: BYPASS — Cloudflare configurado como si no existiera"
+    type: finding
+    image: "./sifup/lcp-movil-sifup.png"
+  - title: "Accesibilidad: 57/100 en móvil"
+    content: "Para una organización sindical cuya misión es representar y servir a sus asociados, tener una experiencia móvil con accesibilidad reprobada no es solo un problema técnico — es una contradicción con los valores de la organización."
+    highlight: "57/100 en móvil — la mitad del score recomendado"
+    type: finding
+    image: "./sifup/accesibilidad.png"
+  - title: "Sin medición activa"
+    content: "Tag Assistant no detectó etiquetas de seguimiento activas. No existe información sobre cuántos jugadores visitan el sitio, qué secciones consultan o si encuentran el camino hacia los beneficios que buscan. Sin datos, cualquier decisión de mejora es intuición, no estrategia."
+    highlight: "Analytics ausente en un sitio con 40K seguidores en redes"
+    type: finding
+    image: "./sifup/tag.png"
+  - title: "UI/UX: 8 deficiencias críticas de diseño"
+    content: "El score de 57/100 en accesibilidad no es un número aislado — es el resultado de decisiones de diseño acumuladas: tipografía sin jerarquía, objetivos táctiles insuficientes, vínculos sin nombre, encabezados fuera de orden, sin landmark principal, imágenes sin dimensiones explícitas, CSS y JS sin usar, y un hero con texto superpuesto sobre texto."
+    highlight: "57/100 accesibilidad · +1,209 KiB en imágenes · 63 KiB CSS sin usar"
+    type: finding
+  - title: "WordPress ya cumplió su ciclo"
+    content: "El problema de fondo no es de configuración: es de plataforma. WordPress genera deuda técnica acumulada que ningún parche resuelve de raíz — plugins conflictivos, caché complejo, imágenes sin pipeline de optimización, y una arquitectura que no fue diseñada para servir un portal autenticado junto a un sitio público de alto rendimiento."
+    highlight: "La arquitectura moderna existe y está probada en producción"
+    type: finding
+  - title: "Stack recomendado: Astro + Payload CMS + PWA"
+    content: "Astro como framework de renderizado estático envía cero JavaScript al cliente por defecto — LCP estructuralmente bajo sin depender de configuración de caché. Payload CMS aporta autenticación y roles de usuario listos para el portal del asociado. La PWA reemplaza la app nativa: funciona en iOS y Android, se actualiza automáticamente y no requiere descarga."
+    highlight: "Una sola base de código · iOS + Android · Autenticación nativa · Sin app store"
+    type: recommendation
+  - title: "Plan de acción — resumen"
+    content: ""
+    highlight: "3 horizontes de mejora con impacto directo en seguridad, experiencia del asociado y plataforma digital"
+    type: recommendation
+    bullets:
+      - "🔴 Urgente: implementar los 6 headers de seguridad desde el panel de Cloudflare"
+      - "🔴 Urgente: activar caché de Cloudflare — reducir LCP móvil de 8.6s a menos de 2.5s"
+      - "🔴 Urgente: auditar WooCommerce y eliminar si no está en uso activo"
+      - "🟡 Corto plazo: crear acceso visible al portal del asociado desde el sitio web"
+      - "🟡 Corto plazo: reducir menú de 10 a 5 ítems con jerarquía clara"
+      - "🟡 Corto plazo: instalar Google Analytics 4 y configurar Search Console"
+      - "🟢 Mediano plazo: portal web del asociado integrado (PWA accesible desde iOS y Android)"
+      - "🟢 Mediano plazo: mejorar accesibilidad móvil de 57 a 90+"
+  - title: "Las tres opciones de intervención"
+    content: ""
+    highlight: "Opción 3 recomendada — plataforma unificada que integra sitio, portal del asociado y app"
+    type: summary
+    options:
+      - variant: "Opción 1"
+        title: "Parches de configuración"
+        description: "Activar caché de Cloudflare, implementar headers de seguridad, instalar Analytics. Resuelve los problemas críticos de configuración sin rediseño. Estimado: 1–2 semanas."
+        recommended: false
+      - variant: "Opción 2"
+        title: "Rediseño sobre Astro + Sanity"
+        description: "Nuevo sitio público en Astro con Sanity CMS. LCP < 1.5s estructural, accesibilidad 90+, imágenes optimizadas automáticamente. Mejora la experiencia pero no resuelve la fragmentación app/web."
+        recommended: false
+      - variant: "Opción 3"
+        title: "Astro + Payload CMS + PWA"
+        description: "Sitio público + portal del asociado autenticado + PWA instalable desde iOS y Android. Un solo canal digital, una sola base de código, sin app store."
+        recommended: true
+  - title: "¿Listo para modernizar la plataforma digital del SIFUP?"
+    content: "Hablemos sobre cómo ejecutar este plan y construir el canal digital que los asociados del SIFUP merecen."
+    highlight: "Siguientes Pasos"
+    type: "cta"
+    ctaText: "Agendar Sesión Estratégica"
+    ctaLink: "/#contacto"
+
+---
+
+import ScoreGrid from '@/components/consultoria/viz/ScoreGrid.astro';
+import VitalsTable from '@/components/consultoria/viz/VitalsTable.astro';
+import MetricHighlight from '@/components/consultoria/viz/MetricHighlight.astro';
+import StackTable from '@/components/consultoria/viz/StackTable.astro';
+import FindingCard from '@/components/consultoria/viz/FindingCard.astro';
+import PriorityBlock from '@/components/consultoria/viz/PriorityBlock.astro';
+import OptionCard from '@/components/consultoria/viz/OptionCard.astro';
+import BarChart from '@/components/consultoria/viz/BarChart.astro';
+import CallToAction from '@/components/consultoria/viz/CallToAction.astro';
+
+## Resumen Ejecutivo
+
+El Sindicato de Futbolistas Profesionales de Chile (SIFUP) es una organización con 66 años de historia, reconocimiento público consolidado y una presencia digital que refleja parcialmente esa trayectoria. El sitio web existe, funciona y tiene contenido relevante que Google indexa correctamente. Sin embargo, la infraestructura digital del SIFUP está fragmentada, mal configurada en aspectos críticos de seguridad, y no está cumpliendo su función más importante: ser el canal principal a través del cual los asociados acceden a los beneficios, recursos e información que el sindicato les ofrece.
+
+<FindingCard type="critical" title="El diagnóstico central">
+El SIFUP no tiene un problema de visibilidad externa — aparece primero en Google, tiene Knowledge Panel completo y 40K seguidores en Instagram. El problema es interno: los propios asociados no tienen un canal digital unificado, funcional y accesible para relacionarse con el sindicato que los representa. La evidencia más elocuente: la app oficial tiene **500 descargas totales**.
+</FindingCard>
+
+---
+
+## 1. Stack Tecnológico
+
+<StackTable rows={[
+  { component: "CMS", installed: "WordPress", current: "—", gap: "Versión no expuesta públicamente", status: "good" },
+  { component: "Plugin e-commerce", installed: "WooCommerce", current: "—", gap: "Uso interno a clarificar", status: "warning" },
+  { component: "Lenguaje", installed: "PHP", current: "—", gap: "Versión no expuesta", status: "good" },
+  { component: "Base de datos", installed: "MySQL", current: "—", gap: "Versión no expuesta", status: "good" },
+  { component: "CDN / Seguridad", installed: "Cloudflare", current: "—", gap: "Instalado pero mal configurado", status: "warning" },
+]} />
+
+A diferencia de otros sitios WordPress, el de SIFUP oculta las versiones de su stack — lo cual es una buena práctica de seguridad. Sin embargo, esa opacidad no reemplaza la necesidad de mantener los componentes actualizados. Se recomienda verificar internamente las versiones de WordPress, PHP y plugins activos.
+
+<FindingCard type="warning" title="WooCommerce: el hallazgo más llamativo del stack">
+Este plugin de e-commerce es uno de los más pesados del ecosistema WordPress y no es la herramienta obvia para un sindicato de futbolistas. Si no está siendo utilizado activamente, representa peso innecesario en la carga del sitio y una superficie de ataque adicional. Si se está usando para gestión de membresías, requiere configuración de seguridad específica para proteger los datos de los asociados.
+</FindingCard>
+
+<FindingCard type="critical" title="Cloudflare está instalado — y el caché está desactivado">
+El análisis de headers HTTP revela `cf-cache-status: BYPASS`: cada visita al sitio va directamente al servidor de origen sin aprovechar la red de distribución de contenido. Esto equivale a pagar por un sistema de autopistas y seguir usando caminos de tierra. Es la causa técnica más probable del LCP móvil de 8.6 segundos, y su corrección no requiere rediseño — solo configuración.
+</FindingCard>
+
+---
+
+## 2. Rendimiento Web — PageSpeed Insights
+
+Análisis realizado con Google PageSpeed Insights (Lighthouse 13.0.1) el 23 de abril de 2026. A diferencia de la mayoría de los sitios WordPress, SIFUP tiene datos reales de usuarios (Chrome UX Report) disponibles — las métricas no son solo de laboratorio sino comportamiento real de visitantes en los últimos 28 días.
+
+<ScoreGrid
+  mobile={{ label: "Celular", device: "mobile", performance: 72, accessibility: 57, practices: 96, seo: 77 }}
+  desktop={{ label: "Escritorio", device: "desktop", performance: 97, accessibility: 76, practices: 96, seo: 77 }}
+/>
+
+### Core Web Vitals — Datos reales de usuarios (CrUX)
+
+<VitalsTable device="Dispositivos reales" deviceType="mobile" vitals={[
+  { metric: "Largest Contentful Paint", value: "1.7 s", threshold: "2.5 s", status: "good" },
+  { metric: "Interaction to Next Paint", value: "104 ms", threshold: "200 ms", status: "good" },
+  { metric: "Cumulative Layout Shift", value: "0.05", threshold: "0.1", status: "good" },
+  { metric: "First Contentful Paint", value: "1.2 s", threshold: "1.8 s", status: "good" },
+  { metric: "Time to First Byte", value: "0.6 s", threshold: "0.8 s", status: "good" },
+]} />
+
+<FindingCard type="opportunity" title="Google certifica que los Core Web Vitals están aprobados">
+Las métricas reales de usuarios están todas en verde — el sitio no está siendo penalizado algorítmicamente por rendimiento en el ranking de Google. Este es un activo técnico importante y diferenciador frente a muchos sitios WordPress.
+</FindingCard>
+
+### Métricas de laboratorio (Lighthouse)
+
+<VitalsTable device="Laboratorio — Celular" deviceType="mobile" vitals={[
+  { metric: "First Contentful Paint", value: "2.1 s", threshold: "1.8 s", status: "needs-improvement" },
+  { metric: "Largest Contentful Paint", value: "8.6 s", threshold: "2.5 s", status: "poor" },
+  { metric: "Speed Index", value: "4.1 s", threshold: "3.4 s", status: "needs-improvement" },
+  { metric: "Total Blocking Time", value: "0 ms", threshold: "200 ms", status: "good" },
+  { metric: "Cumulative Layout Shift", value: "0", threshold: "0.1", status: "good" },
+]} />
+
+<MetricHighlight
+  value="8.6 s"
+  label="LCP Móvil — laboratorio"
+  sublabel="El LCP real de usuarios es 1.7 s, pero visitantes con conexiones lentas experimentan tiempos inaceptables. El caché desactivado de Cloudflare es la causa principal."
+  status="critical"
+/>
+
+La brecha entre el rendimiento desktop (97/100) y móvil (72/100) tiene una causa clara: imágenes pesadas no optimizadas para conexiones móviles combinadas con el caché desactivado.
+
+<MetricHighlight
+  value="57/100"
+  label="Accesibilidad móvil — el número más preocupante"
+  sublabel="Para una organización sindical cuya misión es representar a todos sus asociados, este score no es solo un problema técnico — es una contradicción institucional."
+  status="critical"
+/>
+
+---
+
+## 3. Seguridad — Calificación F
+
+Este es el hallazgo más crítico y urgente de toda la auditoría.
+
+<FindingCard type="critical" title="securityheaders.com: F — la peor calificación posible">
+Seis headers de seguridad HTTP completamente ausentes en un sitio que gestiona datos personales de jugadores profesionales, fondos de retiro, información laboral y beneficios económicos.
+</FindingCard>
+
+<StackTable rows={[
+  { component: "Strict-Transport-Security", installed: "Ausente", current: "Requerido", gap: "Los navegadores no fuerzan HTTPS — posible intercepción", status: "critical" },
+  { component: "Content-Security-Policy", installed: "Ausente", current: "Requerido", gap: "Sin protección contra inyección de código malicioso (XSS)", status: "critical" },
+  { component: "X-Frame-Options", installed: "Ausente", current: "Requerido", gap: "El sitio puede embeberse en iframes — riesgo de clickjacking", status: "critical" },
+  { component: "X-Content-Type-Options", installed: "Ausente", current: "Requerido", gap: "El navegador puede interpretar archivos de forma incorrecta", status: "critical" },
+  { component: "Referrer-Policy", installed: "Ausente", current: "Requerido", gap: "Información de navegación puede filtrarse a terceros", status: "warning" },
+  { component: "Permissions-Policy", installed: "Ausente", current: "Requerido", gap: "Sin control sobre las APIs del navegador que puede usar el sitio", status: "warning" },
+]} />
+
+<FindingCard type="opportunity" title="La solución ya está pagada y contratada">
+Cloudflare — la herramienta que permite implementar todos estos headers en minutos desde el panel de administración, sin tocar el código del sitio — ya está instalada. La infraestructura para resolver la calificación F existe: simplemente no está configurada. El email `prensa@sifup.cl` fue verificado en Have I Been Pwned y no presenta brechas conocidas, lo cual es positivo.
+</FindingCard>
+
+---
+
+## 4. Presencia en Google y SEO
+
+### 4.1 Autoridad de Marca — Sólida
+
+La búsqueda directa de "SIFUP" en Google muestra un Knowledge Panel completo con información institucional, fotos, datos históricos (fundación 1960), presidente actual y sitelinks con subpáginas relevantes como Jugadores Libres 2025, Directorio y Fondo de Retiro. Wikipedia tiene artículo dedicado.
+
+<MetricHighlight
+  value="#1"
+  label="'sindicato futbolistas Chile' — primer resultado orgánico"
+  sublabel="No hay competencia relevante. SIFUP es la referencia indiscutida en esta búsqueda."
+  status="opportunity"
+/>
+
+### 4.2 Keywords — Enfoque de Servicio, no de Captación
+
+El desafío SEO del SIFUP no es atraer nuevos clientes sino asegurarse de que sus propios asociados encuentren la información que necesitan. La búsqueda "beneficios jugadores fútbol Chile" activa un bloque de IA de Google que describe los beneficios del SIFUP correctamente — incluyendo el Fondo de Retiro con datos específicos. El contenido del sitio está siendo leído e interpretado correctamente por Google, pero ese tráfico aterriza en páginas estáticas sin camino hacia el portal del asociado.
+
+<BarChart
+  title="Volumen de búsqueda (Búsquedas mensuales)"
+  data={[
+    { label: "sifup", value: 880, highlight: true },
+    { label: "sindicato futbolistas Chile", value: 110 },
+    { label: "jugadores libres Chile fútbol", value: 90 },
+    { label: "fondo retiro futbolistas", value: 40 },
+  ]}
+/>
+
+### 4.3 Sitemap — Actualizado con Anomalía
+
+El sitemap está actualizado (abril 2026) y el `robots.txt` bloquea wp-admin correctamente. La anomalía: `productcat-sitemap.xml` expone categorías de productos de WooCommerce en el índice de Google. Si estas páginas no tienen contenido relevante para un visitante externo, están generando URLs huérfanas que diluyen la autoridad de las páginas importantes.
+
+### 4.4 Analytics — Sin Medición Confirmada
+
+<FindingCard type="critical" title="Sin Analytics activo">
+Tag Assistant no detectó etiquetas de seguimiento. No existe información sobre cuántos jugadores visitan el sitio, qué secciones consultan, en qué punto abandonan o si encuentran el camino hacia los beneficios. Sin datos, cualquier decisión de mejora es intuición, no estrategia.
+</FindingCard>
+
+---
+
+## 5. Presencia en Redes Sociales
+
+SIFUP tiene una presencia en redes sociales significativa y activa que contrasta con la desconexión del sitio web.
+
+<MetricHighlight
+  value="40.300"
+  label="Seguidores en Instagram (@sifupchile)"
+  sublabel="Audiencia digital real y comprometida — completamente desconectada del sitio web y del portal del asociado."
+  status="opportunity"
+/>
+
+Con 40.300 seguidores en Instagram y 19.300 en Facebook (4.3★ con 55 reseñas), el SIFUP tiene una audiencia digital real. Sin embargo, ninguna de estas redes está integrada funcionalmente en el sitio web como canal de información ni como puerta de entrada al portal del asociado. El contenido de redes y el contenido del sitio operan como mundos paralelos.
+
+---
+
+## 6. La App Móvil — El Dato Más Revelador
+
+<FindingCard type="critical" title="500 descargas totales — para cientos de asociados profesionales">
+La SIFUP APP es el indicador más elocuente del estado de la experiencia digital del asociado: 500 descargas totales, solo disponible en Android, 8 meses sin actualización, y su descripción habla de "Fotos, Videos, Galerías" — no de los beneficios reales que ofrece el sindicato.
+</FindingCard>
+
+<StackTable rows={[
+  { component: "Descargas", installed: "500+", current: "—", gap: "Crítico para el universo de asociados", status: "critical" },
+  { component: "Última actualización", installed: "25 agosto 2024", current: "Abril 2026", gap: "8 meses sin mantenimiento", status: "critical" },
+  { component: "Plataforma", installed: "Solo Android", current: "iOS + Android", gap: "Usuarios iPhone sin acceso", status: "critical" },
+  { component: "Descripción", installed: "Fotos, Videos, Galerías", current: "—", gap: "No comunica los beneficios reales", status: "warning" },
+]} />
+
+La ausencia de versión iOS es especialmente significativa: si una proporción relevante de los jugadores profesionales usa iPhone — como es habitual en el segmento socioeconómico del fútbol profesional chileno — la mitad de los asociados directamente no tiene acceso al canal digital del sindicato.
+
+---
+
+## 7. Experiencia de Usuario (UX) y Diseño
+
+### 7.1 Arquitectura de Información Sobrecargada
+
+<FindingCard type="warning" title="10 ítems en el menú principal — sin jerarquía">
+*Inicio / Sindicato / Normas / Salud Mental / Jugadores Libres / Bono Pyme / Fondo de Retiro / Fondo de Lesiones Graves / Revista / Flickr / Contacto.* Esta estructura refleja una organización por departamentos internos, no por las necesidades del usuario. "Flickr" como ítem de menú principal en 2026 ilustra que la arquitectura no ha sido revisada con criterio estratégico en mucho tiempo.
+</FindingCard>
+
+### 7.2 Desconexión Total entre Sitio Web y Portal del Asociado
+
+El hallazgo más importante desde la perspectiva de experiencia de usuario es la ausencia completa de un punto de entrada al área privada del asociado desde el sitio web. Un jugador profesional que quiere acceder a sus beneficios, consultar su estado en el fondo de retiro o gestionar cualquier trámite con el sindicato no encuentra un botón de "Acceso Asociados", un link a la app o cualquier indicación de cómo acceder a los servicios del sindicato.
+
+<MetricHighlight
+  value="0"
+  label="Puntos de entrada al portal del asociado en el sitio web"
+  sublabel="El sitio web y la app coexisten como canales paralelos sin conexión — una barrera real de acceso a los beneficios."
+  status="critical"
+/>
+
+### 7.3 Hero con Conflicto Visual
+
+El hero del sitio — la primera impresión que recibe cualquier visitante — es actualmente una fotografía de prensa con texto superpuesto, generando un conflicto visual grave: el texto del slider y el texto de la imagen de prensa se superponen, haciendo ambos ilegibles. Con 40.300 seguidores en Instagram con contenido visual de calidad, la brecha entre la producción de contenido en redes y la calidad visual del sitio web es notable.
+
+### 7.4 Deficiencias de Diseño UI — Diagnóstico Completo
+
+<FindingCard type="warning" title="El sitio refleja decisiones visuales de hace más de una década">
+WordPress con un tema genérico y plugins acumulados no es una plataforma de diseño — es un punto de partida que nunca fue reemplazado. El resultado es un sitio que funciona, pero que no comunica la autoridad institucional que el SIFUP tiene en el mundo del fútbol chileno.
+</FindingCard>
+
+Las deficiencias de UI identificadas van más allá del hero:
+
+**Tipografía sin jerarquía clara.** Los tamaños de texto entre títulos, subtítulos y cuerpo no siguen una escala consistente, lo que dificulta la lectura rápida en móvil — el dispositivo desde el cual probablemente accede la mayoría de los asociados.
+
+**Paleta de color sin sistema.** El uso de colores varía entre secciones sin un sistema de diseño definido. Los estados interactivos (hover, focus, active) de botones y vínculos no son predecibles ni accesibles, lo que explica en parte el score de accesibilidad de 57/100.
+
+**Imágenes sin dimensiones explícitas.** El diagnóstico de Lighthouse confirma que los elementos de imagen no tienen atributos `width` ni `height` explícitos — esto genera Layout Shift en la carga y contribuye directamente al score de accesibilidad y al rendimiento percibido.
+
+**Vínculos sin nombres reconocibles.** Lighthouse detectó vínculos sin texto descriptivo — un error de accesibilidad que afecta a lectores de pantalla y también penaliza el SEO semántico.
+
+**Sin punto de referencia principal (`<main>`).** El documento HTML no define un landmark principal, lo que impide que tecnologías de asistencia naveguen correctamente por la estructura de la página.
+
+**Encabezados fuera de secuencia.** Los elementos `<h1>`, `<h2>`, `<h3>` no están ordenados en jerarquía descendente, señal de un template que no fue diseñado con semántica HTML como prioridad.
+
+**Objetivos táctiles insuficientes.** En móvil, botones y vínculos no tienen tamaño mínimo de 44×44 px ni separación suficiente — estándar básico de usabilidad táctil que el sitio no cumple.
+
+**CSS y JS no utilizados.** Lighthouse detectó 63 KiB de CSS y 20 KiB de JavaScript sin usar — residuos acumulados de plugins que se instalaron y desactivaron pero cuyo código sigue cargándose en cada visita.
+
+<MetricHighlight
+  value="+1,209 KiB"
+  label="Ahorro potencial en optimización de imágenes — Lighthouse"
+  sublabel="Las imágenes son el factor de mayor peso en el LCP de 8.6s. Sin un pipeline de optimización automático, este problema se repite con cada imagen nueva que el equipo sube al CMS."
+  status="critical"
+/>
+
+---
+
+## 8. Stack Técnico Recomendado — Astro + Headless CMS
+
+El problema de fondo no es solo de configuración ni de diseño. Es de plataforma. WordPress fue una solución correcta en su momento, pero hoy genera deuda técnica acumulada: plugins conflictivos, caché complejo de gestionar, imágenes sin pipeline de optimización, y una arquitectura que no fue diseñada para servir un portal de asociados autenticado junto a un sitio público de alto rendimiento.
+
+<FindingCard type="opportunity" title="La arquitectura moderna existe y está probada en producción">
+Astro como framework de renderizado estático + un Headless CMS para la gestión de contenido es la combinación que resuelve de raíz los problemas de rendimiento, seguridad y mantenibilidad que este informe diagnostica.
+</FindingCard>
+
+### Por qué Astro
+
+Astro es un framework de generación de sitios estáticos que por defecto envía **cero JavaScript al cliente** — solo el que el componente específico necesita. Esto implica:
+
+<StackTable rows={[
+  { component: "Rendimiento", installed: "WordPress + plugins", current: "Astro (SSG/SSR)", gap: "LCP < 1.5s estructural, no por configuración", status: "good" },
+  { component: "Seguridad", installed: "PHP + MySQL expuestos", current: "HTML estático + API separada", gap: "Sin superficie de ataque en el sitio público", status: "good" },
+  { component: "CSS sin usar", installed: "+63 KiB (Lighthouse)", current: "CSS por componente (scoped)", gap: "Solo se carga el CSS de lo que se renderiza", status: "good" },
+  { component: "JS sin usar", installed: "+20 KiB (Lighthouse)", current: "Islands Architecture", gap: "JS solo donde hay interactividad real", status: "good" },
+  { component: "Imágenes", installed: "Sin optimización automática", current: "Astro Image + pipeline automático", gap: "WebP/AVIF automático, lazy load, dimensiones explícitas", status: "good" },
+  { component: "Accesibilidad", installed: "57/100 — template genérico", current: "HTML semántico por diseño", gap: "Encabezados, landmarks y alt texts controlados", status: "good" },
+]} />
+
+### Por qué un Headless CMS — Sanity o Payload CMS
+
+El equipo del SIFUP necesita poder publicar contenido (noticias, jugadores libres, actualizaciones del fondo de retiro) sin depender de un desarrollador. Un Headless CMS lo permite sin sacrificar el rendimiento del frontend.
+
+<StackTable rows={[
+  { component: "Sanity", installed: "—", current: "Opción A", gap: "Studio visual potente, API en tiempo real, plan gratuito generoso. Ideal si el equipo editorial es el foco.", status: "good" },
+  { component: "Payload CMS", installed: "—", current: "Opción B", gap: "Open source, self-hosted, autenticación nativa. Ideal si el portal del asociado requiere gestión de usuarios y roles.", status: "good" },
+]} />
+
+**Recomendación:** Payload CMS si se desarrolla el portal del asociado autenticado (Opción 3), porque incluye un sistema de autenticación y roles de usuario listo para usar — exactamente lo que se necesita para gestionar el acceso de jugadores a sus beneficios, estado del fondo de retiro y comunicaciones sindicales. Sanity como alternativa si el foco inicial es solo el sitio público institucional.
+
+### La PWA como sustituto de la app nativa
+
+Una Progressive Web App construida sobre Astro resuelve el problema de la app de 500 descargas sin necesidad de mantener una app separada en Play Store o App Store:
+
+<StackTable rows={[
+  { component: "Instalación", installed: "Play Store (solo Android)", current: "PWA — desde el navegador", gap: "iOS y Android sin intermediarios", status: "good" },
+  { component: "Actualización", installed: "Manual (8 meses sin actualizar)", current: "Automática con cada deploy", gap: "El usuario siempre tiene la versión más reciente", status: "good" },
+  { component: "Acceso offline", installed: "No disponible en la web actual", current: "Service Worker + caché local", gap: "Contenido clave disponible sin conexión", status: "good" },
+  { component: "Push notifications", installed: "No implementado", current: "Web Push API", gap: "Comunicación directa con el asociado sin app", status: "good" },
+  { component: "Costo de mantenimiento", installed: "2 plataformas separadas", current: "Una sola base de código", gap: "Reducción estructural de deuda técnica", status: "good" },
+]} />
+
+<FindingCard type="opportunity" title="Una PWA bien implementada supera a la app nativa actual en todos los ejes relevantes">
+No requiere descarga, funciona en iOS y Android, se actualiza automáticamente, puede recibir notificaciones push y puede operar offline con contenido cacheado. Para el SIFUP — cuya app tiene 500 descargas y lleva meses sin actualización — la PWA no es una solución de compromiso: es la solución correcta.
+</FindingCard>
+
+---
+
+## 9. Conclusiones y Plan de Acción
+
+### El Diagnóstico Central
+
+SIFUP no tiene un problema de visibilidad externa. El problema es interno: los propios asociados no tienen un canal digital unificado, funcional y accesible para relacionarse con el sindicato que los representa.
+
+<FindingCard type="critical" title="Una acumulación de decisiones sin estrategia digital unificada">
+La app tiene 500 descargas. Los headers de seguridad califican F. El caché de Cloudflare está desactivado. WooCommerce está instalado sin propósito claro. No hay medición activa. El menú tiene 10 ítems sin jerarquía. No existe acceso al portal del asociado desde el sitio. No hay versión iOS de la app. No es un problema de un componente — es sistémico.
+</FindingCard>
+
+<PriorityBlock
+  priority="urgent"
+  title="Urgente — Seguridad y configuración crítica"
+  items={[
+    "Implementar los 6 headers de seguridad faltantes desde el panel de Cloudflare",
+    "Activar el caché de Cloudflare correctamente para reducir LCP móvil de 8.6s",
+    "Verificar versiones de WordPress, PHP y plugins activos",
+    "Auditar el uso real de WooCommerce y eliminar si no es necesario",
+    "Instalar Google Analytics 4 y configurar Search Console",
+  ]}
+/>
+
+<PriorityBlock
+  priority="short"
+  title="Corto plazo — Experiencia del asociado"
+  items={[
+    "Crear acceso visible al portal del asociado desde el sitio web",
+    "Reducir el menú principal de 10 a 5 ítems con jerarquía clara",
+    "Resolver el conflicto visual del hero (texto sobre texto)",
+    "Optimizar imágenes para móvil — reducir LCP de laboratorio de 8.6s",
+    "Auditar y limpiar páginas de WooCommerce indexadas en sitemap",
+  ]}
+/>
+
+<PriorityBlock
+  priority="medium"
+  title="Mediano plazo — Plataforma unificada"
+  items={[
+    "Migrar el sitio público de WordPress a Astro + Headless CMS (Sanity o Payload CMS)",
+    "Desarrollar portal web del asociado autenticado con Payload CMS",
+    "Implementar PWA con Service Worker — reemplazar la app nativa de 500 descargas",
+    "Mejorar accesibilidad móvil de 57 a 90+ (HTML semántico, landmarks, alt texts, touch targets)",
+    "Integrar Instagram como canal de contenido dentro del sitio",
+    "Implementar Schema Markup para mejorar descripción en bloque de IA de Google",
+    "Establecer estrategia de contenido que conecte búsquedas de beneficios con el portal del asociado",
+  ]}
+/>
+
+---
+
+### Las tres opciones de intervención
+
+<div class="options-grid">
+  <OptionCard
+    variant="Opción 1"
+    icon="ph-wrench"
+    title="Parches de configuración"
+    description="Activar caché de Cloudflare, implementar headers de seguridad, instalar Analytics y limpiar WooCommerce. Resuelve lo crítico sin rediseño."
+    pros={["Solución rápida — estimado 1 a 2 semanas", "Elimina la calificación F de seguridad", "Reduce LCP móvil significativamente"]}
+    cons={["No mejora la experiencia del asociado", "No resuelve la fragmentación app/web", "Arquitectura y UX siguen sin cambios"]}
+    ctaText="Ideal para acción inmediata"
+  />
+  <OptionCard
+    variant="Opción 2"
+    icon="ph-pencil-simple-line"
+    title="Rediseño sobre Astro + Sanity"
+    description="Nuevo sitio público construido con Astro y Sanity CMS. HTML semántico, imágenes optimizadas automáticamente, accesibilidad 90+, y gestión de contenido sin desarrollador. Migración limpia desde WordPress."
+    pros={["LCP estructuralmente < 1.5s — sin depender de configuración de caché", "Accesibilidad 90+ por diseño", "El equipo publica contenido sin tocar código", "Sin CSS ni JS innecesario"]}
+    cons={["La app sigue siendo un canal separado", "Los usuarios iOS siguen sin acceso unificado", "Portal del asociado requiere una fase adicional"]}
+    ctaText="Equilibrio costo / beneficio"
+  />
+  <OptionCard
+    variant="Opción 3"
+    icon="ph-rocket-launch"
+    title="Plataforma digital unificada — Astro + Payload + PWA"
+    description="Sitio público en Astro + portal privado del asociado en Payload CMS + PWA instalable desde iOS y Android sin app store. Un solo canal digital, una sola base de código."
+    recommended={true}
+    pros={["Un canal único para todos los asociados — iOS y Android", "Autenticación y roles de usuario integrados en Payload CMS", "PWA reemplaza la app nativa de 500 descargas", "Notificaciones push sin app", "Gestión de beneficios y fondo de retiro integrados", "Elimina la fragmentación de raíz"]}
+    cons={["Mayor inversión inicial", "Requiere planificación de migración de contenido y usuarios"]}
+    ctaText="Recomendado por Zutra"
+  />
+</div>
+
+<CallToAction
+  title="¿Listo para modernizar la plataforma digital del SIFUP?"
+  description="Hablemos sobre cómo construir el canal digital unificado que los asociados del SIFUP merecen."
+/>
+
+---
+
+*Auditoría realizada con PageSpeed Insights (Lighthouse 13.0.1), BuiltWith, Tag Assistant, securityheaders.com, Have I Been Pwned, Ubersuggest, Google Search (modo incógnito), Google Play Store, análisis manual del sitio y revisión de sitemap/robots.txt. Abril 2026.*
