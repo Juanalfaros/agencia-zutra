@@ -1,18 +1,7 @@
 ---
-/* eslint-disable */
 import Layout from '@/layouts/Layout.astro';
 import { getEntry } from 'astro:content';
-import { signToken } from '@/lib/report-auth'; // Seguimos usando esto para la sesión de browser que sí funciona
-
 export const prerender = false;
-
-const env =
-  (Astro.locals as any)?.runtime?.env ||
-  (Astro.locals as any)?.env ||
-  (globalThis as any) ||
-  import.meta.env ||
-  {};
-const OTP_SECRET = (env.OTP_SECRET || '').trim();
 
 const t = Astro.url.searchParams.get('t') ?? '';
 const s = Astro.url.searchParams.get('s') ?? '';
@@ -21,7 +10,7 @@ type ErrorReason = 'missing' | 'invalid' | 'access-expired' | 'not-found';
 let errorReason: ErrorReason = 'invalid';
 let isVerified = false;
 
-if (t && s && OTP_SECRET) {
+if (t && s) {
   try {
     // Decodificamos el token ligero: btoa(`${email}|${slug}|${timestamp}|${rawStr.length}`)
     const decoded = atob(t);

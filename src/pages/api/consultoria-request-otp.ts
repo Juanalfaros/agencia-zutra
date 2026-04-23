@@ -1,10 +1,8 @@
 export const prerender = false;
 
-export const POST = async ({ request, locals }: any) => {
+export const POST = async ({ request }: any) => {
   try {
-    const env =
-      locals?.runtime?.env || locals?.env || (globalThis as any) || {};
-    const BREVO_API_KEY = (env.BREVO_API_KEY || '').trim();
+    const BREVO_API_KEY = ((import.meta.env as any).BREVO_API_KEY || '').trim();
 
     const body = await request.json().catch(() => ({}));
     const { email, slug } = body;
