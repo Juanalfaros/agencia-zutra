@@ -1103,7 +1103,7 @@ const { slides = [] } = Astro.props;
       this.prevBtn?.addEventListener('click', () => this.prev());
       this.nextBtn?.addEventListener('click', () => this.next());
 
-      this.dots?.forEach((dot: Element, index: number) => {
+      (this.dots as any)?.forEach((dot: Element, index: number) => {
         dot.addEventListener('click', () => this.goTo(index));
       });
 
@@ -1221,16 +1221,18 @@ const { slides = [] } = Astro.props;
       if (this.nextBtn)
         this.nextBtn.disabled = this.currentIndex === this.totalSlides - 1;
 
-      this.dots?.forEach((dot: Element, index: number) => {
+      (this.dots as any)?.forEach((dot: Element, index: number) => {
         const isActive = index === this.currentIndex;
         dot.classList.toggle('active', isActive);
         dot.setAttribute('aria-selected', String(isActive));
       });
 
-      this.slideContainers?.forEach((container: Element, index: number) => {
-        const isActive = index === this.currentIndex;
-        container.setAttribute('aria-hidden', String(!isActive));
-      });
+      (this.slideContainers as any)?.forEach(
+        (container: Element, index: number) => {
+          const isActive = index === this.currentIndex;
+          container.setAttribute('aria-hidden', String(!isActive));
+        }
+      );
     }
   }
 
