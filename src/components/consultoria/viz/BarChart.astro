@@ -1,0 +1,189 @@
+---
+interface DataPoint {
+  label: string;
+  value: number;
+  highlight?: boolean;
+}
+
+interface Props {
+  title?: string;
+  data: DataPoint[];
+  maxValue?: number;
+  format?: 'number' | 'percentage' | 'currency';
+}
+
+const { title, data, maxValue: providedMax, format = 'number' } = Astro.props;
+
+const maxValue = providedMax || Math.max(...data.map((d) => d.value));
+
+const formatValue = (val: number) => {
+  if (format === 'percentage') return `${val}%`;
+  if (format === 'currency') return `$${val.toLocaleString()}`;
+  return val.toLocaleString('es-CL');
+};
+---
+
+<figure class="barchart-wrapper">
+  {title && <figcaption class="barchart-title">{title}</figcaption>}
+
+  <div
+    class="barchart-container"
+    role="img"
+    aria-label={title || 'Gráfico de barras'}
+  >
+    {
+      data.map((item, index) => {
+        const percentage = Math.max(2, (item.value / maxValue) * 100);
+        return (
+          <div
+            class="barchart-row"
+            style={`animation-delay: ${index * 100}ms`}
+            role="group"
+            aria-label={`${item.label}: ${formatValue(item.value)}`}
+          >
+            <span class="barchart-label" aria-hidden="true">
+              {item.label}
+            </span>
+            <div class="barchart-track">
+              <div
+                class={`barchart-fill ${item.highlight ? 'is-highlighted' : ''}`}
+                style={`width: ${percentage}%;`}
+                role="meter"
+                aria-valuenow={item.value}
+                aria-valuemax={maxValue}
+                aria-label={formatValue(item.value)}
+              >
+                <span
+                  class={`barchart-value ${percentage < 15 ? 'is-outside' : ''}`}
+                  aria-hidden="true"
+                >
+                  {formatValue(item.value)}
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+      })
+    }
+  </div>
+</figure>
+
+<style>
+  .barchart-wrapper {
+    margin: 2rem 0;
+    padding: 1.25rem;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 1rem;
+  }
+  @media (min-width: 480px) {
+    .barchart-wrapper {
+      padding: 1.5rem;
+    }
+  }
+
+  .barchart-title {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+  }
+
+  .barchart-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .barchart-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 0.75rem;
+    align-items: center;
+    opacity: 0;
+    animation: fadeSlideIn 0.5s ease forwards;
+  }
+  @media (min-width: 480px) {
+    .barchart-row {
+      grid-template-columns: 120px 1fr;
+      gap: 1rem;
+    }
+  }
+  @media (min-width: 768px) {
+    .barchart-row {
+      grid-template-columns: 180px 1fr;
+    }
+  }
+
+  .barchart-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-gray-300);
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  @media (min-width: 480px) {
+    .barchart-label {
+      font-size: 0.875rem;
+    }
+  }
+
+  .barchart-track {
+    width: 100%;
+    height: 2rem;
+    background-color: var(--color-surface-subtle);
+    border-radius: 0.5rem;
+    position: relative;
+    overflow: visible;
+  }
+
+  .barchart-fill {
+    height: 100%;
+    background-color: var(--color-line);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 0.75rem;
+    position: relative;
+    transition: width 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    min-width: 2rem;
+  }
+
+  .barchart-fill.is-highlighted {
+    background-color: var(--color-accent);
+  }
+
+  .barchart-value {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    font-family: monospace;
+    z-index: 10;
+  }
+
+  .barchart-fill.is-highlighted .barchart-value {
+    color: var(--color-on-accent);
+  }
+
+  /* Si la barra es muy corta, el texto sale afuera */
+  .barchart-value.is-outside {
+    position: absolute;
+    right: -0.5rem;
+    transform: translateX(100%);
+    color: var(--color-secondary);
+  }
+
+  @keyframes fadeSlideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+</style>

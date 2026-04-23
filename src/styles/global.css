@@ -26,6 +26,7 @@
   --color-secondary: #fff8e0;
   --color-muted: #d1d1d1;
   --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
   --accent-main: #efd319;
   --color-accent-rgb: 239, 211, 25;
   --accent-hover: #facc15;
@@ -140,6 +141,7 @@ html[data-theme='light'] {
   --color-line: #e5e7eb;
   --color-muted: #4b5563;
   --color-gray-300: #4b5563;
+  --color-gray-400: #6b7280;
   /* Usamos los HEX específicos para modo claro definidos en Layout.astro */
   --color-accent: var(--accent-light-main, var(--accent-main));
   --color-accent-hover: var(--accent-light-hover, var(--accent-hover));

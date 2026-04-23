@@ -1,31 +1,31 @@
 ---
-import Logo from "./Logo.astro";
-import { socialMedia } from "@/data/socialmedia";
-import { getEntries } from "@/lib/contentful";
-import { adaptPortfolioCase, adaptService } from "@/lib/contentful-adapters";
+import Logo from './Logo.astro';
+import { socialMedia } from '@/data/socialmedia';
+import { getEntries } from '@/lib/contentful';
+import { adaptPortfolioCase, adaptService } from '@/lib/contentful-adapters';
 
 // Check for preview cookie
-const isPreview = Astro.cookies.get("contentful_preview")?.value === "true";
+const isPreview = Astro.cookies.get('contentful_preview')?.value === 'true';
 
 // Fetch 4 recent cases
 const caseEntries = await getEntries(
-  "portfolioCase",
+  'portfolioCase',
   {
-    order: "fields.order",
+    order: 'fields.order',
     limit: 4,
   },
-  isPreview,
+  isPreview
 );
 const footerCases = caseEntries.items.map(adaptPortfolioCase);
 
 // Fetch 4 recent services
 const serviceEntries = await getEntries(
-  "service",
+  'service',
   {
-    order: "fields.order",
+    order: 'fields.order',
     limit: 4,
   },
-  isPreview,
+  isPreview
 );
 const footerServices = serviceEntries.items.map(adaptService);
 
@@ -105,6 +105,7 @@ const currentYear = new Date().getFullYear();
             <li><a href="/blog">Blog Valiente</a></li>
             <li><a href="/#contacto">Contacto</a></li>
             <li><a href="/privacidad">Privacidad</a></li>
+            <li><a href="/consultoria">Consultorías</a></li>
           </ul>
         </div>
       </div>
@@ -115,7 +116,8 @@ const currentYear = new Date().getFullYear();
     <div class="container">
       <div class="footer-bottom-inner">
         <p class="copyright">
-          Zutra Agency &copy; {currentYear} | Agencia de Marketing y Desarrollo en Santiago, Chile.
+          Zutra Agency &copy; {currentYear} | Agencia de Marketing y Desarrollo en
+          Santiago, Chile.
         </p>
         <p class="location">
           <i class="ph-duotone ph-map-pin"></i> Puente Alto, Santiago de Chile
@@ -218,7 +220,7 @@ const currentYear = new Date().getFullYear();
   }
 
   .footer-heading::before {
-    content: "";
+    content: '';
     position: absolute;
     left: 0;
     top: 50%;

@@ -1,0 +1,278 @@
+---
+interface Competitor {
+  name: string;
+  domain: string;
+  differentiator: string;
+  hasPaid: boolean;
+  rank: number;
+}
+
+interface Props {
+  highlight: string;
+  competitors: Competitor[];
+}
+
+const { highlight, competitors } = Astro.props;
+---
+
+<section class="competitor-table-wrapper" aria-label="Análisis competitivo">
+  <div
+    class="table-scroll"
+    role="region"
+    aria-label="Tabla de análisis competitivo"
+    tabindex="0"
+  >
+    <table class="competitor-table">
+      <caption class="sr-only"
+        >Análisis de posicionamiento y diferenciadores de competidores</caption
+      >
+      <thead>
+        <tr>
+          <th scope="col" class="col-rank">Pos.</th>
+          <th scope="col" class="col-company">Empresa</th>
+          <th scope="col" class="col-diff">Diferenciador / Mensaje</th>
+          <th scope="col" class="col-ads">Ads Activos</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          competitors.map((comp) => {
+            const isHighlighted = comp.name.includes(highlight);
+            return (
+              <tr
+                class={`comp-row ${isHighlighted ? 'is-highlighted' : ''}`}
+                aria-current={isHighlighted ? 'true' : undefined}
+              >
+                <td class="col-rank">
+                  <span
+                    class={`rank-badge ${comp.rank <= 3 ? 'top-rank' : ''}`}
+                  >
+                    #{comp.rank}
+                  </span>
+                </td>
+                <th scope="row" class="col-company">
+                  <div class="company-info">
+                    <span class="company-name">
+                      {comp.name}
+                      {isHighlighted && (
+                        <i
+                          class="ph ph-target highlight-icon"
+                          aria-label="Tu empresa"
+                        />
+                      )}
+                    </span>
+                    <a
+                      href={`https://${comp.domain}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="company-domain"
+                      aria-label={`Visitar ${comp.domain}`}
+                    >
+                      {comp.domain}
+                      <i class="ph ph-arrow-up-right" aria-hidden="true" />
+                    </a>
+                  </div>
+                </th>
+                <td class="col-diff">
+                  <p class="diff-text">{comp.differentiator}</p>
+                </td>
+                <td class="col-ads">
+                  {comp.hasPaid ? (
+                    <span class="ads-badge active">
+                      <i class="ph ph-trend-up" aria-hidden="true" /> Sí
+                    </span>
+                  ) : (
+                    <span
+                      class="ads-badge inactive"
+                      aria-label="Sin ads activos"
+                    >
+                      —
+                    </span>
+                  )}
+                </td>
+              </tr>
+            );
+          })
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+  .competitor-table-wrapper {
+    margin: 2.5rem 0;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  .competitor-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 700px; /* Fuerza scroll si es muy pequeño */
+  }
+
+  .competitor-table th {
+    padding: 0.875rem 1rem;
+    font-size: 0.7rem;
+    color: var(--color-gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    border-bottom: 1px solid var(--color-line);
+    background-color: var(--color-surface-subtle);
+  }
+  @media (min-width: 900px) {
+    .competitor-table th {
+      padding: 1.25rem 1.5rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+    }
+  }
+
+  .col-rank {
+    width: 4rem;
+    text-align: center;
+  }
+  .col-company {
+    width: 28%;
+  }
+  .col-diff {
+    width: auto;
+  }
+  .col-ads {
+    width: 7rem;
+    text-align: center;
+  }
+
+  .competitor-table td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+    vertical-align: middle;
+  }
+  @media (min-width: 900px) {
+    .competitor-table td {
+      padding: 1.25rem 1.5rem;
+    }
+  }
+
+  .comp-row {
+    transition:
+      background-color 0.2s,
+      transform 0.2s;
+  }
+  .comp-row:hover {
+    background-color: var(--color-surface-subtle);
+  }
+  .comp-row:last-child td {
+    border-bottom: none;
+  }
+
+  /* Ranks */
+  .rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    font-weight: 800;
+    font-size: 1rem;
+    background-color: var(--color-surface-subtle);
+    color: var(--color-gray-400);
+  }
+  .rank-badge.top-rank {
+    background-color: rgba(var(--color-accent-rgb), 0.1);
+    color: var(--color-accent);
+  }
+
+  /* Company Info */
+  .company-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .company-name {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+  }
+  .company-domain {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8125rem;
+    color: var(--color-gray-400);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .company-domain:hover {
+    color: var(--color-accent);
+  }
+  .company-domain i {
+    font-size: 0.75rem;
+  }
+
+  /* Differentiator */
+  .diff-text {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--color-gray-300);
+    line-height: 1.5;
+  }
+
+  /* Ads Badge */
+  .ads-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+  .ads-badge.active {
+    color: #facc15;
+    background-color: rgba(250, 204, 21, 0.1);
+    border: 1px solid rgba(250, 204, 21, 0.2);
+  }
+  .ads-badge.inactive {
+    color: var(--color-gray-500);
+  }
+
+  /* Highlighted Row */
+  .is-highlighted {
+    background: linear-gradient(
+      90deg,
+      rgba(var(--color-accent-rgb), 0.08) 0%,
+      rgba(var(--color-accent-rgb), 0.02) 100%
+    );
+    position: relative;
+  }
+  .is-highlighted td {
+    border-top: 1px solid rgba(var(--color-accent-rgb), 0.3);
+    border-bottom: 1px solid rgba(var(--color-accent-rgb), 0.3);
+  }
+  .is-highlighted td:first-child {
+    box-shadow: inset 4px 0 0 var(--color-accent);
+  }
+  .is-highlighted .company-name {
+    color: var(--color-accent);
+  }
+  .highlight-icon {
+    font-size: 1.125rem;
+    color: var(--color-accent);
+  }
+</style>

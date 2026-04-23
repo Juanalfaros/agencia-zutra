@@ -1,0 +1,243 @@
+---
+interface Props {
+  variant: string;
+  icon?: string;
+  title: string;
+  description: string;
+  recommended?: boolean;
+  pros?: string[];
+  cons?: string[];
+  ctaText?: string;
+}
+
+const {
+  variant,
+  icon = 'ph-lightbulb',
+  title,
+  description,
+  recommended = false,
+  pros = [],
+  cons = [],
+  ctaText,
+} = Astro.props;
+---
+
+<article class={`option-card ${recommended ? 'is-recommended' : ''}`}>
+  {
+    recommended && (
+      <p class="option-recommended-badge" aria-label="Opción recomendada">
+        Recomendado
+      </p>
+    )
+  }
+
+  <p class="option-variant">{variant}</p>
+
+  <header class="option-header">
+    <span class="option-icon-box" aria-hidden="true">
+      <i class={`ph ${icon} option-icon`}></i>
+    </span>
+    <h3 class="option-title">{title}</h3>
+  </header>
+
+  <p class="option-description">{description}</p>
+
+  {
+    (pros.length > 0 || cons.length > 0) && (
+      <div class="option-lists">
+        {pros.length > 0 && (
+          <div class="list-section">
+            <strong class="list-title text-good">Pros</strong>
+            <ul class="option-list">
+              {pros.map((pro) => (
+                <li>
+                  <i class="ph ph-plus text-good" />
+                  <span>{pro}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {cons.length > 0 && (
+          <div class="list-section">
+            <strong class="list-title text-poor">Contras</strong>
+            <ul class="option-list">
+              {cons.map((con) => (
+                <li>
+                  <i class="ph ph-minus text-poor" />
+                  <span>{con}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  {ctaText && <footer class="option-footer">{ctaText}</footer>}
+</article>
+
+<style>
+  :global(.options-grid) {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+  @media (min-width: 768px) {
+    :global(.options-grid) {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      align-items: stretch;
+    }
+  }
+
+  .option-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    transition:
+      transform 0.3s,
+      border-color 0.3s;
+  }
+  .option-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--color-accent);
+  }
+
+  .option-card.is-recommended {
+    background-color: var(--color-accent-subtle);
+    border-color: var(--color-accent);
+  }
+
+  .option-recommended-badge {
+    position: absolute;
+    top: -0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.25rem 1rem;
+    background-color: var(--color-accent);
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+  }
+
+  .option-variant {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-gray-400);
+    margin-bottom: 0.5rem;
+  }
+
+  .option-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .option-icon-box {
+    /* padding: 0.5rem;
+    border-radius: 0.5rem;
+    background-color: var(--color-surface-subtle); */
+    color: var(--color-secondary);
+  }
+  .is-recommended .option-icon-box {
+    /* background-color: var(--color-accent); */
+    color: var(--color-accent);
+  }
+
+  .option-icon {
+    font-size: 1.75rem;
+  }
+
+  .option-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+    line-height: 1.2;
+  }
+
+  .option-description {
+    font-size: 0.875rem;
+    color: var(--color-gray-300);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .option-lists {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    justify-content: flex-start;
+    align-items: stretch;
+    width: 100%;
+    flex-grow: 1;
+  }
+
+  .list-section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .list-title {
+    display: block;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+  }
+  .text-good {
+    color: var(--color-green-500);
+  }
+  .text-poor {
+    color: var(--color-red-400);
+  }
+
+  .option-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .option-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    color: var(--color-gray-300);
+    line-height: 1.4;
+  }
+
+  .option-list i {
+    margin-top: 0.125rem;
+  }
+
+  .option-footer {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-line);
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--color-gray-400);
+  }
+
+  .is-recommended .option-footer {
+    border-color: rgba(var(--color-accent-rgb), 0.2);
+    color: var(--color-accent);
+  }
+</style>

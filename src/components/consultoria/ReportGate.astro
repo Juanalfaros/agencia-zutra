@@ -1,0 +1,675 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  category: string;
+  expired?: boolean;
+}
+
+const { slug, title, category, expired = false } = Astro.props;
+---
+
+<div class="gate-wrapper">
+  <div class="gate-card reveal">
+    <div class="gate-brand">
+      <span class="brand-logo">ZUTRA</span>
+      <span class="brand-separator" aria-hidden="true"></span>
+      <span class="brand-label">Consultoría privada</span>
+    </div>
+
+    {
+      expired ? (
+        <div class="gate-expired">
+          <span class="expired-icon" aria-hidden="true">
+            <i class="ph-duotone ph-lock-key" />
+          </span>
+          <h1 class="gate-title">Acceso Finalizado</h1>
+          <p class="expired-msg">
+            El período de acceso a este reporte ha finalizado.
+            <br />
+            Contacta a Zutra para renovar el acceso.
+          </p>
+          <a href="mailto:hola@zutra.agency" class="gate-contact-btn">
+            Contactar a Zutra{' '}
+            <i class="ph-duotone ph-arrow-right" aria-hidden="true" />
+          </a>
+        </div>
+      ) : (
+        <div class="gate-main-container">
+          {/* Pasos Visuales */}
+          <div class="gate-steps" id="gate-steps-indicator">
+            <div class="step active" data-step="1">
+              <span class="step-num">1</span>
+              <span class="step-text">Identificación</span>
+            </div>
+            <div class="step-line" />
+            <div class="step" data-step="2">
+              <span class="step-num">2</span>
+              <span class="step-text">Verificación</span>
+            </div>
+          </div>
+
+          <div class="gate-content-fader">
+            {/* Paso 1: Formulario */}
+            <div id="step-1-content" class="step-view">
+              <div class="gate-header">
+                <span class="gate-category-badge">
+                  {category.replace('-', ' ')}
+                </span>
+                <h1 class="gate-title">{title}</h1>
+                <p class="gate-subtitle">
+                  Ingresa tu correo corporativo para recibir una llave de acceso
+                  segura.
+                </p>
+              </div>
+
+              <form id="gate-form" class="gate-form" novalidate>
+                <div class="gate-field">
+                  <input
+                    type="email"
+                    id="gate-email"
+                    name="email"
+                    class="gate-input-huge"
+                    placeholder="nombre@empresa.com"
+                    autocomplete="email"
+                    required
+                  />
+                  <div id="email-hint" class="input-hint">
+                    El enlace llegará a esta dirección
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  class="gate-btn-primary"
+                  id="gate-submit"
+                  disabled
+                >
+                  <span class="btn-text">Obtener enlace de acceso</span>
+                  <div class="btn-loader" hidden />
+                  <i
+                    class="ph-duotone ph-paper-plane-tilt btn-icon"
+                    aria-hidden="true"
+                  />
+                </button>
+              </form>
+            </div>
+
+            {/* Paso 2: Éxito */}
+            <div id="step-2-content" class="step-view" hidden>
+              <div class="success-hero">
+                <div class="mail-animation">
+                  <i class="ph-duotone ph-paper-plane-tilt" />
+                </div>
+                <h2 class="success-title">¡Revisa tu correo ahora!</h2>
+                <p class="success-desc">
+                  Hemos enviado un enlace mágico a:
+                  <br />
+                  <strong id="display-email" class="email-highlight">
+                    ...
+                  </strong>
+                </p>
+              </div>
+
+              <div class="instruction-box">
+                <h3 class="instruction-label">Próximos pasos:</h3>
+                <ul class="instruction-list">
+                  <li>
+                    <i class="ph-duotone ph-envelope-simple" /> Abre tu bandeja
+                    de entrada
+                  </li>
+                  <li>
+                    <i class="ph-duotone ph-warning-octagon" /> Si no lo ves,
+                    busca en <strong>SPAM</strong>
+                  </li>
+                  <li>
+                    <i class="ph-duotone ph-clock-countdown" /> El enlace expira
+                    en 10 minutos
+                  </li>
+                </ul>
+              </div>
+
+              <button type="button" class="btn-secondary" id="btn-back">
+                <i class="ph-duotone ph-arrow-left" /> Usar otro correo
+              </button>
+            </div>
+          </div>
+
+          {/* Error Banner */}
+          <div id="gate-error" class="gate-error-banner" hidden>
+            <i class="ph-duotone ph-warning-circle" />
+            <span id="gate-error-msg">
+              Algo salió mal. Por favor intenta de nuevo.
+            </span>
+          </div>
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<script define:vars={{ slug }}>
+  const form = document.getElementById('gate-form');
+  const emailInput = document.getElementById('gate-email');
+  const submitBtn = document.getElementById('gate-submit');
+  const step1 = document.getElementById('step-1-content');
+  const step2 = document.getElementById('step-2-content');
+  const stepsIndicator = document.getElementById('gate-steps-indicator');
+  const displayEmail = document.getElementById('display-email');
+  const errorBanner = document.getElementById('gate-error');
+  const errorMsg = document.getElementById('gate-error-msg');
+  const backBtn = document.getElementById('btn-back');
+
+  // Persistencia de sesión
+  const sessionKey = `requested_${slug}`;
+  const savedEmail = sessionStorage.getItem(sessionKey);
+  if (savedEmail && !document.querySelector('.gate-expired')) {
+    goToStep2(savedEmail);
+  }
+
+  // Validación en tiempo real
+  emailInput?.addEventListener('input', (e) => {
+    const val = e.target.value.trim();
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+    submitBtn.disabled = !isValid;
+    errorBanner?.setAttribute('hidden', 'true');
+  });
+
+  function goToStep2(email) {
+    if (step1) step1.setAttribute('hidden', 'true');
+    if (step2) step2.removeAttribute('hidden');
+    if (displayEmail) displayEmail.textContent = email;
+
+    if (stepsIndicator) {
+      stepsIndicator.querySelector('[data-step="2"]')?.classList.add('active');
+      const step1Indicator = stepsIndicator.querySelector('[data-step="1"]');
+      step1Indicator?.classList.remove('active');
+      step1Indicator?.classList.add('completed');
+      step1Indicator.innerHTML =
+        '<span class="step-num"><i class="ph-duotone ph-check-circle"></i></span><span class="step-text">Identificación</span>';
+    }
+  }
+
+  backBtn?.addEventListener('click', () => {
+    sessionStorage.removeItem(sessionKey);
+    if (step2) step2.setAttribute('hidden', 'true');
+    if (step1) step1.removeAttribute('hidden');
+    if (emailInput) {
+      emailInput.value = '';
+      emailInput.disabled = false;
+    }
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.querySelector('.btn-text').textContent =
+        'Obtener enlace de acceso';
+      submitBtn.querySelector('.btn-loader').setAttribute('hidden', 'true');
+      const btnIcon = submitBtn.querySelector('.btn-icon');
+      if (btnIcon) btnIcon.removeAttribute('hidden');
+    }
+
+    if (stepsIndicator) {
+      const step1Indicator = stepsIndicator.querySelector('[data-step="1"]');
+      const step2Indicator = stepsIndicator.querySelector('[data-step="2"]');
+      step2Indicator?.classList.remove('active');
+      step1Indicator?.classList.add('active');
+      step1Indicator?.classList.remove('completed');
+      step1Indicator.innerHTML =
+        '<span class="step-num">1</span><span class="step-text">Identificación</span>';
+    }
+    emailInput?.focus();
+  });
+
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+
+      // UI Loading
+      submitBtn.disabled = true;
+      emailInput.disabled = true;
+      submitBtn.querySelector('.btn-text').textContent = 'Enviando...';
+      submitBtn.querySelector('.btn-loader').removeAttribute('hidden');
+      submitBtn.querySelector('.btn-icon').setAttribute('hidden', 'true');
+
+      try {
+        const res = await fetch('/api/consultoria-request-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, slug }),
+        });
+
+        if (res.status === 429) {
+          throw new Error('Demasiados intentos. Espera unos minutos.');
+        }
+
+        if (!res.ok) throw new Error('Error al procesar la solicitud.');
+
+        sessionStorage.setItem(sessionKey, email);
+        goToStep2(email);
+      } catch (err) {
+        if (errorMsg) errorMsg.textContent = err.message;
+        errorBanner?.removeAttribute('hidden');
+
+        submitBtn.disabled = false;
+        emailInput.disabled = false;
+        submitBtn.querySelector('.btn-text').textContent =
+          'Obtener enlace de acceso';
+        submitBtn.querySelector('.btn-loader').setAttribute('hidden', 'true');
+        submitBtn.querySelector('.btn-icon').removeAttribute('hidden');
+      }
+    });
+  }
+</script>
+
+<style>
+  .gate-wrapper {
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background-color: var(--color-primary);
+  }
+
+  .gate-card {
+    max-width: 34rem;
+    width: 100%;
+    padding: 2.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    text-align: center;
+  }
+
+  .gate-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .brand-logo {
+    font-size: 0.875rem;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    color: var(--color-secondary);
+  }
+
+  .brand-separator {
+    width: 1px;
+    height: 1rem;
+    background: var(--color-line);
+  }
+
+  .brand-label {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* --- Pasos --- */
+  .gate-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.3;
+    transition: all 0.4s ease;
+  }
+
+  .step.active {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  .step.completed {
+    opacity: 1;
+  }
+
+  .step-num {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--color-surface-subtle);
+    border: 2px solid var(--color-line);
+    display: grid;
+    place-items: center;
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--color-muted);
+    transition: all 0.3s ease;
+  }
+
+  .step.active .step-num {
+    background: var(--color-accent-subtle);
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    box-shadow: 0 0 15px rgba(var(--color-accent-rgb), 0.3);
+  }
+
+  .step.completed .step-num {
+    background: var(--color-green-500);
+    border-color: var(--color-green-500);
+    color: white;
+  }
+
+  .step-text {
+    font-size: 0.625rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted);
+  }
+
+  .step-line {
+    width: 4rem;
+    height: 2px;
+    background: var(--color-line);
+    border-radius: 2px;
+  }
+
+  /* --- Contenido --- */
+  .gate-header {
+    margin-bottom: 2rem;
+  }
+
+  .gate-category-badge {
+    display: inline-block;
+    padding: 0.35rem 1rem;
+    background: var(--color-surface-subtle);
+    color: var(--color-accent);
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 9999px;
+    border: 1px solid var(--color-line);
+    margin-bottom: 1.25rem;
+  }
+
+  .gate-title {
+    font-size: clamp(1.5rem, 6vw, 2.25rem);
+    font-weight: 950;
+    color: var(--color-secondary);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .gate-subtitle {
+    font-size: 1.0625rem;
+    color: var(--color-gray-300);
+    line-height: 1.5;
+    max-width: 24rem;
+    margin: 0 auto;
+  }
+
+  .gate-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .gate-input-huge {
+    width: 100%;
+    padding: 1.25rem;
+    background: var(--color-primary);
+    border: 2px solid var(--color-line);
+    border-radius: 1.25rem;
+    color: var(--color-secondary);
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    box-sizing: border-box;
+  }
+
+  .gate-input-huge:focus {
+    border-color: var(--color-accent);
+    background: var(--color-surface);
+    box-shadow: 0 0 0 5px rgba(var(--color-accent-rgb), 0.15);
+    transform: translateY(-2px);
+  }
+
+  .input-hint {
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+    margin-top: 0.75rem;
+  }
+
+  .gate-btn-primary {
+    width: 100%;
+    padding: 1.25rem 2rem;
+    background: var(--color-accent);
+    color: var(--color-primary);
+    font-weight: 900;
+    font-size: 1.125rem;
+    border: none;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .gate-btn-primary:hover:not(:disabled) {
+    background: var(--color-on-accent);
+    color: var(--color-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(var(--color-accent-rgb), 0.3);
+  }
+
+  .gate-btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    filter: grayscale(1);
+  }
+
+  /* --- Éxito Step 2 --- */
+  .success-hero {
+    margin-bottom: 2rem;
+  }
+
+  .mail-animation {
+    font-size: 4.5rem;
+    color: var(--color-accent);
+    margin-bottom: 1.5rem;
+    animation: bounce-float 3s ease-in-out infinite;
+  }
+
+  @keyframes bounce-float {
+    0%,
+    100% {
+      transform: translateY(0) rotate(0);
+    }
+    50% {
+      transform: translateY(-15px) rotate(5deg);
+    }
+  }
+
+  .success-title {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color-secondary);
+    margin-bottom: 0.75rem;
+  }
+
+  .success-desc {
+    color: var(--color-gray-300);
+    line-height: 1.6;
+  }
+
+  .email-highlight {
+    color: var(--color-accent);
+    font-size: 1.125rem;
+  }
+
+  .instruction-box {
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-line);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+    text-align: left;
+  }
+
+  .instruction-label {
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+    margin-bottom: 1.25rem;
+  }
+
+  .instruction-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .instruction-list li {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1rem;
+    color: var(--color-gray-300);
+    font-weight: 500;
+  }
+
+  .instruction-list i {
+    font-size: 1.5rem;
+    color: var(--color-accent);
+  }
+
+  .btn-secondary {
+    background: none;
+    border: none;
+    color: var(--color-muted);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: color 0.3s;
+  }
+
+  .btn-secondary:hover {
+    color: var(--color-secondary);
+  }
+
+  /* --- Error --- */
+  .gate-error-banner[hidden] {
+    display: none;
+  }
+
+  .gate-error-banner {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: rgba(248, 113, 113, 0.1);
+    border: 1px solid rgba(248, 113, 113, 0.2);
+    border-radius: 1rem;
+    color: var(--color-red-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  /* --- Expired --- */
+  .gate-expired {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .expired-icon {
+    width: 5rem;
+    height: 5rem;
+    background: rgba(248, 113, 113, 0.1);
+    color: var(--color-red-400);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .expired-msg {
+    color: var(--color-gray-300);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .gate-contact-btn {
+    padding: 1rem 2.5rem;
+    background: var(--color-secondary);
+    color: var(--color-primary);
+    border-radius: 9999px;
+    font-weight: 900;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+
+  .gate-contact-btn:hover {
+    transform: translateY(-4px);
+    background: var(--color-accent);
+  }
+
+  /* --- Loader --- */
+  .btn-loader {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin-loader 0.8s linear infinite;
+  }
+
+  @keyframes spin-loader {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .gate-card {
+      padding: 1.5rem;
+      border-radius: 1.5rem;
+    }
+    .gate-steps {
+      gap: 0.5rem;
+    }
+    .step-line {
+      width: 2rem;
+    }
+    .gate-input-huge {
+      font-size: 1.125rem;
+      padding: 1rem;
+    }
+  }
+</style>

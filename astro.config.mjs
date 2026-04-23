@@ -7,14 +7,20 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 
 import sitemap from '@astrojs/sitemap';
+import mdx from '@astrojs/mdx';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   site: 'https://zutra.agency',
-  integrations: [icon(), sitemap()],
+  integrations: [
+    icon(),
+    mdx(),
+    sitemap({
+      filter: (page) => !page.includes('/consultoria/'),
+    }),
+  ],
   image: {
-    service: { entrypoint: 'astro/assets/services/sharp' }, // Forzar sharp si es posible
     remotePatterns: [
       {
         protocol: 'https',
@@ -32,7 +38,6 @@ export default defineConfig({
   },
   adapter: cloudflare({
     imageService: 'passthrough',
-    sessionKVBindingName: undefined,
     prerenderEnvironment: 'node',
   }),
   vite: {

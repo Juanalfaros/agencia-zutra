@@ -1,0 +1,245 @@
+---
+/* eslint-disable */
+import Layout from '@/layouts/Layout.astro';
+import { getEntry } from 'astro:content';
+import { verifyToken, signToken } from '@/lib/report-auth';
+
+export const prerender = false;
+
+const OTP_SECRET = ((import.meta.env as any).OTP_SECRET || '').trim();
+
+const t = Astro.url.searchParams.get('t') ?? '';
+const s = Astro.url.searchParams.get('s') ?? '';
+
+type ErrorReason =
+  | 'missing'
+  | 'invalid'
+  | 'expired'
+  | 'access-expired'
+  | 'not-found';
+let errorReason: ErrorReason = 'invalid';
+let isError = false;
+
+if (!t || !s) {
+  errorReason = 'missing';
+  isError = true;
+} else if (!OTP_SECRET) {
+  errorReason = 'invalid';
+  isError = true;
+} else {
+  const payload = await verifyToken(t, OTP_SECRET);
+
+  if (!payload) {
+    errorReason = 'invalid';
+    isError = true;
+  } else if (payload.slug !== s) {
+    errorReason = 'invalid';
+    isError = true;
+  } else {
+    const email = String(payload.email ?? '');
+    const entry = await getEntry('consultoria', s);
+
+    if (!entry) {
+      errorReason = 'not-found';
+      isError = true;
+    } else {
+      const adminEmails = (entry.data.adminEmails ?? []).map((e: string) =>
+        e.toLowerCase()
+      );
+      const isAdmin = adminEmails.includes(email.toLowerCase());
+      const accessExpiry: Date | undefined = entry.data.accessExpiry;
+
+      if (!isAdmin && accessExpiry && new Date() > accessExpiry) {
+        errorReason = 'access-expired';
+        isError = true;
+      } else {
+        let maxAgeSeconds: number;
+
+        if (isAdmin) {
+          maxAgeSeconds = 365 * 24 * 60 * 60;
+        } else if (accessExpiry) {
+          const thirtyDays = Date.now() + 30 * 24 * 60 * 60 * 1000;
+          const expiryMs = Math.min(accessExpiry.getTime(), thirtyDays);
+          maxAgeSeconds = Math.max(
+            60,
+            Math.floor((expiryMs - Date.now()) / 1000)
+          );
+        } else {
+          maxAgeSeconds = 30 * 24 * 60 * 60;
+        }
+
+        const sessionToken = await signToken(
+          { email, slug: s, isAdmin, exp: Date.now() + maxAgeSeconds * 1000 },
+          OTP_SECRET
+        );
+
+        Astro.cookies.set(`rs_${s}`, sessionToken, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'lax',
+          maxAge: maxAgeSeconds,
+          path: `/consultoria/${s}`,
+        });
+
+        return Astro.redirect(`/consultoria/${s}`);
+      }
+    }
+  }
+}
+
+const errorMessages: Record<
+  ErrorReason,
+  { title: string; body: string; canRetry: boolean }
+> = {
+  missing: {
+    title: 'Enlace inválido',
+    body: 'El enlace de acceso que usaste es incompleto o incorrecto.',
+    canRetry: true,
+  },
+  invalid: {
+    title: 'Enlace inválido o expirado',
+    body: 'El enlace de acceso ha expirado o no es válido. Los enlaces tienen una vigencia de 10 minutos.',
+    canRetry: true,
+  },
+  expired: {
+    title: 'Enlace expirado',
+    body: 'El enlace de acceso ha expirado. Los enlaces tienen una vigencia de 10 minutos.',
+    canRetry: true,
+  },
+  'access-expired': {
+    title: 'Acceso vencido',
+    body: 'El período de acceso a este reporte ha finalizado. Contacta a Zutra para renovar el acceso.',
+    canRetry: false,
+  },
+  'not-found': {
+    title: 'Reporte no encontrado',
+    body: 'El reporte al que intentas acceder no existe o fue eliminado.',
+    canRetry: false,
+  },
+};
+
+const error = errorMessages[errorReason];
+---
+
+<Layout
+  title="Error de acceso | Zutra"
+  description="No se pudo verificar el acceso al reporte."
+  showFooter={false}
+  showCTA={false}
+>
+  <div class="verify-wrapper">
+    <div class="verify-card">
+      <span class="verify-icon" aria-hidden="true">
+        <i
+          class={`ph-duotone ${errorReason === 'access-expired' ? 'ph-lock-key' : 'ph-warning'}`}
+        ></i>
+      </span>
+      <h1 class="verify-title">{error.title}</h1>
+      <p class="verify-body">{error.body}</p>
+      <div class="verify-actions">
+        {
+          error.canRetry && s && (
+            <a href={`/consultoria/${s}`} class="btn-primary">
+              <i class="ph-duotone ph-arrow-clockwise" aria-hidden="true" />
+              Solicitar nuevo acceso
+            </a>
+          )
+        }
+        <a href="/consultoria" class="btn-ghost">Volver a consultorías</a>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .verify-wrapper {
+    min-height: 100dvh;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .verify-card {
+    max-width: 28rem;
+    width: 100%;
+    text-align: center;
+    padding: 2.5rem 2rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 1.5rem;
+  }
+
+  .verify-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    background: rgba(248, 113, 113, 0.1);
+    color: var(--color-red-400);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .verify-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-secondary);
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+  }
+
+  .verify-body {
+    color: var(--color-gray-300);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .verify-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    background: var(--color-accent);
+    color: var(--color-primary) !important;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    border-radius: 9999px;
+    text-decoration: none;
+    transition:
+      transform 0.2s,
+      background-color 0.2s;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    background: var(--color-on-accent);
+    color: var(--color-accent) !important;
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    color: var(--color-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 9999px;
+    transition: color 0.2s;
+  }
+  .btn-ghost:hover {
+    color: var(--color-secondary);
+  }
+</style>

@@ -40,11 +40,12 @@ agencia-zutra/
 │   ├── components/
 │   │   ├── blog/                 # BlogCard, BlogSearch
 │   │   ├── common/               # Header, Footer, SEO, JsonLD, WhatsAppBot...
+│   │   ├── consultoria/          # SlidesModal, ReportGate, viz/ (Charts)...
 │   │   ├── nosotros/             # ManifestoHero, Philosophy, TeamSection...
 │   │   ├── portfolio/            # CaseHero, CaseChallenge, CaseExecution...
 │   │   ├── sections/             # Hero, Metodo, Planes, Faqs, Contacto...
 │   │   └── ui/                   # ToggleTheme
-│   ├── content/                  # Astro Content Layer (blog Markdown)
+│   ├── content/                  # Astro Content Layer (blog + consultoria)
 │   ├── data/                     # Contenido estático (CTAs, faqs, founders...)
 │   ├── icons/                    # SVGs locales para astro-icon
 │   ├── layouts/                  # Layout.astro (Master con GTM, SEO, tema)
@@ -56,6 +57,7 @@ agencia-zutra/
 │   ├── pages/
 │   │   ├── api/                  # /api/contact, /api/lead, /api/preview
 │   │   ├── blog/                 # /blog, /blog/[slug], /blog/categoria/[cat]
+│   │   ├── consultoria/          # /consultoria, /consultoria/[slug], verify
 │   │   ├── preview/              # /preview/blog/[slug], /preview/portfolio/[slug]
 │   │   ├── portfolio/            # /portfolio, /portfolio/[slug], /portfolio/tag/[tag]
 │   │   ├── servicios/            # /servicios, /servicios/[slug], /servicios/categoria/[cat]
@@ -80,6 +82,15 @@ Bot conversacional flotante que califica leads antes de derivarlos a WhatsApp.
 | `src/components/common/whatsapp-bot.ts`   | Motor de conversación    |
 | `src/data/bot-content.ts`                 | Pasos, easter eggs, tono |
 | `src/pages/api/lead.ts`                   | Captura en Brevo         |
+
+### 📊 Plataforma de Consultoría
+
+Sistema de entrega de auditorías y reportes técnicos mediante una experiencia de presentación interactiva.
+
+- **Reportes MDX**: Contenido dinámico y altamente personalizable mediante componentes React/Astro.
+- **Slides Presentation**: Vista de diapositivas integrada para presentaciones de alto impacto.
+- **Protección de Datos**: Acceso restringido mediante tokens OTP y validación de expiración.
+- **Viz Suite**: Suite completa de componentes de visualización (BarCharts, StackTables, Scoreboards).
 
 ### 📨 Formulario de Contacto
 

@@ -1,0 +1,149 @@
+---
+interface Props {
+  priority: 'urgent' | 'short' | 'medium';
+  title: string;
+  items: string[];
+}
+
+const { priority, title, items } = Astro.props;
+
+const getPriorityClass = (p: string) => {
+  switch (p) {
+    case 'urgent':
+      return 'priority-urgent';
+    case 'short':
+      return 'priority-short';
+    case 'medium':
+      return 'priority-medium';
+    default:
+      return 'priority-neutral';
+  }
+};
+
+const getPriorityIcon = (p: string) => {
+  switch (p) {
+    case 'urgent':
+      return 'ph-warning-circle';
+    case 'short':
+      return 'ph-clock';
+    case 'medium':
+      return 'ph-calendar-check';
+    default:
+      return 'ph-list-bullets';
+  }
+};
+---
+
+<section class={`priority-block ${getPriorityClass(priority)}`}>
+  <header class="priority-header">
+    <i
+      class={`ph ${getPriorityIcon(priority)} priority-icon`}
+      aria-hidden="true"></i>
+    <h3 class="priority-title">{title}</h3>
+  </header>
+  <ul class="priority-list">
+    {
+      items.map((item) => (
+        <li>
+          <i class="ph ph-check-circle check-icon" aria-hidden="true" />
+          <span>{item}</span>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .priority-block {
+    margin: 1.5rem 0;
+    border-radius: 1rem;
+    border: 1px solid var(--color-line);
+    overflow: hidden;
+    background-color: var(--color-surface);
+  }
+
+  .priority-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--color-line);
+    background-color: var(--color-surface-subtle);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .priority-icon {
+    font-size: 1.5rem;
+  }
+
+  .priority-title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+  }
+
+  .priority-list {
+    padding: 1.5rem;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .priority-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    color: var(--color-gray-300);
+    line-height: 1.6;
+    font-size: 0.9375rem;
+  }
+
+  .check-icon {
+    margin-top: 0.125rem;
+    flex-shrink: 0;
+  }
+
+  /* Variantes */
+  .priority-urgent {
+    border-color: rgba(248, 113, 113, 0.3);
+  }
+  .priority-urgent .priority-header {
+    background-color: var(--color-error-subtle);
+  }
+  .priority-urgent .priority-icon,
+  .priority-urgent .check-icon {
+    color: var(--color-red-400);
+  }
+
+  .priority-short {
+    border-color: rgba(234, 179, 8, 0.3);
+  }
+  .priority-short .priority-header {
+    background-color: rgba(234, 179, 8, 0.1);
+  }
+  .priority-short .priority-icon,
+  .priority-short .check-icon {
+    color: #facc15;
+  }
+
+  .priority-medium {
+    border-color: rgba(34, 197, 94, 0.3);
+  }
+  .priority-medium .priority-header {
+    background-color: rgba(34, 197, 94, 0.1);
+  }
+  .priority-medium .priority-icon,
+  .priority-medium .check-icon {
+    color: var(--color-green-500);
+  }
+
+  .priority-neutral {
+    border-color: var(--color-line);
+  }
+  .priority-neutral .priority-icon,
+  .priority-neutral .check-icon {
+    color: var(--color-gray-400);
+  }
+</style>

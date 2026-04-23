@@ -1,0 +1,159 @@
+---
+interface Props {
+  type: 'critical' | 'warning' | 'opportunity' | 'tip';
+  title: string;
+}
+
+const { type, title } = Astro.props;
+
+const getTypeClass = (type: string) => {
+  switch (type) {
+    case 'critical':
+      return 'type-critical';
+    case 'warning':
+      return 'type-warning';
+    case 'opportunity':
+      return 'type-opportunity';
+    case 'tip':
+      return 'type-tip';
+    default:
+      return 'type-neutral';
+  }
+};
+
+const getTypeIcon = (type: string) => {
+  switch (type) {
+    case 'critical':
+      return 'ph-warning-octagon';
+    case 'warning':
+      return 'ph-warning';
+    case 'opportunity':
+      return 'ph-rocket-launch';
+    case 'tip':
+      return 'ph-lightbulb';
+    default:
+      return 'ph-info';
+  }
+};
+---
+
+<aside
+  class={`finding-card ${getTypeClass(type)}`}
+  aria-label={`${type}: ${title}`}
+>
+  <span class="finding-icon-wrapper" aria-hidden="true">
+    <i class={`ph ${getTypeIcon(type)} finding-icon`}></i>
+  </span>
+  <div class="finding-content">
+    <h4 class="finding-title">{title}</h4>
+    <div class="finding-body prose">
+      <slot />
+    </div>
+  </div>
+</aside>
+
+<style>
+  .finding-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    margin: 1.5rem 0;
+    border-radius: 1rem;
+    border: 1px solid;
+  }
+  @media (min-width: 480px) {
+    .finding-card {
+      gap: 1rem;
+      padding: 1.5rem;
+    }
+  }
+
+  .finding-icon-wrapper {
+    flex-shrink: 0;
+    margin-top: 0.25rem;
+  }
+
+  .finding-icon {
+    font-size: 1.5rem;
+  }
+  @media (min-width: 480px) {
+    .finding-icon {
+      font-size: 1.875rem;
+    }
+  }
+
+  .finding-content {
+    flex: 1;
+  }
+
+  .finding-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .finding-body {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    line-height: 1.6;
+    max-width: none;
+    color: var(--color-gray-300);
+  }
+
+  .type-critical {
+    background-color: var(--color-error-subtle);
+    border-color: rgba(248, 113, 113, 0.3);
+  }
+  .type-critical .finding-icon {
+    color: var(--color-red-400);
+  }
+  .type-critical .finding-title {
+    color: var(--color-red-400);
+  }
+
+  .type-warning {
+    background-color: rgba(234, 179, 8, 0.1);
+    border-color: rgba(234, 179, 8, 0.3);
+  }
+  .type-warning .finding-icon {
+    color: #facc15;
+  }
+  .type-warning .finding-title {
+    color: #eab308;
+  }
+
+  .type-opportunity {
+    background-color: var(--color-accent-subtle);
+    border-color: rgba(var(--color-accent-rgb), 0.3);
+  }
+  .type-opportunity .finding-icon {
+    color: var(--color-accent);
+  }
+  .type-opportunity .finding-title {
+    color: var(--color-secondary);
+  }
+
+  .type-tip {
+    background-color: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.3);
+  }
+  .type-tip .finding-icon {
+    color: var(--color-blue-400);
+  }
+  .type-tip .finding-title {
+    color: var(--color-blue-400);
+  }
+
+  .type-neutral {
+    background-color: var(--color-surface-subtle);
+    border-color: var(--color-line);
+  }
+  .type-neutral .finding-icon {
+    color: var(--color-gray-300);
+  }
+</style>

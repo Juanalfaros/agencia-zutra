@@ -6,6 +6,23 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.1.
 
 ---
 
+## [2.1.0] — 2026-04-23
+
+### 🚀 Agregado
+
+- **Módulo de Consultoría**: Nuevo sistema de reportes y auditorías interactivas para clientes.
+- **Reportes MDX**: Implementación de reportes dinámicos mediante MDX en `src/content/consultoria`.
+- **Slides Presentation**: Sistema de diapositivas interactivas integradas en los reportes (`SlidesModal.astro`).
+- **Protección de Reportes**: Sistema de autenticación mediante tokens OTP y verificación de acceso en `src/lib/report-auth.ts`.
+- **Visualización de Datos**: Suite completa de componentes de visualización (`BarChart`, `StackTable`, `MetricHighlight`, etc.) bajo `src/components/consultoria/viz/`.
+- **UX Improvements**: Apertura automática de presentaciones al entrar a un reporte y botón de cierre dinámico "Ver reporte completo".
+
+### ✅ Corregido
+
+- **Slides Transition**: Optimización de transiciones y reseteo de scroll al navegar entre diapositivas.
+
+---
+
 ## [2.0.0] — 2026-04-10
 
 ### 🔥 Breaking Changes
@@ -63,6 +80,7 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.1.
 ### Notas
 
 Versión anterior a la estandarización del proyecto. Incluye:
+
 - Diseño original del sitio con Astro 6 + Cloudflare
 - Integración con Contentful CMS
 - WhatsApp Lead Bot ("El Zutro")
@@ -72,4 +90,5 @@ Versión anterior a la estandarización del proyecto. Incluye:
 
 ---
 
+[2.1.0]: https://github.com/zutra/agencia-zutra/releases/tag/v2.1.0
 [2.0.0]: https://github.com/zutra/agencia-zutra/releases/tag/v2.0.0

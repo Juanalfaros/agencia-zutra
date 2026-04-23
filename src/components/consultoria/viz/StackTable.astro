@@ -1,0 +1,178 @@
+---
+interface StackRow {
+  component: string;
+  installed: string;
+  current: string;
+  gap: string;
+  status: 'good' | 'warning' | 'critical';
+}
+
+interface Props {
+  rows: StackRow[];
+}
+
+const { rows } = Astro.props;
+
+const getStatusClass = (status: string) => {
+  switch (status) {
+    case 'good':
+      return 'status-good';
+    case 'warning':
+      return 'status-warning';
+    case 'critical':
+      return 'status-critical';
+    default:
+      return 'status-neutral';
+  }
+};
+---
+
+<section class="stack-table-wrapper" aria-label="Stack tecnológico">
+  <div
+    class="table-scroll"
+    role="region"
+    aria-label="Tabla de stack tecnológico"
+    tabindex="0"
+  >
+    <table class="stack-table">
+      <caption class="sr-only"
+        >Versiones instaladas vs. actuales del stack tecnológico</caption
+      >
+      <thead>
+        <tr>
+          <th scope="col">Componente</th>
+          <th scope="col">Instalado</th>
+          <th scope="col">Actual (Seguro)</th>
+          <th scope="col">Brecha / Riesgo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((row) => (
+            <tr class="stack-row">
+              <th scope="row" class="component-col">
+                <span
+                  class={`status-dot ${getStatusClass(row.status)}`}
+                  aria-hidden="true"
+                />
+                {row.component}
+              </th>
+              <td class="mono-text">{row.installed}</td>
+              <td class="mono-text text-muted">{row.current}</td>
+              <td>
+                <span class={`gap-badge ${getStatusClass(row.status)}`}>
+                  {row.gap}
+                </span>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+  .stack-table-wrapper {
+    margin: 1.5rem 0;
+    overflow: hidden;
+    border-radius: 1rem;
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  .stack-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+  }
+
+  .stack-table th {
+    padding: 0.75rem;
+    font-size: 0.7rem;
+    color: var(--color-gray-300);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    border-bottom: 1px solid var(--color-line);
+    background-color: var(--color-primary);
+  }
+  @media (min-width: 640px) {
+    .stack-table th {
+      padding: 1rem;
+      font-size: 0.75rem;
+    }
+  }
+
+  .stack-table td {
+    padding: 0.75rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+  @media (min-width: 640px) {
+    .stack-table td {
+      padding: 1rem;
+    }
+  }
+
+  .stack-row {
+    transition: background-color 0.2s;
+  }
+  .stack-row:hover {
+    background-color: var(--color-surface-subtle);
+  }
+  .stack-row:last-child td {
+    border-bottom: none;
+  }
+
+  .component-col {
+    font-weight: 600;
+    color: var(--color-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .status-dot {
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+  }
+
+  .mono-text {
+    font-family: monospace;
+    font-size: 0.875rem;
+  }
+  .text-muted {
+    color: var(--color-gray-300);
+  }
+
+  .gap-badge {
+    display: inline-flex;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .status-good {
+    color: var(--color-green-500);
+    background-color: rgba(34, 197, 94, 0.1);
+  }
+  .status-warning {
+    color: #fbbf24;
+    background-color: rgba(251, 191, 36, 0.1);
+  }
+  .status-critical {
+    color: var(--color-red-400);
+    background-color: rgba(248, 113, 113, 0.1);
+  }
+  .status-neutral {
+    color: var(--color-gray-300);
+    background-color: var(--color-surface-subtle);
+  }
+</style>

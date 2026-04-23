@@ -1,0 +1,417 @@
+---
+title: "Auditoría Web Integral — tecnotambores.cl"
+client: "TecnoTambores S.A."
+imageHeader: "./tecnotambores/header-image.webp"
+date: 2026-04-21
+analyst: "Juan Alfaro"
+description: "Análisis completo del estado técnico, de rendimiento, UX, SEO y presencia digital de tecnotambores.cl. Incluye plan de acción priorizado y comparativa competitiva."
+category: auditoria-web
+protected: true
+accessExpiry: 2026-12-31
+allowedEmails:
+  - castete@tecnotambores.cl
+adminEmails:
+  - juan@zutra.cl
+  - hola@zutra.cl
+  - camilo@zutra.cl
+slidesEnabled: true
+status: published
+slides:
+  - title: "Stack tecnológico en estado crítico"
+    content: "WordPress 5.4 + PHP 7.4 EOL + Elementor 2.9 — tres años de vulnerabilidades sin parchar. Cada versión omitida es un vector de ataque documentado públicamente en CVE."
+    highlight: "~5 años de actualizaciones de seguridad saltadas"
+    type: finding
+    image: "./tecnotambores/whatcms-tecnotambores.png"
+  - title: "Performance móvil: 4× el límite de Google"
+    content: "LCP móvil de 10.7 segundos frente al umbral máximo de 2.5 s. Causa principal: imágenes sin WebP, sin lazy loading, dimensionadas para escritorio. Google penaliza el posicionamiento orgánico por Core Web Vitals deficientes."
+    highlight: "LCP móvil 10.7 s — umbral: 2.5 s"
+    type: finding
+    image: "./tecnotambores/pagespeed-mobile-tecnotambores.png"
+  - title: "Invisible en el producto estrella"
+    content: "Al buscar 'contenedores IBC Santiago' — el producto destacado en el home — TecnoTambores no aparece en ningún resultado de la primera página. Ese tráfico lo captura íntegramente la competencia."
+    highlight: "0 resultados orgánicos para 'contenedores IBC Santiago'"
+    type: finding
+    image: "./tecnotambores/google-search-tecnotambores.png"
+  - title: "Segundo lugar detrás de un competidor más nuevo"
+    content: "En 'tambores industriales Chile', TecnoTambores aparece en segundo lugar detrás de tamboresmetalicos.cl, un sitio lanzado en 2019. Con más años de operación y dominio más antiguo, perder ese primer lugar es una señal directa de trabajo SEO desatendido."
+    highlight: "Posición #2 detrás de un competidor más reciente"
+    type: finding
+    image: "./tecnotambores/google-search-posicion-tecnotambores.png"
+  - title: "Oportunidad SEO de bajo costo, alta demanda"
+    content: "El término 'tambores' tiene 6.600 búsquedas mensuales con dificultad SEO de 9/100 (LOW). Con contenido bien estructurado orientado a estas keywords, el sitio puede capturar tráfico orgánico calificado sin pauta pagada."
+    highlight: "6.600 búsquedas/mes · Dificultad SEO: 9/100"
+    type: data
+    image: "./tecnotambores/google-search-volumen-tecnotambores.png"
+  - title: "La IA de Google los describe peor que a la competencia"
+    content: "En búsquedas de categoría, Google muestra un resumen generado por IA antes de los resultados. TecnoTambores aparece como 'Venta y arriendo de tambores'. Engar aparece como 'Más de 60 años, residuos peligrosos'. El Schema Markup del sitio determina esa descripción."
+    highlight: "Descripción genérica vs. diferenciadores de competidores"
+    type: finding
+    image: "./tecnotambores/google-search-ia-tecnotambores.png"
+  - title: "6 años sin publicar en el blog"
+    content: "El último artículo es de 2019. Google premia la frescura y relevancia del contenido. Un blog activo con guías técnicas (normativa RESPEL, IBC vs tambores metálicos) posicionaría al sitio como autoridad en el nicho."
+    highlight: "Último post publicado: 2019"
+    type: finding
+    image: "./tecnotambores/google-search-blog-tecnotambores.png"
+  - title: "Plan de acción — resumen"
+    content: ""
+    highlight: "3 horizontes de mejora con impacto directo en seguridad, rendimiento y SEO"
+    type: recommendation
+    bullets:
+      - "🔴 Urgente: actualizar PHP 7.4 → 8.2+, WordPress 5.4 → 6.9.4 y Elementor 2.9 → 4.0.3"
+      - "🔴 Urgente: reemplazar exposición de datos de ejecutivos por formulario estructurado"
+      - "🟡 Corto plazo: imágenes WebP + lazy loading para bajar LCP móvil de 10.7 s a menos de 4 s"
+      - "🟡 Corto plazo: Schema Markup LocalBusiness + Product + Review, GA4 y Search Console"
+      - "🟡 Corto plazo: CTA primario único con jerarquía de conversión clara en el home"
+      - "🟢 Mediano plazo: rediseño UX/UI mobile-first y blog activo con keywords de alto valor"
+      - "🟢 Mediano plazo: reseñas GMB, Google Ads (IBC / tambores) y WhatsApp Business"
+  - title: "Las tres opciones de intervención"
+    content: ""
+    highlight: "Opción 3 recomendada — la única que elimina la deuda técnica de raíz"
+    type: summary
+    options:
+      - variant: "Opción 1"
+        title: "Solo actualizar WordPress"
+        description: "Cierra las vulnerabilidades de seguridad inmediatas. Deja intactos el diseño, la experiencia móvil y el SEO. Un parche, no una solución."
+        recommended: false
+      - variant: "Opción 2"
+        title: "Nueva página en WordPress"
+        description: "Mejora visual, UX y arquitectura de información. Pero WordPress + Elementor tiene un techo de rendimiento y se degrada con el tiempo."
+        recommended: false
+      - variant: "Opción 3"
+        title: "Sitio nuevo con Astro + Headless CMS"
+        description: "LCP móvil potencialmente bajo 1.5 s. PageSpeed 95-100 sostenible. Arquitectura más segura sin PHP público. Diseño a medida mobile-first."
+        recommended: true
+  - title: "¿Listo para modernizar tu infraestructura?"
+    content: "Hablemos sobre cómo ejecutar este plan de rescate y llevar el rendimiento de TecnoTambores al siguiente nivel."
+    highlight: "Siguientes Pasos"
+    type: "cta"
+    ctaText: "Agendar Sesión Estratégica"
+    ctaLink: "/#contacto"
+
+---
+
+import ScoreGrid from '@/components/consultoria/viz/ScoreGrid.astro';
+import VitalsTable from '@/components/consultoria/viz/VitalsTable.astro';
+import MetricHighlight from '@/components/consultoria/viz/MetricHighlight.astro';
+import StackTable from '@/components/consultoria/viz/StackTable.astro';
+import FindingCard from '@/components/consultoria/viz/FindingCard.astro';
+import CompetitorTable from '@/components/consultoria/viz/CompetitorTable.astro';
+import PriorityBlock from '@/components/consultoria/viz/PriorityBlock.astro';
+import OptionCard from '@/components/consultoria/viz/OptionCard.astro';
+import BarChart from '@/components/consultoria/viz/BarChart.astro';
+import CallToAction from '@/components/consultoria/viz/CallToAction.astro';
+
+## Resumen Ejecutivo
+
+tecnotambores.cl es el sitio web de una empresa con operación real, trayectoria comprobada y productos con demanda de mercado activa. Sin embargo, su presencia digital no refleja ese nivel de madurez operacional. El sitio presenta deficiencias técnicas críticas, una experiencia de usuario desactualizada y una estrategia de contenido prácticamente inexistente.
+
+<FindingCard type="critical" title="Diagnóstico central">
+El sitio no está cumpliendo su función como canal de captación de clientes y en algunos aspectos representa un riesgo activo para la seguridad del negocio. La pregunta que trajo esta auditoría fue simple: *¿hay que actualizar el WordPress?* La respuesta es sí, pero esa es solo la punta del iceberg.
+</FindingCard>
+
+---
+
+## 1. Stack Tecnológico — Estado Crítico
+
+<StackTable rows={[
+  { component: "WordPress", installed: "5.4.19", current: "6.9.4", gap: "~5 años de actualizaciones", status: "warning" },
+  { component: "PHP", installed: "7.4.33", current: "8.3.x", gap: "+3 años sin soporte oficial", status: "critical" },
+  { component: "Elementor", installed: "2.9.12", current: "4.0.3", gap: "2 versiones mayores completas", status: "warning" },
+  { component: "Servidor Web", installed: "LiteSpeed", current: "—", gap: "—", status: "good" },
+  { component: "Base de datos", installed: "MySQL", current: "—", gap: "Versión a confirmar", status: "warning" },
+]} />
+
+**WordPress 5.4.19** fue lanzado en marzo de 2020. Cada versión omitida es un vector de ataque potencial documentado públicamente en la base de datos CVE.
+
+<FindingCard type="critical" title="PHP 7.4 — End of Life desde noviembre 2022">
+Desde esa fecha no recibe parches de seguridad de ningún tipo. Ejecutar un sitio en producción con PHP 7.4 en 2026 es equivalente a operar con una cerradura cuya combinación es conocida públicamente. Además, la incompatibilidad con PHP 8.x impide aprovechar mejoras de rendimiento de hasta un 30%.
+</FindingCard>
+
+**Elementor 2.9.12** tiene múltiples CVEs de severidad alta en la rama 2.x, incluyendo vulnerabilidades de tipo Stored XSS que permiten inyectar código malicioso en el navegador de cualquier visitante.
+
+<FindingCard type="tip" title="El único componente correcto">
+El servidor web **LiteSpeed** es una elección técnicamente sólida para sitios WordPress por su rendimiento superior frente a Apache o Nginx en este tipo de cargas.
+</FindingCard>
+
+---
+
+## 2. Rendimiento Web — PageSpeed Insights
+
+Análisis realizado con Google PageSpeed Insights (Lighthouse 13.0.1) el 21 de abril de 2026.
+
+<ScoreGrid
+  mobile={{ label: "Celular", device: "mobile", performance: 61, accessibility: 82, practices: 96, seo: 85 }}
+  desktop={{ label: "Escritorio", device: "desktop", performance: 78, accessibility: 88, practices: 96, seo: 85 }}
+/>
+
+### Core Web Vitals — Celular
+
+<VitalsTable device="Celular" deviceType="mobile" vitals={[
+  { metric: "First Contentful Paint", value: "3.7 s", threshold: "1.8 s", status: "poor" },
+  { metric: "Largest Contentful Paint", value: "10.7 s", threshold: "2.5 s", status: "poor" },
+  { metric: "Speed Index", value: "7.1 s", threshold: "3.4 s", status: "poor" },
+  { metric: "Total Blocking Time", value: "0 ms", threshold: "200 ms", status: "good" },
+  { metric: "Cumulative Layout Shift", value: "0.056", threshold: "0.1", status: "good" },
+]} />
+
+### Core Web Vitals — Escritorio
+
+<VitalsTable device="Escritorio" deviceType="desktop" vitals={[
+  { metric: "First Contentful Paint", value: "1.0 s", threshold: "1.8 s", status: "good" },
+  { metric: "Largest Contentful Paint", value: "1.7 s", threshold: "2.5 s", status: "good" },
+  { metric: "Speed Index", value: "3.0 s", threshold: "3.4 s", status: "needs-improvement" },
+  { metric: "Total Blocking Time", value: "10 ms", threshold: "200 ms", status: "good" },
+  { metric: "Cumulative Layout Shift", value: "0.167", threshold: "0.1", status: "needs-improvement" },
+]} />
+
+<MetricHighlight
+  value="10.7 s"
+  label="LCP Móvil — el hallazgo más crítico"
+  sublabel="4.3× el umbral máximo de Google. Causa probable: imágenes sin WebP ni lazy loading."
+  status="critical"
+/>
+
+Esto tiene consecuencias directas en dos frentes: Google penaliza el posicionamiento orgánico de sitios con Core Web Vitals deficientes, y estudios de comportamiento indican que una fracción importante de visitantes móviles abandona el sitio antes de que cargue cuando los tiempos superan los 4 segundos.
+
+<FindingCard type="opportunity" title="Punto positivo">
+El score de "Mejores Prácticas" en 96/100 indica que el sitio tiene HTTPS configurado correctamente y no presenta errores graves de consola. La infraestructura base funciona bien.
+</FindingCard>
+
+---
+
+## 3. Experiencia de Usuario (UX) y Diseño de Interfaz (UI)
+
+Esta es, quizás, el área donde el sitio acumula la mayor deuda. No se trata solo de que el diseño se vea antiguo — el problema es que la arquitectura de información y los patrones de interacción están construidos sobre una lógica de 2015.
+
+### 3.1 Diseño Visual Desactualizado
+
+La interfaz actual responde a una estética de hace aproximadamente una década: tipografía sin jerarquía visual clara, paleta de colores verde/blanco funcional pero sin refinamiento, imágenes de stock genéricas que no transmiten la especialización real de la empresa.
+
+<FindingCard type="warning" title="La credibilidad visual es un factor de conversión">
+Para una empresa B2B que gestiona contratos industriales, un comprador corporativo que llega al sitio por primera vez forma una impresión en menos de **50 milisegundos**. Esa impresión condiciona el resto de su recorrido.
+</FindingCard>
+
+### 3.2 Arquitectura de Información Deficiente
+
+La estructura de contenido del sitio está construida de adentro hacia afuera: comunica lo que la empresa hace en lugar de responder lo que el cliente necesita saber.
+
+> *"Somos una empresa que da soluciones integrales a nuestros clientes a través de la fabricación, comercialización, reacondicionamiento y disposición final de envases industriales"*
+
+Esa es una descripción interna del negocio, no una propuesta de valor orientada al visitante.
+
+<MetricHighlight
+  value="20–28%"
+  label="Porcentaje del texto que los usuarios realmente leen"
+  sublabel="Fuente: Nielsen Norman Group. El contenido actual no está estructurado para ese patrón de consumo."
+  status="warning"
+/>
+
+### 3.3 Llamados a la Acción sin Estrategia
+
+El sitio presenta múltiples CTAs en competencia directa: "Cotizar Aquí" (sidebar rojo), "Más Información" ×4, "Trabaja con Nosotros" y "Contacto". Todos compiten por la misma atención sin jerarquía clara.
+
+<FindingCard type="warning" title="Cuando todo es importante, nada es importante">
+El botón más prominente — "Cotizar Aquí" — está en el sidebar derecho. En pantallas móviles esa posición queda enterrada debajo de bloques de texto, fuera del flujo principal de lectura.
+</FindingCard>
+
+### 3.4 Datos de Contacto Expuestos en el HTML Público
+
+<FindingCard type="critical" title="Riesgo de seguridad corporativa">
+Nombres completos, cargos, teléfonos directos y correos de al menos **5 ejecutivos** — incluyendo gerencia y gerencia comercial — están publicados en el HTML público del sitio. Esta información es suficiente para construir ataques de spear phishing o campañas de ingeniería social dirigidas. Un atacante puede obtener estos datos mediante scraping automatizado en segundos.
+</FindingCard>
+
+---
+
+## 4. SEO y Visibilidad Orgánica
+
+### 4.1 Posicionamiento Competitivo — El Dato Más Importante
+
+<MetricHighlight
+  value="#2"
+  label="Posición en 'tambores industriales Chile'"
+  sublabel="Superados por tamboresmetalicos.cl, lanzado en 2019 — más reciente que TecnoTambores."
+  status="warning"
+/>
+
+<MetricHighlight
+  value="#0"
+  label="Resultados para 'contenedores IBC Santiago'"
+  sublabel="El producto estrella del home no aparece en ningún resultado de la primera página. Ese tráfico lo captura la competencia."
+  status="critical"
+/>
+
+Antes de los resultados orgánicos, Google muestra un bloque de **"Visión general creada por IA"**. En ese resumen, TecnoTambores aparece como *"Venta y arriendo de tambores metálicos e IBC plásticos"*, mientras Engar aparece como *"Más de 60 años, residuos peligrosos"*. El contenido del sitio y el Schema Markup determinan esa descripción.
+
+### 4.2 Oportunidad de Keywords
+
+<MetricHighlight
+  value="6.600"
+  label="Búsquedas mensuales para 'tambores'"
+  sublabel="Dificultad SEO: 9/100 (LOW). Con contenido bien estructurado, capturable sin pauta pagada."
+  status="opportunity"
+/>
+
+Las keywords de mayor valor comercial: *"tambores de 200 litros"*, *"venta de tambores de 200 litros usados"*, *"tambores plásticos"* — todas con dificultad Easy y volumen activo.
+
+<BarChart 
+  title="Volumen de búsqueda (Búsquedas mensuales)"
+  data={[
+    { label: "tambores", value: 6600, highlight: true },
+    { label: "tambores de 200 litros", value: 1300 },
+    { label: "tambores plásticos", value: 880 },
+    { label: "tambores metalicos", value: 590 },
+    { label: "venta de tambores de 200 litros usados", value: 320 },
+  ]}
+/>
+
+### 4.3 Blog — 6 Años de Silencio
+
+<FindingCard type="warning" title="2019 — último post publicado">
+Seis años sin publicar contenido es, para el algoritmo de Google, una señal de abandono. Un blog activo con artículos orientados a las keywords identificadas (guías IBC, normativa RESPEL, comparativas de materiales) posicionaría al sitio como autoridad en el nicho. En la actualidad, ese rol lo ocupa la competencia.
+</FindingCard>
+
+### 4.4 Schema Markup
+
+No se detectó implementación de Schema Markup en el sitio. Para una empresa B2B con dirección física, horario, productos y reseñas activas en Google, implementar `LocalBusiness`, `Product` y `Review` puede mejorar los rich snippets y aumentar la probabilidad de que la IA de Google describa correctamente a la empresa.
+
+---
+
+## 5. Presencia Digital y Reputación Online
+
+### 5.1 Google My Business
+
+La ficha de Google My Business está activa y bien configurada (Lago Llanquihue 0491, San Bernardo, teléfono, horario, fotos).
+
+<MetricHighlight
+  value="34 reseñas · 4.1★"
+  label="Google My Business — activo y verificado"
+  sublabel="Para el volumen de operación de la empresa, 34 reseñas es bajo. No hay evidencia de estrategia activa de solicitud post-servicio."
+  status="opportunity"
+/>
+
+### 5.2 LinkedIn y Redes Sociales
+
+Tecnotambores S.A. tiene perfil activo en LinkedIn con más de **570 seguidores**, coherente con su perfil B2B. La ausencia de WhatsApp Business, Instagram y YouTube representa una oportunidad desaprovechada frente a competidores que ya invierten en captación pagada.
+
+---
+
+## 6. Seguridad
+
+<FindingCard type="critical" title="Superficie de ataque con vulnerabilidades documentadas y sin parchar">
+La combinación PHP 7.4 EOL + WordPress 5.4 + Elementor 2.9 crea un perfil de seguridad con CVEs públicos sin corrección disponible. Desde noviembre 2022, ningún parche de seguridad ha sido emitido para PHP 7.4.
+</FindingCard>
+
+Se recomienda verificar la implementación de headers HTTP (Content-Security-Policy, X-Frame-Options, Strict-Transport-Security) mediante [securityheaders.com](https://securityheaders.com).
+
+---
+
+## 7. Análisis Competitivo
+
+<CompetitorTable
+  highlight="TecnoTambores"
+  competitors={[
+    { name: "Tambores Metálicos Chile", domain: "tamboresmetalicos.cl", differentiator: "Primer resultado orgánico en 'tambores industriales Chile'", hasPaid: false, rank: 1 },
+    { name: "TecnoTambores S.A.", domain: "tecnotambores.cl", differentiator: "Venta y arriendo de tambores metálicos e IBC plásticos (descripción genérica)", hasPaid: false, rank: 2 },
+    { name: "Engar", domain: "engar.cl", differentiator: "Más de 60 años, retiro en sitio del cliente, residuos peligrosos", hasPaid: false, rank: 3 },
+    { name: "Comercial LML", domain: "comerciallml.cl", differentiator: "30 años, economía circular", hasPaid: true, rank: 4 },
+    { name: "Superbidón", domain: "superbidon.cl", differentiator: "Certificación ONU, rango 30-220L", hasPaid: false, rank: 5 },
+    { name: "Bidones Chile", domain: "bidoneschile.cl", differentiator: "Imagen de producto en snippet, cotización online", hasPaid: false, rank: 6 },
+    { name: "ECOPLAS", domain: "ecoplas.cl", differentiator: "Clasificación por calidad, imagen de producto", hasPaid: false, rank: 7 },
+  ]}
+/>
+
+---
+
+## 8. Conclusiones y Plan de Acción
+
+TecnoTambores tiene una base sólida: dominio establecido, Google My Business activo, Yoast SEO instalado, servidor LiteSpeed, HTTPS y reseñas positivas reales. Pero está operando muy por debajo de su potencial por una acumulación de deuda técnica y estratégica.
+
+Lo que realmente está en juego es si el sitio va a seguir siendo un folleto digital estático, o si va a convertirse en un canal activo de generación de negocio.
+
+<MetricHighlight
+  value="6.600"
+  label="Búsquedas mensuales disponibles — capturables con acción"
+  sublabel="Cada día que el sitio permanece en su estado actual, ese volumen de búsquedas se lo lleva alguien más."
+  status="opportunity"
+/>
+
+<PriorityBlock
+  priority="urgent"
+  title="Urgente — Riesgo activo"
+  items={[
+    "Actualizar PHP 7.4 → 8.2+",
+    "Actualizar WordPress 5.4 → 6.9.4",
+    "Actualizar Elementor 2.9 → 4.0.3",
+    "Reemplazar exposición de datos ejecutivos por formulario de contacto estructurado",
+    "Verificar versión de MySQL y headers de seguridad HTTP",
+  ]}
+/>
+
+<PriorityBlock
+  priority="short"
+  title="Corto plazo — Rendimiento y conversión"
+  items={[
+    "Optimizar imágenes a formato WebP con lazy loading (reducir LCP móvil de 10.7s a menos de 4s)",
+    "Implementar Schema Markup (LocalBusiness + Product + Review)",
+    "Limpiar sitemaps obsoletos (author-sitemap, private-page-sitemap)",
+    "Verificar e instalar Google Analytics 4 y Search Console",
+    "Definir CTA primario único y jerarquía de conversión clara en el home",
+  ]}
+/>
+
+<PriorityBlock
+  priority="medium"
+  title="Mediano plazo — Crecimiento orgánico"
+  items={[
+    "Rediseño UX/UI con arquitectura de información orientada al cliente y enfoque mobile-first",
+    "Estrategia de contenido con blog activo orientado a keywords de alto valor comercial",
+    "Optimización de meta descripciones para mejorar descripción en el bloque de IA de Google",
+    "Estrategia activa de solicitud de reseñas para Google My Business",
+    "Evaluar inversión en Google Ads para keywords de producto (IBC, tambores industriales)",
+    "Integrar WhatsApp Business como canal de conversión directa",
+  ]}
+/>
+
+---
+
+### Las tres opciones de intervención
+
+<div class="options-grid">
+  <OptionCard
+    variant="Opción 1"
+    icon="ph-wrench"
+    title="Solo actualizar WordPress"
+    description="Resuelve los problemas de seguridad inmediatos. Deja intactos el diseño, la experiencia móvil y el SEO. Un parche, no una solución."
+    pros={["Solución rápida y económica", "Elimina vulnerabilidades activas"]}
+    cons={["No mejora la experiencia móvil", "No ataca el problema de SEO", "Diseño y arquitectura siguen siendo de 2015"]}
+    ctaText="Ideal si no hay presupuesto disponible ahora"
+  />
+  <OptionCard
+    variant="Opción 2"
+    icon="ph-pencil-simple-line"
+    title="Nueva página en WordPress"
+    description="Resuelve diseño, experiencia móvil y arquitectura de información. Pero WordPress con Elementor tiene un techo de rendimiento."
+    pros={["Mejora visual significativa", "Mantiene CMS familiar", "Mejor experiencia móvil"]}
+    cons={["PageSpeed 90+ requiere optimización permanente", "Se degrada con el tiempo", "No elimina la deuda técnica de fondo"]}
+    ctaText="Equilibrio costo / beneficio"
+  />
+  <OptionCard
+    variant="Opción 3"
+    icon="ph-rocket-launch"
+    title="Sitio nuevo con Astro + Headless CMS"
+    description="La opción técnicamente superior. HTML estático por defecto — scores 95-100 en PageSpeed sin optimización heroica."
+    recommended={true}
+    pros={["LCP móvil potencialmente bajo 1.5 s", "Arquitectura más segura (sin PHP público)", "Scores 95-100 en PageSpeed sostenibles", "Diseño a medida mobile-first"]}
+    cons={["Mayor inversión inicial", "Requiere migración de contenido"]}
+    ctaText="Recomendado por Zutra"
+  />
+</div>
+
+<CallToAction 
+  title="¿Listo para modernizar tu infraestructura?" 
+  description="Hablemos sobre cómo ejecutar este plan de rescate y llevar el rendimiento de TecnoTambores al siguiente nivel."
+/>
+
+---
+
+*Auditoría realizada con PageSpeed Insights (Lighthouse 13.0.1), BuiltWith, Ubersuggest, Have I Been Pwned, Google Search (modo incógnito) y revisión de sitemap/robots.txt. Abril 2026.*
