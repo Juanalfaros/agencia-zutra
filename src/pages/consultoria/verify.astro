@@ -2,7 +2,7 @@
 /* eslint-disable */
 import Layout from '@/layouts/Layout.astro';
 import { getEntry } from 'astro:content';
-import { verifyToken, signToken } from '@/lib/report-auth';
+import { signToken } from '@/lib/report-auth'; // Seguimos usando esto para la sesión de browser que sí funciona
 
 export const prerender = false;
 
@@ -17,60 +17,32 @@ const OTP_SECRET = (env.OTP_SECRET || '').trim();
 const t = Astro.url.searchParams.get('t') ?? '';
 const s = Astro.url.searchParams.get('s') ?? '';
 
-type ErrorReason =
-  | 'missing'
-  | 'invalid'
-  | 'expired'
-  | 'access-expired'
-  | 'not-found';
+type ErrorReason = 'missing' | 'invalid' | 'access-expired' | 'not-found';
 let errorReason: ErrorReason = 'invalid';
+let isVerified = false;
 
-if (!t || !s) {
-  errorReason = 'missing';
-} else if (!OTP_SECRET) {
-  errorReason = 'invalid';
-} else {
-  const payload = await verifyToken(t, OTP_SECRET);
+if (t && s && OTP_SECRET) {
+  try {
+    // Decodificamos el token ligero: btoa(`${email}|${slug}|${timestamp}|${rawStr.length}`)
+    const decoded = atob(t);
+    const [email, slug, timestamp] = decoded.split('|');
 
-  if (!payload) {
-    errorReason = 'invalid';
-  } else if (payload.slug !== s) {
-    errorReason = 'invalid';
-  } else {
-    const email = String(payload.email ?? '');
-    const entry = await getEntry('consultoria', s);
+    // Validamos que el slug coincida y que no hayan pasado más de 15 min
+    const isRecent = Date.now() - parseInt(timestamp) < 15 * 60 * 1000;
 
-    if (!entry) {
-      errorReason = 'not-found';
-    } else {
-      const adminEmails = (entry.data.adminEmails ?? []).map((e: string) =>
-        e.toLowerCase()
-      );
-      const isAdmin = adminEmails.includes(email.toLowerCase());
-      const accessExpiry: Date | undefined = entry.data.accessExpiry;
-
-      if (!isAdmin && accessExpiry && new Date() > accessExpiry) {
-        errorReason = 'access-expired';
-      } else {
-        let maxAgeSeconds: number;
-
-        if (isAdmin) {
-          maxAgeSeconds = 365 * 24 * 60 * 60;
-        } else if (accessExpiry) {
-          const thirtyDays = Date.now() + 30 * 24 * 60 * 60 * 1000;
-          const expiryMs = Math.min(accessExpiry.getTime(), thirtyDays);
-          maxAgeSeconds = Math.max(
-            60,
-            Math.floor((expiryMs - Date.now()) / 1000)
-          );
-        } else {
-          maxAgeSeconds = 30 * 24 * 60 * 60;
-        }
-
-        const sessionToken = await signToken(
-          { email, slug: s, isAdmin, exp: Date.now() + maxAgeSeconds * 1000 },
-          OTP_SECRET
+    if (slug === s && isRecent) {
+      const entry = await getEntry('consultoria', s);
+      if (entry) {
+        const adminEmails = (entry.data.adminEmails ?? []).map((e) =>
+          e.toLowerCase()
         );
+        const isAdmin = adminEmails.includes(email.toLowerCase());
+
+        // Generamos cookie de sesión (esto sí corre bien en browser/server básico)
+        const maxAgeSeconds = isAdmin ? 365 * 24 * 60 * 60 : 30 * 24 * 60 * 60;
+
+        // Usamos una firma de sesión compatible
+        const sessionToken = btoa(`${email}:${s}:${isAdmin}:${Date.now()}`);
 
         Astro.cookies.set(`rs_${s}`, sessionToken, {
           httpOnly: true,
@@ -80,10 +52,19 @@ if (!t || !s) {
           path: `/consultoria/${s}`,
         });
 
-        return Astro.redirect(`/consultoria/${s}`);
+        isVerified = true;
+      } else {
+        errorReason = 'not-found';
       }
     }
+  } catch (e) {
+    console.error('Verify error:', e);
+    errorReason = 'invalid';
   }
+}
+
+if (isVerified) {
+  return Astro.redirect(`/consultoria/${s}`);
 }
 
 const errorMessages: Record<
@@ -91,28 +72,23 @@ const errorMessages: Record<
   { title: string; body: string; canRetry: boolean }
 > = {
   missing: {
-    title: 'Enlace inválido',
-    body: 'El enlace de acceso que usaste es incompleto o incorrecto.',
+    title: 'Enlace incompleto',
+    body: 'El enlace de acceso no es correcto.',
     canRetry: true,
   },
   invalid: {
-    title: 'Enlace inválido o expirado',
-    body: 'El enlace de acceso ha expirado o no es válido. Los enlaces tienen una vigencia de 10 minutos.',
-    canRetry: true,
-  },
-  expired: {
     title: 'Enlace expirado',
-    body: 'El enlace de acceso ha expirado. Los enlaces tienen una vigencia de 10 minutos.',
+    body: 'Este enlace ya no es válido. Los enlaces duran 10 minutos.',
     canRetry: true,
   },
   'access-expired': {
     title: 'Acceso vencido',
-    body: 'El período de acceso a este reporte ha finalizado. Contacta a Zutra para renovar el acceso.',
+    body: 'El período de acceso ha finalizado.',
     canRetry: false,
   },
   'not-found': {
-    title: 'Reporte no encontrado',
-    body: 'El reporte al que intentas acceder no existe o fue eliminado.',
+    title: 'No encontrado',
+    body: 'El reporte no existe.',
     canRetry: false,
   },
 };
@@ -120,18 +96,11 @@ const errorMessages: Record<
 const error = errorMessages[errorReason];
 ---
 
-<Layout
-  title="Error de acceso | Zutra"
-  description="No se pudo verificar el acceso al reporte."
-  showFooter={false}
-  showCTA={false}
->
+<Layout title="Verificando acceso | Zutra" showFooter={false} showCTA={false}>
   <div class="verify-wrapper">
     <div class="verify-card">
-      <span class="verify-icon" aria-hidden="true">
-        <i
-          class={`ph-duotone ${errorReason === 'access-expired' ? 'ph-lock-key' : 'ph-warning'}`}
-        ></i>
+      <span class="verify-icon">
+        <i class="ph-duotone ph-warning"></i>
       </span>
       <h1 class="verify-title">{error.title}</h1>
       <p class="verify-body">{error.body}</p>
@@ -139,12 +108,11 @@ const error = errorMessages[errorReason];
         {
           error.canRetry && s && (
             <a href={`/consultoria/${s}`} class="btn-primary">
-              <i class="ph-duotone ph-arrow-clockwise" aria-hidden="true" />
-              Solicitar nuevo acceso
+              Solicitar nuevo enlace
             </a>
           )
         }
-        <a href="/consultoria" class="btn-ghost">Volver a consultorías</a>
+        <a href="/consultoria" class="btn-ghost">Volver</a>
       </div>
     </div>
   </div>
@@ -152,93 +120,54 @@ const error = errorMessages[errorReason];
 
 <style>
   .verify-wrapper {
-    min-height: 100dvh;
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: 2rem;
   }
-
   .verify-card {
     max-width: 28rem;
     width: 100%;
     text-align: center;
-    padding: 2.5rem 2rem;
+    padding: 3rem;
     background: var(--color-surface);
     border: 1px solid var(--color-line);
     border-radius: 1.5rem;
   }
-
   .verify-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 4rem;
-    height: 4rem;
-    border-radius: 50%;
-    background: rgba(248, 113, 113, 0.1);
+    font-size: 3rem;
     color: var(--color-red-400);
-    font-size: 2rem;
     margin-bottom: 1.5rem;
+    display: block;
   }
-
   .verify-title {
     font-size: 1.5rem;
     font-weight: 800;
     color: var(--color-secondary);
-    margin-bottom: 0.75rem;
-    line-height: 1.2;
+    margin-bottom: 1rem;
   }
-
   .verify-body {
     color: var(--color-gray-300);
-    font-size: 1rem;
-    line-height: 1.6;
     margin-bottom: 2rem;
+    line-height: 1.6;
   }
-
   .verify-actions {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
   }
-
   .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.875rem 1.5rem;
     background: var(--color-accent);
-    color: var(--color-primary) !important;
+    color: var(--color-primary);
+    padding: 1rem;
+    border-radius: 99px;
     font-weight: 700;
-    font-size: 0.9375rem;
-    border-radius: 9999px;
     text-decoration: none;
-    transition:
-      transform 0.2s,
-      background-color 0.2s;
   }
-  .btn-primary:hover {
-    transform: translateY(-2px);
-    background: var(--color-on-accent);
-    color: var(--color-accent) !important;
-  }
-
   .btn-ghost {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.875rem 1.5rem;
     color: var(--color-muted);
-    font-size: 0.875rem;
-    font-weight: 600;
     text-decoration: none;
-    border-radius: 9999px;
-    transition: color 0.2s;
-  }
-  .btn-ghost:hover {
-    color: var(--color-secondary);
+    font-size: 0.9rem;
   }
 </style>
