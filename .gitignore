@@ -80,3 +80,4 @@ html/
 *.local
 
 blogs-ideas/
+.dev.vars
