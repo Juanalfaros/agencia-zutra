@@ -41,6 +41,18 @@ if (t && s) {
           path: `/consultoria/${s}`,
         });
 
+        // Cookie de admin con scope amplio para proteger el índice /consultoria/
+        if (isAdmin) {
+          const adminToken = btoa(`${email}:admin:true:${Date.now()}`);
+          Astro.cookies.set('zutra_admin', adminToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 365 * 24 * 60 * 60,
+            path: '/consultoria',
+          });
+        }
+
         isVerified = true;
       } else {
         errorReason = 'not-found';

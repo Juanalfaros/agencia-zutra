@@ -1,6 +1,16 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import { getCollection } from 'astro:content';
+import { verifyToken } from '@/lib/report-auth';
+
+export const prerender = false;
+
+const adminCookie = Astro.cookies.get('zutra_admin')?.value ?? '';
+const OTP_SECRET = ((import.meta.env as any).OTP_SECRET || '').trim();
+const adminSession = await verifyToken(adminCookie, OTP_SECRET);
+const isAdmin = adminSession?.isAdmin === true;
+
+if (!isAdmin) return Astro.redirect('/404');
 
 const allConsultorias = await getCollection('consultoria');
 const publishedConsultorias = allConsultorias.filter(
