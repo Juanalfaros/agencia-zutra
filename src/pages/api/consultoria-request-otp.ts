@@ -5,7 +5,9 @@ import { getEntry } from 'astro:content';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { signToken } from '@/lib/report-auth';
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async (context) => {
+  const { request, locals } = context;
+
   try {
     const clientIP =
       request.headers.get('cf-connecting-ip') ||
@@ -23,15 +25,26 @@ export const POST: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    // 2. Env Variables (Runtime vs Build time)
-    const env = (locals as any)?.runtime?.env || import.meta.env || {};
+    // 2. Env Variables - Compatibilidad extendida para Cloudflare Workers/Pages
+    const env =
+      (locals as any)?.runtime?.env ||
+      (locals as any)?.env ||
+      (globalThis as any) ||
+      import.meta.env ||
+      {};
     const BREVO_API_KEY = (env.BREVO_API_KEY || '').trim();
     const OTP_SECRET = (env.OTP_SECRET || '').trim();
 
-    if (!OTP_SECRET) {
-      console.error('[OTP] OTP_SECRET no definida.');
+    if (!OTP_SECRET || !BREVO_API_KEY) {
+      console.error('[OTP Error] Configuración incompleta:', {
+        secret: !!OTP_SECRET,
+        brevo: !!BREVO_API_KEY,
+      });
       return new Response(
-        JSON.stringify({ message: 'Error de configuración (Secret).' }),
+        JSON.stringify({
+          message: 'Error de configuración del servidor.',
+          debug: { s: !!OTP_SECRET, b: !!BREVO_API_KEY },
+        }),
         { status: 500 }
       );
     }
@@ -77,7 +90,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
       allowedEmails.includes(email) || adminEmails.includes(email);
 
     if (!isAllowed) {
-      // Return ok to avoid enumeration
       return new Response(JSON.stringify({ ok: true }), { status: 200 });
     }
 
@@ -90,14 +102,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const origin = new URL(request.url).origin;
     const verifyLink = `${origin}/consultoria/verify?t=${encodeURIComponent(otpToken)}&s=${encodeURIComponent(slug)}`;
 
-    if (!BREVO_API_KEY || BREVO_API_KEY === 'undefined') {
-      console.error('[OTP] BREVO_API_KEY no definida.');
-      return new Response(
-        JSON.stringify({ message: 'Error de configuración de correo.' }),
-        { status: 500 }
-      );
-    }
-
     // 6. Send Email via Brevo
     const emailRes = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
@@ -109,17 +113,19 @@ export const POST: APIRoute = async ({ request, locals }) => {
       body: JSON.stringify({
         sender: { name: 'Agencia Zutra', email: 'hola@zutra.agency' },
         to: [{ email }],
-        subject: `Tu acceso al reporte de ${entry.data.client} — Zutra`,
+        subject: `Acceso al reporte de ${entry.data.client} — Zutra`,
         htmlContent: `
-          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
-            <h2 style="color: #09090b;">Acceso al Reporte</h2>
-            <p>Has solicitado acceso al reporte: <strong>${entry.data.title}</strong>.</p>
-            <p>Haz clic en el siguiente botón para entrar. Este enlace expira en 10 minutos:</p>
-            <div style="margin: 30px 0;">
-              <a href="${verifyLink}" style="background: #3b82f6; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Acceder al reporte →</a>
-            </div>
-            <hr style="border: 0; border-top: 1px solid #eee;" />
-            <p style="font-size: 12px; color: #666;">Si no solicitaste este acceso, puedes ignorar este mensaje.</p>
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 32px; border: 1px solid #e4e4e7; border-radius: 12px; background: #fff;">
+            <h1 style="color: #09090b; font-size: 24px; font-weight: 800; margin-bottom: 16px;">Verifica tu acceso</h1>
+            <p style="color: #52525b; font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+              Has solicitado acceso al reporte de <strong>${entry.data.client}</strong>. Haz clic en el botón de abajo para entrar. El enlace es válido por 10 minutos.
+            </p>
+            <a href="${verifyLink}" style="display: inline-block; background: #3b82f6; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 16px;">
+              Acceder al reporte ahora →
+            </a>
+            <p style="color: #a1a1aa; font-size: 13px; margin-top: 32px; border-top: 1px solid #f4f4f5; padding-top: 24px;">
+              Si no solicitaste este acceso, puedes ignorar este correo.
+            </p>
           </div>
         `,
       }),
@@ -127,9 +133,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     if (!emailRes.ok) {
       const errBody = await emailRes.json().catch(() => ({}));
-      console.error('[OTP] Brevo Error:', errBody);
+      console.error('[OTP] Brevo API Error:', errBody);
       return new Response(
-        JSON.stringify({ message: 'Error al enviar el email.' }),
+        JSON.stringify({ message: 'Error en el servicio de correo.' }),
         { status: 500 }
       );
     }
