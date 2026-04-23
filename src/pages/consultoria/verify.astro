@@ -6,7 +6,8 @@ import { verifyToken, signToken } from '@/lib/report-auth';
 
 export const prerender = false;
 
-const OTP_SECRET = ((import.meta.env as any).OTP_SECRET || '').trim();
+const env = (Astro.locals as any)?.runtime?.env || import.meta.env || {};
+const OTP_SECRET = (env.OTP_SECRET || '').trim();
 
 const t = Astro.url.searchParams.get('t') ?? '';
 const s = Astro.url.searchParams.get('s') ?? '';
