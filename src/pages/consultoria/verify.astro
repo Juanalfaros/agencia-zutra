@@ -18,30 +18,24 @@ type ErrorReason =
   | 'access-expired'
   | 'not-found';
 let errorReason: ErrorReason = 'invalid';
-let isError = false;
 
 if (!t || !s) {
   errorReason = 'missing';
-  isError = true;
 } else if (!OTP_SECRET) {
   errorReason = 'invalid';
-  isError = true;
 } else {
   const payload = await verifyToken(t, OTP_SECRET);
 
   if (!payload) {
     errorReason = 'invalid';
-    isError = true;
   } else if (payload.slug !== s) {
     errorReason = 'invalid';
-    isError = true;
   } else {
     const email = String(payload.email ?? '');
     const entry = await getEntry('consultoria', s);
 
     if (!entry) {
       errorReason = 'not-found';
-      isError = true;
     } else {
       const adminEmails = (entry.data.adminEmails ?? []).map((e: string) =>
         e.toLowerCase()
@@ -51,7 +45,6 @@ if (!t || !s) {
 
       if (!isAdmin && accessExpiry && new Date() > accessExpiry) {
         errorReason = 'access-expired';
-        isError = true;
       } else {
         let maxAgeSeconds: number;
 

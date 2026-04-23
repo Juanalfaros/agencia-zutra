@@ -60,8 +60,8 @@ export async function verifyToken(
     const valid = await crypto.subtle.verify(
       'HMAC',
       key,
-      base64urlToUint8(sig).buffer,
-      new TextEncoder().encode(input).buffer
+      base64urlToUint8(sig) as any,
+      new TextEncoder().encode(input) as any
     );
     if (!valid) return null;
     const payload = JSON.parse(
