@@ -18,19 +18,43 @@ const OTP_SECRET = ((import.meta.env as any).OTP_SECRET || '').trim();
 
 let isLocked = false;
 let accessExpired = false;
+let expiryWarning: string | null = null;
 
 if (entry.data.protected) {
-  const cookieVal = Astro.cookies.get(`rs_${slug}`)?.value ?? '';
-  if (!cookieVal || !OTP_SECRET) {
-    isLocked = true;
+  // Los admins con sesión global pueden acceder a cualquier reporte
+  const adminCookie = Astro.cookies.get('zutra_admin')?.value ?? '';
+  const adminSession = OTP_SECRET
+    ? await verifyToken(adminCookie, OTP_SECRET)
+    : null;
+
+  if (adminSession?.isAdmin) {
+    // Acceso concedido como admin global — sin restricción de expiración
   } else {
-    const session = await verifyToken(cookieVal, OTP_SECRET);
-    if (!session) {
+    const cookieVal = Astro.cookies.get(`rs_${slug}`)?.value ?? '';
+    if (!cookieVal || !OTP_SECRET) {
       isLocked = true;
-    } else if (!session.isAdmin && entry.data.accessExpiry) {
-      if (new Date() > entry.data.accessExpiry!) {
+    } else {
+      const session = await verifyToken(cookieVal, OTP_SECRET);
+      if (!session) {
         isLocked = true;
-        accessExpired = true;
+      } else if (!session.isAdmin && entry.data.accessExpiry) {
+        const now = new Date();
+        const expiry = entry.data.accessExpiry!;
+        if (now > expiry) {
+          isLocked = true;
+          accessExpired = true;
+        } else {
+          const daysLeft = Math.ceil(
+            (expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+          );
+          if (daysLeft <= 7) {
+            expiryWarning = expiry.toLocaleDateString('es-CL', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            });
+          }
+        }
       }
     }
   }
@@ -39,6 +63,21 @@ if (entry.data.protected) {
 const { Content } = await render(entry);
 
 const isProtected = entry.data.protected;
+
+// Resolver rutas de imágenes de slides a URLs procesadas por Vite
+const allSlideImages = import.meta.glob<{ default: { src: string } }>(
+  '/src/content/consultoria/**/*.{png,jpg,jpeg,webp,gif,svg}',
+  { eager: true }
+);
+const resolveSlideImage = (path: string | undefined): string | undefined => {
+  if (!path) return undefined;
+  const key = `/src/content/consultoria/${path.replace(/^\.\//, '')}`;
+  const mod = allSlideImages[key]?.default;
+  // Vite devuelve ImageMetadata (objeto con .src) para imágenes en src/
+  if (typeof mod === 'string') return mod;
+  if (mod && typeof (mod as any).src === 'string') return (mod as any).src;
+  return undefined;
+};
 ---
 
 <Layout
@@ -80,6 +119,13 @@ const isProtected = entry.data.protected;
                     <i class="ph-duotone ph-lock-key" /> Confidencial
                   </span>
                 )}
+                <a
+                  href={`/consultoria/logout?slug=${slug}`}
+                  class="logout-link"
+                  title="Cerrar sesión"
+                >
+                  <i class="ph-duotone ph-sign-out" /> Cerrar sesión
+                </a>
               </div>
               <div class="titleImage">
                 <h1 class="report-title">{entry.data.title}</h1>
@@ -151,8 +197,22 @@ const isProtected = entry.data.protected;
         {entry.data.slidesEnabled &&
           entry.data.slides &&
           entry.data.slides.length > 0 && (
-            <SlidesModal slides={entry.data.slides} />
+            <SlidesModal
+              slides={entry.data.slides.map(
+                (s: (typeof entry.data.slides)[0]) => ({
+                  ...s,
+                  image: resolveSlideImage(s.image),
+                })
+              )}
+            />
           )}
+        {expiryWarning && (
+          <div class="expiry-banner bottom" role="alert">
+            <i class="ph-duotone ph-clock-countdown" aria-hidden="true" />
+            Tu acceso a este reporte expira el <strong>{expiryWarning}</strong>.
+            Contacta a Zutra para renovarlo.
+          </div>
+        )}
       </>
     )
   }
@@ -208,7 +268,13 @@ const isProtected = entry.data.protected;
     headings.forEach((h) => observer.observe(h));
   }
 
-  generateTOC();
+  // Defer para asegurar que el MDX está en el DOM antes de escanear h2s
+  requestAnimationFrame(() => generateTOC());
+  document.addEventListener('astro:page-load', () => {
+    const toc = document.querySelector('#report-toc');
+    if (toc && toc.childElementCount === 0)
+      requestAnimationFrame(() => generateTOC());
+  });
 
   // Barra de progreso de lectura
   window.addEventListener('scroll', () => {
@@ -224,6 +290,38 @@ const isProtected = entry.data.protected;
 </script>
 
 <style>
+  /* --- Banner expiración próxima --- */
+  .expiry-banner {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1.25rem;
+    background: rgba(251, 191, 36, 0.1);
+    border-bottom: 1px solid rgba(251, 191, 36, 0.25);
+    color: #fbbf24;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .expiry-banner.bottom {
+    top: auto;
+    bottom: 0;
+    border-top: 1px solid rgba(251, 191, 36, 0.25);
+    border-bottom: none;
+    background-color: var(--color-accent);
+    color: var(--color-surface);
+  }
+
+  .expiry-banner i {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
   /* --- Barra de Progreso --- */
   .reading-progress {
     position: fixed;
@@ -406,6 +504,26 @@ const isProtected = entry.data.protected;
 
   .back-link:hover {
     color: var(--color-secondary);
+  }
+
+  .logout-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: auto;
+    color: var(--color-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    transition: color 0.2s;
+    opacity: 0.6;
+  }
+
+  .logout-link:hover {
+    color: var(--color-red-400);
+    opacity: 1;
   }
 
   .dot-separator {

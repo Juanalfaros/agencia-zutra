@@ -6,6 +6,29 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.1.
 
 ---
 
+## [2.2.0] — 2026-04-25
+
+### 🚀 Agregado
+
+- **Login admin desde índice**: `/consultoria` ahora muestra un formulario OTP para admins en lugar de redirigir a 404. El slug especial `__admin__` maneja el flujo sin requerir un reporte específico.
+- **Acceso admin global a reportes**: Admins con cookie `zutra_admin` válida pueden acceder a cualquier reporte protegido sin necesidad de verificación individual por reporte.
+- **Logs de acceso en panel**: El índice admin muestra último acceso, visitantes únicos y total de accesos por reporte (leídos desde Cloudflare KV).
+
+### ✅ Corregido
+
+- **Seguridad — HMAC-SHA256 en tokens**: Los tokens OTP y cookies de sesión ahora están firmados con HMAC-SHA256 via Web Crypto API. Antes eran Base64 puro y podían forjarse manualmente.
+- **Imágenes de slides con 404**: Las imágenes en `src/content/consultoria/*/` ahora se resuelven correctamente a través de `import.meta.glob` con `eager: true`, obteniendo la URL procesada por Vite.
+- **Imágenes lazy en dialog**: Cambiado `loading="lazy"` a `loading="eager"` en slides — Chrome reemplazaba las imágenes lazy dentro de `<dialog>` ocultos con placeholders.
+- **TOC intermitente**: El generador de tabla de contenidos ahora usa `requestAnimationFrame` para asegurar que el contenido MDX está en el DOM antes de escanear los `h2`.
+- **Validación de email en API OTP**: Se agrega validación de formato antes de llamar a Brevo.
+
+### 🗑️ Eliminado
+
+- **`downloadMode`**: Se eliminó el campo del schema, la lógica del botón de descarga PDF, el CSS asociado y el bloque `@media print` de slides y reporte. Toda referencia en MDX limpiada.
+- **`signToken` (payload object)**: Reemplazado por la nueva API que firma strings directamente con HMAC.
+
+---
+
 ## [2.1.0] — 2026-04-23
 
 ### 🚀 Agregado

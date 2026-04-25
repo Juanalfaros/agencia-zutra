@@ -1,5 +1,8 @@
 export const prerender = false;
 
+import { getEntry } from 'astro:content';
+import { CONSULTORIA_ADMIN_EMAILS } from '@/data/consultoria-admins';
+import { signToken } from '@/lib/report-auth';
 // cloudflare:workers is the only reliable way to access runtime env vars
 // in Cloudflare Pages SSR (import.meta.env is build-time only for non-PUBLIC vars).
 // .dev.vars provides these values locally; CF Pages dashboard provides them in production.
@@ -26,6 +29,10 @@ export const POST = async ({ request }: any) => {
       String((cfEnv as any).BREVO_API_KEY || '') ||
       String((import.meta.env as any).BREVO_API_KEY || '')
     ).trim();
+    const OTP_SECRET = (
+      String((cfEnv as any).OTP_SECRET || '') ||
+      String((import.meta.env as any).OTP_SECRET || '')
+    ).trim();
 
     const body = await request.json().catch(() => ({}));
     const { email, slug, accentColor } = body;
@@ -34,6 +41,46 @@ export const POST = async ({ request }: any) => {
       return new Response(JSON.stringify({ error: 'Incomplete' }), {
         status: 400,
       });
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return new Response(JSON.stringify({ error: 'Invalid email' }), {
+        status: 400,
+      });
+    }
+
+    const normalizedEmail = email.toLowerCase();
+    const isAdmin = CONSULTORIA_ADMIN_EMAILS.map((e) =>
+      e.toLowerCase()
+    ).includes(normalizedEmail);
+
+    // Flujo especial para login de admin desde el índice
+    if (slug === '__admin__') {
+      if (!isAdmin) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 403,
+        });
+      }
+    } else {
+      // Validar que el email está autorizado antes de enviar nada
+      const entry = await getEntry('consultoria', slug);
+      if (!entry) {
+        return new Response(JSON.stringify({ error: 'Not found' }), {
+          status: 404,
+        });
+      }
+      const allowedEmails = (entry.data.allowedEmails ?? []).map((e) =>
+        e.toLowerCase()
+      );
+      if (
+        !isAdmin &&
+        allowedEmails.length > 0 &&
+        !allowedEmails.includes(normalizedEmail)
+      ) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 403,
+        });
+      }
     }
 
     if (!BREVO_API_KEY) {
@@ -56,7 +103,7 @@ export const POST = async ({ request }: any) => {
       : DEFAULT_ACCENT;
 
     const timestamp = Date.now();
-    const token = btoa(`${email}|${slug}|${timestamp}|secure`);
+    const token = await signToken(`${email}|${slug}|${timestamp}`, OTP_SECRET);
     const origin = new URL(request.url).origin;
     const verifyLink = `${origin}/consultoria/verify?t=${encodeURIComponent(token)}&s=${encodeURIComponent(slug)}`;
     const logoUrl = `${origin}/logos-png/${accent.logo}`;

@@ -87,10 +87,13 @@ Bot conversacional flotante que califica leads antes de derivarlos a WhatsApp.
 
 Sistema de entrega de auditorías y reportes técnicos mediante una experiencia de presentación interactiva.
 
-- **Reportes MDX**: Contenido dinámico y altamente personalizable mediante componentes React/Astro.
+- **Reportes MDX**: Contenido dinámico y altamente personalizable mediante componentes Astro.
 - **Slides Presentation**: Vista de diapositivas integrada para presentaciones de alto impacto.
-- **Protección de Datos**: Acceso restringido mediante tokens OTP y validación de expiración.
-- **Viz Suite**: Suite completa de componentes de visualización (BarCharts, StackTables, Scoreboards).
+- **Seguridad HMAC-SHA256**: Tokens OTP y cookies de sesión firmados criptográficamente con Web Crypto API — no pueden forjarse manualmente.
+- **Panel Admin**: `/consultoria` muestra un panel de control completo para admins; si no hay sesión activa, presenta un formulario de login OTP directamente.
+- **Notificaciones de acceso**: Cuando un cliente abre un reporte, se envía un email de notificación a los admins con nombre del cliente, email y hora de acceso.
+- **Log de accesos KV**: Cada acceso se registra en Cloudflare KV (`REPORT_LOGS`) con email, timestamp y user-agent.
+- **Viz Suite**: Suite completa de componentes de visualización (BarCharts, StackTables, MetricHighlight, Scoreboards).
 
 ### 📨 Formulario de Contacto
 
@@ -173,21 +176,23 @@ El sitio se despliega automáticamente en **Cloudflare Pages** al hacer push a `
 
 Configurar en Cloudflare Dashboard → Pages → Settings → Environment Variables:
 
-| Variable                      | Propósito                                |
-| ----------------------------- | ---------------------------------------- |
-| `CONTENTFUL_SPACE_ID`         | ID del espacio en Contentful             |
-| `CONTENTFUL_ACCESS_TOKEN`     | Token de lectura (delivery)              |
-| `CONTENTFUL_PREVIEW_TOKEN`    | Token de vista previa                    |
-| `CONTENTFUL_ENVIRONMENT`      | Entorno (`master` por defecto)           |
-| `CONTENTFUL_PREVIEW_SECRET`   | Secreto para habilitar preview           |
-| `BREVO_API_KEY`               | Key de Brevo para emails transaccionales |
-| `BREVO_LIST_ID`               | Lista de contactos por defecto           |
-| `BREVO_LIST_WHATSAPP`         | Lista para leads del bot                 |
-| `BREVO_TEMPLATE_CONFIRMATION` | ID template confirmación usuario         |
-| `BREVO_TEMPLATE_ADMIN`        | ID template notificación admin           |
-| `TURNSTILE_SECRET_KEY`        | Validación server-side de Turnstile      |
-| `PUBLIC_GTM_ID`               | Google Tag Manager ID                    |
-| `SENTRY_DSN`                  | Error tracking (opcional)                |
+| Variable                      | Propósito                                                              |
+| ----------------------------- | ---------------------------------------------------------------------- |
+| `CONTENTFUL_SPACE_ID`         | ID del espacio en Contentful                                           |
+| `CONTENTFUL_ACCESS_TOKEN`     | Token de lectura (delivery)                                            |
+| `CONTENTFUL_PREVIEW_TOKEN`    | Token de vista previa                                                  |
+| `CONTENTFUL_ENVIRONMENT`      | Entorno (`master` por defecto)                                         |
+| `CONTENTFUL_PREVIEW_SECRET`   | Secreto para habilitar preview                                         |
+| `BREVO_API_KEY`               | Key de Brevo para emails transaccionales                               |
+| `BREVO_LIST_ID`               | Lista de contactos por defecto                                         |
+| `BREVO_LIST_WHATSAPP`         | Lista para leads del bot                                               |
+| `BREVO_TEMPLATE_CONFIRMATION` | ID template confirmación usuario                                       |
+| `BREVO_TEMPLATE_ADMIN`        | ID template notificación admin                                         |
+| `TURNSTILE_SECRET_KEY`        | Validación server-side de Turnstile                                    |
+| `PUBLIC_GTM_ID`               | Google Tag Manager ID                                                  |
+| `SENTRY_DSN`                  | Error tracking (opcional)                                              |
+| `OTP_SECRET`                  | Secreto HMAC para firmar tokens OTP y cookies de sesión de consultoría |
+| `REPORT_LOGS`                 | Binding de Cloudflare KV para logs de acceso a reportes                |
 
 ## 📊 SEO & Accesibilidad
 

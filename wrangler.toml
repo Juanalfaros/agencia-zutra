@@ -2,3 +2,10 @@ name = "agencia-zutra"
 pages_build_output_dir = "dist/client"
 compatibility_date = "2025-01-01"
 compatibility_flags = ["nodejs_compat"]
+
+# KV namespace para logs de acceso a reportes de consultoría.
+# Crear con: npx wrangler kv namespace create REPORT_LOGS
+# Luego reemplazar PLACEHOLDER_KV_ID con el id real.
+[[kv_namespaces]]
+binding = "REPORT_LOGS"
+id = "PLACEHOLDER_KV_ID"

@@ -11,17 +11,12 @@ interface SlideOption {
   ctaText?: string;
 }
 
-interface SlideImage {
-  src: string;
-  alt?: string;
-}
-
 interface Slide {
   title: string;
   content: string;
   highlight?: string;
   type: string;
-  image?: SlideImage;
+  image?: string;
   bullets?: string[];
   options?: SlideOption[];
   ctaText?: string;
@@ -51,14 +46,16 @@ const { slides = [] } = Astro.props;
           <Logo width="120" />
         </div>
 
-        <button
-          class="slides-close"
-          aria-label="Ver reporte completo"
-          formmethod="dialog"
-        >
-          <i class="ph ph-article" aria-hidden="true" />
-          <span>Ver reporte completo</span>
-        </button>
+        <div class="slides-top-bar">
+          <button
+            class="slides-close"
+            aria-label="Ver reporte completo"
+            formmethod="dialog"
+          >
+            <i class="ph ph-article" aria-hidden="true" />
+            <span>Ver reporte completo</span>
+          </button>
+        </div>
 
         <div class="slides-track">
           {slides.map((slide, index) => (
@@ -188,9 +185,10 @@ const { slides = [] } = Astro.props;
                   <div class="slide-image-col">
                     <div class="image-wrapper">
                       <img
-                        src={slide.image.src}
-                        alt={slide.image.alt || slide.title}
-                        loading="lazy"
+                        src={slide.image}
+                        alt={slide.title}
+                        loading="eager"
+                        decoding="async"
                       />
                     </div>
                   </div>
@@ -338,11 +336,24 @@ const { slides = [] } = Astro.props;
     }
   }
 
-  .slides-close {
+  /* Barra superior con botones de cierre y descarga */
+  .slides-top-bar {
     position: absolute;
     top: 1.25rem;
     right: 1.25rem;
     z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  @media (min-width: 768px) {
+    .slides-top-bar {
+      top: 2rem;
+      right: 2rem;
+    }
+  }
+
+  .slides-close {
     background-color: var(--color-surface);
     color: var(--color-secondary);
     border: 1px solid var(--color-line);
@@ -362,8 +373,6 @@ const { slides = [] } = Astro.props;
   }
   @media (min-width: 768px) {
     .slides-close {
-      top: 2rem;
-      right: 2rem;
       padding: 1rem 1.75rem;
       font-size: 0.875rem;
     }
@@ -1154,7 +1163,22 @@ const { slides = [] } = Astro.props;
       }
     }
 
+    get slideStorageKey() {
+      const slug =
+        window.location.pathname.split('/').filter(Boolean).pop() ?? 'report';
+      return `slide_pos_${slug}`;
+    }
+
     open() {
+      // Restaurar posición guardada
+      const saved = parseInt(
+        sessionStorage.getItem(this.slideStorageKey) ?? '0',
+        10
+      );
+      if (saved > 0 && saved < this.totalSlides) {
+        this.currentIndex = saved;
+      }
+
       this.dialog?.showModal();
       document.body.style.overflow = 'hidden';
 
@@ -1181,6 +1205,8 @@ const { slides = [] } = Astro.props;
     }
 
     close() {
+      // Guardar posición actual antes de cerrar
+      sessionStorage.setItem(this.slideStorageKey, String(this.currentIndex));
       this.dialog?.close();
       document.body.style.overflow = '';
     }

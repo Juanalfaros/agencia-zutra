@@ -29,7 +29,6 @@ const consultoria = defineCollection({
       protected: z.boolean().optional(),
       accessExpiry: z.coerce.date().optional(),
       allowedEmails: z.array(z.string()).optional(),
-      adminEmails: z.array(z.string()).optional(),
       slidesEnabled: z.boolean().optional(),
       status: z.string(),
       slides: z
@@ -39,7 +38,7 @@ const consultoria = defineCollection({
             content: z.string(),
             highlight: z.string().optional(),
             type: z.string(),
-            image: image().optional(),
+            image: z.string().optional(),
             bullets: z.array(z.string()).optional(),
             options: z
               .array(

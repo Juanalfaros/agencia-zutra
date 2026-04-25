@@ -246,6 +246,12 @@ const { slug, title, category, expired = false } = Astro.props;
           throw new Error('Demasiados intentos. Espera unos minutos.');
         }
 
+        if (res.status === 403) {
+          throw new Error(
+            'Este correo no tiene acceso a este reporte. Contacta a Zutra.'
+          );
+        }
+
         if (!res.ok) throw new Error('Error al procesar la solicitud.');
 
         sessionStorage.setItem(sessionKey, email);
