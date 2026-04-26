@@ -9,6 +9,8 @@ interface Props {
   showFooter?: boolean;
   showCTA?: boolean;
   showFAQ?: boolean;
+  publishDate?: Date;
+  updatedDate?: Date;
 }
 
 import SEO from "@/components/common/SEO.astro";
@@ -29,16 +31,18 @@ import "@phosphor-icons/web/fill";
 import "@phosphor-icons/web/light";
 import "@phosphor-icons/web/thin";
 
-const { 
-  title, 
-  description, 
-  image, 
-  type, 
+const {
+  title,
+  description,
+  image,
+  type,
   keywords,
   showHeader = true,
   showFooter = true,
   showCTA = true,
-  showFAQ = false
+  showFAQ = false,
+  publishDate,
+  updatedDate,
 } = Astro.props;
 
 const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
@@ -48,12 +52,14 @@ const SENTRY_DSN = import.meta.env.SENTRY_DSN;
 <!doctype html>
 <html lang="es">
   <head>
-    <SEO 
-      title={title} 
-      description={description} 
-      image={image} 
-      type={type} 
-      keywords={keywords} 
+    <SEO
+      title={title}
+      description={description}
+      image={image}
+      type={type}
+      keywords={keywords}
+      publishDate={publishDate}
+      updatedDate={updatedDate}
     />
     <JsonLD showFAQ={showFAQ} />
     <ClientRouter />
@@ -74,8 +80,6 @@ const SENTRY_DSN = import.meta.env.SENTRY_DSN;
       <script
         is:inline
         src="https://browser.sentry-cdn.com/9.0.0/bundle.tracing.replay.min.js"
-        integrity="sha384-7kKjF7lB0Gq4L1a6Y7Vn8F1lM6q3x3x8x8x8x8x8x8x8x8x8x8x8x8x8x8x8x8x8x8"
-        crossorigin="anonymous"
         async
         defer
       ></script>
@@ -209,8 +213,8 @@ const SENTRY_DSN = import.meta.env.SENTRY_DSN;
 
 
 
-    <link href="https://api.fontshare.com/v2/css?f[]=azeret-mono@300,400,500,600,700,800,900&f[]=bevellier@100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Unbounded:wght@200..900&family=Orbitron:wght@400..900&family=Space+Grotesk:wght@300..700&family=Oxanium:wght@200..800&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800;12..96,900&family=Outfit:wght@400;500;600;700&display=swap" />
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800;12..96,900&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Cloudflare Turnstile - Manual Render -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>

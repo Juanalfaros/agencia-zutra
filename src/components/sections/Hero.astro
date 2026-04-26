@@ -1,12 +1,11 @@
 ---
-import { getEntries } from "@/lib/contentful";
-import { adaptHeroSlide } from "@/lib/contentful-adapters";
-import { Image } from "astro:assets";
+import { getEntries } from '@/lib/contentful';
+import { adaptHeroSlide } from '@/lib/contentful-adapters';
 
 // Fetch hero slides from Contentful
-const entries = await getEntries("heroSlide", {
-  "fields.active": true,
-  order: "fields.order",
+const entries = await getEntries('heroSlide', {
+  'fields.active': true,
+  order: 'fields.order',
 });
 const heroSlides = entries.items.map(adaptHeroSlide);
 ---
@@ -15,10 +14,10 @@ const heroSlides = entries.items.map(adaptHeroSlide);
   <div class="hero-carousel__slides-container" aria-live="polite">
     {
       heroSlides.map((slide, index) => {
-        const TitleTag = index === 0 ? "h1" : "h2";
+        const TitleTag = index === 0 ? 'h1' : 'h2';
         return (
           <div
-            class={`hero-carousel__slide ${index === 0 ? "active" : ""}`}
+            class={`hero-carousel__slide ${index === 0 ? 'active' : ''}`}
             data-slide-index={index}
           >
             <div class="container hero-carousel__slide-inner">
@@ -51,9 +50,9 @@ const heroSlides = entries.items.map(adaptHeroSlide);
                       src={slide.image}
                       alt={slide.imageAlt}
                       class="hero-carousel__photo"
-                      loading={index === 0 ? "eager" : "lazy"}
-                      decoding={index === 0 ? "auto" : "async"}
-                      fetchpriority={index === 0 ? "high" : "auto"}
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                      decoding={index === 0 ? 'auto' : 'async'}
+                      fetchpriority={index === 0 ? 'high' : 'auto'}
                     />
                   </div>
                 </div>
@@ -80,7 +79,7 @@ const heroSlides = entries.items.map(adaptHeroSlide);
     {
       heroSlides.map((_, index) => (
         <button
-          class={`pagination-dot ${index === 0 ? "active" : ""}`}
+          class={`pagination-dot ${index === 0 ? 'active' : ''}`}
           data-slide-to={index}
           aria-label={`Ir al slide ${index + 1}`}
         />
@@ -90,13 +89,13 @@ const heroSlides = entries.items.map(adaptHeroSlide);
 </section>
 
 <script>
-  import { initCarousel } from "@/lib/ui/carousel";
+  import { initCarousel } from '@/lib/ui/carousel';
 
   // Inicializar el carrusel
   initCarousel();
 
   // Re-inicializar cuando Astro cambia de página (soporte para View Transitions)
-  document.addEventListener("astro:page-load", initCarousel);
+  document.addEventListener('astro:page-load', initCarousel);
 </script>
 
 <style>
@@ -120,7 +119,7 @@ const heroSlides = entries.items.map(adaptHeroSlide);
     display: grid;
     width: 100%;
     height: 100%;
-    grid-template-areas: "stack";
+    grid-template-areas: 'stack';
   }
 
   .hero-carousel__slide {
@@ -341,7 +340,7 @@ const heroSlides = entries.items.map(adaptHeroSlide);
   }
 
   .pagination-dot::before {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
@@ -474,12 +473,12 @@ const heroSlides = entries.items.map(adaptHeroSlide);
   }
 
   /* Ajuste para tema oscuro */
-  :global([data-theme="dark"]) .nav-button {
+  :global([data-theme='dark']) .nav-button {
     background: rgba(255, 255, 255, 0.05);
     border-color: rgba(255, 255, 255, 0.1);
   }
 
-  :global([data-theme="dark"]) .nav-button:hover {
+  :global([data-theme='dark']) .nav-button:hover {
     background: rgba(255, 255, 255, 0.1);
   }
 </style>

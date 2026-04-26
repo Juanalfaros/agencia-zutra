@@ -7,11 +7,14 @@ import { checkRateLimit } from '@/lib/rate-limit';
 
 export const POST: APIRoute = async ({ request, locals }) => {
   // Rate limiting: 10 requests per 15 minutes per IP
-  const clientIP =
-    request.headers.get('cf-connecting-ip') ||
-    request.headers.get('x-forwarded-for') ||
-    'unknown';
-  const rateLimit = checkRateLimit(`lead:${clientIP}`, 10, 15 * 60 * 1000);
+  const clientIP = request.headers.get('cf-connecting-ip') ?? 'unknown';
+  const kv = locals?.runtime?.env?.ZUTRA_KV;
+  const rateLimit = await checkRateLimit(
+    `lead:${clientIP}`,
+    10,
+    15 * 60 * 1000,
+    kv
+  );
 
   if (!rateLimit.allowed) {
     return new Response(

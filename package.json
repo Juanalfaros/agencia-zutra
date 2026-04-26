@@ -1,7 +1,7 @@
 {
   "name": "agencia-zutra",
   "type": "module",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "packageManager": "pnpm@10.33.0",
   "engines": {
     "node": ">=22.12.0"
@@ -66,10 +66,10 @@
   "lint-staged": {
     "*.{js,ts,astro}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier --write --ignore-path .prettierignore"
     ],
     "*.{css,json,md}": [
-      "prettier --write"
+      "prettier --write --ignore-path .prettierignore"
     ]
   },
   "simple-git-hooks": {

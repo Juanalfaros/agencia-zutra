@@ -95,6 +95,8 @@ const seoMeta = {
     image={seoMeta.image}
     keywords={seoMeta.keywords}
     type="article"
+    publishDate={new Date(post.publishDate)}
+    updatedDate={post.updatedDate ? new Date(post.updatedDate) : undefined}
 >
     <script type="application/ld+json" is:inline define:vars={{ post }}>
     {

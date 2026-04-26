@@ -1,0 +1,6 @@
+# Archivos que el plugin prettier-plugin-astro no puede parsear
+# debido a patrones complejos: inline scripts con ||[], template literals
+# en JSON-LD, o comentarios HTML dentro de expresiones JSX.
+src/layouts/Layout.astro
+src/pages/blog/\[slug\].astro
+src/components/sections/Casos.astro

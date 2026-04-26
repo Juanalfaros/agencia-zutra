@@ -119,13 +119,19 @@ const resolveSlideImage = (path: string | undefined): string | undefined => {
                     <i class="ph-duotone ph-lock-key" /> Confidencial
                   </span>
                 )}
-                <a
-                  href={`/consultoria/logout?slug=${slug}`}
-                  class="logout-link"
-                  title="Cerrar sesión"
+                <form
+                  method="POST"
+                  action={`/consultoria/logout?slug=${slug}`}
+                  style="display:contents"
                 >
-                  <i class="ph-duotone ph-sign-out" /> Cerrar sesión
-                </a>
+                  <button
+                    type="submit"
+                    class="logout-link"
+                    title="Cerrar sesión"
+                  >
+                    <i class="ph-duotone ph-sign-out" /> Cerrar sesión
+                  </button>
+                </form>
               </div>
               <div class="titleImage">
                 <h1 class="report-title">{entry.data.title}</h1>
@@ -517,6 +523,10 @@ const resolveSlideImage = (path: string | undefined): string | undefined => {
     text-transform: uppercase;
     letter-spacing: 0.05em;
     text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
     transition: color 0.2s;
     opacity: 0.6;
   }

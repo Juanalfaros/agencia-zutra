@@ -11,6 +11,7 @@ import type { ZutraCaseStudy } from '@/types/project-types';
 import type { HeroSlide } from '@/data/hero';
 import type { Service, ServiceCategory } from '@/types/service-types';
 import type { Testimonial } from '@/types/testimonial-types';
+import type { ZutraRecurso } from '@/types/recurso-types';
 import {
   documentToHtmlString,
   type Options,
@@ -40,6 +41,7 @@ type KeyFeature = {
 /**
  * Helper to safely render Rich Text content to HTML
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function renderRichText(content: any): string {
   if (!content) return '';
   // Check if it's a Rich Text Document (has nodeType and content)
@@ -71,6 +73,7 @@ const renderOptions: Options = {
 };
 
 // Add shared handler for embedded entries (both block and inline)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const renderEmbeddedEntry = (node: any) => {
   if (
     !node.data ||
@@ -198,22 +201,32 @@ export function adaptAsset(asset: Asset | undefined | null): AdaptedImage {
   const contentType =
     typeof file.contentType === 'string' ? file.contentType : '';
 
+  const width =
+    details &&
+    typeof details === 'object' &&
+    'image' in details &&
+    details.image
+      ? details.image.width
+      : 1200;
+  const height =
+    details &&
+    typeof details === 'object' &&
+    'image' in details &&
+    details.image
+      ? details.image.height
+      : 800;
+
+  // Use Contentful Image API for automatic WebP conversion and size optimization.
+  // Skip SVGs since the format param breaks them.
+  const isSvg = contentType === 'image/svg+xml';
+  const optimizedUrl = isSvg
+    ? `https:${file.url}`
+    : `https:${file.url}?fm=webp&q=80&w=${Math.min(width, 1600)}`;
+
   return {
-    src: `https:${file.url}`,
-    width:
-      details &&
-      typeof details === 'object' &&
-      'image' in details &&
-      details.image
-        ? details.image.width
-        : 1200,
-    height:
-      details &&
-      typeof details === 'object' &&
-      'image' in details &&
-      details.image
-        ? details.image.height
-        : 800,
+    src: optimizedUrl,
+    width,
+    height,
     alt: typeof asset.fields.title === 'string' ? asset.fields.title : '',
   };
 }
@@ -601,5 +614,59 @@ export function adaptTestimonial(
         : undefined,
     featured: typeof fields.featured === 'boolean' ? fields.featured : false,
     order: typeof fields.order === 'number' ? fields.order : 999,
+  };
+}
+
+export function adaptRecurso(
+  entry: Entry<any, undefined, string>
+): ZutraRecurso {
+  if (!entry || !entry.fields) throw new Error('Invalid recurso entry');
+  const f = entry.fields;
+
+  const adaptedFeatured = f.featuredImage
+    ? adaptAsset(f.featuredImage as Asset)
+    : null;
+  const featuredImage = adaptedFeatured
+    ? {
+        src: (adaptedFeatured as any).src ?? '',
+        alt: typeof f.title === 'string' ? f.title : '',
+      }
+    : null;
+
+  const gallery = Array.isArray(f.gallery)
+    ? f.gallery
+        .map((a: any) => adaptAsset(a as Asset))
+        .filter(Boolean)
+        .map((a: any) => ({
+          src: (a as any).src ?? '',
+          alt: (a as any).alt ?? '',
+        }))
+    : [];
+
+  return {
+    id: entry.sys.id,
+    slug: typeof f.slug === 'string' ? f.slug : '',
+    title: typeof f.title === 'string' ? f.title : '',
+    description: typeof f.description === 'string' ? f.description : '',
+    longDescription: renderRichText(f.longDescription),
+    category: typeof f.category === 'string' ? f.category : 'general',
+    tags: Array.isArray(f.tags)
+      ? f.tags.filter((t): t is string => typeof t === 'string')
+      : [],
+    featuredImage,
+    gallery,
+    demoUrl: typeof f.demoUrl === 'string' ? f.demoUrl : undefined,
+    gumroadUrl: typeof f.gumroadUrl === 'string' ? f.gumroadUrl : '#',
+    price: typeof f.price === 'string' ? f.price : '',
+    isFree: typeof f.isFree === 'boolean' ? f.isFree : false,
+    techStack: Array.isArray(f.techStack)
+      ? f.techStack.filter((t): t is string => typeof t === 'string')
+      : [],
+    features: Array.isArray(f.features)
+      ? f.features.filter((t): t is string => typeof t === 'string')
+      : [],
+    featured: typeof f.featured === 'boolean' ? f.featured : false,
+    status: f.status === 'coming-soon' ? 'coming-soon' : 'published',
+    order: typeof f.order === 'number' ? f.order : 999,
   };
 }

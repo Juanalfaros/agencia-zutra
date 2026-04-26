@@ -6,6 +6,37 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.1.
 
 ---
 
+## [2.3.0] — 2026-04-26
+
+### 🚀 Agregado
+
+- **Sección `/recursos`**: Marketplace de productos digitales propios (templates Astro, UI kits, auditorías y guías). Incluye índice con cards y página de detalle `/recursos/[slug]` con galería, features checklist, rich text y CTAs de Gumroad.
+- **Content type `recurso` en Contentful**: Creado via script (`scripts/setup-recurso-model.ts`) con 15 campos tipados. Seeded con los dos primeros productos: _Zutra Real Estate_ y _Minimalist Portfolio Template_.
+- **Product JSON-LD schema**: `ItemList` en el índice; `Product` con `Offer` en cada detalle. Estructurado para Google Shopping y Rich Results.
+- **`/recursos` en navegación**: Agregado al menú principal.
+
+### 🔒 Seguridad
+
+- **Headers HTTP reforzados** (`public/_headers`): Se agregan `Strict-Transport-Security` (HSTS, preload), `Permissions-Policy`, `X-XSS-Protection` y `Referrer-Policy` en las rutas de preview. Se reemplaza el wildcard `*.contentful.com` por dominios exactos en el CSP de preview.
+- **Rate limiter distribuido** (`src/lib/rate-limit.ts`): Reescrito para usar **Cloudflare KV** en lugar del store en-memoria por worker. Fallback en-memoria para dev local. El binding `ZUTRA_KV` ya estaba declarado en `wrangler.toml`.
+- **IP extraction segura**: Se elimina el fallback a `x-forwarded-for` (spoofeable) — solo se confía en `cf-connecting-ip` de Cloudflare.
+- **TTL de sesión admin reducido**: De 365 días a 30 días en `consultoria/verify.astro`.
+- **Logout CSRF-safe**: `consultoria/logout.ts` convertido de GET a POST con verificación de `Origin` header. Los links de logout en `/consultoria` e `/consultoria/[slug]` actualizados a `<form method="POST">`.
+
+### ⚡ Performance
+
+- **Fuentes optimizadas** (`Layout.astro`): Eliminadas 6 familias no usadas (Unbounded, Orbitron, Space Grotesk, Oxanium, Azeret Mono, Bevellier). Solo se cargan Bricolage Grotesque y Outfit con `display=swap` y preload hint. Impacto estimado: −1 a 1.5s en FCP.
+- **Imágenes WebP automáticas** (`adaptAsset()`): Todas las imágenes de Contentful ahora incluyen parámetros de optimización en la URL (`?fm=webp&q=80&w=...`). SVGs excluidos. Cero cambios necesarios en los templates.
+
+### ✅ Corregido
+
+- **`article:published_time` con fecha real**: El componente `SEO.astro` aceptaba `publishDate`/`updatedDate` como props opcionales. Antes devolvía `new Date()` para todos los artículos — ahora usa la fecha real del post pasada desde `blog/[slug].astro`.
+- **Hash de integridad Sentry inválido**: Eliminado el atributo `integrity` con placeholder `sha384-7kKjF7...` que podía bloquear el script en algunos entornos.
+- **Imports `Image` sin usar**: Eliminados de `Hero.astro` y `Casos.astro`.
+- **Tests de rate limiter**: Actualizados a función async y sin dependencia de `cleanupRateLimitStore` eliminado.
+
+---
+
 ## [2.2.0] — 2026-04-25
 
 ### 🚀 Agregado

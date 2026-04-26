@@ -1,6 +1,7 @@
 /**
- * Simple in-memory rate limiter for API routes.
- * Uses a sliding window counter.
+ * Distributed rate limiter using Cloudflare KV.
+ * Falls back to in-memory store when KV is unavailable (local dev).
+ * Uses a fixed window counter per identifier.
  */
 
 interface RateLimitEntry {
@@ -8,56 +9,87 @@ interface RateLimitEntry {
   resetAt: number;
 }
 
-const store = new Map<string, RateLimitEntry>();
+// In-memory fallback for local development
+const memoryStore = new Map<string, RateLimitEntry>();
 
-const DEFAULT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
-const DEFAULT_MAX = 10; // requests per window
+type KVNamespace = {
+  get(key: string): Promise<string | null>;
+  put(
+    key: string,
+    value: string,
+    options?: { expirationTtl?: number }
+  ): Promise<void>;
+};
+
+/**
+ * Extract the real client IP from a Cloudflare request.
+ * Only trusts cf-connecting-ip — never the spoofable x-forwarded-for.
+ */
+export function getClientIP(request: Request): string {
+  return request.headers.get('cf-connecting-ip') ?? 'unknown';
+}
 
 /**
  * Check if a request is within rate limits.
- * @param identifier - Unique identifier (e.g., IP address)
+ * @param identifier - Unique key (e.g., "contact:1.2.3.4")
  * @param max - Max requests allowed in the window
  * @param windowMs - Window duration in ms
- * @returns { allowed: boolean; remaining: number; resetAt: number }
+ * @param kv - Optional Cloudflare KV namespace for distributed tracking
  */
-export function checkRateLimit(
+export async function checkRateLimit(
   identifier: string,
-  max: number = DEFAULT_MAX,
-  windowMs: number = DEFAULT_WINDOW_MS,
-): { allowed: boolean; remaining: number; resetAt: number } {
+  max: number = 10,
+  windowMs: number = 15 * 60 * 1000,
+  kv?: KVNamespace
+): Promise<{ allowed: boolean; remaining: number; resetAt: number }> {
   const now = Date.now();
-  const entry = store.get(identifier);
+  const windowSecs = Math.ceil(windowMs / 1000);
+  const kvKey = `rl:${identifier}`;
 
+  if (kv) {
+    try {
+      const raw = await kv.get(kvKey);
+      const entry: RateLimitEntry = raw
+        ? JSON.parse(raw)
+        : { count: 0, resetAt: now + windowMs };
+
+      // Reset if window expired
+      if (now > entry.resetAt) {
+        entry.count = 0;
+        entry.resetAt = now + windowMs;
+      }
+
+      entry.count += 1;
+
+      await kv.put(kvKey, JSON.stringify(entry), { expirationTtl: windowSecs });
+
+      if (entry.count > max) {
+        return { allowed: false, remaining: 0, resetAt: entry.resetAt };
+      }
+      return {
+        allowed: true,
+        remaining: max - entry.count,
+        resetAt: entry.resetAt,
+      };
+    } catch {
+      // KV failure — fail open (don't block legitimate users)
+    }
+  }
+
+  // In-memory fallback
+  const entry = memoryStore.get(identifier);
   if (!entry || now > entry.resetAt) {
-    // New window
-    store.set(identifier, {
-      count: 1,
-      resetAt: now + windowMs,
-    });
+    memoryStore.set(identifier, { count: 1, resetAt: now + windowMs });
     return { allowed: true, remaining: max - 1, resetAt: now + windowMs };
   }
 
   entry.count += 1;
-
   if (entry.count > max) {
     return { allowed: false, remaining: 0, resetAt: entry.resetAt };
   }
-
   return {
     allowed: true,
     remaining: max - entry.count,
     resetAt: entry.resetAt,
   };
-}
-
-/**
- * Cleanup expired entries (call periodically or on demand).
- */
-export function cleanupRateLimitStore(): void {
-  const now = Date.now();
-  for (const [key, entry] of store.entries()) {
-    if (now > entry.resetAt) {
-      store.delete(key);
-    }
-  }
 }

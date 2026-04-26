@@ -2,17 +2,21 @@ export const prerender = false;
 
 import type { APIContext } from 'astro';
 
-export const GET = async ({ cookies, url, redirect }: APIContext) => {
+export const POST = async ({ cookies, url, request, redirect }: APIContext) => {
+  // CSRF: verify same-origin by checking the Origin header
+  const origin = request.headers.get('origin') ?? '';
+  const host = request.headers.get('host') ?? '';
+  if (origin && !origin.includes(host)) {
+    return new Response('Forbidden', { status: 403 });
+  }
+
   const slug = url.searchParams.get('slug');
 
-  // Borrar cookie de admin global
   cookies.delete('zutra_admin', { path: '/consultoria' });
 
-  // Si viene con slug, borrar también la cookie de sesión de ese reporte
   if (slug) {
     cookies.delete(`rs_${slug}`, { path: `/consultoria/${slug}` });
   }
 
-  // Redirigir al reporte si venía de uno, si no al índice
   return redirect(slug ? `/consultoria/${slug}` : '/consultoria');
 };

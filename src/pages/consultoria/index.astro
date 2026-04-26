@@ -59,9 +59,15 @@ if (REPORT_LOGS) {
                 <span class="admin-badge">
                   <i class="ph-duotone ph-shield-check" /> Panel Admin
                 </span>
-                <a href="/consultoria/logout" class="admin-logout">
-                  <i class="ph-duotone ph-sign-out" /> Cerrar sesión
-                </a>
+                <form
+                  method="POST"
+                  action="/consultoria/logout"
+                  style="display:contents"
+                >
+                  <button type="submit" class="admin-logout">
+                    <i class="ph-duotone ph-sign-out" /> Cerrar sesión
+                  </button>
+                </form>
               </div>
               <h1 class="consultoria-title">
                 Auditorías <span class="accent-text">Técnicas</span>
@@ -224,6 +230,10 @@ if (REPORT_LOGS) {
     letter-spacing: 0.05em;
     color: var(--color-muted);
     text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
     transition: color 0.2s;
     opacity: 0.6;
   }

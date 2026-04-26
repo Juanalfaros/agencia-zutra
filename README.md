@@ -52,7 +52,7 @@ agencia-zutra/
 │   ├── lib/
 │   │   ├── contentful.ts         # Cliente Contentful con cache TTL
 │   │   ├── contentful-adapters.ts# Transform Contentful entries → tipos locales
-│   │   ├── rate-limit.ts         # Rate limiter en memoria
+│   │   ├── rate-limit.ts         # Rate limiter distribuido (Cloudflare KV)
 │   │   └── utils/                # Sanitización, slugify
 │   ├── pages/
 │   │   ├── api/                  # /api/contact, /api/lead, /api/preview
@@ -60,10 +60,11 @@ agencia-zutra/
 │   │   ├── consultoria/          # /consultoria, /consultoria/[slug], verify
 │   │   ├── preview/              # /preview/blog/[slug], /preview/portfolio/[slug]
 │   │   ├── portfolio/            # /portfolio, /portfolio/[slug], /portfolio/tag/[tag]
+│   │   ├── recursos/             # /recursos, /recursos/[slug] (marketplace)
 │   │   ├── servicios/            # /servicios, /servicios/[slug], /servicios/categoria/[cat]
 │   │   └── *.astro               # index, nosotros, 404, gracias, legales...
 │   ├── styles/                   # Design tokens, componentes, responsive
-│   └── types/                    # Blog, Portfolio, Services, Testimonials
+│   └── types/                    # Blog, Portfolio, Services, Testimonials, Recurso
 │
 └── scripts/                      # Migraciones a Contentful (uso interno)
 ```
@@ -94,6 +95,16 @@ Sistema de entrega de auditorías y reportes técnicos mediante una experiencia 
 - **Notificaciones de acceso**: Cuando un cliente abre un reporte, se envía un email de notificación a los admins con nombre del cliente, email y hora de acceso.
 - **Log de accesos KV**: Cada acceso se registra en Cloudflare KV (`REPORT_LOGS`) con email, timestamp y user-agent.
 - **Viz Suite**: Suite completa de componentes de visualización (BarCharts, StackTables, MetricHighlight, Scoreboards).
+
+### 🛍️ Marketplace de Recursos (`/recursos`)
+
+Catálogo de productos digitales propios (templates Astro, UI kits, auditorías y guías) vendidos via Gumroad.
+
+- **Índice** `/recursos` — grid de cards con imagen, precio, categoría y CTAs de compra/demo.
+- **Detalle** `/recursos/[slug]` — galería interactiva, features checklist, descripción rich text y sidebar con precio + CTA de Gumroad.
+- **SEO**: `ItemList` schema en el índice; `Product` + `Offer` JSON-LD en cada detalle.
+- **Content type `recurso`** en Contentful con 15 campos (título, slug, precio, isFree, techStack, features, gallery, longDescription...).
+- **Scripts de setup**: `scripts/setup-recurso-model.ts` y `scripts/seed-recursos.ts` para provisioning programático.
 
 ### 📨 Formulario de Contacto
 
@@ -193,10 +204,11 @@ Configurar en Cloudflare Dashboard → Pages → Settings → Environment Variab
 | `SENTRY_DSN`                  | Error tracking (opcional)                                              |
 | `OTP_SECRET`                  | Secreto HMAC para firmar tokens OTP y cookies de sesión de consultoría |
 | `REPORT_LOGS`                 | Binding de Cloudflare KV para logs de acceso a reportes                |
+| `ZUTRA_KV`                    | Binding de Cloudflare KV para rate limiting distribuido                |
 
 ## 📊 SEO & Accesibilidad
 
-- **Structured data**: `LocalBusiness`, `FAQPage`, `BlogPosting`, `BreadcrumbList`
+- **Structured data**: `LocalBusiness`, `FAQPage`, `BlogPosting`, `BreadcrumbList`, `Product`, `ItemList`
 - **Open Graph + Twitter Cards**: Generados dinámicamente por página
 - **Canonical URLs**: Siempre apuntan a `zutra.agency`
 - **Sitemap**: Generado automáticamente (`/sitemap-index.xml`)

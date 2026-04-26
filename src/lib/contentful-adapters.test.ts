@@ -32,7 +32,12 @@ describe('contentful-adapters', () => {
       } as unknown as Asset;
 
       const result = adaptAsset(mockAsset);
-      expect(result.src).toBe('https://images.ctfassets.net/test/image.jpg');
+      // URL should include Contentful Image API optimization params
+      expect(result.src).toContain(
+        'https://images.ctfassets.net/test/image.jpg'
+      );
+      expect(result.src).toContain('fm=webp');
+      expect(result.src).toContain('q=80');
       expect(result.width).toBe(800);
       expect(result.height).toBe(600);
       expect(result.alt).toBe('Test Image');
@@ -82,7 +87,9 @@ describe('contentful-adapters', () => {
     });
 
     it('should throw for invalid entry', () => {
-      expect(() => adaptCategory(null as any)).toThrow('Invalid category entry');
+      expect(() => adaptCategory(null as any)).toThrow(
+        'Invalid category entry'
+      );
       expect(() => adaptCategory({} as any)).toThrow('Invalid category entry');
     });
   });

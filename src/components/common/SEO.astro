@@ -2,34 +2,38 @@
 // src/components/common/SEO.astro
 
 interface Props {
-    title?: string;
-    description?: string;
-    image?: string;
-    canonicalURL?: URL | string;
-    keywords?: string;
-    type?: string;
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalURL?: URL | string;
+  keywords?: string;
+  type?: string;
+  publishDate?: Date;
+  updatedDate?: Date;
 }
 
 // Con un 301 activo de .cl a .agency, la URL base siempre debe ser .agency
-const siteBase = "https://zutra.agency";
+const siteBase = 'https://zutra.agency';
 const canonicalURL = new URL(Astro.url.pathname, siteBase);
 
 const {
-    title = "Zutra Agency — Diseño Valiente & Tecnología de Alto Rendimiento",
-    description = "Tu partner digital de ejecución. Desarrollo web ultrarrápido, automatización de ventas y branding con carácter. Sin humo: creamos los activos que tu negocio necesita.",
-    image = "/og-image.jpg",
-    keywords = "Zutra Agency, Agencia Zutra Chile, desarrollo web chile, diseño web santiago, email marketing, branding corporativo, automatización, astro web, partner digital",
-    type = "website",
+  title = 'Zutra Agency — Diseño Valiente & Tecnología de Alto Rendimiento',
+  description = 'Tu partner digital de ejecución. Desarrollo web ultrarrápido, automatización de ventas y branding con carácter. Sin humo: creamos los activos que tu negocio necesita.',
+  image = '/og-image.jpg',
+  keywords = 'Zutra Agency, Agencia Zutra Chile, desarrollo web chile, diseño web santiago, email marketing, branding corporativo, automatización, astro web, partner digital',
+  type = 'website',
+  publishDate,
+  updatedDate,
 } = Astro.props;
 
-const siteName = "Zutra Agency Chile";
-const twitterHandle = "@zutra_agency"; 
+const siteName = 'Zutra Agency Chile';
+const twitterHandle = '@zutra_agency';
 ---
 
 <meta charset="utf-8" />
 <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  name="viewport"
+  content="width=device-width, initial-scale=1, viewport-fit=cover"
 />
 <link rel="sitemap" href="/sitemap-index.xml" />
 <meta name="generator" content={Astro.generator} />
@@ -46,12 +50,22 @@ const twitterHandle = "@zutra_agency";
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(image, Astro.url)} />
 <meta property="og:site_name" content={siteName} />
-{type === "article" && (
+{
+  type === 'article' && publishDate && (
     <>
-        <meta property="article:published_time" content={new Date().toISOString()} />
-        <meta property="article:modified_time" content={new Date().toISOString()} />
+      <meta
+        property="article:published_time"
+        content={publishDate.toISOString()}
+      />
+      {updatedDate && (
+        <meta
+          property="article:modified_time"
+          content={updatedDate.toISOString()}
+        />
+      )}
     </>
-)}
+  )
+}
 
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
@@ -62,6 +76,9 @@ const twitterHandle = "@zutra_agency";
 
 <meta name="theme-color" content="#111111" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="black-translucent"
+/>
 <meta name="apple-mobile-web-app-title" content="Zutra" />
 <meta name="mobile-web-app-capable" content="yes" />

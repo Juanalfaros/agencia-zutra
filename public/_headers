@@ -1,10 +1,14 @@
 # Allow Contentful Live Preview to embed the site in its iframe
 /preview/*
   X-Frame-Options: ALLOWALL
-  Content-Security-Policy: frame-ancestors 'self' https://app.contentful.com https://*.contentful.com
+  Content-Security-Policy: frame-ancestors 'self' https://app.contentful.com https://preview.contentful.com
+  Referrer-Policy: strict-origin-when-cross-origin
 
 # Restrict all other pages
 /*
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=()
+  X-XSS-Protection: 1; mode=block

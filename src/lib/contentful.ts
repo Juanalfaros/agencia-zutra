@@ -49,7 +49,14 @@ async function readEnv(key: string): Promise<string> {
   return '';
 }
 
-export const isPreviewEnabled = (locals?: any) => {
+type AstroLike = {
+  url?: string | URL;
+  cookies?: { get?: (key: string) => { value?: string } | undefined };
+  locals?: { runtime?: { env?: Record<string, unknown> } };
+  request?: { headers?: { get: (key: string) => string | null } | null };
+};
+
+export const isPreviewEnabled = (locals?: AstroLike) => {
   // 1. Always trust the Environment Variable (Build-time override)
   if (import.meta.env.CONTENTFUL_USE_PREVIEW === 'true') return true;
 
