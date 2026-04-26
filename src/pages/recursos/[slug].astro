@@ -1,0 +1,1112 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import BreadcrumbSchema from '@/components/common/BreadcrumbSchema.astro';
+import LightboxGallery from '@/components/common/LightboxGallery.astro';
+import { getEntriesByField, isPreviewEnabled } from '@/lib/contentful';
+import { adaptRecurso } from '@/lib/contentful-adapters';
+import type { ZutraRecurso } from '@/types/recurso-types';
+
+const isPreview = isPreviewEnabled(Astro);
+const { slug } = Astro.params;
+
+const entries = await getEntriesByField(
+  'recurso',
+  'slug',
+  slug!,
+  isPreview,
+  Astro.locals
+);
+
+if (!entries.items.length) {
+  return Astro.redirect('/recursos');
+}
+
+const recurso: ZutraRecurso = adaptRecurso(entries.items[0]);
+const origin =
+  Astro.site?.toString().replace(/\/$/, '') ?? 'https://zutra.agency';
+
+const CATEGORY_LABELS: Record<string, string> = {
+  template: 'Template',
+  'ui-kit': 'UI Kit',
+  auditoria: 'Auditoría',
+  guia: 'Guía',
+};
+
+const categoryLabel = CATEGORY_LABELS[recurso.category] ?? recurso.category;
+const isSoon = recurso.status === 'coming-soon';
+const priceNumeric = recurso.isFree
+  ? '0'
+  : recurso.price.replace(/[^0-9.]/g, '') || '0';
+const galleryId = `gallery-${recurso.slug}`;
+
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: recurso.title,
+  description: recurso.description,
+  image: recurso.featuredImage?.src ?? '',
+  brand: { '@type': 'Brand', name: 'Zutra' },
+  offers: {
+    '@type': 'Offer',
+    price: priceNumeric,
+    priceCurrency: 'USD',
+    availability: isSoon
+      ? 'https://schema.org/PreOrder'
+      : 'https://schema.org/InStock',
+    url: recurso.gumroadUrl,
+  },
+};
+---
+
+<Layout
+  title={`${recurso.title} | Recursos Zutra`}
+  description={recurso.description}
+  image={recurso.featuredImage?.src}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+  <BreadcrumbSchema
+    items={[
+      { name: 'Inicio', item: origin },
+      { name: 'Recursos', item: `${origin}/recursos` },
+      { name: recurso.title, item: `${origin}/recursos/${recurso.slug}` },
+    ]}
+  />
+
+  <main class="recurso-detail">
+    <!-- ── Hero imagen full-width ───────────────���─────────────────────── -->
+    {
+      recurso.featuredImage && (
+        <div class="hero-visual">
+          <div class="hero-visual__inner">
+            <img
+              src={recurso.featuredImage.src}
+              alt={recurso.featuredImage.alt}
+              class="hero-visual__img"
+              loading="eager"
+              decoding="async"
+            />
+            <div class="hero-visual__overlay" />
+          </div>
+        </div>
+      )
+    }
+
+    <!-- ── Header del producto ────────────────────────────────────────── -->
+    <section class="product-header">
+      <div class="container">
+        <div class="product-header__inner">
+          <!-- Breadcrumb visual -->
+          <nav class="breadcrumb" aria-label="Navegación">
+            <a href="/recursos">← Recursos</a>
+            <span aria-hidden="true">/</span>
+            <span>{recurso.title}</span>
+          </nav>
+
+          <!-- Pills -->
+          <div class="product-header__pills">
+            <span class="pill pill--category">{categoryLabel}</span>
+            {
+              recurso.isFree ? (
+                <span class="pill pill--free">Gratis</span>
+              ) : (
+                recurso.price && (
+                  <span class="pill pill--price">{recurso.price}</span>
+                )
+              )
+            }
+            {isSoon && <span class="pill pill--soon">Próximamente</span>}
+          </div>
+
+          <h1 class="product-title">{recurso.title}</h1>
+          <p class="product-description">{recurso.description}</p>
+
+          <!-- CTAs principales -->
+          <div class="product-ctas">
+            {
+              recurso.demoUrl && !isSoon && (
+                <a
+                  href={recurso.demoUrl}
+                  class="btn-ghost"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 256 256"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M224 104a96 96 0 1 1-96-96 96.11 96.11 0 0 1 96 96Zm-96 72a72 72 0 1 0-72-72 72.08 72.08 0 0 0 72 72Zm-8-112v40H80a8 8 0 0 0 0 16h40v40a8 8 0 0 0 16 0v-40h40a8 8 0 0 0 0-16h-40V64a8 8 0 0 0-16 0Z"
+                    />
+                  </svg>
+                  Ver demo en vivo
+                </a>
+              )
+            }
+            <a
+              href={isSoon ? undefined : recurso.gumroadUrl}
+              class={`btn-accent${isSoon ? ' btn-disabled' : ''}`}
+              target={isSoon ? undefined : '_blank'}
+              rel={isSoon ? undefined : 'noopener noreferrer'}
+              aria-disabled={isSoon}
+            >
+              {
+                isSoon
+                  ? 'Disponible pronto'
+                  : recurso.isFree
+                    ? 'Descargar gratis ↗'
+                    : `Comprar ${recurso.price} en Gumroad ↗`
+              }
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Cuerpo en dos columnas ──────────────��──────────────────────── -->
+    <div class="product-body">
+      <div class="container">
+        <div class="product-layout">
+          <!-- Columna principal -->
+          <div class="product-main">
+            <!-- Tech Stack -->
+            {
+              recurso.techStack.length > 0 && (
+                <div class="content-block">
+                  <h2 class="block-label">Construido con</h2>
+                  <div class="tech-pills">
+                    {recurso.techStack.map((tech) => (
+                      <span class="tech-pill">{tech}</span>
+                    ))}
+                  </div>
+                </div>
+              )
+            }
+
+            <!-- Features -->
+            {
+              recurso.features.length > 0 && (
+                <div class="content-block">
+                  <h2 class="block-title">¿Qué incluye?</h2>
+                  <ul class="features-grid">
+                    {recurso.features.map((feat) => (
+                      <li class="feature-item">
+                        <span class="feature-check" aria-hidden="true">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 256 256"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M173.66 98.34a8 8 0 0 1 0 11.32l-56 56a8 8 0 0 1-11.32 0l-24-24a8 8 0 0 1 11.32-11.32L112 148.69l50.34-50.35a8 8 0 0 1 11.32 0Z"
+                            />
+                            <path
+                              fill="currentColor"
+                              d="M128 24a104 104 0 1 0 104 104A104.11 104.11 0 0 0 128 24Zm0 192a88 88 0 1 1 88-88 88.1 88.1 0 0 1-88 88Z"
+                            />
+                          </svg>
+                        </span>
+                        <span>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )
+            }
+
+            <!-- Gallery thumbnail grid -->
+            {
+              recurso.gallery.length > 0 && (
+                <div class="content-block">
+                  <h2 class="block-title">Capturas de pantalla</h2>
+                  <div
+                    class={`gallery-grid gallery-grid--${Math.min(recurso.gallery.length, 3)}`}
+                  >
+                    {recurso.gallery.map((img, i) => (
+                      <button
+                        class="gallery-thumb"
+                        data-lightbox-trigger={galleryId}
+                        data-index={i}
+                        aria-label={`Ver captura ${i + 1}: ${img.alt}`}
+                      >
+                        <img
+                          src={img.src}
+                          alt={img.alt}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                        <span class="gallery-thumb__overlay" aria-hidden="true">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 256 256"
+                          >
+                            <path
+                              fill="currentColor"
+                              d="M229.66 218.34l-50.07-50.06a88.21 88.21 0 1 0-11.31 11.31l50.06 50.07a8 8 0 0 0 11.32-11.32ZM40 112a72 72 0 1 1 72 72 72.08 72.08 0 0 1-72-72Z"
+                            />
+                          </svg>
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                  <LightboxGallery
+                    id={galleryId}
+                    images={recurso.gallery.map((img) => ({
+                      src: img.src,
+                      alt: img.alt,
+                    }))}
+                  />
+                </div>
+              )
+            }
+
+            <!-- Long description -->
+            {
+              recurso.longDescription && (
+                <div class="content-block">
+                  <h2 class="block-title">Descripción completa</h2>
+                  <div class="prose" set:html={recurso.longDescription} />
+                </div>
+              )
+            }
+          </div>
+
+          <!-- Sidebar sticky -->
+          <aside class="product-sidebar">
+            <div class="sidebar-card">
+              <!-- Price -->
+              <div class="sidebar-price">
+                {
+                  recurso.isFree ? (
+                    <span class="sidebar-price__free">Gratis</span>
+                  ) : (
+                    <span class="sidebar-price__amount">{recurso.price}</span>
+                  )
+                }
+                {
+                  !recurso.isFree && (
+                    <span class="sidebar-price__note">
+                      Pago único · Acceso inmediato
+                    </span>
+                  )
+                }
+              </div>
+
+              <!-- CTA -->
+              <a
+                href={isSoon ? undefined : recurso.gumroadUrl}
+                class={`sidebar-cta${isSoon ? ' btn-disabled' : ''}`}
+                target={isSoon ? undefined : '_blank'}
+                rel={isSoon ? undefined : 'noopener noreferrer'}
+              >
+                {
+                  isSoon
+                    ? 'Próximamente'
+                    : recurso.isFree
+                      ? 'Descargar gratis ↗'
+                      : 'Comprar en Gumroad ↗'
+                }
+              </a>
+
+              {
+                recurso.demoUrl && !isSoon && (
+                  <a
+                    href={recurso.demoUrl}
+                    class="sidebar-demo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Ver demo en vivo ↗
+                  </a>
+                )
+              }
+
+              <!-- Divider -->
+              <hr class="sidebar-divider" />
+
+              <!-- Meta info -->
+              <dl class="sidebar-meta">
+                <div class="sidebar-meta__row">
+                  <dt>Tipo</dt>
+                  <dd>{categoryLabel}</dd>
+                </div>
+                {
+                  recurso.techStack.length > 0 && (
+                    <div class="sidebar-meta__row">
+                      <dt>Stack</dt>
+                      <dd>{recurso.techStack.slice(0, 3).join(' · ')}</dd>
+                    </div>
+                  )
+                }
+                {
+                  recurso.tags.length > 0 && (
+                    <div class="sidebar-meta__row">
+                      <dt>Tags</dt>
+                      <dd>{recurso.tags.slice(0, 4).join(', ')}</dd>
+                    </div>
+                  )
+                }
+              </dl>
+            </div>
+
+            <!-- Custom project CTA -->
+            <div class="sidebar-custom">
+              <p class="sidebar-custom__label">¿Necesitas algo a medida?</p>
+              <p class="sidebar-custom__body">
+                El equipo de Zutra construye tu proyecto desde cero.
+              </p>
+              <a href="/contacto" class="sidebar-custom__link">Hablemos →</a>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CTA banner inferior ───────────────��────────────────────────── -->
+    <section class="product-footer-cta">
+      <div class="container">
+        <div class="footer-cta-inner">
+          <div>
+            <h2 class="footer-cta-title">¿Listo para empezar?</h2>
+            <p class="footer-cta-body">
+              Descarga el template y construye en horas, no semanas.
+            </p>
+          </div>
+          <div class="footer-cta-actions">
+            {
+              recurso.demoUrl && (
+                <a
+                  href={recurso.demoUrl}
+                  class="btn-ghost"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Ver demo ↗
+                </a>
+              )
+            }
+            <a
+              href={isSoon ? undefined : recurso.gumroadUrl}
+              class={`btn-accent${isSoon ? ' btn-disabled' : ''}`}
+              target={isSoon ? undefined : '_blank'}
+              rel={isSoon ? undefined : 'noopener noreferrer'}
+            >
+              {
+                isSoon
+                  ? 'Próximamente'
+                  : recurso.isFree
+                    ? 'Descargar gratis ↗'
+                    : `Comprar ${recurso.price} →`
+              }
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  /* ── Base ───────────────────────────────────────────────────────────── */
+  .recurso-detail {
+    background: var(--color-primary);
+    color: var(--color-secondary);
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* ── Hero visual ────────────────────────────────────────────────────── */
+  .hero-visual {
+    width: 100%;
+    max-height: 500px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hero-visual__inner {
+    position: relative;
+  }
+
+  .hero-visual__img {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .hero-visual__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 40%,
+      var(--color-primary) 100%
+    );
+  }
+
+  /* ── Product header ────────────────────────────���────────────────────── */
+  .product-header {
+    padding: 2.5rem 0 3rem;
+  }
+
+  .product-header__inner {
+    max-width: 760px;
+  }
+
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .breadcrumb a {
+    color: var(--color-accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+
+  .product-header__pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+
+  .pill {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--radius-full);
+  }
+
+  .pill--category {
+    color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
+  }
+
+  .pill--price {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  .pill--free {
+    background: color-mix(in srgb, #19ef9c 15%, transparent);
+    color: #19ef9c;
+    border: 1px solid color-mix(in srgb, #19ef9c 30%, transparent);
+  }
+
+  .pill--soon {
+    color: var(--color-muted);
+    border: 1px solid var(--color-line);
+  }
+
+  .product-title {
+    font-size: clamp(1.75rem, 4vw, 3rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--color-secondary);
+    margin-bottom: 1rem;
+  }
+
+  .product-description {
+    font-size: 1.1rem;
+    color: var(--color-muted);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    max-width: 620px;
+  }
+
+  .product-ctas {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  /* ── Shared buttons ──────────────────���──────────────────────────────── */
+  .btn-accent {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: 800;
+    font-size: 0.9rem;
+    padding: 0.8rem 1.6rem;
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    transition:
+      background 0.15s,
+      transform 0.15s;
+    white-space: nowrap;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-accent:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-muted);
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0.8rem 1.6rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    transition:
+      border-color 0.15s,
+      color 0.15s,
+      transform 0.15s;
+    white-space: nowrap;
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: translateY(-1px);
+  }
+
+  .btn-disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    cursor: default;
+  }
+
+  /* ── Body layout ─────────────────────────────��──────────────────────── */
+  .product-body {
+    padding-bottom: 4rem;
+    border-top: 1px solid var(--color-line);
+    padding-top: 3rem;
+  }
+
+  .product-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .product-layout {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+
+    .product-sidebar {
+      display: none;
+    }
+  }
+
+  /* ── Content blocks (main column) ────────────────���─────────────────── */
+  .content-block {
+    padding-bottom: 2.5rem;
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .content-block:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .block-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-muted);
+    margin-bottom: 1rem;
+  }
+
+  .block-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-secondary);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  /* Tech pills */
+  .tech-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tech-pill {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    background: var(--color-subtle);
+    border: 1px solid var(--color-line);
+    padding: 0.4rem 0.9rem;
+    border-radius: var(--radius-full);
+  }
+
+  /* Features grid */
+  .features-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.65rem 0.85rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    font-size: 0.85rem;
+    color: var(--color-secondary);
+    line-height: 1.5;
+    transition: border-color 0.15s;
+  }
+
+  .feature-item:hover {
+    border-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  }
+
+  .feature-check {
+    color: var(--color-accent);
+    flex-shrink: 0;
+    margin-top: 0.1em;
+    display: flex;
+  }
+
+  /* Gallery thumbnails */
+  .gallery-grid {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 0;
+  }
+
+  .gallery-grid--1 {
+    grid-template-columns: 1fr;
+  }
+  .gallery-grid--2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .gallery-grid--3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    .gallery-grid--3 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .gallery-thumb {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-line);
+    cursor: pointer;
+    background: var(--color-subtle);
+    padding: 0;
+  }
+
+  .gallery-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition:
+      transform 0.3s ease,
+      filter 0.3s ease;
+  }
+
+  .gallery-thumb:hover img {
+    transform: scale(1.04);
+    filter: brightness(0.7);
+  }
+
+  .gallery-thumb__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .gallery-thumb:hover .gallery-thumb__overlay {
+    opacity: 1;
+  }
+
+  /* ── Prose (rich text) ──────────────────────────────────────────────── */
+  .prose {
+    font-size: 0.95rem;
+    line-height: 1.85;
+    color: var(--color-muted);
+  }
+
+  .prose :global(h2) {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--color-secondary);
+    letter-spacing: -0.02em;
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .prose :global(h3) {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .prose :global(p) {
+    margin-bottom: 1.1rem;
+  }
+
+  /* Contentful wraps <li> content inside <p> — neutralize the margin */
+  .prose :global(li > p) {
+    margin-bottom: 0;
+  }
+
+  .prose :global(ul) {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .prose :global(li) {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  .prose :global(li)::before {
+    content: '→';
+    color: var(--color-accent);
+    font-weight: 900;
+    flex-shrink: 0;
+    margin-top: 0.05em;
+    font-size: 0.8rem;
+  }
+
+  .prose :global(strong) {
+    color: var(--color-secondary);
+    font-weight: 700;
+  }
+
+  .prose :global(code) {
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: 0.8em;
+    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+    color: var(--color-accent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 20%, transparent);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+  }
+
+  .prose :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-color: color-mix(
+      in srgb,
+      var(--color-accent) 40%,
+      transparent
+    );
+    text-underline-offset: 2px;
+  }
+
+  .prose :global(a:hover) {
+    text-decoration-color: var(--color-accent);
+  }
+
+  .prose :global(img) {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-line);
+    max-width: 100%;
+    margin: 1rem 0;
+  }
+
+  /* ── Sidebar ──────────────────────────────────��─────────────────────── */
+  .product-sidebar {
+    position: sticky;
+    top: 6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .sidebar-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-xl);
+    padding: 1.5rem;
+  }
+
+  .sidebar-price {
+    margin-bottom: 1.25rem;
+  }
+
+  .sidebar-price__amount {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color-secondary);
+    letter-spacing: -0.04em;
+    display: block;
+    line-height: 1;
+    margin-bottom: 0.35rem;
+  }
+
+  .sidebar-price__free {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: #19ef9c;
+    display: block;
+    line-height: 1;
+    margin-bottom: 0.35rem;
+  }
+
+  .sidebar-price__note {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+
+  .sidebar-cta {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-weight: 800;
+    font-size: 0.9rem;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    transition:
+      background 0.15s,
+      transform 0.15s;
+    margin-bottom: 0.6rem;
+  }
+
+  .sidebar-cta:hover {
+    background: var(--color-accent-hover);
+    transform: translateY(-1px);
+  }
+
+  .sidebar-demo {
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: var(--color-muted);
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    transition:
+      border-color 0.15s,
+      color 0.15s;
+  }
+
+  .sidebar-demo:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .sidebar-divider {
+    border: none;
+    border-top: 1px solid var(--color-line);
+    margin: 1.25rem 0;
+  }
+
+  .sidebar-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .sidebar-meta__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    font-size: 0.8rem;
+  }
+
+  .sidebar-meta dt {
+    color: var(--color-muted);
+  }
+
+  .sidebar-meta dd {
+    color: var(--color-secondary);
+    font-weight: 600;
+    text-align: right;
+  }
+
+  .sidebar-custom {
+    background: color-mix(in srgb, var(--color-accent) 5%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 20%, transparent);
+    border-radius: var(--radius-xl);
+    padding: 1.25rem 1.5rem;
+  }
+
+  .sidebar-custom__label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+    margin-bottom: 0.4rem;
+  }
+
+  .sidebar-custom__body {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+    line-height: 1.5;
+    margin-bottom: 0.9rem;
+  }
+
+  .sidebar-custom__link {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .sidebar-custom__link:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Footer CTA ───────────────────────────���─────────────────────────── */
+  .product-footer-cta {
+    border-top: 1px solid var(--color-line);
+    padding: 3.5rem 0 5rem;
+  }
+
+  .footer-cta-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-cta-title {
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    font-weight: 900;
+    color: var(--color-secondary);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.02em;
+  }
+
+  .footer-cta-body {
+    font-size: 0.9rem;
+    color: var(--color-muted);
+  }
+
+  .footer-cta-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+
+  /* ── Mobile overrides ───────────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .hero-visual {
+      max-height: 220px;
+    }
+
+    .hero-visual__img {
+      max-height: 220px;
+    }
+
+    .product-header {
+      padding: 1.75rem 0 2rem;
+    }
+
+    .product-description {
+      font-size: 0.95rem;
+    }
+
+    .product-ctas {
+      flex-direction: column;
+    }
+
+    .product-ctas .btn-accent,
+    .product-ctas .btn-ghost {
+      width: 100%;
+      justify-content: center;
+      white-space: normal;
+      text-align: center;
+    }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .footer-cta-inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .footer-cta-actions {
+      width: 100%;
+      flex-direction: column;
+    }
+
+    .footer-cta-actions .btn-accent,
+    .footer-cta-actions .btn-ghost {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+</style>
