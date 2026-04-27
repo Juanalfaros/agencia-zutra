@@ -1,5 +1,5 @@
 ---
-import { socialMedia } from "@/data/socialmedia";
+import { socialMedia } from '@/data/socialmedia';
 ---
 
 <section id="contacto" class="section contacto-section">
@@ -172,7 +172,13 @@ import { socialMedia } from "@/data/socialmedia";
 
           <div class="form-consent-group">
             <label class="checkbox-container">
-              <input id="consent" name="consent" type="checkbox" required aria-describedby="err-consent" />
+              <input
+                id="consent"
+                name="consent"
+                type="checkbox"
+                required
+                aria-describedby="err-consent"
+              />
               <span class="checkmark"></span>
               <span class="form-consent-label"
                 >Acepto ser contactad@ por el equipo de Zutra.
@@ -210,22 +216,25 @@ import { socialMedia } from "@/data/socialmedia";
   declare global {
     interface Window {
       turnstile?: {
-        render: (selector: string, options: { sitekey: string; theme: string }) => void;
+        render: (
+          selector: string,
+          options: { sitekey: string; theme: string }
+        ) => void;
       };
     }
   }
 
   function initTurnstile() {
-    const container = document.getElementById("turnstile-widget");
+    const container = document.getElementById('turnstile-widget');
     if (!container) return;
+    if (container.querySelector('iframe')) return;
 
     if (window.turnstile) {
-      window.turnstile.render("#turnstile-widget", {
+      window.turnstile.render('#turnstile-widget', {
         sitekey: container.dataset.sitekey!,
-        theme: "dark",
+        theme: 'dark',
       });
     } else {
-      // Fallback if script not yet loaded
       setTimeout(initTurnstile, 100);
     }
   }
@@ -236,23 +245,30 @@ import { socialMedia } from "@/data/socialmedia";
   function selectPlan(planId: string | null) {
     if (!planId) return;
 
-    const serviceSelect = document.getElementById("service") as HTMLSelectElement;
-    const messageTextarea = document.getElementById("message") as HTMLTextAreaElement;
+    const serviceSelect = document.getElementById(
+      'service'
+    ) as HTMLSelectElement;
+    const messageTextarea = document.getElementById(
+      'message'
+    ) as HTMLTextAreaElement;
 
     if (!serviceSelect || !messageTextarea) return;
 
     const planMap: Record<string, { service: string; message: string }> = {
       sprint: {
-        service: "Sprint de Leads",
-        message: "Hola Zutra, me interesa agendar un Sprint de Leads para inyectar ventas en mi proyecto/negocio.",
+        service: 'Sprint de Leads',
+        message:
+          'Hola Zutra, me interesa agendar un Sprint de Leads para inyectar ventas en mi proyecto/negocio.',
       },
       partner: {
-        service: "Partner Digital",
-        message: "Hola Zutra, busco asegurar mi cupo como Partner Digital. ¿Me cuentan sobre la bolsa de horas y disponibilidad?",
+        service: 'Partner Digital',
+        message:
+          'Hola Zutra, busco asegurar mi cupo como Partner Digital. ¿Me cuentan sobre la bolsa de horas y disponibilidad?',
       },
       email: {
-        service: "Email Revenue",
-        message: "Hola Zutra, quiero activar el canal de Email Revenue para fidelizar clientes y aumentar el ROI.",
+        service: 'Email Revenue',
+        message:
+          'Hola Zutra, quiero activar el canal de Email Revenue para fidelizar clientes y aumentar el ROI.',
       },
     };
 
@@ -260,7 +276,7 @@ import { socialMedia } from "@/data/socialmedia";
     if (selectedPlan) {
       serviceSelect.value = selectedPlan.service;
       messageTextarea.value = selectedPlan.message;
-      
+
       // Visual feedback: brief highlight
       const wrapper = serviceSelect.closest('.form-wrapper');
       if (wrapper) {
@@ -280,8 +296,8 @@ import { socialMedia } from "@/data/socialmedia";
 
     // 2. Check hash (legacy support or direct link, e.g., #contacto?plan=sprint)
     const hash = window.location.hash;
-    if (!planId && hash && hash.includes("?plan=")) {
-      planId = hash.split("?plan=")[1];
+    if (!planId && hash && hash.includes('?plan=')) {
+      planId = hash.split('?plan=')[1];
     }
 
     if (planId) {
@@ -299,79 +315,79 @@ import { socialMedia } from "@/data/socialmedia";
     }
   });
 
-  const form = document.getElementById("contact-form") as HTMLFormElement;
-  const statusMsg = document.getElementById("form-status");
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const statusMsg = document.getElementById('form-status');
 
   // Lifecycle initialization
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener('astro:page-load', () => {
     initTurnstile();
     syncPlanFromURL();
   });
 
   if (
-    document.readyState !== "loading" &&
-    !window.location.search.includes("astro-transition")
+    document.readyState !== 'loading' &&
+    !window.location.search.includes('astro-transition')
   ) {
     initTurnstile();
     syncPlanFromURL();
   }
 
   if (form) {
-    form.addEventListener("submit", async (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       let isValid = true;
 
       document
-        .querySelectorAll(".form-error")
-        .forEach((el) => el.classList.add("hidden"));
-      statusMsg?.classList.add("hidden");
+        .querySelectorAll('.form-error')
+        .forEach((el) => el.classList.add('hidden'));
+      statusMsg?.classList.add('hidden');
 
-      const nameInput = document.getElementById("name") as HTMLInputElement;
+      const nameInput = document.getElementById('name') as HTMLInputElement;
       if (!nameInput.value.trim()) {
-        document.getElementById("err-name")?.classList.remove("hidden");
+        document.getElementById('err-name')?.classList.remove('hidden');
         isValid = false;
       }
 
-      const emailInput = document.getElementById("email") as HTMLInputElement;
+      const emailInput = document.getElementById('email') as HTMLInputElement;
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(emailInput.value)) {
-        document.getElementById("err-email")?.classList.remove("hidden");
+        document.getElementById('err-email')?.classList.remove('hidden');
         isValid = false;
       }
 
-      const phoneInput = document.getElementById("phone") as HTMLInputElement;
+      const phoneInput = document.getElementById('phone') as HTMLInputElement;
       if (!phoneInput.value.trim()) {
-        document.getElementById("err-phone")?.classList.remove("hidden");
+        document.getElementById('err-phone')?.classList.remove('hidden');
         isValid = false;
       }
 
       const serviceInput = document.getElementById(
-        "service",
+        'service'
       ) as HTMLSelectElement;
       if (!serviceInput.value) {
-        document.getElementById("err-service")?.classList.remove("hidden");
+        document.getElementById('err-service')?.classList.remove('hidden');
         isValid = false;
       }
 
       const msgInput = document.getElementById(
-        "message",
+        'message'
       ) as HTMLTextAreaElement;
       if (!msgInput.value.trim()) {
-        document.getElementById("err-message")?.classList.remove("hidden");
+        document.getElementById('err-message')?.classList.remove('hidden');
         isValid = false;
       }
 
       const consentInput = document.getElementById(
-        "consent",
+        'consent'
       ) as HTMLInputElement;
       if (!consentInput.checked) {
-        document.getElementById("err-consent")?.classList.remove("hidden");
+        document.getElementById('err-consent')?.classList.remove('hidden');
         isValid = false;
       }
 
       if (isValid) {
         const btn = document.getElementById(
-          "submit-button",
+          'submit-button'
         ) as HTMLButtonElement;
         const originalText = btn.innerHTML;
 
@@ -380,13 +396,13 @@ import { socialMedia } from "@/data/socialmedia";
 
         try {
           const formData = new FormData(form);
-          
+
           // Capturar datos para Enhanced Conversions (GA4) antes del envío
           const email = formData.get('email') as string;
           const phone = formData.get('phone') as string;
-          
-          const response = await fetch("/api/contact", {
-            method: "POST",
+
+          const response = await fetch('/api/contact', {
+            method: 'POST',
             body: formData,
           });
 
@@ -397,22 +413,22 @@ import { socialMedia } from "@/data/socialmedia";
 
           if (response.ok) {
             btn.innerHTML = `<span>¡Mensaje Enviado!</span> <i class="ph-duotone ph-check"></i>`;
-            btn.classList.add("success");
+            btn.classList.add('success');
 
             // Pequeña pausa para feedback visual antes del redirect
             setTimeout(() => {
-              window.location.href = "/gracias";
+              window.location.href = '/gracias';
             }, 800);
           } else {
-            throw new Error(result.message || "Error al enviar el mensaje");
+            throw new Error(result.message || 'Error al enviar el mensaje');
           }
         } catch (error: any) {
-          console.error("Form error:", error);
+          console.error('Form error:', error);
           if (statusMsg) {
             statusMsg.textContent =
-              error.message || "Ocurrió un error. Inténtalo de nuevo.";
-            statusMsg.classList.remove("hidden");
-            statusMsg.style.color = "#ef4444";
+              error.message || 'Ocurrió un error. Inténtalo de nuevo.';
+            statusMsg.classList.remove('hidden');
+            statusMsg.style.color = '#ef4444';
           }
           btn.disabled = false;
           btn.innerHTML = originalText;
@@ -746,7 +762,7 @@ import { socialMedia } from "@/data/socialmedia";
 
   /* Icono del check */
   .checkmark:after {
-    content: "";
+    content: '';
     position: absolute;
     display: none;
     left: 6px;
