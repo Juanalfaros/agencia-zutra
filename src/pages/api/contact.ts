@@ -12,7 +12,7 @@ export const POST = async ({
 }) => {
   // Rate limiting: 5 requests per 15 minutes per IP
   const clientIP = request.headers.get('cf-connecting-ip') ?? 'unknown';
-  const kv = locals?.runtime?.env?.ZUTRA_KV;
+  const kv = locals?.env?.ZUTRA_KV;
   const rateLimit = await checkRateLimit(
     `contact:${clientIP}`,
     5,
@@ -67,8 +67,8 @@ export const POST = async ({
     }
 
     // --- GESTIÓN DE VARIABLES DE ENTORNO (Astro 6 / Cloudflare v13) ---
-    // En Cloudflare Pages, las variables de entorno están en locals.runtime.env
-    const runtimeEnv = (locals?.runtime as any)?.env || {};
+    // En Cloudflare Pages, las variables de entorno están en locals.env
+    const runtimeEnv = (locals?.env as any) || {};
     const getEnv = (key: string) =>
       runtimeEnv[key] ||
       (import.meta.env as any)[key] ||
