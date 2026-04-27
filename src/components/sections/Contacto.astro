@@ -227,9 +227,10 @@ import { socialMedia } from '@/data/socialmedia';
   function initTurnstile() {
     const container = document.getElementById('turnstile-widget');
     if (!container) return;
-    if (container.querySelector('iframe')) return;
+    if (container.dataset.rendered === 'true') return;
 
     if (window.turnstile) {
+      container.dataset.rendered = 'true';
       window.turnstile.render('#turnstile-widget', {
         sitekey: container.dataset.sitekey!,
         theme: 'dark',
