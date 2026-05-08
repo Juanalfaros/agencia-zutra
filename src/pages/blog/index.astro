@@ -1,0 +1,140 @@
+---
+// src/pages/blog/index.astro
+import Layout from '@/layouts/Layout.astro';
+import BlogCard from '@/components/blog/BlogCard.astro';
+import BlogSearch from '@/components/blog/BlogSearch.astro';
+import { getSanityClient, groq } from '@/lib/sanity';
+import { POST_FIELDS } from '@/lib/sanity-queries';
+import { adaptBlogPost } from '@/lib/sanity-adapters';
+import type { Post } from '@/types/blog-types';
+
+// Fetch blog posts from Sanity
+const client = await getSanityClient();
+const posts = await client.fetch(
+  groq`*[_type == "post"] | order(publishDate desc) { ${POST_FIELDS} }`
+);
+const blogPosts: Post[] = posts.map(adaptBlogPost);
+
+// Handle case when no posts are available (Contentful not configured)
+const hasPosts = blogPosts.length > 0;
+
+const featuredPost = hasPosts
+  ? blogPosts.find((post: Post) => post.featured) || blogPosts[0]
+  : null;
+const regularPosts = hasPosts
+  ? blogPosts.filter((post: Post) => post.id !== featuredPost?.id)
+  : [];
+
+const title = 'Blog Valiente | ZUTRA Agency';
+const description =
+  'Ideas, estrategias y diseño para marcas que no temen ser diferentes. El blog de ZUTRA.';
+---
+
+<Layout title={title} description={description} image="/og-blog.jpg">
+  <main class="blog-archive">
+    <section class="blog-hero">
+      <div class="container">
+        <h1 class="blog-hero__title">
+          Ideas <span class="accent-text">sin censura.</span>
+        </h1>
+        <p class="blog-hero__subtitle">
+          Estrategias de diseño y growth marketing para quienes buscan dominar
+          la conversación, no solo participar en ella.
+        </p>
+      </div>
+    </section>
+
+    <section class="blog-content">
+      <div class="container">
+        <BlogSearch />
+
+        <div class="featured-section">
+          <h2 class="section-label">Destacado</h2>
+          {
+            featuredPost ? (
+              <BlogCard post={featuredPost} featured={true} />
+            ) : (
+              <div class="no-posts">
+                <p>No hay artículos disponibles en este momento.</p>
+              </div>
+            )
+          }
+        </div>
+
+        <div class="posts-grid">
+          {
+            regularPosts.length > 0 ? (
+              regularPosts.map((post) => <BlogCard post={post} />)
+            ) : hasPosts ? (
+              <div class="no-posts">
+                <p>No hay más artículos disponibles.</p>
+              </div>
+            ) : null
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .blog-archive {
+    padding-top: 5rem;
+  }
+
+  .blog-hero {
+    padding: 6rem 0 4rem;
+    text-align: center;
+  }
+
+  .blog-hero__title {
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .blog-hero__subtitle {
+    font-size: 1.25rem;
+    color: var(--color-muted);
+    max-width: 35ch;
+    margin: 0 auto;
+  }
+
+  .blog-content {
+    padding-bottom: 8rem;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-accent);
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .featured-section {
+    margin-bottom: 4rem;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 2rem;
+  }
+
+  .no-posts {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--color-muted);
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 640px) {
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

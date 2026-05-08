@@ -1,0 +1,441 @@
+---
+import type { ZutraCaseStudy, ProjectPhase } from '@/types/project-types';
+import { Icon } from 'astro-icon/components';
+import { getTechIcon, isSimpleIcon, getSimpleIconUrl } from '@/data/techIcons';
+
+interface Props {
+  project: ZutraCaseStudy;
+}
+
+const { project } = Astro.props;
+---
+
+{
+  (project.solution || (project.process && project.process.length > 0)) && (
+    <section class="case-execution">
+      <div class="container">
+        <div class="execution-layout">
+          <div class="process-main">
+            <h2 class="section-title">Ejecución y Proceso</h2>
+            <div class="text-content">
+              <div class="description-text" set:html={project.solution} />
+            </div>
+            {project.process && project.process.length > 0 && (
+              <div class="process-timeline">
+                {project.process.map((phase: ProjectPhase, index: number) => (
+                  <div class="process-phase">
+                    <div class="phase-number">0{index + 1}</div>
+                    <div class="phase-content">
+                      <h4 class="phase-name">{phase.name}</h4>
+                      <span class="phase-duration">{phase.duration}</span>
+                      {phase.highlights && (
+                        <p
+                          class="phase-highlights"
+                          set:html={phase.highlights}
+                        />
+                      )}
+                      <div class="phase-deliverables">
+                        {phase.deliverables &&
+                          phase.deliverables.map((item: string) => (
+                            <span class="deliverable-tag">{item}</span>
+                          ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          {project.techStack && project.techStack.length > 0 && (
+            <div class="tech-sidebar">
+              <h3 class="subsection-title">Tech Stack</h3>
+              <div class="tech-grid">
+                {project.techStack.map((tech: string) => (
+                  <div class="tech-badge" data-tooltip={tech} aria-label={tech}>
+                    {isSimpleIcon(getTechIcon(tech)) ? (
+                      <img
+                        src={getSimpleIconUrl(getTechIcon(tech))}
+                        alt=""
+                        class="tech-icon"
+                        style="width: 24px; height: 24px;"
+                      />
+                    ) : (
+                      <Icon name={getTechIcon(tech)} class="tech-icon" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .section-title {
+    font-size: 2.75rem;
+    font-weight: 800;
+    margin-bottom: 3rem;
+    color: var(--color-secondary);
+    letter-spacing: -0.02em;
+  }
+
+  .subsection-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--color-accent);
+    display: block;
+  }
+
+  .description-text {
+    font-size: 1.35rem;
+    line-height: 1.8;
+    color: var(--color-muted);
+  }
+
+  /* Rich Text Content Styles */
+  .description-text :global(p) {
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+  }
+
+  .description-text :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .description-text :global(strong),
+  .description-text :global(b) {
+    color: var(--color-secondary);
+    font-weight: 700;
+  }
+
+  .description-text :global(em),
+  .description-text :global(i) {
+    color: var(--color-accent);
+    font-style: italic;
+  }
+
+  .description-text :global(a) {
+    color: var(--color-accent);
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    font-weight: 600;
+  }
+
+  .description-text :global(a:hover) {
+    border-bottom-color: var(--color-accent);
+  }
+
+  .description-text :global(ul),
+  .description-text :global(ol) {
+    margin: 1.5rem 0;
+    padding-left: 1.5rem;
+  }
+
+  .description-text :global(ul) {
+    list-style: none;
+  }
+
+  .description-text :global(ul li) {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .description-text :global(ul li::before) {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .description-text :global(ol li) {
+    margin-bottom: 0.75rem;
+    padding-left: 0.5rem;
+  }
+
+  .description-text :global(ol li::marker) {
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  .description-text :global(blockquote) {
+    background: var(--color-subtle);
+    border-left: 4px solid var(--color-accent);
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+    border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+    font-style: italic;
+    color: var(--color-secondary);
+  }
+
+  .description-text :global(code) {
+    background: var(--color-surface);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono, monospace);
+    font-size: 0.9em;
+    color: var(--color-accent);
+  }
+
+  .description-text :global(hr) {
+    border: none;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-line),
+      transparent
+    );
+    margin: 2.5rem 0;
+  }
+
+  .case-execution {
+    padding: 8rem 0;
+  }
+
+  .execution-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 6rem;
+  }
+
+  .process-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    margin-top: 4rem;
+  }
+
+  .process-phase {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+
+  .phase-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .phase-number {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--color-accent);
+    opacity: 0.7;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .phase-name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-secondary);
+    margin-bottom: 0.5rem;
+    margin-top: 0px;
+  }
+
+  .phase-duration {
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .phase-highlights {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--color-muted);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Rich Text Styles for Phase Highlights */
+  .phase-highlights :global(p) {
+    margin-bottom: 1rem;
+    line-height: 1.7;
+  }
+
+  .phase-highlights :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .phase-highlights :global(strong),
+  .phase-highlights :global(b) {
+    color: var(--color-secondary);
+    font-weight: 700;
+  }
+
+  .phase-highlights :global(em),
+  .phase-highlights :global(i) {
+    color: var(--color-accent);
+  }
+
+  .phase-highlights :global(a) {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-weight: 600;
+  }
+
+  .phase-highlights :global(ul) {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+
+  .phase-highlights :global(ul li) {
+    position: relative;
+    padding-left: 1.25rem;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .phase-highlights :global(ul li::before) {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--color-accent);
+  }
+
+  .phase-deliverables {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .deliverable-tag {
+    padding: 0.4rem 1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-full);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--color-muted);
+    cursor: default;
+    transition: all 0.2s ease-out;
+    user-select: none;
+  }
+
+  .deliverable-tag:hover {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-on-accent, #fff);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(var(--color-accent-rgb), 0.2);
+  }
+
+  .tech-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .tech-badge {
+    width: 3.5rem;
+    height: 3.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+  }
+
+  .tech-badge:hover {
+    border-color: var(--color-accent);
+    background: var(--color-subtle);
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .tech-icon {
+    font-size: 1.5rem;
+    color: var(--color-muted);
+    transition: filter 0.3s;
+    filter: brightness(0) invert(1);
+  }
+
+  .tech-badge:hover .tech-icon {
+    filter: brightness(0) invert(1)
+      drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+  }
+
+  /* Tooltip Styles */
+  .tech-badge::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    padding: 0.5rem 0.8rem;
+    background: var(--color-secondary);
+    color: var(--color-surface);
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+    border-radius: 0.5rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 10;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 0.6rem;
+  }
+
+  /* Triangle for Tooltip */
+  .tech-badge::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    border: 6px solid transparent;
+    border-top-color: var(--color-secondary);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 10;
+    margin-bottom: 0.1rem;
+  }
+
+  .tech-badge:hover::before,
+  .tech-badge:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 1024px) {
+    .execution-layout {
+      grid-template-columns: 1fr;
+      gap: 4rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .section-title {
+      font-size: 2rem;
+    }
+
+    .phase-phase {
+      gap: 1.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,89 @@
+# ==========================================
+# CLAUDE CODE / AI TOOLS
+# ==========================================
+.agents/
+.claude/
+
+# ==========================================
+# BUILD OUTPUT
+# ==========================================
+dist/
+.output/
+dist/client/wrangler.json
+
+# ==========================================
+# ASTRO GENERATED
+# ==========================================
+.astro/
+
+# ==========================================
+# DEPENDENCIES
+# ==========================================
+node_modules/
+
+# ==========================================
+# ENVIRONMENT VARIABLES (SENSITIVE)
+# Keep .env.example — it's safe to commit.
+# ==========================================
+.env
+.env.*
+!.env.example
+
+# ==========================================
+# LOGS
+# ==========================================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# ==========================================
+# OS & EDITOR JUNK
+# ==========================================
+.DS_Store
+**/.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ==========================================
+# CLOUDFLARE
+# ==========================================
+.wrangler/
+.netlify/
+
+# ==========================================
+# CONTENTFUL MIGRATION SCRIPTS (Internal)
+# Uses CONTENTFUL_MANAGEMENT_TOKEN — one-time use, not for deployment.
+# ==========================================
+scripts/
+
+# ==========================================
+# PERSONAL WORKSPACE (Not for deployment)
+# HTML email templates and other design drafts.
+# ==========================================
+src/templates/
+
+# ==========================================
+# TYPESCRIPT
+# ==========================================
+*.tsbuildinfo
+
+# ==========================================
+# TEST & COVERAGE
+# ==========================================
+coverage/
+.nyc_output/
+html/
+
+# ==========================================
+# MISC
+# ==========================================
+*.local
+
+blogs-ideas/
+.dev.vars

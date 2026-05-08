@@ -1,0 +1,297 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { getSanityClient, groq } from '@/lib/sanity';
+import { AUDIT_REPORT_FIELDS } from '@/lib/sanity-queries';
+import { adaptAuditReport } from '@/lib/sanity-adapters';
+import { CONSULTORIA_ADMIN_EMAILS } from '@/data/consultoria-admins';
+import { signToken, verifyOTP } from '@/lib/report-auth';
+import { env as cfEnv } from 'cloudflare:workers';
+export const prerender = false;
+
+const t = Astro.url.searchParams.get('t') ?? '';
+const s = Astro.url.searchParams.get('s') ?? '';
+const OTP_SECRET = (
+  String((cfEnv as any).OTP_SECRET || '') ||
+  String((import.meta.env as any).OTP_SECRET || '')
+).trim();
+
+type ErrorReason = 'missing' | 'invalid' | 'access-expired' | 'not-found';
+let errorReason: ErrorReason = 'invalid';
+let isVerified = false;
+
+if (t && s && OTP_SECRET) {
+  try {
+    const otp = await verifyOTP(t, OTP_SECRET);
+    const isRecent = otp !== null;
+    const email = otp?.email ?? '';
+    const slug = otp?.slug ?? '';
+
+    if (slug === s && isRecent) {
+      const isAdmin = CONSULTORIA_ADMIN_EMAILS.map((e) =>
+        e.toLowerCase()
+      ).includes(email.toLowerCase());
+
+      // Flujo especial: login de admin desde el índice
+      if (s === '__admin__') {
+        if (isAdmin) {
+          const adminToken = await signToken(
+            `${email}:admin:true:${Date.now()}`,
+            OTP_SECRET
+          );
+          Astro.cookies.set('zutra_admin', adminToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 30 * 24 * 60 * 60,
+            path: '/consultoria',
+          });
+          isVerified = true;
+        } else {
+          errorReason = 'invalid';
+        }
+      } else {
+        const client = await getSanityClient();
+        const doc = await client.fetch(
+          groq`*[_type == "auditReport" && slug.current == $slug][0] { ${AUDIT_REPORT_FIELDS} }`,
+          { slug: s }
+        );
+        const entry = doc ? adaptAuditReport(doc) : null;
+
+        if (entry) {
+          const maxAgeSeconds = isAdmin
+            ? 365 * 24 * 60 * 60
+            : 30 * 24 * 60 * 60;
+          const sessionToken = await signToken(
+            `${email}:${s}:${isAdmin}:${Date.now()}`,
+            OTP_SECRET
+          );
+
+          Astro.cookies.set(`rs_${s}`, sessionToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: maxAgeSeconds,
+            path: `/consultoria/${s}`,
+          });
+
+          if (isAdmin) {
+            const adminToken = await signToken(
+              `${email}:admin:true:${Date.now()}`,
+              OTP_SECRET
+            );
+            Astro.cookies.set('zutra_admin', adminToken, {
+              httpOnly: true,
+              secure: true,
+              sameSite: 'lax',
+              maxAge: 30 * 24 * 60 * 60,
+              path: '/consultoria',
+            });
+          }
+
+          isVerified = true;
+
+          // Registrar acceso en KV para el panel admin
+          try {
+            const REPORT_LOGS = (cfEnv as any).REPORT_LOGS;
+            if (REPORT_LOGS) {
+              const logsKey = `log_${s}`;
+              const existing = (await REPORT_LOGS.get(logsKey, {
+                type: 'json',
+              })) as any[] | null;
+              const logs = Array.isArray(existing) ? existing : [];
+              logs.unshift({
+                email,
+                ts: Date.now(),
+                ua:
+                  Astro.request.headers.get('user-agent')?.slice(0, 120) ?? '',
+              });
+              await REPORT_LOGS.put(logsKey, JSON.stringify(logs.slice(0, 50)));
+            }
+          } catch (kvErr) {
+            console.error('[verify] KV log error:', kvErr);
+          }
+
+          // Notificar a admins si el acceso fue de un usuario (no de un admin)
+          if (!isAdmin) {
+            const BREVO_API_KEY = (
+              String((cfEnv as any).BREVO_API_KEY || '') ||
+              String((import.meta.env as any).BREVO_API_KEY || '')
+            ).trim();
+
+            if (BREVO_API_KEY) {
+              const accessedAt = new Date().toLocaleString('es-CL', {
+                timeZone: 'America/Santiago',
+                dateStyle: 'long',
+                timeStyle: 'short',
+              });
+              const reportUrl = `${new URL(Astro.request.url).origin}/consultoria/${s}`;
+
+              fetch('https://api.brevo.com/v3/smtp/email', {
+                method: 'POST',
+                headers: {
+                  'api-key': BREVO_API_KEY,
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                },
+                body: JSON.stringify({
+                  sender: { name: 'Zutra Sistema', email: 'hola@zutra.agency' },
+                  to: CONSULTORIA_ADMIN_EMAILS.map((e) => ({ email: e })),
+                  subject: `[Acceso] ${email} abrió "${entry.title}"`,
+                  htmlContent: `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:32px 16px;background:#09090b;font-family:sans-serif;color:#e4e4e7;">
+  <table width="100%" style="max-width:480px;margin:0 auto;background:#111113;border:1px solid #27272a;border-radius:12px;padding:32px;">
+    <tr><td>
+      <p style="margin:0 0 8px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#71717a;">Notificación de acceso</p>
+      <h2 style="margin:0 0 24px;font-size:20px;font-weight:900;color:#fafafa;">${entry.title}</h2>
+      <table width="100%" style="border-collapse:collapse;">
+        <tr>
+          <td style="padding:10px 0;border-bottom:1px solid #27272a;font-size:13px;color:#71717a;width:40%;">Cliente</td>
+          <td style="padding:10px 0;border-bottom:1px solid #27272a;font-size:13px;color:#e4e4e7;font-weight:600;">${entry.client}</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 0;border-bottom:1px solid #27272a;font-size:13px;color:#71717a;">Email</td>
+          <td style="padding:10px 0;border-bottom:1px solid #27272a;font-size:13px;color:#e4e4e7;font-weight:600;">${email}</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 0;font-size:13px;color:#71717a;">Hora de acceso</td>
+          <td style="padding:10px 0;font-size:13px;color:#e4e4e7;font-weight:600;">${accessedAt} (Santiago)</td>
+        </tr>
+      </table>
+      <div style="margin-top:28px;text-align:center;">
+        <a href="${reportUrl}" style="display:inline-block;background:#EFD319;color:#080501;text-decoration:none;padding:12px 28px;border-radius:999px;font-weight:800;font-size:14px;">Ver reporte →</a>
+      </div>
+    </td></tr>
+  </table>
+</body></html>`,
+                }),
+              }).catch((err) =>
+                console.error('[verify] Admin notify error:', err)
+              );
+            }
+          }
+        } else {
+          errorReason = 'not-found';
+        }
+      }
+    }
+  } catch (e) {
+    console.error('Verify error:', e);
+    errorReason = 'invalid';
+  }
+}
+
+if (isVerified) {
+  return Astro.redirect(
+    s === '__admin__' ? '/consultoria' : `/consultoria/${s}`
+  );
+}
+
+const errorMessages: Record<
+  ErrorReason,
+  { title: string; body: string; canRetry: boolean }
+> = {
+  missing: {
+    title: 'Enlace incompleto',
+    body: 'El enlace de acceso no es correcto.',
+    canRetry: true,
+  },
+  invalid: {
+    title: 'Enlace expirado',
+    body: 'Este enlace ya no es válido. Los enlaces duran 10 minutos.',
+    canRetry: true,
+  },
+  'access-expired': {
+    title: 'Acceso vencido',
+    body: 'El período de acceso ha finalizado.',
+    canRetry: false,
+  },
+  'not-found': {
+    title: 'No encontrado',
+    body: 'El reporte no existe.',
+    canRetry: false,
+  },
+};
+
+const error = errorMessages[errorReason];
+---
+
+<Layout
+  title="Verificando acceso | Zutra"
+  description="Estamos verificando tus credenciales de acceso..."
+  showFooter={false}
+  showCTA={false}
+>
+  <div class="verify-wrapper">
+    <div class="verify-card">
+      <span class="verify-icon">
+        <i class="ph-duotone ph-warning"></i>
+      </span>
+      <h1 class="verify-title">{error.title}</h1>
+      <p class="verify-body">{error.body}</p>
+      <div class="verify-actions">
+        {
+          error.canRetry && s && (
+            <a href={`/consultoria/${s}`} class="btn-primary">
+              Solicitar nuevo enlace
+            </a>
+          )
+        }
+        <a href="/consultoria" class="btn-ghost">Volver</a>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .verify-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .verify-card {
+    max-width: 28rem;
+    width: 100%;
+    text-align: center;
+    padding: 3rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 1.5rem;
+  }
+  .verify-icon {
+    font-size: 3rem;
+    color: var(--color-red-400);
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+  .verify-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-secondary);
+    margin-bottom: 1rem;
+  }
+  .verify-body {
+    color: var(--color-gray-300);
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+  .verify-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .btn-primary {
+    background: var(--color-accent);
+    color: var(--color-primary);
+    padding: 1rem;
+    border-radius: 99px;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .btn-ghost {
+    color: var(--color-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+</style>

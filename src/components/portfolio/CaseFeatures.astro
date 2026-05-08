@@ -1,0 +1,110 @@
+---
+import type { ZutraCaseStudy } from '@/types/project-types';
+
+interface Props {
+  project: ZutraCaseStudy;
+}
+
+const { project } = Astro.props;
+---
+
+<section class="case-features">
+  <div class="container">
+    {
+      project.keyFeatures && project.keyFeatures.length > 0 && (
+        <div class="features-box">
+          <h2 class="section-title">Features Clave</h2>
+          <div class="features-grid">
+            {project.keyFeatures.map((feature: any) => (
+              <div class="feature-card">
+                <h4 class="feature-title">{feature.title}</h4>
+                <p class="feature-desc">{feature.description}</p>
+                {feature.impact && (
+                  <span class="feature-impact">
+                    <i class={`ph-duotone ph-${feature.icon || 'lightning'}`} />{' '}
+                    {feature.impact}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .section-title {
+    font-size: 2.75rem;
+    font-weight: 800;
+    margin-bottom: 3rem;
+    color: var(--color-secondary);
+    letter-spacing: -0.02em;
+  }
+
+  .case-features {
+    padding: 8rem 0;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    margin: 4rem 0 0;
+  }
+
+  .feature-card {
+    padding: 2.5rem;
+    background: var(--color-subtle);
+    border-radius: var(--radius-2xl);
+    border: 1px solid var(--color-line);
+    transition: border-color 0.3s;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    justify-content: space-between;
+  }
+
+  .feature-card:hover {
+    border-color: var(--color-accent);
+  }
+
+  .feature-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-secondary);
+  }
+
+  .feature-desc {
+    font-size: 1.1rem;
+    color: var(--color-muted);
+    line-height: 1.6;
+  }
+
+  .feature-impact {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--color-accent);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .feature-impact i {
+    font-size: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .section-title {
+      font-size: 2rem;
+    }
+  }
+</style>

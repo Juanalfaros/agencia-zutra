@@ -1,0 +1,942 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import SlidesModal from '@/components/consultoria/SlidesModal.astro';
+import ReportGate from '@/components/consultoria/ReportGate.astro';
+import { verifyToken } from '@/lib/report-auth';
+import { env as cfEnv } from 'cloudflare:workers';
+import { getSanityClient, groq } from '@/lib/sanity';
+import { AUDIT_REPORT_FIELDS } from '@/lib/sanity-queries';
+import { adaptAuditReport, renderPortableText } from '@/lib/sanity-adapters';
+import FindingCard from '@/components/consultoria/viz/FindingCard.astro';
+import StackTable from '@/components/consultoria/viz/StackTable.astro';
+import VitalsTable from '../../components/consultoria/viz/VitalsTable.astro';
+import ScoreGrid from '../../components/consultoria/viz/ScoreGrid.astro';
+import MetricHighlight from '../../components/consultoria/viz/MetricHighlight.astro';
+import BarChart from '../../components/consultoria/viz/BarChart.astro';
+import PriorityBlock from '../../components/consultoria/viz/PriorityBlock.astro';
+import OptionsGrid from '../../components/consultoria/viz/OptionsGrid.astro';
+import CallToAction from '../../components/consultoria/viz/CallToAction.astro';
+import CompetitorTable from '../../components/consultoria/viz/CompetitorTable.astro';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+if (!slug) return Astro.redirect('/404');
+
+const OTP_SECRET = (
+  String((cfEnv as any).OTP_SECRET || '') ||
+  String((import.meta.env as any).OTP_SECRET || '')
+).trim();
+
+const isPreview = Astro.url.searchParams.get('preview') === 'true';
+const client = await getSanityClient(isPreview);
+
+const query = groq`*[_type == "auditReport" && slug.current == $slug][0] { ${AUDIT_REPORT_FIELDS} }`;
+
+const doc = await client.fetch(query, { slug });
+
+if (!doc) return Astro.redirect('/404');
+const entry = adaptAuditReport(doc);
+
+type ProcessedBlock =
+  | { kind: 'prose'; html: string }
+  | { kind: 'component'; block: any };
+const processedBlocks: ProcessedBlock[] = (() => {
+  const blocks: any[] = entry.reportContent || [];
+  const result: ProcessedBlock[] = [];
+  let proseAccum: any[] = [];
+  for (const block of blocks) {
+    if (block._type === 'block') {
+      proseAccum.push(block);
+    } else {
+      if (proseAccum.length) {
+        result.push({ kind: 'prose', html: renderPortableText(proseAccum) });
+        proseAccum = [];
+      }
+      result.push({ kind: 'component', block });
+    }
+  }
+  if (proseAccum.length) {
+    result.push({ kind: 'prose', html: renderPortableText(proseAccum) });
+  }
+  return result;
+})();
+
+let isLocked = false;
+let accessExpired = false;
+let expiryWarning: string | null = null;
+
+if (entry.protected) {
+  const adminCookie = Astro.cookies.get('zutra_admin')?.value ?? '';
+  const adminSession = OTP_SECRET
+    ? await verifyToken(adminCookie, OTP_SECRET)
+    : null;
+
+  if (adminSession?.isAdmin) {
+    // Acceso concedido como admin global — sin restricción de expiración
+  } else {
+    const cookieVal = Astro.cookies.get(`rs_${slug}`)?.value ?? '';
+    if (!cookieVal || !OTP_SECRET) {
+      isLocked = true;
+    } else {
+      const session = await verifyToken(cookieVal, OTP_SECRET);
+      if (!session) {
+        isLocked = true;
+      } else if (!session.isAdmin && entry.accessExpiry) {
+        const now = new Date();
+        const expiry = new Date(entry.accessExpiry!);
+        if (now > expiry) {
+          isLocked = true;
+          accessExpired = true;
+        } else {
+          const daysLeft = Math.ceil(
+            (expiry.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+          );
+          if (daysLeft <= 7) {
+            expiryWarning = expiry.toLocaleDateString('es-CL', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            });
+          }
+        }
+      }
+    }
+  }
+}
+---
+
+{
+  isLocked ? (
+    <Layout
+      title={`${entry.title} | Zutra`}
+      description={entry.description}
+      showFooter={false}
+      showCTA={false}
+    >
+      <ReportGate
+        slug={slug}
+        title={entry.title}
+        category={
+          typeof entry.category === 'string' ? entry.category : 'General'
+        }
+        expired={accessExpired}
+      />
+    </Layout>
+  ) : (
+    <Layout
+      title={`${entry.title} | Zutra`}
+      description={entry.description}
+      showFooter={true}
+      showCTA={false}
+    >
+      <div id="reading-progress" class="reading-progress" />
+
+      <div class="report-wrapper">
+        <article class="container report-container">
+          <header class="report-header reveal">
+            <div class="header-nav">
+              <a href="/consultoria" class="back-link">
+                <i class="ph-duotone ph-arrow-left" /> Volver
+              </a>
+              <span class="dot-separator" />
+              <span class="category-badge">
+                {typeof entry.category === 'string'
+                  ? entry.category.replace('-', ' ')
+                  : 'General'}
+              </span>
+            </div>
+            <div class="titleImage">
+              <h1 class="report-title">{entry.title}</h1>
+              {entry.headerImage && (
+                <div class="imageheader">
+                  <img
+                    src={entry.headerImage}
+                    alt={`Imagen de portada para ${entry.title}`}
+                    width={1200}
+                    height={630}
+                    loading="eager"
+                  />
+                </div>
+              )}
+            </div>
+
+            <dl class="report-meta-box">
+              <div class="meta-col">
+                <dt class="meta-label">Cliente</dt>
+                <dd class="meta-value text-secondary">{entry.client}</dd>
+              </div>
+              <div class="meta-divider" role="separator" aria-hidden="true" />
+              <div class="meta-col">
+                <dt class="meta-label">Analista</dt>
+                <dd class="meta-value analyst-meta">
+                  {entry.analystRef?.avatar ? (
+                    <img
+                      src={entry.analystRef.avatar}
+                      alt={entry.analystRef.name}
+                      class="analyst-avatar"
+                      width={32}
+                      height={32}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <i
+                      class="ph-duotone ph-user-circle accent-icon"
+                      aria-hidden="true"
+                    />
+                  )}
+                  <span>
+                    <span class="analyst-name">
+                      {entry.analystRef?.name || entry.analyst}
+                    </span>
+                    {entry.analystRef?.role && (
+                      <span class="analyst-role">{entry.analystRef.role}</span>
+                    )}
+                  </span>
+                </dd>
+              </div>
+              <div class="meta-divider" role="separator" aria-hidden="true" />
+              <div class="meta-col">
+                <dt class="meta-label">Fecha Emisión</dt>
+                <dd class="meta-value">
+                  {new Date(entry.date).toLocaleDateString('es-ES', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                </dd>
+              </div>
+            </dl>
+          </header>
+
+          <div class="report-main-layout">
+            <aside class="toc-sidebar">
+              <div class="toc-sticky">
+                <span class="toc-label">Contenido</span>
+                <nav id="report-toc" class="toc-nav">
+                  {/* Generado vía JS */}
+                </nav>
+              </div>
+            </aside>
+
+            <div
+              class="report-content prose max-w-none"
+              style="transition-delay: 200ms;"
+            >
+              {entry.executiveSummary && (
+                <div
+                  class="report-executive-summary reveal"
+                  set:html={entry.executiveSummary}
+                />
+              )}
+              {processedBlocks.map((b) => {
+                if (b.kind === 'prose') return <Fragment set:html={b.html} />;
+                const { block } = b;
+                switch (block._type) {
+                  case 'findingBlock':
+                    return (
+                      <FindingCard
+                        type={block.type}
+                        title={block.title}
+                        description={block.description}
+                      />
+                    );
+                  case 'stackTableBlock':
+                    return <StackTable title={block.title} rows={block.rows} />;
+                  case 'vitalsTableBlock':
+                    return (
+                      <VitalsTable title={block.title} rows={block.rows} />
+                    );
+                  case 'scoreGridBlock':
+                    return (
+                      <ScoreGrid title={block.title} scores={block.scores} />
+                    );
+                  case 'metricBlock':
+                    return (
+                      <MetricHighlight
+                        value={block.value}
+                        label={block.label}
+                        sublabel={block.sublabel}
+                        type={block.type}
+                      />
+                    );
+                  case 'barChartBlock':
+                    return <BarChart title={block.title} items={block.items} />;
+                  case 'priorityBlock':
+                    return (
+                      <PriorityBlock
+                        level={block.level}
+                        title={block.title}
+                        items={block.items}
+                      />
+                    );
+                  case 'optionsGridBlock':
+                    return (
+                      <OptionsGrid
+                        title={block.title}
+                        options={block.options}
+                      />
+                    );
+                  case 'ctaBlock':
+                    return (
+                      <CallToAction
+                        title={block.title}
+                        description={block.description}
+                        buttonText={block.buttonText}
+                        buttonLink={block.buttonLink}
+                      />
+                    );
+                  case 'competitorTableBlock':
+                    return (
+                      <CompetitorTable
+                        highlight={block.highlight ?? ''}
+                        competitors={block.rows ?? []}
+                      />
+                    );
+                  default:
+                    console.warn('Unknown block type:', block._type);
+                    return null;
+                }
+              })}
+              {entry.conclusion && (
+                <div
+                  class="report-conclusion reveal"
+                  set:html={entry.conclusion}
+                />
+              )}
+            </div>
+          </div>
+        </article>
+      </div>
+      {entry.presentationEnabled && entry.slides && entry.slides.length > 0 && (
+        <SlidesModal slides={entry.slides} />
+      )}
+    </Layout>
+  )
+}
+
+<style is:global>
+  /* ─────────────────────────────────────────────────────────────
+     REPORT CONTENT — rendered via set:html (needs is:global)
+     ───────────────────────────────────────────────────────────── */
+
+  /* Fix temporal para elementos .reveal ocultos */
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Fix temporal para report-content */
+  .report-content {
+    opacity: 1 !important;
+    transform: none !important;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
+  /* Report wrapper */
+  .report-wrapper {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Report container */
+  .report-container {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .report-content .finding-title {
+    margin: 0 0 0.375rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+    line-height: 1.3;
+  }
+  .report-content .finding-body {
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--color-gray-300);
+    margin: 0;
+  }
+  .report-content .finding-body p {
+    margin: 0;
+  }
+
+  /* Type variants */
+  .report-content .type-critical {
+    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.05);
+  }
+  .report-content .type-warning {
+    border-color: rgba(245, 158, 11, 0.3);
+    background: rgba(245, 158, 11, 0.05);
+  }
+  .report-content .type-opportunity {
+    border-color: rgba(var(--color-accent-rgb), 0.3);
+    background: rgba(var(--color-accent-rgb), 0.05);
+  }
+  .report-content .type-tip {
+    border-color: rgba(59, 130, 246, 0.3);
+    background: rgba(59, 130, 246, 0.05);
+  }
+  .report-content .type-critical .finding-icon,
+  .report-content .type-critical .finding-title {
+    color: #f87171;
+  }
+  .report-content .type-warning .finding-icon,
+  .report-content .type-warning .finding-title {
+    color: #facc15;
+  }
+  .report-content .type-opportunity .finding-icon {
+    color: var(--color-accent);
+  }
+  .report-content .type-tip .finding-icon,
+  .report-content .type-tip .finding-title {
+    color: #60a5fa;
+  }
+
+  /* ── SPLIT BLOCK ────────────────────────────────────────── */
+  .report-content .split-block {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin: 2.5rem 0;
+    align-items: center;
+  }
+  @media (min-width: 768px) {
+    .report-content .split-block {
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+    }
+  }
+  .report-content .split-block--reverse .split-image {
+    order: -1;
+  }
+  @media (min-width: 768px) {
+    .report-content .split-block--reverse .split-image {
+      order: 1;
+    }
+  }
+  .report-content .split-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+    border: 1px solid var(--color-line);
+    display: block;
+  }
+
+  /* ── REPORT IMAGE ───────────────────────────────────────── */
+  .report-content .report-image {
+    margin: 2rem 0;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+  }
+  .report-content .report-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+</style>
+
+<style>
+  /* ─────────────────────────────────────────────────────────────
+     PAGE LAYOUT — scoped to this page
+     ───────────────────────────────────────────────────────────── */
+
+  /* ── Reveal animation ──────────────────────────────────── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+      opacity 0.5s ease,
+      transform 0.5s ease;
+  }
+  .reveal.is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  /* ── Reading progress ──────────────────────────────────── */
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: var(--color-accent);
+    z-index: 1001;
+    transition: width 0.1s ease-out;
+  }
+
+  /* ── Background ────────────────────────────────────────── */
+  .bg-master {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .bg-layer {
+    position: absolute;
+    inset: 0;
+  }
+  .topo-layer {
+    background-image: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.035) 1px,
+      transparent 1px
+    );
+    background-size: 28px 28px;
+  }
+  .topo-layer-2 {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      transparent 0px,
+      transparent 18px,
+      rgba(255, 255, 255, 0.012) 18px,
+      rgba(255, 255, 255, 0.012) 19px
+    );
+  }
+
+  /* ── Expiry banner ─────────────────────────────────────── */
+  .expiry-banner {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.5rem;
+    background: rgba(251, 191, 36, 0.08);
+    border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    font-size: 0.875rem;
+    text-align: center;
+  }
+  .expiry-banner.bottom {
+    top: auto;
+    bottom: 0;
+    border-top: 1px solid rgba(251, 191, 36, 0.2);
+    border-bottom: none;
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+
+  /* ── Report wrapper ────────────────────────────────────── */
+  .report-wrapper {
+    position: relative;
+    z-index: 1;
+    padding-top: 6rem;
+    padding-bottom: 5rem;
+    min-height: 100vh;
+  }
+  @media (min-width: 640px) {
+    .report-wrapper {
+      padding-top: 8rem;
+      padding-bottom: 6rem;
+    }
+  }
+
+  .report-container {
+    position: relative;
+    z-index: 10;
+    max-width: 76rem;
+    margin: 0 auto;
+  }
+
+  /* ── Report header ─────────────────────────────────────── */
+  .report-header {
+    margin-bottom: 3rem;
+  }
+  @media (min-width: 768px) {
+    .report-header {
+      margin-bottom: 4rem;
+    }
+  }
+
+  /* ── Header nav row ────────────────────────────────────── */
+  .header-nav {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+    margin-bottom: 1.5rem;
+  }
+  .back-link {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .back-link:hover {
+    color: var(--color-secondary);
+  }
+  .logout-link {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s;
+    margin-left: auto;
+  }
+  .logout-link:hover {
+    color: #f87171;
+  }
+  .dot-separator {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-line);
+    flex-shrink: 0;
+  }
+  .category-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    background: rgba(var(--color-accent-rgb), 0.1);
+    border: 1px solid rgba(var(--color-accent-rgb), 0.25);
+    color: var(--color-accent);
+  }
+  .protected-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    color: var(--color-muted);
+  }
+
+  /* ── Title + image layout ──────────────────────────────── */
+  .titleImage {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  @media (min-width: 960px) {
+    .titleImage {
+      flex-direction: row;
+      align-items: center;
+      gap: 3rem;
+    }
+    .titleImage .report-title {
+      flex: 1;
+    }
+    .titleImage .imageheader {
+      flex: 1;
+    }
+  }
+  .report-title {
+    font-size: clamp(1.75rem, 5vw, 3.25rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--color-secondary);
+    margin: 0;
+  }
+  .imageheader {
+    position: relative;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    /* aspect-ratio: 16 / 9; */
+    width: 100%;
+  }
+  .imageheader img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    display: block;
+  }
+  .imageheader::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 35%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.4), transparent);
+    pointer-events: none;
+  }
+
+  /* ── Meta box ──────────────────────────────────────────── */
+  .report-meta-box {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    padding: 0;
+    border-radius: 1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    margin: 0;
+    overflow: hidden;
+  }
+  @media (max-width: 600px) {
+    .report-meta-box {
+      grid-template-columns: 1fr;
+    }
+  }
+  .meta-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem 1.25rem;
+    border-right: 1px solid var(--color-line);
+  }
+  .meta-col:last-of-type {
+    border-right: none;
+  }
+  @media (max-width: 600px) {
+    .meta-col {
+      border-right: none;
+      border-bottom: 1px solid var(--color-line);
+    }
+    .meta-col:last-of-type {
+      border-bottom: none;
+    }
+  }
+  .meta-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--color-muted);
+  }
+  .meta-value {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+    margin: 0;
+  }
+  .meta-divider {
+    display: none;
+  }
+  .analyst-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .analyst-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--color-line);
+  }
+  .analyst-name {
+    display: block;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-secondary);
+  }
+  .analyst-role {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+
+  /* ── Main layout: sidebar TOC + content ────────────────── */
+  .report-main-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-top: 3rem;
+    align-items: start;
+  }
+  @media (min-width: 1024px) {
+    .report-main-layout {
+      grid-template-columns: 14rem 1fr;
+      gap: 3.5rem;
+    }
+  }
+
+  /* ── TOC sidebar ───────────────────────────────────────── */
+  .toc-sidebar {
+    display: none;
+  }
+  @media (min-width: 1024px) {
+    .toc-sidebar {
+      display: block;
+      align-self: start;
+      position: sticky;
+      top: 6rem;
+      max-height: calc(100vh - 7rem);
+      overflow-y: auto;
+    }
+  }
+  .toc-sticky {
+    padding: 1.25rem;
+    border-radius: 0.875rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+  }
+  .toc-label {
+    display: block;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    margin-bottom: 0.875rem;
+  }
+</style>
+
+<style is:global>
+  /* TOC nav — must be global because the <ul> is created dynamically via JS */
+  .toc-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+  .toc-link {
+    display: block;
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+    text-decoration: none;
+    border-radius: 0.375rem;
+    line-height: 1.4;
+    transition:
+      color 0.15s,
+      background 0.15s;
+    border-left: 2px solid transparent;
+  }
+  .toc-link:hover {
+    color: var(--color-secondary);
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .toc-link.is-active {
+    color: var(--color-accent);
+    background: rgba(var(--color-accent-rgb), 0.08);
+    border-left-color: var(--color-accent);
+  }
+</style>
+
+<script>
+  function generateTOC() {
+    const content = document.querySelector('.report-content');
+    const toc = document.querySelector('#report-toc');
+    if (!content || !toc) return;
+
+    const headings = content.querySelectorAll('h2');
+    if (headings.length < 2) {
+      document.querySelector('.toc-sidebar')?.remove();
+      return;
+    }
+
+    const list = document.createElement('ul');
+    headings.forEach((heading, index) => {
+      const id = `section-${index}`;
+      heading.id = id;
+
+      const li = document.createElement('li');
+      const a = document.createElement('a');
+      a.href = `#${id}`;
+      a.textContent = heading.textContent;
+      a.className = 'toc-link';
+      li.appendChild(a);
+      list.appendChild(li);
+    });
+
+    if (toc.childElementCount > 0) return;
+    toc.appendChild(list);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((intersectionEntry) => {
+          const id = intersectionEntry.target.getAttribute('id');
+          const link = document.querySelector(`.toc-link[href="#${id}"]`);
+          if (intersectionEntry.isIntersecting) {
+            document
+              .querySelectorAll('.toc-link')
+              .forEach((l) => l.classList.remove('is-active'));
+            link?.classList.add('is-active');
+          }
+        });
+      },
+      {
+        rootMargin: '-100px 0px -70% 0px',
+        threshold: 0,
+      }
+    );
+
+    headings.forEach((h) => observer.observe(h));
+  }
+
+  // Defer para asegurar que el MDX está en el DOM antes de escanear h2s
+  requestAnimationFrame(() => generateTOC());
+  document.addEventListener('astro:page-load', () => {
+    const toc = document.querySelector('#report-toc');
+    if (toc && toc.childElementCount === 0)
+      requestAnimationFrame(() => generateTOC());
+  });
+
+  // Reveal animation — trigger .is-revealed when elements enter viewport
+  function initReveal() {
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            entry.target.classList.add('show');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: '0px 0px -60px 0px', threshold: 0.05 }
+    );
+    document
+      .querySelectorAll('.reveal')
+      .forEach((el) => revealObserver.observe(el));
+  }
+  requestAnimationFrame(() => initReveal());
+  document.addEventListener('astro:page-load', () => initReveal());
+
+  // Barra de progreso de lectura
+  window.addEventListener('scroll', () => {
+    const winScroll =
+      document.body.scrollTop || document.documentElement.scrollTop;
+    const height =
+      document.documentElement.scrollHeight -
+      document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    const bar = document.getElementById('reading-progress');
+    if (bar) bar.style.width = scrolled + '%';
+  });
+</script>

@@ -1,0 +1,410 @@
+---
+import type { ZutraCaseStudy } from '@/types/project-types';
+import LightboxGallery from '@/components/common/LightboxGallery.astro';
+
+interface Props {
+  project: ZutraCaseStudy;
+}
+
+const { project } = Astro.props;
+
+// 1. Preparamos TODAS las imágenes en un array plano para el Lightbox
+// Esto nos permite calcular índices globales fácilmente.
+const allImages = [
+  {
+    src: project.featuredImage.src.src,
+    alt: project.featuredImage.alt || project.title,
+  },
+  ...(project.gallery || []).map((img) => ({
+    src: img.src.src,
+    alt: img.alt || `Galería ${project.title}`,
+  })),
+];
+
+// ID único para conectar triggers con el componente Lightbox
+const galleryId = `gallery-${project.slug}`;
+
+// Lógica para la Grid Lateral
+const hasGallery = project.gallery && project.gallery.length > 0;
+const sideImages = hasGallery ? project.gallery.slice(0, 2) : [];
+const remainingImages = hasGallery ? project.gallery.length - 2 : 0;
+---
+
+<section class="case-hero">
+  <div class="container">
+    {/* Header del Caso */}
+    <div class="hero-header">
+      <div class="hero-labels">
+        <span class="label-badge primary">{project.industry}</span>
+        {
+          project.projectType && (
+            <span class="label-badge secondary">{project.projectType}</span>
+          )
+        }
+        <span class="label-year">{project.year}</span>
+      </div>
+      <h1 class="hero-title" transition:name={`title-${project.slug}`}>
+        {project.title}
+      </h1>
+    </div>
+
+    {/* Grid de Imágenes */}
+    <div class="hero-gallery-grid">
+      <div class="main-image-wrapper group">
+        <button
+          type="button"
+          class="image-trigger main-trigger"
+          data-lightbox-trigger={galleryId}
+          data-index="0"
+          aria-label="Ver imagen principal en pantalla completa"
+        >
+          <img
+            src={project.featuredImage.src.src}
+            alt={project.featuredImage.alt}
+            class="featured-image"
+            loading="eager"
+            decoding="async"
+          />
+
+          <div class="overlay-hint">
+            <i class="ph ph-arrows-out-simple"></i>
+          </div>
+        </button>
+
+        {/* Botón flotante "Ver Galería" (Crítico para UX Móvil) */}
+        <button
+          class="view-gallery-btn"
+          data-lightbox-trigger={galleryId}
+          data-index="0"
+        >
+          <i class="ph ph-images"></i>
+          <span>Ver Galería ({allImages.length})</span>
+        </button>
+      </div>
+
+      {
+        hasGallery && (
+          <div class="side-gallery">
+            {sideImages.map((img, index) => {
+              // El índice global es: 1 (porque 0 es la featured) + index del loop
+              const globalIndex = index + 1;
+              // Mostramos overlay solo en la segunda imagen (index 1 del loop) SI sobran fotos
+              const isLastVisible = index === 1;
+              const showCountOverlay = isLastVisible && remainingImages > 0;
+
+              return (
+                <div class="side-image-wrapper">
+                  <button
+                    type="button"
+                    class="image-trigger side-trigger"
+                    data-lightbox-trigger={galleryId}
+                    data-index={globalIndex}
+                    aria-label={`Ver imagen de galería ${globalIndex}`}
+                  >
+                    <img
+                      src={img.src.src}
+                      alt={img.alt || ''}
+                      class="side-image"
+                      loading="lazy"
+                      decoding="async"
+                    />
+
+                    {/* Overlay de "+N fotos" o Icono de Zoom */}
+                    {showCountOverlay ? (
+                      <div class="more-images-overlay">
+                        <span class="count">+{remainingImages + 1}</span>
+                        <span class="text">ver más</span>
+                      </div>
+                    ) : (
+                      <div class="overlay-hint">
+                        <i class="ph ph-plus" />
+                      </div>
+                    )}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+{/* Componente Lightbox (Cargado pero invisible hasta interactuar) */}
+<LightboxGallery images={allImages} id={galleryId} />
+
+<style>
+  /* --- Layout Base --- */
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .case-hero {
+    padding: 4rem 0 6rem;
+  }
+
+  .hero-header {
+    max-width: 900px;
+    margin-bottom: 3.5rem;
+  }
+
+  /* --- Badges & Typos --- */
+  .hero-labels {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .label-badge {
+    padding: 0.35rem 0.85rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .label-badge.primary {
+    background: color-mix(in srgb, var(--color-accent), transparent 85%);
+    color: var(--color-accent);
+    border: 1px solid color-mix(in srgb, var(--color-accent), transparent 90%);
+  }
+  .label-badge.secondary {
+    background: color-mix(in srgb, var(--color-accent), transparent 85%);
+    color: var(--color-accent);
+    border: 1px solid color-mix(in srgb, var(--color-accent), transparent 90%);
+  }
+
+  .label-year {
+    color: var(--color-text-muted);
+    font-weight: 700;
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--color-secondary);
+  }
+
+  /* --- Grid Layout Principal --- */
+  .hero-gallery-grid {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr; /* Proporción áurea aproximada */
+    gap: 1.25rem;
+    height: 600px; /* Altura fija para mantener alineación */
+  }
+
+  /* Reset de botones para que parezcan enlaces/imágenes */
+  .image-trigger {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: zoom-in; /* Cursor correcto para lightbox */
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  /* --- Imagen Principal --- */
+  .main-image-wrapper {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    height: 100%;
+    /* Sutil borde para definir límites en imágenes claras */
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
+
+  .featured-image {
+    width: 100%;
+    height: 100% !important;
+    object-fit: cover;
+    transition: transform 0.7s cubic-bezier(0.2, 1, 0.3, 1);
+  }
+
+  /* Efecto Hover Principal */
+  .main-image-wrapper:hover .featured-image {
+    transform: scale(1.03);
+  }
+
+  /* --- Galería Lateral --- */
+  .side-gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    height: 600px;
+  }
+
+  .side-image-wrapper {
+    flex: 1; /* Ocupan espacio equitativo */
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    height: 600px !important;
+  }
+
+  .side-image {
+    width: 100%;
+    height: 100% !important;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .side-image-wrapper:hover .side-image {
+    transform: scale(1.05);
+  }
+
+  /* --- Overlays & Hinting --- */
+
+  /* Hint sutil (ícono que aparece al hover) */
+  .overlay-hint {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    color: white;
+    font-size: 2rem;
+  }
+
+  .image-trigger:hover .overlay-hint {
+    opacity: 1;
+  }
+
+  /* Overlay de conteo (+N) */
+  .more-images-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    transition: background 0.3s;
+  }
+
+  .more-images-overlay:hover {
+    background: rgba(0, 0, 0, 0.5); /* Aclara un poco al hover */
+  }
+
+  .count {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .text {
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    opacity: 0.9;
+    margin-top: 0.25rem;
+  }
+
+  /* --- Botón "Ver Galería" Flotante --- */
+  .view-gallery-btn {
+    position: absolute;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.9);
+    color: #111;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 100px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+    z-index: 10;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+
+    /* Estado inicial Desktop: Oculto/Desplazado */
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  .main-image-wrapper:hover .view-gallery-btn {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .view-gallery-btn:hover {
+    background: white;
+    transform: scale(1.05);
+    color: var(--color-accent);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  /* --- RESPONSIVE --- */
+  @media (max-width: 1024px) {
+    .hero-gallery-grid {
+      grid-template-columns: 1fr; /* Columna única */
+      height: auto; /* Altura automática basada en contenido */
+    }
+
+    .main-image-wrapper {
+      aspect-ratio: 16 / 9;
+    }
+
+    .side-gallery {
+      flex-direction: row; /* Fila en tablets */
+      height: 300px !important;
+    }
+
+    .side-image-wrapper {
+      max-height: 300px !important;
+    }
+
+    /* En tablet seguimos queriendo el botón visible siempre o al hover?
+       Generalmente al hover está bien, pero en touch mejor visible */
+    .view-gallery-btn {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-title {
+      font-size: 2.5rem;
+    }
+
+    .main-image-wrapper {
+      aspect-ratio: 4 / 3; /* Más cuadrado en móvil para llenar pantalla */
+      border-radius: 16px;
+    }
+
+    /* Ocultamos la galería lateral en móvil para limpieza */
+    .side-gallery {
+      display: none;
+    }
+
+    /* Botón SIEMPRE visible en móvil */
+    .view-gallery-btn {
+      opacity: 1;
+      transform: translateY(0);
+      bottom: 1rem;
+      right: 1rem;
+      padding: 0.6rem 1rem;
+      font-size: 0.8rem;
+    }
+  }
+</style>

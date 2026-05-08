@@ -1,0 +1,186 @@
+---
+interface Props {
+  title?: string;
+  scores: Array<{ label: string; value: number }>;
+}
+
+const { title, scores } = Astro.props;
+
+const circumference = 163.36; // 2*π*26
+
+const getColor = (val: number) => {
+  if (val >= 90) return '#10b981';
+  if (val >= 50) return '#f59e0b';
+  return '#ef4444';
+};
+
+const getTitleIcon = (t: string) => {
+  const lower = (t || '').toLowerCase();
+  if (
+    lower.includes('celular') ||
+    lower.includes('móvil') ||
+    lower.includes('movil')
+  )
+    return 'ph-device-mobile';
+  if (lower.includes('escritorio') || lower.includes('desktop'))
+    return 'ph-desktop';
+  if (lower.includes('tablet')) return 'ph-device-tablet';
+  return 'ph-chart-bar';
+};
+
+const icon = getTitleIcon(title || '');
+---
+
+<div class="score-grid-wrapper reveal">
+  {
+    title && (
+      <div class="score-grid-header">
+        <i class={`ph-duotone ${icon} header-icon`} aria-hidden="true" />
+        <h4 class="score-grid-title">{title}</h4>
+      </div>
+    )
+  }
+  <div class="metrics-grid">
+    {
+      scores.map((s) => {
+        const val =
+          typeof s.value === 'number'
+            ? s.value
+            : parseInt(String(s.value)) || 0;
+        const color = getColor(val);
+        const dashoffset = (circumference * (1 - val / 100)).toFixed(1);
+        return (
+          <div class="metric-box">
+            <div class="gauge-container">
+              <svg class="gauge-svg" viewBox="0 0 60 60" aria-hidden="true">
+                <circle class="gauge-bg" cx="30" cy="30" r="26" />
+                <circle
+                  class="gauge-progress"
+                  cx="30"
+                  cy="30"
+                  r="26"
+                  stroke={color}
+                  stroke-dasharray={circumference}
+                  stroke-dashoffset={dashoffset}
+                />
+              </svg>
+              <span class="gauge-value" style={`color:${color}`}>
+                {val}
+              </span>
+            </div>
+            <div class="metric-label">{s.label}</div>
+          </div>
+        );
+      })
+    }
+  </div>
+</div>
+
+<style>
+  .score-grid-wrapper {
+    margin: 1.5rem 0;
+  }
+
+  .score-grid-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .header-icon {
+    font-size: 1.25rem;
+    color: var(--color-muted);
+  }
+
+  .score-grid-title {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 480px) {
+    .metrics-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+  }
+
+  .metric-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 0.75rem 1rem;
+    border-radius: 1rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    text-align: center;
+    transition: border-color 0.2s;
+  }
+
+  .metric-box:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .gauge-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+
+  @media (min-width: 480px) {
+    .gauge-container {
+      width: 88px;
+      height: 88px;
+    }
+  }
+
+  .gauge-svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .gauge-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.06);
+    stroke-width: 4;
+  }
+
+  .gauge-progress {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s ease-out;
+  }
+
+  .gauge-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.125rem;
+    font-weight: 900;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1;
+  }
+
+  .metric-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+    line-height: 1.3;
+  }
+</style>

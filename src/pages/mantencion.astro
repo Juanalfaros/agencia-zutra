@@ -1,0 +1,246 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Logo from '@/components/common/Logo.astro';
+import { socialMedia } from '@/data/socialmedia';
+
+const title = 'Estamos evolucionando | Zutra';
+const description =
+  'Nuestra plataforma está en mantenimiento. Regresaremos pronto con una experiencia renovada.';
+---
+
+<Layout title={title} description={description}>
+  <main class="maintenance-page">
+    <!-- Topographic Background -->
+    <div class="topo-bg"></div>
+
+    <div class="container container--narrow">
+      <div class="maintenance-content">
+        <header class="maintenance-logo">
+          <Logo class="zutra-logo" />
+        </header>
+
+        <div class="status-badge">
+          <span class="pulse"></span>
+          Sistema en mantenimiento
+        </div>
+
+        <h1 class="maintenance-title">
+          Construyendo <br />
+          <span class="text-accent">el futuro digital.</span>
+        </h1>
+
+        <p class="maintenance-text">
+          Estamos realizando mejoras profundas en nuestra infraestructura para
+          ofrecerte un rendimiento extremo. Regresaremos en breve.
+        </p>
+
+        <div class="social-links">
+          <p class="social-label">Síguenos para novedades:</p>
+          <div class="social-grid">
+            {
+              socialMedia.map((social) => (
+                <a
+                  href={social.url}
+                  aria-label={social.ariaLabel}
+                  class="social-item"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i class={social.icon} />
+                  <span>{social.name}</span>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+
+        <footer class="maintenance-footer">
+          <p>&copy; 2026 Zutra · Agencia de Growth & Diseño</p>
+        </footer>
+      </div>
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .maintenance-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 3rem 0;
+    background-color: var(--color-primary);
+  }
+
+  .topo-bg {
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 100 L100 0 M-10 10 L10 -10 M90 110 L110 90' stroke='white' stroke-width='0.5' fill='none' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .container--narrow {
+    max-width: 700px;
+    z-index: 10;
+  }
+
+  .maintenance-content {
+    text-align: center;
+    padding: clamp(2rem, 5vw, 4rem);
+    background: var(--color-surface-subtle);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-2xl);
+  }
+
+  .maintenance-logo {
+    margin-bottom: 3rem;
+  }
+
+  :global(.zutra-logo) {
+    height: 2.5rem !important;
+    width: auto !important;
+    color: var(--color-accent);
+    margin: 0 auto;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1.25rem;
+    background: color-mix(in srgb, var(--color-subtle), black 20%);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-full);
+    color: var(--color-muted);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2rem;
+  }
+
+  .pulse {
+    width: 10px;
+    height: 10px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    position: relative;
+  }
+
+  .pulse::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--color-accent);
+    border-radius: 50%;
+    animation: pulse-ring 1.5s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
+  }
+
+  @keyframes pulse-ring {
+    0% {
+      transform: scale(0.8);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(2.5);
+      opacity: 0;
+    }
+  }
+
+  .maintenance-title {
+    font-size: clamp(2rem, 8vw, 4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: var(--color-secondary);
+  }
+
+  .text-accent {
+    color: var(--color-accent);
+  }
+
+  .maintenance-text {
+    font-size: 1.125rem;
+    color: var(--color-muted);
+    line-height: 1.6;
+    margin-bottom: 3rem;
+    max-width: 45ch;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .social-links {
+    border-top: 1px solid var(--color-line);
+    padding-top: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .social-label {
+    color: var(--color-muted);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+
+  .social-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .social-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem;
+    background: var(--color-subtle);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: var(--color-muted);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .social-item i {
+    font-size: 2rem;
+    color: var(--color-accent);
+  }
+
+  .social-item span {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .social-item:hover {
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    border-color: var(--color-accent);
+    transform: translateY(-5px);
+  }
+
+  .social-item:hover i {
+    color: var(--color-on-accent);
+  }
+
+  .maintenance-footer p {
+    color: color-mix(in srgb, var(--color-muted), transparent 40%);
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+
+  @media (max-width: 640px) {
+    .social-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .maintenance-content {
+      padding: 2rem;
+    }
+  }
+</style>

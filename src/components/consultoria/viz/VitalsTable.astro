@@ -1,0 +1,174 @@
+---
+interface VitalRow {
+  metric: string;
+  value: string;
+  threshold: string;
+  status: 'good' | 'needs-improvement' | 'poor' | 'critical';
+}
+
+interface Props {
+  title?: string;
+  rows: VitalRow[];
+}
+
+const { title, rows } = Astro.props;
+
+const statusLabel: Record<string, string> = {
+  good: 'Bien',
+  'needs-improvement': 'Mejorar',
+  poor: 'Crítico',
+  critical: 'Crítico',
+};
+---
+
+<div class="vitals-table-wrapper reveal">
+  <div class="vitals-header">
+    <h4 class="vitals-title">{title || 'Core Web Vitals'}</h4>
+  </div>
+  <div class="table-scroll">
+    <table class="vitals-table">
+      <thead>
+        <tr>
+          <th>Métrica</th>
+          <th>Valor</th>
+          <th>Umbral</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((row) => (
+            <tr>
+              <td class="metric-name">{row.metric}</td>
+              <td>
+                <strong>{row.value}</strong>
+              </td>
+              <td>{row.threshold}</td>
+              <td>
+                <span class={`vital-badge status-${row.status}`}>
+                  {statusLabel[row.status] || row.status}
+                </span>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .vitals-table-wrapper {
+    margin: 2rem 0;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+  }
+
+  .vitals-header {
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-surface-subtle);
+  }
+
+  .vitals-title {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .vitals-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    min-width: 420px;
+  }
+
+  .vitals-table th:nth-child(1) {
+    width: 38%;
+  }
+  .vitals-table th:nth-child(2) {
+    width: 18%;
+  }
+  .vitals-table th:nth-child(3) {
+    width: 22%;
+  }
+  .vitals-table th:nth-child(4) {
+    width: 22%;
+  }
+
+  .vitals-table th {
+    padding: 0.625rem 0.75rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    background: var(--color-primary);
+    border-bottom: 1px solid var(--color-line);
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  .vitals-table td {
+    padding: 0.75rem 0.75rem;
+    border-bottom: 1px solid var(--color-line);
+    vertical-align: middle;
+    font-size: 0.9rem;
+  }
+
+  .vitals-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .vitals-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .metric-name {
+    font-weight: 600;
+    color: var(--color-secondary);
+  }
+
+  .vital-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.7rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+
+  .status-good {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+    border-color: rgba(74, 222, 128, 0.25);
+  }
+  .status-warning {
+    color: #facc15;
+    background: rgba(250, 204, 21, 0.1);
+    border-color: rgba(250, 204, 21, 0.25);
+  }
+  .status-critical,
+  .status-poor {
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.1);
+    border-color: rgba(248, 113, 113, 0.25);
+  }
+  .status-needs-improvement {
+    color: #fb923c;
+    background: rgba(251, 146, 60, 0.1);
+    border-color: rgba(251, 146, 60, 0.25);
+  }
+</style>

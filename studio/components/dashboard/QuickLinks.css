@@ -1,0 +1,51 @@
+.quick-links-heading {
+  color: var(--card-muted-fg-color);
+}
+
+.quick-link-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left;
+}
+
+.quick-link-btn:hover {
+  background: var(--card-bg-color);
+}
+
+.quick-link-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.quick-link-label {
+  flex: 1;
+  color: var(--card-muted-fg-color);
+  transition: color 0.15s ease;
+}
+
+.quick-link-btn:hover .quick-link-label {
+  color: var(--card-fg-color);
+}
+
+.quick-link-arrow {
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.quick-link-btn:hover .quick-link-arrow {
+  opacity: 1;
+}

@@ -1,0 +1,33 @@
+---
+// src/pages/preview/blog/[slug].astro
+import BlogPage from '@/pages/blog/[slug].astro';
+import { getSanityClient, groq } from '@/lib/sanity';
+import { adaptBlogPost } from '@/lib/sanity-adapters';
+import { POST_FIELDS } from '@/lib/sanity-queries';
+import type { Post } from '@/types/blog-types';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+const client = await getSanityClient(true);
+const doc = await client.fetch(
+  groq`*[_type == "post" && slug.current == $slug][0] { ${POST_FIELDS} }`,
+  { slug }
+);
+
+if (!doc) {
+  return new Response(`Post not found in preview mode (Slug: ${slug})`, {
+    status: 404,
+  });
+}
+
+const post = adaptBlogPost(doc) as Post;
+
+const allDocs = await client.fetch(
+  groq`*[_type == "post"] | order(_createdAt desc) { ${POST_FIELDS} }`
+);
+const allPosts = allDocs.map(adaptBlogPost) as Post[];
+---
+
+<BlogPage post={post} allPosts={allPosts} />

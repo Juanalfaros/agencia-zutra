@@ -1,0 +1,119 @@
+---
+export const prerender = true;
+import Layout from '@/layouts/Layout.astro';
+import BreadcrumbSchema from '@/components/common/BreadcrumbSchema.astro';
+import CaseHero from '@/components/portfolio/CaseHero.astro';
+import CaseChallenge from '@/components/portfolio/CaseChallenge.astro';
+import CaseExecution from '@/components/portfolio/CaseExecution.astro';
+import CaseFeatures from '@/components/portfolio/CaseFeatures.astro';
+import NextProjectNav from '@/components/portfolio/NextProjectNav.astro';
+import { getSanityClient, groq } from '@/lib/sanity';
+import { CASE_STUDY_FIELDS } from '@/lib/sanity-queries';
+import { adaptCaseStudy } from '@/lib/sanity-adapters';
+import type { ZutraCaseStudy } from '@/types/project-types';
+
+export async function getStaticPaths() {
+  try {
+    const client = await getSanityClient();
+    const docs = await client.fetch(
+      groq`*[_type == "caseStudy"] | order(order asc) { ${CASE_STUDY_FIELDS} }`
+    );
+    const portfolioCases = docs.map(adaptCaseStudy) as ZutraCaseStudy[];
+
+    return portfolioCases.map((project: ZutraCaseStudy) => ({
+      params: { slug: project.slug },
+      props: { project, allProjects: portfolioCases },
+    }));
+  } catch (error) {
+    console.error('Error fetching portfolio for static paths:', error);
+    return [];
+  }
+}
+
+const isPreview = Astro.url.searchParams.get('preview') === 'true';
+let { project, allProjects } = Astro.props;
+const { slug } = Astro.params;
+
+const client = await getSanityClient(isPreview);
+
+if (!project && slug) {
+  const doc = await client.fetch(
+    groq`*[_type == "caseStudy" && slug.current == $slug][0] { ${CASE_STUDY_FIELDS} }`,
+    { slug }
+  );
+  if (doc) project = adaptCaseStudy(doc);
+
+  const allDocs = await client.fetch(
+    groq`*[_type == "caseStudy"] | order(order asc) { ${CASE_STUDY_FIELDS} }`
+  );
+  allProjects = allDocs.map(adaptCaseStudy);
+}
+
+// Redirect if project not found
+if (!project) {
+  return Astro.redirect('/404');
+}
+
+// Find next project for navigation
+const currentIndex = allProjects.findIndex((c) => c.id === project.id);
+const nextProject = allProjects[(currentIndex + 1) % allProjects.length];
+const prevProject =
+  allProjects[(currentIndex - 1 + allProjects.length) % allProjects.length];
+
+// Prepare tracking data
+const trackingData = {
+  item_id: project.slug,
+  item_name: project.title,
+  item_category: project.industry,
+  item_brand: 'Zutra Portfolio',
+};
+---
+
+<Layout
+  title={`${project.title} | Proyecto Zutra`}
+  description={project.description}
+  image={project.featuredImage.src.src}
+>
+  <BreadcrumbSchema
+    items={[
+      { name: 'Inicio', item: Astro.site?.toString() || '/' },
+      { name: 'Portfolio', item: new URL('/portfolio', Astro.url).toString() },
+      { name: project.title, item: Astro.url.toString() },
+    ]}
+  />
+  <script define:vars={{ trackingData }}>
+    // Trigger view_item event for GA4
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: 'view_item',
+      items: [trackingData],
+    });
+  </script>
+  <main class="case-study">
+    <CaseHero project={project} />
+    <hr class="divider" />
+
+    <CaseChallenge project={project} />
+    <hr class="divider" />
+
+    <CaseExecution project={project} />
+    <hr class="divider" />
+
+    <CaseFeatures project={project} />
+
+    <NextProjectNav nextProject={nextProject} prevProject={prevProject} />
+  </main>
+</Layout>
+
+<style>
+  .case-study {
+    padding-top: 5rem;
+  }
+  .divider {
+    width: 100%;
+    border: 0;
+    height: 1px;
+    background-color: var(--color-line);
+    margin: 0;
+  }
+</style>

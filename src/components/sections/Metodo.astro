@@ -1,0 +1,147 @@
+---
+import { methodSteps } from '@/data/metodo';
+---
+
+<section id="metodo" class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Menos reuniones, más ejecución.</h2>
+      <p class="section-subtitle">
+        Eliminamos la grasa de la agencia tradicional. <strong
+          >Somos tu equipo extendido.</strong
+        >
+      </p>
+    </div>
+
+    <div class="method-grid">
+      {
+        methodSteps.map((step) => (
+          <article class="method-card">
+            <div class="card__header-icon">
+              <i class={step.icon} />
+              <h3 class="card__title">{step.title}</h3>
+            </div>
+            <p class="card__text">{step.text}</p>
+          </article>
+        ))
+      }
+    </div>
+
+    <div class="guarantee-box">
+      <p class="guarantee-box__text">
+        <i
+          class="ph-duotone ph-handshake"
+          style="color: var(--color-accent); font-size: 1.5rem; vertical-align: middle; margin-right: 0.5rem;"
+        ></i>
+        <strong>Compromiso Zutra:</strong> No te venderemos algo que no necesitas.
+        Si tu negocio requiere una solución simple, te ofreceremos la solución simple.
+        <br />La honestidad técnica es innegociable.
+      </p>
+      <a
+        href="#contacto"
+        data-track="cta_garantia_click"
+        data-loc="metodo"
+        class="button button--primary">Conversar con los fundadores</a
+      >
+    </div>
+  </div>
+</section>
+
+<style>
+  .method-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .method-card {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    padding: 2rem 1.5rem; /* Un poco más de aire vertical */
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+    background-color: var(--color-surface, transparent);
+  }
+
+  .method-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
+  .card__header-icon {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .card__header-icon i {
+    font-size: 2rem; /* Icono un poco más grande */
+    color: var(--color-accent);
+  }
+
+  .card__title {
+    font-size: 1.25rem;
+    font-weight: 800; /* Más peso para destacar */
+    margin: 0;
+    color: var(--color-heading, #fff);
+  }
+
+  .card__text {
+    font-size: 0.95rem;
+    color: var(--color-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .guarantee-box {
+    margin-top: 4rem;
+    background-color: var(--color-subtle);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Detalle visual sutil en el top */
+  .guarantee-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30%;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-accent),
+      transparent
+    );
+  }
+
+  .guarantee-box__text {
+    font-size: 1.1rem;
+    margin: 0 0 2rem 0;
+    line-height: 1.6;
+    color: var(--color-secondary);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .guarantee-box__text strong {
+    color: var(--color-accent);
+    font-weight: 700;
+  }
+
+  @media (min-width: 768px) {
+    .method-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

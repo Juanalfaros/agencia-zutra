@@ -1,0 +1,28 @@
+---
+// src/pages/preview/servicios/[slug].astro
+import ServicePage from '@/pages/servicios/[slug].astro';
+import { getSanityClient, groq } from '@/lib/sanity';
+import { adaptService } from '@/lib/sanity-adapters';
+import { SERVICE_FIELDS } from '@/lib/sanity-queries';
+import type { Service } from '@/types/service-types';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+const client = await getSanityClient(true);
+const doc = await client.fetch(
+  groq`*[_type == "service" && slug.current == $slug][0] { ${SERVICE_FIELDS} }`,
+  { slug }
+);
+
+if (!doc) {
+  return new Response(`Service not found in preview mode (Slug: ${slug})`, {
+    status: 404,
+  });
+}
+
+const service = adaptService(doc) as Service;
+---
+
+<ServicePage service={service} />

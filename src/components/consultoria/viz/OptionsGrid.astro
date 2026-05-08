@@ -1,0 +1,53 @@
+---
+import OptionCard from './OptionCard.astro';
+
+interface Option {
+  variant?: string;
+  icon?: string;
+  title: string;
+  description?: any;
+  recommended?: boolean;
+  pros?: string[];
+  cons?: string[];
+  price?: string;
+  ctaText?: string;
+  ctaLink?: string;
+}
+
+interface Props {
+  title?: string;
+  options: Option[];
+}
+
+const { title, options } = Astro.props;
+---
+
+<div class="reveal" style="margin:2rem 0">
+  {title && <h3 class="options-section-title">{title}</h3>}
+  <div class="options-grid">
+    {options.filter((opt) => opt.title).map((opt) => <OptionCard {...opt} />)}
+  </div>
+</div>
+
+<style>
+  .options-section-title {
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
+    font-weight: 800;
+    margin-bottom: 1.25rem;
+    color: var(--color-secondary);
+  }
+
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  @media (min-width: 560px) {
+    .options-grid {
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      align-items: stretch;
+      gap: 2rem;
+    }
+  }
+</style>

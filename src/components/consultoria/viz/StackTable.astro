@@ -1,0 +1,190 @@
+---
+interface StackRow {
+  component: string;
+  installed: string;
+  current: string;
+  gap: string;
+  status: 'good' | 'warning' | 'critical';
+}
+
+interface Props {
+  title?: string;
+  rows: StackRow[];
+}
+
+const { title, rows } = Astro.props;
+
+const statusLabel: Record<string, string> = {
+  good: 'OK',
+  warning: 'Advertencia',
+  critical: 'Crítico',
+};
+---
+
+<div class="stack-table-wrapper reveal">
+  {
+    title && (
+      <div class="vitals-header">
+        <h4 class="vitals-title">{title}</h4>
+      </div>
+    )
+  }
+  <div class="table-scroll">
+    <table class="stack-table">
+      <thead>
+        <tr>
+          <th>Componente</th>
+          <th>Instalado</th>
+          <th>Actual</th>
+          <th>Beneficio</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rows.map((row) => (
+            <tr>
+              <td class="component-col">{row.component}</td>
+              <td>
+                <span class="mono-text">{row.installed}</span>
+              </td>
+              <td>
+                <span class="mono-text">{row.current}</span>
+              </td>
+              <td>{row.gap}</td>
+              <td>
+                <span class={`vital-badge status-${row.status}`}>
+                  {statusLabel[row.status] || row.status}
+                </span>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .stack-table-wrapper {
+    margin: 2rem 0;
+    border-radius: 1rem;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+  }
+
+  .vitals-header {
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid var(--color-line);
+    background: var(--color-surface-subtle);
+  }
+
+  .vitals-title {
+    margin: 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .stack-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    min-width: 540px;
+  }
+
+  .stack-table th:nth-child(1) {
+    width: 26%;
+  }
+  .stack-table th:nth-child(2) {
+    width: 16%;
+  }
+  .stack-table th:nth-child(3) {
+    width: 16%;
+  }
+  .stack-table th:nth-child(4) {
+    width: 28%;
+  }
+  .stack-table th:nth-child(5) {
+    width: 14%;
+  }
+
+  .stack-table th {
+    padding: 0.625rem 1rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--color-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    background: var(--color-primary);
+    border-bottom: 1px solid var(--color-line);
+    white-space: nowrap;
+    text-align: left;
+  }
+
+  .stack-table td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--color-line);
+    vertical-align: middle;
+    font-size: 0.9rem;
+  }
+
+  .stack-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .stack-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .component-col {
+    font-weight: 700;
+    color: var(--color-secondary);
+  }
+
+  .mono-text {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8125rem;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--color-line);
+    border-radius: 0.3rem;
+    padding: 0.1rem 0.45rem;
+    color: var(--color-gray-300);
+  }
+
+  .vital-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.7rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid;
+    white-space: nowrap;
+  }
+
+  .status-good {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+    border-color: rgba(74, 222, 128, 0.25);
+  }
+  .status-warning {
+    color: #facc15;
+    background: rgba(250, 204, 21, 0.1);
+    border-color: rgba(250, 204, 21, 0.25);
+  }
+  .status-critical {
+    color: #f87171;
+    background: rgba(248, 113, 113, 0.1);
+    border-color: rgba(248, 113, 113, 0.25);
+  }
+</style>

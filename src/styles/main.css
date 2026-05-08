@@ -1,0 +1,12 @@
+/* src/styles/main.css */
+
+/* 1. Base y utilidades globales */
+@import './global.css';
+
+/* 2. Estilos de componentes reutilizables (globales) */
+@import './components/buttons.css';
+@import './components/toasts.css';
+@import './components/background-topo.css';
+
+/* 3. Media Queries globales (si quedan algunas) */
+@import './responsive.css';

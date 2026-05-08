@@ -1,0 +1,34 @@
+---
+// src/pages/preview/portfolio/[slug].astro
+import PortfolioPage from '@/pages/portfolio/[slug].astro';
+import { getSanityClient, groq } from '@/lib/sanity';
+import { adaptCaseStudy } from '@/lib/sanity-adapters';
+import { CASE_STUDY_FIELDS } from '@/lib/sanity-queries';
+import type { ZutraCaseStudy } from '@/types/project-types';
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+
+const client = await getSanityClient(true);
+const doc = await client.fetch(
+  groq`*[_type == "caseStudy" && slug.current == $slug][0] { ${CASE_STUDY_FIELDS} }`,
+  { slug }
+);
+
+if (!doc) {
+  return new Response(
+    `Portfolio case not found in preview mode (Slug: ${slug})`,
+    { status: 404 }
+  );
+}
+
+const project = adaptCaseStudy(doc);
+
+const allDocs = await client.fetch(
+  groq`*[_type == "caseStudy"] | order(order asc) { ${CASE_STUDY_FIELDS} }`
+);
+const allProjects = allDocs.map(adaptCaseStudy) as ZutraCaseStudy[];
+---
+
+<PortfolioPage project={project} allProjects={allProjects} />

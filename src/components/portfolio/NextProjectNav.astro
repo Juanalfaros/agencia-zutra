@@ -1,0 +1,145 @@
+---
+import type { ZutraCaseStudy } from '@/types/project-types';
+
+interface Props {
+  nextProject?: ZutraCaseStudy;
+  prevProject?: ZutraCaseStudy;
+}
+
+const { nextProject, prevProject } = Astro.props;
+---
+
+<section class="project-navigation">
+  <div class="container">
+    <!-- Previous Project (Left) -->
+    <div class="nav-item prev">
+      {
+        prevProject ? (
+          <a href={`/portfolio/${prevProject.slug}`} class="nav-link">
+            <span class="nav-label">Previous Project</span>
+            <h3 class="nav-title">
+              <i class="ph ph-arrow-left" />
+              {prevProject.title}
+            </h3>
+          </a>
+        ) : (
+          <div class="placeholder" />
+        )
+      }
+    </div>
+
+    <!-- Next Project (Right) -->
+    <div class="nav-item next">
+      {
+        nextProject ? (
+          <a
+            href={`/portfolio/${nextProject.slug}`}
+            class="nav-link align-right"
+          >
+            <span class="nav-label">Next Project</span>
+            <h3 class="nav-title">
+              {nextProject.title}
+              <i class="ph ph-arrow-right" />
+            </h3>
+          </a>
+        ) : (
+          <div class="placeholder" />
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .project-navigation {
+    padding: 6rem 0;
+    background-color: color-mix(in srgb, var(--color-subtle), transparent 30%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4rem;
+  }
+
+  .nav-item {
+    flex: 1;
+  }
+
+  .nav-link {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    text-decoration: none;
+    group: hover;
+  }
+
+  .nav-link.align-right {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .nav-label {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+  }
+
+  .nav-title {
+    font-family: var(--font-sans);
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    font-weight: 700;
+    color: var(--color-secondary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: color 0.3s ease;
+  }
+
+  .arrow-icon {
+    font-size: 0.8em;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+  }
+
+  .nav-link.align-right .arrow-icon {
+    transform: translateX(10px);
+  }
+
+  /* Hover Effects */
+  .nav-link:hover .nav-title {
+    color: var(--color-accent);
+  }
+
+  .nav-link:hover .arrow-icon {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      flex-direction: column;
+      gap: 4rem;
+    }
+
+    .nav-link.align-right {
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+</style>

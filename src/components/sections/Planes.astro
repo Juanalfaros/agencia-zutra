@@ -1,0 +1,576 @@
+---
+import { getSanityClient, groq } from '@/lib/sanity';
+
+interface ComparisonRow {
+  label: string;
+  value: string;
+}
+
+interface Plan {
+  title: string;
+  planId: string;
+  meta: string;
+  price: string;
+  priceMeta: string;
+  features: string[];
+  ctaText: string;
+  recommended: boolean;
+  badgeLabel?: string;
+  stockAlert?: string;
+  comparisonSubtitle?: string;
+  comparisonRows: ComparisonRow[];
+  contactService?: string;
+  contactMessage?: string;
+}
+
+const client = await getSanityClient();
+
+const plans = (await client.fetch(groq`
+  *[_type == "plan"] | order(order asc) {
+    title,
+    "planId": planId.current,
+    meta,
+    price,
+    priceMeta,
+    features,
+    ctaText,
+    recommended,
+    badgeLabel,
+    stockAlert,
+    comparisonSubtitle,
+    comparisonRows[] { label, value },
+    contactService,
+    contactMessage,
+  }
+`)) as Plan[];
+
+// Construir filas de la tabla a partir de los datos de cada plan
+const rowLabels: string[] = [];
+for (const plan of plans) {
+  for (const row of plan.comparisonRows ?? []) {
+    if (!rowLabels.includes(row.label)) rowLabels.push(row.label);
+  }
+}
+const tableRows = rowLabels.map((label) => ({
+  label,
+  values: plans.map(
+    (plan) => plan.comparisonRows?.find((r) => r.label === label)?.value ?? '—'
+  ),
+}));
+---
+
+<section id="planes" class="section planes-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="badge-pill">Modelos de Trabajo</span>
+      <h2 class="section-title">Elige cómo empezamos</h2>
+      <p class="section-subtitle">
+        Sprints tácticos para inyectar caja o acompañamiento estratégico para
+        escalar.
+        <strong>Sin contratos forzosos, solo resultados.</strong>
+      </p>
+    </div>
+
+    <div class="plans-grid">
+      {
+        plans.map((plan) => (
+          <div
+            class={`plan-card ${plan.recommended ? 'plan-card--recommended' : ''}`}
+          >
+            {plan.recommended && (
+              <div class="recommended-badge">
+                <i class="ph-fill ph-star" /> {plan.badgeLabel}
+              </div>
+            )}
+
+            <div class="plan-card__content">
+              <div class="plan-card__header">
+                <h3 class="plan-card__title">{plan.title}</h3>
+                <p class="plan-card__meta">{plan.meta}</p>
+
+                <div class="price-container">
+                  <p class="plan-card__price">{plan.price}</p>
+                  <span class="price__meta">{plan.priceMeta}</span>
+                </div>
+              </div>
+
+              <hr class="card-divider" />
+
+              <ul class="plan-card__list">
+                {plan.features.map((feature) => (
+                  <li class="card__list-item">
+                    <i class="ph-bold ph-check-circle icon-check" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div class="plan-card__footer">
+              <a
+                href="#contacto"
+                data-track="plan_click"
+                data-plan={plan.planId}
+                data-service={plan.contactService}
+                data-message={plan.contactMessage}
+                aria-label={`Seleccionar el plan ${plan.title}: ${plan.ctaText}`}
+                class={`plan-card__cta button ${plan.recommended ? 'button--primary' : 'button--ghost'}`}
+              >
+                {plan.ctaText}
+              </a>
+              {plan.stockAlert && (
+                <p class="stock-alert">
+                  <span class="dot-pulse" /> {plan.stockAlert}
+                </p>
+              )}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="comparison-wrapper animate-fade-up delay-2">
+      <h3 class="comparison-title">Comparativa de Enfoque</h3>
+
+      <div class="table-container">
+        <table class="plans-table">
+          <thead>
+            <tr>
+              <th class="feature-col">Característica</th>
+              {
+                plans.map((plan) => (
+                  <th class={plan.recommended ? 'highlight-col' : ''}>
+                    {plan.title}
+                    {plan.comparisonSubtitle && (
+                      <span class="th-subtitle">{plan.comparisonSubtitle}</span>
+                    )}
+                  </th>
+                ))
+              }
+            </tr>
+          </thead>
+          <tbody>
+            {
+              tableRows.map((row) => (
+                <tr>
+                  <td class="feature-name" data-label="Característica">
+                    {row.label}
+                  </td>
+                  {row.values.map((val, i) => (
+                    <td
+                      class={plans[i]?.recommended ? 'highlight-col' : ''}
+                      data-label={plans[i]?.title}
+                    >
+                      <span
+                        class={`cell-content${plans[i]?.recommended ? ' font-bold text-accent' : ''}`}
+                      >
+                        {val}
+                      </span>
+                    </td>
+                  ))}
+                </tr>
+              ))
+            }
+            <tr class="table-cta-row">
+              <td class="feature-name"></td>
+              {
+                plans.map((plan) => (
+                  <td class={plan.recommended ? 'highlight-col' : ''}>
+                    <a
+                      href="#contacto"
+                      data-plan={plan.planId}
+                      data-service={plan.contactService}
+                      data-message={plan.contactMessage}
+                      aria-label={`Seleccionar plan ${plan.title}`}
+                      class={`button button--small ${plan.recommended ? 'button--primary' : 'button--ghost'}`}
+                    >
+                      {plan.ctaText}
+                    </a>
+                  </td>
+                ))
+              }
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* --- VARIABLES & LAYOUT --- */
+  .planes-section {
+    padding: 6rem 0;
+    position: relative;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .badge-pill {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-accent);
+    border: 1px solid rgba(var(--color-accent-rgb), 0.3);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-subtitle {
+    font-size: 1.1rem;
+    color: var(--color-muted);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* --- CARDS GRID --- */
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 4rem;
+    align-items: start;
+  }
+
+  /* --- CARD DESIGN --- */
+  .plan-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 1.5rem;
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    position: relative;
+    transition:
+      transform 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  .plan-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--color-accent);
+  }
+
+  /* Recommended Card Styling */
+  .plan-card--recommended {
+    border: 0.3px solid var(--color-accent);
+    background: linear-gradient(
+      to bottom,
+      rgba(var(--color-accent-rgb), 0.03),
+      var(--color-surface)
+    );
+    transform: scale(1.02);
+    z-index: 2;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+  }
+
+  @media (min-width: 1024px) {
+    .plan-card--recommended {
+      transform: scale(1.05); /* Make it pop more on desktop */
+    }
+    .plan-card--recommended:hover {
+      transform: scale(1.05) translateY(-8px);
+    }
+  }
+
+  .recommended-badge {
+    position: absolute;
+    top: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--color-accent);
+    color: var(--color-on-accent);
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    box-shadow: 0 4px 12px rgba(var(--color-accent-rgb), 0.4);
+  }
+
+  /* Header */
+  .plan-card__header {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .plan-card__title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-secondary);
+    margin-bottom: 0.5rem;
+  }
+
+  .plan-card__meta {
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    font-weight: 500;
+  }
+
+  .price-container {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .plan-card__price {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--color-secondary);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .price__meta {
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    margin-top: 0.25rem;
+  }
+
+  .card-divider {
+    border: 0;
+    height: 1px;
+    background: var(--color-line);
+    margin: 0 0 2rem 0;
+    width: 100%;
+  }
+
+  /* List */
+  .plan-card__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex-grow: 1;
+    margin-bottom: 2.5rem;
+  }
+
+  .card__list-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    color: var(--color-gray-300);
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+
+  .icon-check {
+    color: var(--color-accent);
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  /* Footer & CTA */
+  .plan-card__footer {
+    text-align: center;
+  }
+
+  .plan-card__cta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .button--ghost {
+    background: transparent;
+    border: 1px solid var(--color-line);
+    color: var(--color-secondary);
+  }
+  .button--ghost:hover {
+    border-color: var(--color-secondary);
+  }
+
+  .stock-alert {
+    font-size: 0.75rem;
+    color: var(--color-accent);
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+  }
+
+  .dot-pulse {
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(var(--color-accent-rgb), 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 6px rgba(var(--color-accent-rgb), 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(var(--color-accent-rgb), 0);
+    }
+  }
+
+  /* --- COMPARISON TABLE --- */
+  .comparison-wrapper {
+    margin-top: 6rem;
+  }
+
+  .comparison-title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    color: var(--color-secondary);
+  }
+
+  .table-container {
+    overflow-x: auto;
+    background-color: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--color-line);
+    border-radius: 1rem;
+  }
+
+  .plans-table {
+    width: 100%;
+    min-width: 800px; /* Force scroll on small screens */
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  .plans-table th,
+  .plans-table td {
+    padding: 1.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .plans-table td.feature-name {
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-secondary);
+    width: 25%;
+  }
+
+  .plans-table th {
+    font-weight: 800;
+    color: var(--color-secondary);
+    font-size: 1.1rem;
+    vertical-align: bottom;
+  }
+
+  .th-subtitle {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+  }
+
+  .highlight-col {
+    background-color: rgba(var(--color-accent-rgb), 0.03);
+  }
+
+  .plans-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .table-cta-row td {
+    padding: 2rem 1rem !important;
+  }
+
+  .button--small {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+  }
+
+  .text-accent {
+    color: var(--color-accent);
+  }
+  .font-bold {
+    font-weight: 700;
+  }
+
+  /* --- MOBILE RESPONSIVE TABLE --- */
+  @media (max-width: 768px) {
+    .plans-table thead {
+      display: none;
+    }
+
+    .plans-table,
+    .plans-table tbody,
+    .plans-table tr,
+    .plans-table td {
+      display: block;
+      width: 100%;
+      min-width: auto;
+    }
+
+    .table-container {
+      border: none;
+      background: transparent;
+    }
+
+    .plans-table tr {
+      margin-bottom: 2rem;
+      border: 1px solid var(--color-line);
+      border-radius: 1rem;
+      background: var(--color-surface);
+      overflow: hidden;
+    }
+
+    .plans-table td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      text-align: right;
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    .plans-table td.feature-name {
+      background-color: var(--color-subtle);
+      width: 100%;
+      text-align: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--color-accent);
+    }
+
+    .plans-table td.feature-name::before {
+      content: none;
+    }
+
+    .plans-table td::before {
+      content: attr(data-label);
+      font-weight: 600;
+      color: var(--color-muted);
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    .highlight-col {
+      background: transparent;
+    }
+
+    .table-cta-row {
+      display: none !important;
+    }
+  }
+</style>

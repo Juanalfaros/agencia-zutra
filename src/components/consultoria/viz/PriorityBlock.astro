@@ -1,0 +1,121 @@
+---
+interface Props {
+  level: 'urgent' | 'short' | 'medium';
+  title: string;
+  items: string[];
+}
+
+const { level, title, items } = Astro.props;
+
+const icons: Record<string, string> = {
+  urgent: 'ph-warning-circle',
+  short: 'ph-clock',
+  medium: 'ph-calendar-check',
+};
+
+const icon = icons[level] || 'ph-list-bullets';
+---
+
+<div class={`priority-block priority-${level} reveal`}>
+  <div class="priority-header">
+    <i
+      class={`ph ${icon} priority-icon`}
+      aria-hidden="true"
+      style="font-size:1.25rem"></i>
+    <h4 class="priority-title">{title}</h4>
+  </div>
+  <ul class="priority-list">
+    {
+      items.map((item) => (
+        <li>
+          <i class="ph ph-check check-icon priority-icon" aria-hidden="true" />
+          {item}
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .priority-block {
+    margin: 1.5rem 0;
+    border-radius: 0.875rem;
+    border: 1px solid var(--color-line);
+    border-left-width: 4px;
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .priority-header {
+    padding: 0.875rem 1.25rem;
+    border-bottom: 1px solid var(--color-line);
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+  }
+
+  .priority-title {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .priority-list {
+    padding: 1rem 1.25rem;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .priority-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    color: var(--color-gray-300);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .priority-icon,
+  .check-icon {
+    flex-shrink: 0;
+  }
+
+  .priority-urgent {
+    border-left-color: #f87171;
+  }
+  .priority-urgent .priority-header {
+    background: rgba(239, 68, 68, 0.05);
+  }
+  .priority-urgent .priority-icon,
+  .priority-urgent .check-icon {
+    color: #f87171;
+  }
+
+  .priority-short {
+    border-left-color: #facc15;
+  }
+  .priority-short .priority-header {
+    background: rgba(234, 179, 8, 0.05);
+  }
+  .priority-short .priority-icon,
+  .priority-short .check-icon {
+    color: #facc15;
+  }
+
+  .priority-medium {
+    border-left-color: #4ade80;
+  }
+  .priority-medium .priority-header {
+    background: rgba(74, 222, 128, 0.05);
+  }
+  .priority-medium .priority-icon,
+  .priority-medium .check-icon {
+    color: #4ade80;
+  }
+</style>
