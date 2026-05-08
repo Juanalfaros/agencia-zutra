@@ -24,7 +24,7 @@ const itemListSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   name: 'Recursos digitales — Zutra',
-  itemListElement: recursos.map((r, i) => ({
+  itemListElement: recursos.map((r: any, i: number) => ({
     '@type': 'ListItem',
     position: i + 1,
     item: {

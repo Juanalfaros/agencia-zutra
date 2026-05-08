@@ -57,7 +57,7 @@ const servicesByCategory = categories
       hasServices && (
         <div class="mobile-cats">
           <div class="mobile-cats-inner">
-            {servicesByCategory.map((cat) => (
+            {servicesByCategory.map((cat: any) => (
               <a href={`#cat-${cat.id}`} class="mobile-cat-chip">
                 {cat.label}
                 <span class="chip-count">{cat.items.length}</span>
@@ -76,7 +76,7 @@ const servicesByCategory = categories
               <nav class="toc-nav">
                 <span class="toc-title">Categorías</span>
                 <ul class="toc-list">
-                  {servicesByCategory.map((category) => (
+                  {servicesByCategory.map((category: any) => (
                     <li>
                       <a href={`#cat-${category.id}`} class="toc-link">
                         {category.label}
@@ -96,7 +96,7 @@ const servicesByCategory = categories
             </aside>
 
             <div class="content-area">
-              {servicesByCategory.map((category) => (
+              {servicesByCategory.map((category: any) => (
                 <section
                   id={`cat-${category.id}`}
                   class="category-section scroll-mt"

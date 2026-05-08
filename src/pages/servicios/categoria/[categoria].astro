@@ -48,7 +48,7 @@ const categoryServices = docs.map(adaptService);
     <div class="container container--wide mt-5">
       <div class="services-grid">
         {
-          categoryServices.map((service) => (
+          categoryServices.map((service: any) => (
             <a href={`/servicios/${service.slug}`} class="service-card-link">
               <article class="service-card">
                 <div class="card-top">
