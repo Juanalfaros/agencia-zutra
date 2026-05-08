@@ -14,5 +14,5 @@
     "ignoreDeprecations": "6.0"
   },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  "exclude": ["dist", "studio"]
 }
