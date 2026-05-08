@@ -43,32 +43,33 @@ export function QuickLinks() {
         {links.map((link) => {
           const palette = ACCENT_COLORS[link.color]
           return (
-            <button
-              key={link.type}
-              type="button"
-              className="quick-link-btn"
-              onClick={() => navigateIntent('create', { type: link.type })}
-            >
-              <Flex
-                align="center"
-                justify="center"
-                className="quick-link-icon"
-                style={{ background: palette.bg }}
+            <React.Fragment key={link.type}>
+              <button
+                type="button"
+                className="quick-link-btn"
+                onClick={() => navigateIntent('create', { type: link.type })}
               >
-                <link.icon size={16} weight="fill" color={palette.color} />
-              </Flex>
+                <Flex
+                  align="center"
+                  justify="center"
+                  className="quick-link-icon"
+                  style={{ background: palette.bg }}
+                >
+                  <link.icon size={16} weight="fill" color={palette.color} />
+                </Flex>
 
-              <Text size={1} weight="medium" className="quick-link-label">
-                {link.label}
-              </Text>
+                <Text size={1} weight="medium" className="quick-link-label">
+                  {link.label}
+                </Text>
 
-              <ArrowRight
-                size={14}
-                weight="bold"
-                color={palette.color}
-                className="quick-link-arrow"
-              />
-            </button>
+                <ArrowRight
+                  size={14}
+                  weight="bold"
+                  color={palette.color}
+                  className="quick-link-arrow"
+                />
+              </button>
+            </React.Fragment>
           )
         })}
       </Stack>
