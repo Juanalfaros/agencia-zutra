@@ -25,7 +25,7 @@ const categories = docs.map(adaptCategory);
   <div class="category-filters">
     <a href="/blog" class="filter-chip active">Todos</a>
     {
-      categories.map((cat) => (
+      categories.map((cat: any) => (
         <a href={`/blog/categoria/${cat.id}`} class="filter-chip">
           {cat.label}
         </a>

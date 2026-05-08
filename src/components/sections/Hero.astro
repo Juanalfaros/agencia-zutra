@@ -14,7 +14,7 @@ const heroSlides = docs.map(adaptHeroSlide);
 <section id="hero" class="hero-carousel">
   <div class="hero-carousel__slides-container" aria-live="polite">
     {
-      heroSlides.map((slide, index) => {
+      heroSlides.map((slide: any, index: number) => {
         const TitleTag = index === 0 ? 'h1' : 'h2';
         return (
           <div
@@ -78,7 +78,7 @@ const heroSlides = docs.map(adaptHeroSlide);
 
   <div class="hero-carousel__pagination">
     {
-      heroSlides.map((_, index) => (
+      heroSlides.map((_: any, index: number) => (
         <button
           class={`pagination-dot ${index === 0 ? 'active' : ''}`}
           data-slide-to={index}

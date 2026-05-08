@@ -57,7 +57,7 @@ const description = `Explora todos los artículos sobre ${category.label} en el 
         <div class="posts-grid">
           {
             posts.length > 0 ? (
-              posts.map((post) => <BlogCard post={post} />)
+              posts.map((post: any) => <BlogCard post={post} />)
             ) : (
               <div class="no-posts">
                 <i class="ph-duotone ph-ghost" />

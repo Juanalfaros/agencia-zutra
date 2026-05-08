@@ -52,7 +52,7 @@ const description = `Artículos etiquetados con #${tag} en el blog de ZUTRA.`;
         <BlogSearch />
 
         <div class="posts-grid">
-          {posts.map((post) => <BlogCard post={post} />)}
+          {posts.map((post: any) => <BlogCard post={post} />)}
         </div>
       </div>
     </section>

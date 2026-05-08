@@ -59,7 +59,7 @@ const currentYear = new Date().getFullYear();
           <h3 class="footer-heading">Servicios</h3>
           <ul class="footer-links">
             {
-              footerServices.map((service) => (
+              footerServices.map((service: any) => (
                 <li>
                   <a href={`/servicios/${service.slug}`}>{service.title}</a>
                 </li>
@@ -74,7 +74,7 @@ const currentYear = new Date().getFullYear();
           <h3 class="footer-heading">Casos de Éxito</h3>
           <ul class="footer-links">
             {
-              footerCases.map((caso) => (
+              footerCases.map((caso: any) => (
                 <li>
                   <a href={`/portfolio/${caso.slug}`}>{caso.title}</a>
                 </li>

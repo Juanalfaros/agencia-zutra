@@ -22,7 +22,7 @@ const hasCases = cases.length > 0;
 
 // Derive unique industries
 const allIndustries = hasCases
-  ? [...new Set(cases.map((c) => c.industry))].sort()
+  ? [...new Set(cases.map((c: any) => c.industry))].sort()
   : [];
 
 const title = 'Portfolio — Agencia Zutra';

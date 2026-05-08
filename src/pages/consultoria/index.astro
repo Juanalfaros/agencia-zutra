@@ -29,7 +29,7 @@ const REPORT_LOGS = (cfEnv as any).REPORT_LOGS as
 const accessLogs: Record<string, AccessLog[]> = {};
 if (REPORT_LOGS) {
   await Promise.all(
-    publishedConsultorias.map(async (report) => {
+    publishedConsultorias.map(async (report: any) => {
       const logs = (await REPORT_LOGS.get(`log_${report.slug}`, {
         type: 'json',
       })) as AccessLog[] | null;
@@ -85,7 +85,7 @@ if (REPORT_LOGS) {
               class="consultoria-grid reveal"
               style="transition-delay: 200ms;"
             >
-              {publishedConsultorias.map((report) => (
+              {publishedConsultorias.map((report: any) => (
                 <a href={`/consultoria/${report.slug}`} class="report-card">
                   <div class="report-card-glow" />
                   <div class="report-card-content">
