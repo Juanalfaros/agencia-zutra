@@ -6,6 +6,22 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.1.
 
 ---
 
+## [2.6.0] — 2026-06-13
+
+### 🚀 Agregado
+
+- **Cotización Comercial KR en Sanity**: Nuevo `auditReport` publicado (`cotizacion-comercial-kr`) con categoría `cotizacion-comercial`. Incluye 6 diapositivas (`consultoriaSlide`) y 4 opciones de propuesta (`slideOption`) creadas vía API.
+- **Categoría `cotizacion-comercial`** añadida al schema `auditReport` en el Studio.
+- **`SlidesModal`: render completo de opciones**: Las tarjetas de propuesta en el modo presentación ahora muestran `pros`, `cons`, `price` y `ctaText/ctaLink` además del título y descripción. Incluye estilos para lista de pros (icono verde), contras (icono gris) y footer con precio + CTA.
+- **Scripts de seed/patch en `/scripts/`**: `seed-kr-cotizacion.mjs`, `patch-kr-content.mjs` y `patch-kr-plans.mjs` para crear y enriquecer el reporte KR vía Sanity API.
+
+### ✅ Corregido
+
+- **`SlidesModal`: HTML escapado en descripciones de opciones**: `{opt.description}` renderizaba el HTML de `renderPortableText` como texto plano (mostrando `<p>` literalmente). Corregido con `set:html` y cambiado de `<p>` a `<div>` para evitar HTML inválido al anidar bloques.
+- **Descripción truncada en `slideOption` "Setup Autónomo"**: El seed inicial dejó "Sistema de Identidad Completo" como texto incompleto. Actualizado al texto descriptivo completo vía patch API.
+
+---
+
 ## [2.5.0] — 2026-05-08
 
 ### 🚀 Agregado

@@ -268,6 +268,7 @@ export const auditReportType = defineType({
           {title: 'Accesibilidad', value: 'accesibilidad'},
           {title: 'UX / Experiencia', value: 'ux'},
           {title: 'Estrategia Digital', value: 'estrategia'},
+          {title: 'Cotización Comercial', value: 'cotizacion-comercial'},
         ],
       },
       initialValue: 'auditoria-web',
