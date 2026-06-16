@@ -361,7 +361,7 @@ const seoMeta = {
                         >
                         {
                             post.tags.map((tag: string) => (
-                                <a href={`/blog/tag/${tag}`} class="tag-link">
+                                <a href={`/blog/tag/${encodeURIComponent(tag)}`} class="tag-link">
                                     {tag}
                                 </a>
                             ))

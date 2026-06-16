@@ -23,12 +23,9 @@ import StickyCTA from "@/components/common/StickyCTA.astro";
 import WhatsAppBot from "@/components/common/WhatsAppBot.astro";
 import { ClientRouter } from 'astro:transitions';
 import "@/styles/main.css";
-import "@phosphor-icons/web/regular";
 import "@phosphor-icons/web/bold";
 import "@phosphor-icons/web/duotone";
 import "@phosphor-icons/web/fill";
-import "@phosphor-icons/web/light";
-import "@phosphor-icons/web/thin";
 
 const {
   title,
@@ -45,7 +42,6 @@ const {
 } = Astro.props;
 
 const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
-const SENTRY_DSN = import.meta.env.SENTRY_DSN;
 ---
 
 <!doctype html>
@@ -63,38 +59,32 @@ const SENTRY_DSN = import.meta.env.SENTRY_DSN;
     <JsonLD showFAQ={showFAQ} />
     <ClientRouter />
     
-    {/* Google Tag Manager - Script Injection */}
+    {/* Google Tag Manager - Carga diferida tras la primera interacción para no bloquear el render inicial */}
     { GTM_ID && (
       <script is:inline define:vars={{ GTM_ID }}>
-        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer',GTM_ID);
-      </script>
-    )}
-
-    {/* Sentry Error Tracking */}
-    { SENTRY_DSN && (
-      <script
-        is:inline
-        src="https://browser.sentry-cdn.com/8.47.0/bundle.tracing.replay.min.js"
-        async
-        defer
-      ></script>
-      <script is:inline define:vars={{ dsn: SENTRY_DSN }}>
-        if (typeof Sentry !== 'undefined') {
-          Sentry.init({
-            dsn: dsn,
-            tracesSampleRate: 0.1,
-            replaysSessionSampleRate: 0.05,
-            replaysOnErrorSampleRate: 1.0,
-            integrations: [
-              Sentry.replayIntegration(),
-              Sentry.browserTracingIntegration(),
-            ],
+        (function(w, d, s, l, i) {
+          function loadGTM() {
+            if (w[l + '_loaded']) return;
+            w[l + '_loaded'] = true;
+            w[l] = w[l] || [];
+            w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+            var f = d.getElementsByTagName(s)[0],
+              j = d.createElement(s),
+              dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+            events.forEach(function (ev) {
+              w.removeEventListener(ev, loadGTM, { passive: true });
+            });
+            clearTimeout(fallback);
+          }
+          var events = ['scroll', 'click', 'keydown', 'mousemove', 'touchstart'];
+          events.forEach(function (ev) {
+            w.addEventListener(ev, loadGTM, { passive: true, once: true });
           });
-        }
+          var fallback = setTimeout(loadGTM, 5000);
+        })(window, document, 'script', 'dataLayer', GTM_ID);
       </script>
     )}
 
@@ -313,7 +303,5 @@ const SENTRY_DSN = import.meta.env.SENTRY_DSN;
         initGlobalGTMTracker();
       }
     </script>
-
-<script is:inline type="module" src="/scripts/main.js"></script>
   </body>
 </html>

@@ -7,6 +7,8 @@ import { POST_FIELDS } from '@/lib/sanity-queries';
 import { adaptBlogPost } from '@/lib/sanity-adapters';
 import type { Post } from '@/types/blog-types';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const client = await getSanityClient();
   const docs = await client.fetch(
@@ -21,7 +23,7 @@ export async function getStaticPaths() {
   }));
 }
 
-const { tag } = Astro.props;
+const { tag } = Astro.props as { tag: string };
 
 // Fetch posts for this tag from Sanity
 const client = await getSanityClient();

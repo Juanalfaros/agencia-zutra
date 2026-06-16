@@ -5,6 +5,8 @@ import { SERVICE_FIELDS } from '@/lib/sanity-queries';
 import { adaptService } from '@/lib/sanity-adapters';
 import { slugify } from '@/lib/slugify.js';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const client = await getSanityClient();
   const docs = await client.fetch(

@@ -6,6 +6,26 @@ El formato está basado en [Keep a Changelog](https://keepachangelog.com/es/1.1.
 
 ---
 
+## [2.6.1] — 2026-06-16
+
+### ✅ Corregido
+
+- **500 en todas las páginas de tag**: `/blog/tag/[tag].astro` y `/servicios/tag/[tag].astro` no tenían `export const prerender = true`, así que en modo SSR `getStaticPaths()` se ignoraba y `Astro.props` llegaba vacío, lanzando un `TypeError` en cada request. Agregado `prerender = true` en ambas rutas; el link a tags en `blog/[slug].astro` ahora usa `encodeURIComponent` para tags con espacios.
+- **Error de consola en el 100% de las páginas**: `Layout.astro` cargaba `<script src="/scripts/main.js">`, un archivo que nunca existió en `public/`, generando un 404 en cada carga. Eliminada la referencia muerta.
+- **Accesibilidad del botón de WhatsApp**: el `aria-label` ("Abrir chat de WhatsApp") no coincidía con el texto visible del tooltip ("Chat con Zutra"), fallando el audit de Lighthouse `label-content-name-mismatch`. Unificado el texto.
+
+### 🔒 Seguridad
+
+- **Eliminada `/debug-testimonials`**: página pública sin autenticación que volcaba todos los documentos `testimonial` de Sanity como JSON crudo.
+
+### ⚡ Rendimiento
+
+- **Sentry eliminado por completo**: no se estaba monitoreando; se quita el bundle `bundle.tracing.replay.min.js` (~75KB, ~90% sin usar) y la inicialización asociada de `Layout.astro`.
+- **Google Tag Manager diferido**: el script de GTM ahora carga tras la primera interacción del usuario (scroll/click/keydown/mousemove/touchstart) o a los 5s como fallback, en vez de bloquear el render inicial en cada página.
+- **Pesos de Phosphor Icons sin usar removidos**: `regular`, `light` y `thin` no se usaban en ningún componente; se mantienen solo `bold`, `duotone` y `fill`, reduciendo el CSS global cargado en cada página.
+
+---
+
 ## [2.6.0] — 2026-06-13
 
 ### 🚀 Agregado
