@@ -12,8 +12,8 @@ interface Props {
   updatedDate?: Date;
 }
 
-// Con un 301 activo de .cl a .agency, la URL base siempre debe ser .agency
-const siteBase = 'https://zutra.agency';
+// Con un 301 activo de .agency a .cl, la URL base siempre debe ser .cl
+const siteBase = 'https://zutra.cl';
 const canonicalURL = new URL(Astro.url.pathname, siteBase);
 
 const {

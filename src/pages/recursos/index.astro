@@ -32,7 +32,7 @@ const itemListSchema = {
       name: r.title,
       description: r.description,
       image: r.featuredImage?.src ?? '',
-      url: `https://zutra.agency/recursos/${r.slug}`,
+      url: `https://zutra.cl/recursos/${r.slug}`,
       offers: {
         '@type': 'Offer',
         price: r.isFree ? '0' : r.price.replace(/[^0-9.]/g, '') || '0',

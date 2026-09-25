@@ -13,36 +13,36 @@ const { showFAQ = false } = Astro.props;
   {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "@id": "https://zutra.agency/#organization",
+    "@id": "https://zutra.cl/#organization",
     "name": "Zutra Agency",
     "alternateName": "Agencia Zutra",
     "brand": {
       "@type": "Brand",
-      "@id": "https://zutra.agency/#brand",
+      "@id": "https://zutra.cl/#brand",
       "name": "Zutra"
     },
     "description": "Zutra Agency es una firma de diseño y tecnología basada en Chile, especializada en marketing digital, desarrollo web de alto rendimiento y branding estratégico para negocios que buscan escalar con activos digitales sólidos.",
-    "url": "https://zutra.agency/",
+    "url": "https://zutra.cl/",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://zutra.agency/og-image.jpg"
+      "url": "https://zutra.cl/og-image.jpg"
     },
-    "image": "https://zutra.agency/og-home.jpg",
+    "image": "https://zutra.cl/og-home.jpg",
     "priceRange": "$$",
     "telephone": "+56942009050",
-    "email": "hola@zutra.agency",
+    "email": "hola@zutra.cl",
     "founders": [
       {
         "@type": "Person",
         "name": "Camilo Bustamante",
         "jobTitle": "Co-Fundador & Director Creativo",
-        "worksFor": { "@id": "https://zutra.agency/#organization" }
+        "worksFor": { "@id": "https://zutra.cl/#organization" }
       },
       {
         "@type": "Person",
         "name": "Juan Alfaro",
         "jobTitle": "Co-Fundador & Director Técnico",
-        "worksFor": { "@id": "https://zutra.agency/#organization" }
+        "worksFor": { "@id": "https://zutra.cl/#organization" }
       }
     ],
     "employee": [
@@ -128,7 +128,7 @@ const { showFAQ = false } = Astro.props;
       "name": "Contactar a Zutra Agency",
       "target": {
         "@type": "EntryPoint",
-        "urlTemplate": "https://zutra.agency/#contacto",
+        "urlTemplate": "https://zutra.cl/#contacto",
         "actionPlatform": [
           "https://schema.org/DesktopWebPlatform",
           "https://schema.org/MobileWebPlatform"
@@ -142,7 +142,7 @@ const { showFAQ = false } = Astro.props;
   {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "@id": "https://zutra.agency/#faq",
+    "@id": "https://zutra.cl/#faq",
     "mainEntity": {JSON.parse(JSON.stringify(faqs.map(faq => ({
       "@type": "Question",
       "name": faq.question,

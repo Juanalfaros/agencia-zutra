@@ -12,7 +12,7 @@ import mdx from '@astrojs/mdx';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  site: 'https://zutra.agency',
+  site: 'https://zutra.cl',
   integrations: [
     icon(),
     mdx(),
