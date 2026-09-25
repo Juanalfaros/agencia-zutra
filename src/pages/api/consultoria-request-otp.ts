@@ -123,7 +123,7 @@ export const POST = async ({ request }: any) => {
         Accept: 'application/json',
       },
       body: JSON.stringify({
-        sender: { name: 'Agencia Zutra', email: 'hola@zutra.agency' },
+        sender: { name: 'Agencia Zutra', email: 'hola@zutra.cl' },
         to: [{ email }],
         subject: 'Tu acceso al reporte — Zutra',
         htmlContent: `<!DOCTYPE html>
@@ -190,7 +190,7 @@ export const POST = async ({ request }: any) => {
         <!-- Footer -->
         <tr><td align="center" style="padding-top:24px;">
           <p style="margin:0;font-size:12px;color:#3f3f46;">
-            © ${new Date().getFullYear()} Agencia Zutra — zutra.agency
+            © ${new Date().getFullYear()} Agencia Zutra — zutra.cl
           </p>
         </td></tr>
 

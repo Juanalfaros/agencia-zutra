@@ -134,7 +134,7 @@ if (t && s && OTP_SECRET) {
                   Accept: 'application/json',
                 },
                 body: JSON.stringify({
-                  sender: { name: 'Zutra Sistema', email: 'hola@zutra.agency' },
+                  sender: { name: 'Zutra Sistema', email: 'hola@zutra.cl' },
                   to: CONSULTORIA_ADMIN_EMAILS.map((e) => ({ email: e })),
                   subject: `[Acceso] ${email} abrió "${entry.title}"`,
                   htmlContent: `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"></head>

@@ -77,7 +77,7 @@ export const POST = async ({
 
     const TURNSTILE_SECRET_KEY = getEnv('TURNSTILE_SECRET_KEY');
     const BREVO_API_KEY = getEnv('BREVO_API_KEY').trim();
-    const ADMIN_EMAIL = getEnv('ADMIN_EMAIL') || 'hola@zutra.agency';
+    const ADMIN_EMAIL = getEnv('ADMIN_EMAIL') || 'hola@zutra.cl';
     const TEMPLATE_CONFIRMATION = parseInt(
       getEnv('BREVO_TEMPLATE_CONFIRMATION') || '2'
     );
@@ -154,7 +154,7 @@ export const POST = async ({
     const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
     const phoneRaw = phone?.replace(/[^0-9]/g, '') || '';
 
-    const sender = { name: 'Agencia Zutra', email: 'hola@zutra.agency' };
+    const sender = { name: 'Agencia Zutra', email: 'hola@zutra.cl' };
 
     // 1. Notificación para el Admin
     const adminEmailPromise = fetch('https://api.brevo.com/v3/smtp/email', {

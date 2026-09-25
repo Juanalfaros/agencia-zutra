@@ -2,7 +2,7 @@
 
 Sitio web oficial de **Zutra**, agencia de Growth Marketing & Tecnología con base en Santiago, Chile.
 
-**[zutra.agency](https://zutra.agency)**
+**[zutra.cl](https://zutra.cl)**
 
 ---
 
@@ -112,7 +112,7 @@ Catálogo de productos digitales propios (templates Astro, UI kits, auditorías 
 
 Formulario con Turnstile (anti-bot) y envío dual vía Brevo SMTP:
 
-1. **Notificación admin** → `hola@zutra.agency` con datos del lead
+1. **Notificación admin** → `hola@zutra.cl` con datos del lead
 2. **Confirmación usuario** → Email de bienvenida personalizado
 
 ### 🗺️ Sanity Preview
@@ -211,7 +211,7 @@ Configurar en Cloudflare Dashboard → Pages → Settings → Environment Variab
 
 - **Structured data**: `LocalBusiness`, `FAQPage`, `BlogPosting`, `BreadcrumbList`, `Product`, `ItemList`
 - **Open Graph + Twitter Cards**: Generados dinámicamente por página
-- **Canonical URLs**: Siempre apuntan a `zutra.agency`
+- **Canonical URLs**: Siempre apuntan a `zutra.cl`
 - **Sitemap**: Generado automáticamente (`/sitemap-index.xml`)
 - **llms.txt**: Resumen machine-readable para IAs y LLM crawlers
 - **Skip links**, **aria labels**, **semántica HTML5**
