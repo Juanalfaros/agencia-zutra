@@ -87,3 +87,6 @@ html/
 
 blogs-ideas/
 .dev.vars
+
+# Unlighthouse reports
+.unlighthouse/
