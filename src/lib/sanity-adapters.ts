@@ -455,15 +455,9 @@ export function adaptBlogPost(doc: any): Post {
 }
 
 export function adaptService(doc: any): Service {
-  // Resolve category slug from categoryRef object (stored raw from Contentful migration)
-  let categorySlug = doc.category || 'general';
-  if (
-    doc.categoryRef &&
-    typeof doc.categoryRef === 'object' &&
-    doc.categoryRef.fields?.slug
-  ) {
-    categorySlug = doc.categoryRef.fields.slug;
-  }
+  // SERVICE_FIELDS ya resuelve el slug de la categoría (category->slug.current)
+  const categorySlug =
+    typeof doc.category === 'string' && doc.category ? doc.category : 'general';
 
   // Derive badge: explicit badge field, or featured → "Destacado", or first tag
   let badge: string | undefined = doc.badge;
