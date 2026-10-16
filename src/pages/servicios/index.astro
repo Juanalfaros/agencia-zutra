@@ -10,7 +10,7 @@ const client = await getSanityClient(isPreview);
 
 // Fetch categories from Sanity
 const categories = await client.fetch(
-  groq`*[_type == "category"] | order(order asc) { _id, "id": slug.current, "label": name, order }`
+  groq`*[_type == "category"] | order(order asc) { _id, "id": slug.current, "label": coalesce(title, name), order }`
 );
 
 // Fetch services from Sanity

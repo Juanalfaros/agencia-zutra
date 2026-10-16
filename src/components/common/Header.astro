@@ -92,6 +92,33 @@ import Logo from '@/components/common/Logo.astro';
   </div>
 </header>
 
+<script>
+  // Alterna .scrolled: activa el fondo "glass" del header al bajar la página.
+  // Un solo listener; el header se vuelve a consultar porque ClientRouter lo reemplaza.
+  const THRESHOLD = 24;
+  let ticking = false;
+
+  function syncHeader() {
+    const header = document.getElementById('header');
+    if (header) header.classList.toggle('scrolled', window.scrollY > THRESHOLD);
+    ticking = false;
+  }
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(syncHeader);
+      }
+    },
+    { passive: true }
+  );
+
+  document.addEventListener('astro:page-load', syncHeader);
+  syncHeader();
+</script>
+
 <style>
   .header {
     position: fixed;

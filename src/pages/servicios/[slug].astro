@@ -46,7 +46,7 @@ if (!service) {
 
 // Fetch categories from Sanity for the badge
 const categoriesDocs = await client.fetch(
-  groq`*[_type == "category"] { "slug": slug.current, name }`
+  groq`*[_type == "category"] { "slug": slug.current, "name": coalesce(title, name) }`
 );
 const categoryLabel =
   categoriesDocs.find((c: any) => c.slug === service.category)?.name ||
