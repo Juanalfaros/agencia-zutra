@@ -6,6 +6,7 @@ import CaseHero from '@/components/portfolio/CaseHero.astro';
 import CaseChallenge from '@/components/portfolio/CaseChallenge.astro';
 import CaseExecution from '@/components/portfolio/CaseExecution.astro';
 import CaseFeatures from '@/components/portfolio/CaseFeatures.astro';
+import CaseCTA from '@/components/portfolio/CaseCTA.astro';
 import NextProjectNav from '@/components/portfolio/NextProjectNav.astro';
 import { getSanityClient, groq } from '@/lib/sanity';
 import { CASE_STUDY_FIELDS } from '@/lib/sanity-queries';
@@ -60,6 +61,14 @@ const nextProject = allProjects[(currentIndex + 1) % allProjects.length];
 const prevProject =
   allProjects[(currentIndex - 1 + allProjects.length) % allProjects.length];
 
+// Otros casos del mismo servicio (o los más próximos si no hay)
+const related = allProjects
+  .filter(
+    (c) =>
+      c.id !== project.id && project.service && c.service === project.service
+  )
+  .slice(0, 3);
+
 // Prepare tracking data
 const trackingData = {
   item_id: project.slug,
@@ -100,6 +109,9 @@ const trackingData = {
     <hr class="divider" />
 
     <CaseFeatures project={project} />
+    <hr class="divider" />
+
+    <CaseCTA project={project} related={related} />
 
     <NextProjectNav nextProject={nextProject} prevProject={prevProject} />
   </main>

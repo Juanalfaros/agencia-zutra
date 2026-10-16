@@ -1,0 +1,156 @@
+---
+import type { ZutraCaseStudy } from '@/types/project-types';
+
+interface Props {
+  project: ZutraCaseStudy;
+  related: ZutraCaseStudy[];
+}
+
+const { project, related } = Astro.props;
+const contactHref = project.service
+  ? `/?servicio=${encodeURIComponent(project.service)}#contacto`
+  : '/#contacto';
+---
+
+<section class="case-cta">
+  <div class="container">
+    {
+      (project.result || project.quote) && (
+        <div class="case-proof">
+          {project.result && (
+            <p class="case-result">
+              <span class="case-proof__label">Resultado</span>
+              {project.result}
+            </p>
+          )}
+          {project.quote && (
+            <blockquote class="case-quote">
+              <p>“{project.quote}”</p>
+              {project.quoteAuthor && <cite>{project.quoteAuthor}</cite>}
+            </blockquote>
+          )}
+        </div>
+      )
+    }
+
+    <div class="case-cta__box">
+      <h2>¿Quieres algo así para tu negocio?</h2>
+      <p>
+        Cuéntanos qué necesitas. Si en 30 minutos no te llevas claridad y
+        próximos pasos, no seguimos.
+      </p>
+      <a
+        href={contactHref}
+        class="button button--primary"
+        data-track="cta_caso_diagnostico"
+      >
+        Diagnóstico gratuito
+      </a>
+    </div>
+
+    {
+      related.length > 0 && (
+        <div class="case-related">
+          <h3>Otros proyectos de {project.service || 'Zutra'}</h3>
+          <div class="case-related__grid">
+            {related.map((r) => (
+              <a href={`/portfolio/${r.slug}`} class="case-related__card">
+                <img src={r.featuredImage.src.src} alt="" loading="lazy" />
+                <span>{r.title}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .case-cta {
+    padding: 4rem 0;
+  }
+
+  .case-proof {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    max-width: 760px;
+  }
+
+  .case-proof__label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 0.4rem;
+  }
+
+  .case-result {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .case-quote {
+    margin: 0;
+    padding-left: 1.25rem;
+    border-left: 3px solid var(--color-accent);
+    font-size: 1.15rem;
+  }
+
+  .case-quote cite {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--color-muted);
+    font-style: normal;
+  }
+
+  .case-cta__box {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    background: var(--color-subtle);
+  }
+
+  .case-cta__box h2 {
+    margin: 0 0 0.75rem;
+  }
+
+  .case-cta__box p {
+    color: var(--color-muted);
+    max-width: 52ch;
+    margin: 0 auto 1.5rem;
+  }
+
+  .case-related {
+    margin-top: 3rem;
+  }
+
+  .case-related__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .case-related__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    font-weight: 600;
+  }
+
+  .case-related__card img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+  }
+</style>

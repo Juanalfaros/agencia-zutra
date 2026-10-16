@@ -523,6 +523,10 @@ export function adaptCaseStudy(doc: any): ZutraCaseStudy {
     year:
       doc.year || (doc.date ? new Date(doc.date).getFullYear().toString() : ''),
     client: doc.client || '',
+    service: doc.service || '',
+    result: doc.result || '',
+    quote: doc.quote || '',
+    quoteAuthor: doc.quoteAuthor || '',
     featuredImage: {
       src: {
         src: doc.featuredImage || '',

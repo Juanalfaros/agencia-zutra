@@ -35,17 +35,35 @@ const description =
     <section class="portfolio-hero">
       <div class="container">
         <h1 class="portfolio-title">
-          Hacemos que las cosas <span class="text-accent">pasen</span>.
+          Marcas y sitios que construimos <span class="text-accent"
+            >con nuestros clientes</span
+          >.
         </h1>
         <p class="portfolio-subtitle">
-          Resultados medibles, diseño con propósito y código impecable. Aquí
-          está la prueba.
+          Proyectos reales de marca y web. Filtra por lo que te interesa.
         </p>
+
+        <div
+          class="service-filter"
+          role="group"
+          aria-label="Filtrar por servicio"
+        >
+          {
+            ['Todos', 'Marca', 'Web', 'Marca + Web'].map((s, i) => (
+              <button
+                type="button"
+                class={`service-chip ${i === 0 ? 'active' : ''}`}
+                data-filter={s === 'Todos' ? '' : s}
+              >
+                {s}
+              </button>
+            ))
+          }
+        </div>
 
         <div class="filter-bar">
           <h2 class="sr-only">Filtrar por industria</h2>
-          <!-- Placeholder para futuros filtros dinámicos -->
-          <span class="filter-label">Explora por industria:</span>
+          <span class="filter-label">También por industria:</span>
           <div class="filter-tags">
             {
               hasCases ? (
@@ -69,7 +87,11 @@ const description =
           {
             hasCases ? (
               cases.map((project: ZutraCaseStudy) => (
-                <a href={`/portfolio/${project.slug}`} class="project-card">
+                <a
+                  href={`/portfolio/${project.slug}`}
+                  class="project-card"
+                  data-service={project.service || ''}
+                >
                   <div class="project-image-wrapper">
                     <img
                       src={project.featuredImage.src.src}
@@ -86,7 +108,11 @@ const description =
                   </div>
                   <div class="project-content">
                     <div class="project-meta">
-                      <span class="project-industry">{project.industry}</span>
+                      <span class="project-industry">
+                        {project.service
+                          ? `${project.service} · ${project.industry}`
+                          : project.industry}
+                      </span>
                       <span class="project-year">{project.year}</span>
                     </div>
                     <h3
@@ -135,6 +161,24 @@ const description =
   </main>
 </Layout>
 
+<script>
+  function initServiceFilter() {
+    const chips = document.querySelectorAll<HTMLButtonElement>('.service-chip');
+    const cards = document.querySelectorAll<HTMLElement>('.project-card');
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const value = chip.dataset.filter ?? '';
+        chips.forEach((c) => c.classList.toggle('active', c === chip));
+        cards.forEach((card) => {
+          card.hidden = value !== '' && card.dataset.service !== value;
+        });
+      });
+    });
+  }
+  initServiceFilter();
+  document.addEventListener('astro:page-load', initServiceFilter);
+</script>
+
 <style>
   .portfolio-page {
     padding-top: 5rem;
@@ -170,6 +214,41 @@ const description =
     color: var(--color-muted);
     max-width: 600px;
     margin: 0 auto 3rem;
+  }
+
+  .service-filter {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+  }
+
+  .service-chip {
+    padding: 0.6rem 1.25rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-text);
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .service-chip:hover {
+    border-color: var(--color-accent);
+  }
+
+  .service-chip.active {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  .project-card[hidden] {
+    display: none;
   }
 
   .filter-bar {

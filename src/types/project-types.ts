@@ -55,6 +55,12 @@ export interface ZutraCaseStudy {
   tagline?: string;
   description: string;
 
+  // Servicio principal del caso y prueba social (opcionales)
+  service?: string;
+  result?: string;
+  quote?: string;
+  quoteAuthor?: string;
+
   // Imágenes enriquecidas
   featuredImage: ProjectImage;
   gallery: ProjectImage[];

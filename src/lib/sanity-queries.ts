@@ -143,7 +143,11 @@ export const CASE_STUDY_FIELDS = groq`
   keyFeatures,
   tags,
   featured,
-  order
+  order,
+  service,
+  result,
+  quote,
+  quoteAuthor
 `;
 
 export const HERO_SLIDE_FIELDS = groq`
