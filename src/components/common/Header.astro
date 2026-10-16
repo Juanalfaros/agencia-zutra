@@ -15,10 +15,11 @@ import Logo from '@/components/common/Logo.astro';
       <nav class="header__nav--desktop" aria-label="Principal">
         {
           navLinks.map((link) => {
+            // Activo en la página y en sus subrutas (/servicios/..., /portfolio/...)
             const isActive =
-              Astro.url.pathname === link.href ||
-              (link.href === '/portfolio' &&
-                Astro.url.pathname.startsWith('/portfolio'));
+              !link.href.includes('#') &&
+              (Astro.url.pathname === link.href ||
+                Astro.url.pathname.startsWith(`${link.href}/`));
             return (
               <a href={link.href} class={isActive ? 'active' : ''}>
                 <span class="nav-text">{link.text}</span>
