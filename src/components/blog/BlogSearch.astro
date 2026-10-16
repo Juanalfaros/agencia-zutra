@@ -1,14 +1,6 @@
 ---
-import { getSanityClient, groq } from '@/lib/sanity';
-import { CATEGORY_FIELDS } from '@/lib/sanity-queries';
-import { adaptCategory } from '@/lib/sanity-adapters';
-
-// Fetch categories from Sanity
-const client = await getSanityClient();
-const docs = await client.fetch(
-  groq`*[_type == "category"] | order(order asc) { ${CATEGORY_FIELDS} }`
-);
-const categories = docs.map(adaptCategory);
+// Categorías del blog (campo de texto del artículo)
+const categories = ['Marca', 'Web', 'Casos'];
 ---
 
 <div class="blog-controls">
@@ -23,14 +15,17 @@ const categories = docs.map(adaptCategory);
   </div>
 
   <div class="category-filters">
-    <a href="/blog" class="filter-chip active">Todos</a>
-    {
-      categories.map((cat: any) => (
-        <a href={`/blog/categoria/${cat.id}`} class="filter-chip">
-          {cat.label}
-        </a>
-      ))
-    }
+    <a href="/blog" class="filter-chip active">
+      Todos
+    </a>
+    {categories.map((cat) => (
+      <a
+        href={`/blog/categoria/${encodeURIComponent(cat)}`}
+        class="filter-chip"
+      >
+        {cat}
+      </a>
+    ))}
   </div>
 </div>
 

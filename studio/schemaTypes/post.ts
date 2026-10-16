@@ -25,7 +25,7 @@ export const postType = defineType({
     defineField({ name: 'publishDate', title: 'Fecha de publicación', type: 'datetime', group: 'meta', validation: (rule) => rule.required(), initialValue: () => new Date().toISOString() }),
     defineField({ name: 'updatedDate', title: 'Fecha de actualización', type: 'datetime', group: 'meta' }),
     defineField({ name: 'author', title: 'Autor', type: 'reference', to: [{ type: 'author' }], group: 'meta', validation: (rule) => rule.required() }),
-    defineField({ name: 'category', title: 'Categoría', type: 'reference', to: [{ type: 'category' }], group: 'meta' }),
+    defineField({ name: 'category', title: 'Categoría', type: 'string', options: { list: ['Marca', 'Web', 'Casos'], layout: 'radio' }, group: 'meta' }),
     defineField({ name: 'tags', title: 'Etiquetas', type: 'array', of: [{ type: 'string' }], group: 'meta' }),
     defineField({ name: 'featured', title: 'Artículo destacado', type: 'boolean', group: 'meta', initialValue: false }),
     defineField({
