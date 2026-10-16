@@ -1,0 +1,100 @@
+---
+import { founders } from '@/data/quienes-somos';
+
+const resumen = [
+  {
+    role: 'Marca y dirección creativa',
+    line: 'Define cómo se ve y cómo suena tu marca, y cuida que cada pieza cuente lo mismo.',
+  },
+  {
+    role: 'Web y tecnología',
+    line: 'Construye sitios rápidos y fáciles de editar, y se encarga de que todo funcione después del lanzamiento.',
+  },
+];
+---
+
+<section id="quienes-somos" class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">Quiénes somos</h2>
+      <p class="section-subtitle">
+        Dos fundadores. Los mismos que te atienden en el diagnóstico son los que
+        hacen el trabajo.
+      </p>
+    </div>
+
+    <div class="nosotros-grid">
+      {
+        founders.map((f, i) => (
+          <article class="nosotros-card">
+            <img
+              src={f.image.src}
+              alt={f.name}
+              class="nosotros-card__photo"
+              loading="lazy"
+              decoding="async"
+            />
+            <div>
+              <h3 class="nosotros-card__name">{f.name}</h3>
+              <p class="nosotros-card__role">{resumen[i].role}</p>
+              <p class="nosotros-card__line">{resumen[i].line}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="nosotros-more">
+      <a href="/nosotros" class="button button--secondary">Conocer al equipo</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .nosotros-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .nosotros-card {
+    display: flex;
+    gap: 1.25rem;
+    align-items: center;
+    padding: 1.5rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface, transparent);
+  }
+
+  .nosotros-card__photo {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .nosotros-card__name {
+    font-size: 1.25rem;
+    margin: 0;
+  }
+
+  .nosotros-card__role {
+    color: var(--color-accent);
+    font-weight: 600;
+    margin: 0.15rem 0 0.5rem;
+  }
+
+  .nosotros-card__line {
+    color: var(--color-muted);
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .nosotros-more {
+    text-align: center;
+    margin-top: 2rem;
+  }
+</style>

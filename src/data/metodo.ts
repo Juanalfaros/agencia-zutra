@@ -1,23 +1,33 @@
 export interface MethodStep {
   icon: string;
   title: string;
+  time: string;
   text: string;
 }
 
 export const methodSteps: MethodStep[] = [
   {
     icon: 'ph-duotone ph-chats-circle',
-    title: 'Trato Directo',
-    text: 'Sin intermediarios ni teléfonos descompuestos. Hablas y planificas directamente con quienes van a diseñar y programar tu proyecto.',
+    title: 'Diagnóstico',
+    time: '30 min · gratis',
+    text: 'Conversamos con quienes van a diseñar y programar tu proyecto. Entendemos tu negocio y te decimos con honestidad qué necesitas y qué no.',
   },
   {
-    icon: 'ph-duotone ph-code',
-    title: 'Ejecución Técnica',
-    text: 'No usamos plantillas lentas. Desarrollamos con código moderno y diseño estratégico para que tu activo digital sea rápido, seguro y escalable.',
+    icon: 'ph-duotone ph-file-text',
+    title: 'Propuesta',
+    time: '48 horas',
+    text: 'Recibes un alcance claro: qué incluye, qué no, plazos y valor. Sin letra chica.',
   },
   {
-    icon: 'ph-duotone ph-arrows-clockwise',
-    title: 'Soporte Evolutivo',
-    text: 'Una web o una marca no se terminan al lanzarse. Nos convertimos en tu partner digital para mantener, actualizar y mejorar mes a mes.',
+    icon: 'ph-duotone ph-pencil-ruler',
+    title: 'Diseño y desarrollo',
+    time: '2 a 6 semanas',
+    text: 'Trabajamos por etapas con revisiones. Hablas directo con nosotros, sin intermediarios.',
+  },
+  {
+    icon: 'ph-duotone ph-rocket-launch',
+    title: 'Lanzamiento y acompañamiento',
+    time: 'Después del lanzamiento',
+    text: 'Publicamos, te enseñamos a usarlo y, si quieres, seguimos como tu equipo externo con Partner.',
   },
 ];

@@ -5,10 +5,10 @@ import { methodSteps } from '@/data/metodo';
 <section id="metodo" class="section">
   <div class="container">
     <div class="section-header">
-      <h2 class="section-title">Menos reuniones, más ejecución.</h2>
+      <h2 class="section-title">Cómo trabajamos</h2>
       <p class="section-subtitle">
-        Eliminamos la grasa de la agencia tradicional. <strong
-          >Somos tu equipo extendido.</strong
+        Cuatro pasos, con plazos claros. <strong
+          >Hablas siempre con quienes hacen el trabajo.</strong
         >
       </p>
     </div>
@@ -21,6 +21,7 @@ import { methodSteps } from '@/data/metodo';
               <i class={step.icon} />
               <h3 class="card__title">{step.title}</h3>
             </div>
+            <span class="card__time">{step.time}</span>
             <p class="card__text">{step.text}</p>
           </article>
         ))
@@ -41,7 +42,7 @@ import { methodSteps } from '@/data/metodo';
         href="#contacto"
         data-track="cta_garantia_click"
         data-loc="metodo"
-        class="button button--primary">Conversar con los fundadores</a
+        class="button button--primary">Diagnóstico gratuito</a
       >
     </div>
   </div>
@@ -87,6 +88,15 @@ import { methodSteps } from '@/data/metodo';
     font-weight: 800; /* Más peso para destacar */
     margin: 0;
     color: var(--color-heading, #fff);
+  }
+
+  .card__time {
+    display: inline-block;
+    align-self: flex-start;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    margin-bottom: 0.75rem;
   }
 
   .card__text {

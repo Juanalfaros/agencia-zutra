@@ -13,7 +13,7 @@ export function initCarousel() {
     const prevButton = carousel.querySelector('.nav-button--prev');
     const dots = carousel.querySelectorAll('.pagination-dot');
 
-    if (!slides.length || !nextButton || !prevButton) return;
+    if (slides.length < 2 || !nextButton || !prevButton) return;
 
     let currentSlide = 0;
     let autoPlayInterval;

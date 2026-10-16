@@ -11,18 +11,30 @@ const isPreview = Astro.url.searchParams.get('preview') === 'true';
 const client = await getSanityClient(isPreview);
 
 // Fetch portfolio cases from Sanity
-const docs = await client.fetch(groq`*[_type == "caseStudy"] | order(date desc) [0...6] { ${CASE_STUDY_FIELDS} }`);
-const sortedCases = docs.map(adaptCaseStudy);
+const FEATURED_SLUGS = [
+	"cordoneria-chike",
+	"comprendeme-psicologia",
+	"aguacero-beer-branding-pirque",
+];
+const docs = await client.fetch(
+	groq`*[_type == "caseStudy" && slug.current in $slugs] { ${CASE_STUDY_FIELDS} }`,
+	{ slugs: FEATURED_SLUGS },
+);
+const sortedCases = docs
+	.map(adaptCaseStudy)
+	.sort(
+		(a: ZutraCaseStudy, b: ZutraCaseStudy) =>
+			FEATURED_SLUGS.indexOf(a.slug) - FEATURED_SLUGS.indexOf(b.slug),
+	);
 
 ---
 
 <section id="casos" class="section">
 	<div class="container">
 		<div class="section-header">
-			<h2 class="section-title">Portfolio de Casos</h2>
+			<h2 class="section-title">Marcas y sitios que construimos con nuestros clientes</h2>
 			<p class="section-subtitle">
-				No vendemos promesas, entregamos activos. Aquí una muestra de
-				nuestra ejecución valiente.
+				Tres proyectos recientes. El resto está en el portfolio.
 			</p>
 		</div>
 		<div class="portfolio-grid">

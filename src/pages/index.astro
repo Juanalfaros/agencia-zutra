@@ -3,45 +3,29 @@
 
 import Layout from '@/layouts/Layout.astro';
 import Hero from '@/components/sections/Hero.astro';
-import Experiencia from '@/components/sections/Experiencia.astro';
-import Metodo from '@/components/sections/Metodo.astro';
-import Servicios from '@/components/sections/Servicios.astro';
-import QuienesSomos from '@/components/sections/QuienesSomos.astro';
+import ParaQuien from '@/components/sections/ParaQuien.astro';
+import Oferta from '@/components/sections/Oferta.astro';
 import Casos from '@/components/sections/Casos.astro';
+import Metodo from '@/components/sections/Metodo.astro';
+import Testimonios from '@/components/sections/Testimonials.astro';
+import NosotrosResumen from '@/components/sections/NosotrosResumen.astro';
 import Faqs from '@/components/sections/Faqs.astro';
 import Contacto from '@/components/sections/Contacto.astro';
-import Testimonios from '@/components/sections/Testimonials.astro';
-import ServiciosCar from '@/components/sections/ServiciosCar.astro';
 ---
 
 <Layout
-  title="Zutra Agency — Diseño con Facha | Agencia de Tecnología en Chile"
-  description="Olvídate del humo. En Zutra Agency hacemos la pega bien: diseño con carácter y tecnología que vuela para los que no se conforman con lo mismo de siempre."
+  title="Zutra — Marca y web para negocios que van en serio"
+  description="Estudio de marca y web en Puente Alto, Chile. Diseñamos tu identidad y construimos tu sitio. Hablas directo con quienes lo hacen. Diagnóstico gratuito de 30 minutos."
   image="/og-home.jpg"
   showFAQ={true}
 >
-  {/* 1. El Gancho: ¿Qué problema solucionan? */}
   <Hero />
-
-  {/* 2. El Método: ¿Cómo lo hacen y por qué son diferentes? */}
-  <Metodo />
-
-  {/* 3. La Solución: ¿Qué ofrecen exactamente? */}
-
-  <!-- <Servicios /> -->
-  <ServiciosCar />
-
-  {/* 4. La Prueba: ¿Pueden demostrarlo? (Prueba social consolidada) */}
-  <Testimonios />
-  <!-- <Experiencia /> -->
-
-  {/* 5. Las Caras: ¿Quién está detrás de esto? */}
-  <QuienesSomos />
-
-  {/* 6. Muestra Visual: Portfolio de trabajos */}
+  <ParaQuien />
+  <Oferta />
   <Casos />
-
-  {/* 7. Resolver Dudas y Convertir (El Cierre) */}
+  <Metodo />
+  <Testimonios />
+  <NosotrosResumen />
   <Faqs />
   <Contacto />
 </Layout>

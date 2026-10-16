@@ -30,6 +30,9 @@ const heroSlides = docs.map(adaptHeroSlide);
                   <a href={slide.buttonLink} class="button button--primary">
                     {slide.buttonText}
                   </a>
+                  <a href="/portfolio" class="button button--secondary">
+                    Ver casos
+                  </a>
                 </div>
               </div>
 
@@ -66,7 +69,7 @@ const heroSlides = docs.map(adaptHeroSlide);
   </div>
 
   {/* Controles de Navegación */}
-  <div class="hero-carousel__controls">
+  <div class="hero-carousel__controls" hidden={heroSlides.length < 2}>
     <button class="nav-button nav-button--prev" aria-label="Slide anterior">
       <i class="ph ph-caret-left"></i>
     </button>
@@ -76,7 +79,7 @@ const heroSlides = docs.map(adaptHeroSlide);
     </button>
   </div>
 
-  <div class="hero-carousel__pagination">
+  <div class="hero-carousel__pagination" hidden={heroSlides.length < 2}>
     {
       heroSlides.map((_: any, index: number) => (
         <button
