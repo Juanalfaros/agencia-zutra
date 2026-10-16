@@ -9,6 +9,8 @@ import { slugify } from '@/lib/slugify.js';
 import { Icon } from 'astro-icon/components';
 import { getTechIcon, isSimpleIcon, getSimpleIconUrl } from '@/data/techIcons';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const client = await getSanityClient();
   const docs = await client.fetch(
