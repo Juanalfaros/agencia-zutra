@@ -29,3 +29,6 @@ declare namespace App {
 declare module 'cloudflare:workers' {
   export const env: Record<string, any>;
 }
+
+// TS 6 exige declaración para imports de efecto secundario (CSS de Phosphor).
+declare module '@phosphor-icons/web/*';
