@@ -28,6 +28,22 @@ import { socialMedia } from '@/data/socialmedia';
             </div>
           </a>
 
+          <a
+            href="https://wa.me/56942009050?text=Hola%2C%20quiero%20mi%20diagn%C3%B3stico%20gratuito"
+            class="detail-item"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-track="cta_contacto_whatsapp"
+          >
+            <div class="detail-icon">
+              <i class="ph-duotone ph-whatsapp-logo"></i>
+            </div>
+            <div class="detail-text">
+              <span class="detail-label">WhatsApp</span>
+              <span class="detail-value">+56 9 4200 9050</span>
+            </div>
+          </a>
+
           <div class="detail-item">
             <div class="detail-icon">
               <i class="ph-duotone ph-map-pin"></i>
@@ -198,6 +214,9 @@ import { socialMedia } from '@/data/socialmedia';
             <i class="ph-duotone ph-paper-plane-tilt"></i>
           </button>
 
+          <p class="form-response-note">
+            Te respondemos en menos de 24 h hábiles.
+          </p>
           <p id="form-status" class="form-status hidden"></p>
         </form>
       </div>
@@ -804,6 +823,14 @@ import { socialMedia } from '@/data/socialmedia';
   .button--large.success {
     background-color: #10b981; /* Verde éxito */
     color: #fff;
+  }
+
+  .form-response-note {
+    text-align: center;
+    font-size: 0.85rem;
+    margin-top: 0.75rem;
+    opacity: 0.7;
+    color: var(--color-text);
   }
 
   .form-status {
