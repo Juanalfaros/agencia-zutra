@@ -59,7 +59,7 @@ export const faqs: FAQ[] = [
     answer: `<strong>No. Creemos en la libertad comercial.</strong>
         <ul>
           <li><strong>Proyectos Web/Branding:</strong> Se cotizan, se pagan y se entregan. Son tuyos para siempre.</li>
-          <li><strong>Planes Mensuales (Partner/Mailing):</strong> Funcionan como una suscripción. Si el servicio te aporta valor, sigues. Si no, puedes cancelar avisando con 15 días de anticipación. Sin letras chicas.</li>
+          <li><strong>Partner mensual:</strong> Funcionan como una suscripción. Si el servicio te aporta valor, sigues. Si no, puedes cancelar avisando con 15 días de anticipación. Sin letras chicas.</li>
         </ul>`,
   },
   {

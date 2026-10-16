@@ -162,6 +162,49 @@ import { socialMedia } from '@/data/socialmedia';
                 Selecciona un servicio.
               </p>
             </div>
+
+            <div class="form-group">
+              <label for="timeline" class="form-label"
+                >Plazo deseado <span class="form-optional">(opcional)</span
+                ></label
+              >
+              <div class="input-wrapper">
+                <i class="ph-duotone ph-calendar-blank"></i>
+                <select
+                  id="timeline"
+                  name="timeline"
+                  class="form-input select-input"
+                >
+                  <option value="" selected>Sin apuro</option>
+                  <option value="Lo antes posible">Lo antes posible</option>
+                  <option value="En 1 a 2 meses">En 1 a 2 meses</option>
+                  <option value="En 3 meses o más">En 3 meses o más</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="budget" class="form-label"
+                >Presupuesto aproximado <span class="form-optional"
+                  >(opcional)</span
+                ></label
+              >
+              <div class="input-wrapper">
+                <i class="ph-duotone ph-coins"></i>
+                <select
+                  id="budget"
+                  name="budget"
+                  class="form-input select-input"
+                >
+                  <option value="" selected>Prefiero conversarlo</option>
+                  <option value="Hasta $500.000">Hasta $500.000</option>
+                  <option value="$500.000 a $1.000.000"
+                    >$500.000 a $1.000.000</option
+                  >
+                  <option value="Más de $1.000.000">Más de $1.000.000</option>
+                </select>
+              </div>
+            </div>
           </div>
 
           <div class="form-group">
@@ -823,6 +866,11 @@ import { socialMedia } from '@/data/socialmedia';
   .button--large.success {
     background-color: #10b981; /* Verde éxito */
     color: #fff;
+  }
+
+  .form-optional {
+    opacity: 0.6;
+    font-weight: 400;
   }
 
   .form-response-note {

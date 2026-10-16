@@ -30,7 +30,7 @@ export const POST = async ({
   const contentType = request.headers.get('Content-Type') || '';
 
   try {
-    let name, email, message, phone, service, turnstileToken;
+    let name, email, message, phone, service, timeline, budget, turnstileToken;
 
     if (contentType.includes('multipart/form-data')) {
       const formData = await request.formData();
@@ -39,6 +39,8 @@ export const POST = async ({
       message = formData.get('message')?.toString();
       phone = formData.get('phone')?.toString();
       service = formData.get('service')?.toString();
+      timeline = formData.get('timeline')?.toString();
+      budget = formData.get('budget')?.toString();
       turnstileToken = formData.get('cf-turnstile-response')?.toString();
     } else {
       const data = await request.json();
@@ -47,6 +49,8 @@ export const POST = async ({
       message = data.message;
       phone = data.phone;
       service = data.service;
+      timeline = data.timeline;
+      budget = data.budget;
       turnstileToken = data.turnstileToken;
     }
 
@@ -56,6 +60,8 @@ export const POST = async ({
     message = sanitizeInput(message);
     phone = sanitizeInput(phone);
     service = sanitizeInput(service);
+    timeline = sanitizeInput(timeline);
+    budget = sanitizeInput(budget);
 
     if (!name || !email || !message) {
       return new Response(
@@ -153,6 +159,14 @@ export const POST = async ({
     const firstName = nameParts[0] || '';
     const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
     const phoneRaw = phone?.replace(/[^0-9]/g, '') || '';
+    // La plantilla de Brevo no conoce los campos nuevos: van también al final del mensaje.
+    const extras = [
+      timeline && `Plazo deseado: ${timeline}`,
+      budget && `Presupuesto: ${budget}`,
+    ].filter(Boolean);
+    const adminMessage = extras.length
+      ? `${message}\n\n${extras.join(' · ')}`
+      : message;
 
     const sender = { name: 'Agencia Zutra', email: 'hola@zutra.cl' };
 
@@ -176,7 +190,9 @@ export const POST = async ({
           phone: phone || 'No proporcionado',
           phone_raw: phoneRaw,
           service_interest: service || 'No especificado',
-          message: message,
+          message: adminMessage,
+          timeline: timeline || 'No indicado',
+          budget: budget || 'No indicado',
         },
       }),
     });
