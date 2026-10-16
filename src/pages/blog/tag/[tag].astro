@@ -7,23 +7,7 @@ import { POST_FIELDS } from '@/lib/sanity-queries';
 import { adaptBlogPost } from '@/lib/sanity-adapters';
 import type { Post } from '@/types/blog-types';
 
-export const prerender = true;
-
-export async function getStaticPaths() {
-  const client = await getSanityClient();
-  const docs = await client.fetch(
-    groq`*[_type == "post" && defined(tags)] { tags }`
-  );
-  const allTags: string[] = [
-    ...new Set<string>(docs.flatMap((doc: any) => doc.tags as string[])),
-  ];
-  return allTags.map((tag: string) => ({
-    params: { tag },
-    props: { tag },
-  }));
-}
-
-const { tag } = Astro.props as { tag: string };
+const tag = decodeURIComponent(Astro.params.tag ?? '');
 
 // Fetch posts for this tag from Sanity
 const client = await getSanityClient();
@@ -54,7 +38,9 @@ const description = `Artículos etiquetados con #${tag} en el blog de ZUTRA.`;
         <BlogSearch />
 
         <div class="posts-grid">
-          {posts.map((post: any) => <BlogCard post={post} />)}
+          {posts.map((post: any) => (
+            <BlogCard post={post} />
+          ))}
         </div>
       </div>
     </section>

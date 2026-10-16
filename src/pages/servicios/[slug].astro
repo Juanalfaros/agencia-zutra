@@ -6,30 +6,10 @@ import { adaptService, adaptCategory } from '@/lib/sanity-adapters';
 import type { Service } from '@/types/service-types';
 import BreadcrumbSchema from '@/components/common/BreadcrumbSchema.astro';
 
-export const prerender = true;
-
-export async function getStaticPaths() {
-  try {
-    const client = await getSanityClient();
-    const docs = await client.fetch(
-      groq`*[_type == "service"] { ${SERVICE_FIELDS} }`
-    );
-    const services = docs.map(adaptService) as Service[];
-
-    return services.map((service: Service) => ({
-      params: { slug: service.slug },
-      props: { service },
-    }));
-  } catch (error) {
-    console.error('Error fetching services for static paths:', error);
-    return [];
-  }
-}
-
 const isPreview = Astro.url.searchParams.get('preview') === 'true';
 const client = await getSanityClient(isPreview);
 
-let { service } = Astro.props;
+let service = undefined as Service | undefined;
 const { slug } = Astro.params;
 
 if (!service && slug) {
@@ -107,11 +87,9 @@ const contactHref = optionValue
                 <i class="ph-duotone ph-circles-three-plus"></i>
                 {categoryLabel}
               </span>
-              {
-                service.badge && (
-                  <span class="badge-pill pulse-badge">{service.badge}</span>
-                )
-              }
+              {service.badge && (
+                <span class="badge-pill pulse-badge">{service.badge}</span>
+              )}
             </div>
             <h1 class="hero-title" transition:name={`title-${service.slug}`}>
               {service.title}
@@ -134,47 +112,43 @@ const contactHref = optionValue
                 {service.problem ? 'El problema' : 'De qué se trata'}
               </h2>
               <div class="prose-wrapper">
-                {
-                  service.problem ? (
-                    <p class="prose">{service.problem}</p>
-                  ) : (
-                    <div class="prose" set:html={service.longDescription} />
-                  )
-                }
+                {service.problem ? (
+                  <p class="prose">{service.problem}</p>
+                ) : (
+                  <div class="prose" set:html={service.longDescription} />
+                )}
               </div>
             </section>
 
             {/* 2. Variantes */}
-            {
-              service.variants && service.variants.length > 0 && (
-                <>
-                  <hr class="divider" />
-                  <section class="section-block">
-                    <div class="block-header">
-                      <h2>Elige tu versión</h2>
-                      <p>
-                        El mismo método, con el alcance que tu negocio necesita.
-                      </p>
-                    </div>
-                    <div class="variant-grid">
-                      {service.variants.map((v) => (
-                        <article class="variant-card">
-                          <h3>{v.title}</h3>
-                          <p>{v.text}</p>
-                          <ul>
-                            {(v.items || []).map((item) => (
-                              <li>
-                                <i class="ph-bold ph-check" /> {item}
-                              </li>
-                            ))}
-                          </ul>
-                        </article>
-                      ))}
-                    </div>
-                  </section>
-                </>
-              )
-            }
+            {service.variants && service.variants.length > 0 && (
+              <>
+                <hr class="divider" />
+                <section class="section-block">
+                  <div class="block-header">
+                    <h2>Elige tu versión</h2>
+                    <p>
+                      El mismo método, con el alcance que tu negocio necesita.
+                    </p>
+                  </div>
+                  <div class="variant-grid">
+                    {service.variants.map((v) => (
+                      <article class="variant-card">
+                        <h3>{v.title}</h3>
+                        <p>{v.text}</p>
+                        <ul>
+                          {(v.items || []).map((item) => (
+                            <li>
+                              <i class="ph-bold ph-check" /> {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              </>
+            )}
 
             <hr class="divider" />
 
@@ -184,150 +158,137 @@ const contactHref = optionValue
                 <h2>Qué incluye</h2>
               </div>
 
-              {
-                service.features.length > 0 ? (
-                  <div class="features-list">
-                    {service.features.map((feature: any) => (
-                      <article class="feature-row">
-                        <div class="feature-icon-box">
-                          <i class="ph-duotone ph-check-circle" />
-                        </div>
-                        <div class="feature-content">
-                          <h3 class="feature-title">{feature.title}</h3>
-                          <p class="feature-desc">{feature.description}</p>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                ) : (
-                  <ul class="plain-list">
-                    {(service.deliverables || []).map((d: string) => (
-                      <li>
-                        <i class="ph-bold ph-check" /> {d}
-                      </li>
-                    ))}
-                  </ul>
-                )
-              }
+              {service.features.length > 0 ? (
+                <div class="features-list">
+                  {service.features.map((feature: any) => (
+                    <article class="feature-row">
+                      <div class="feature-icon-box">
+                        <i class="ph-duotone ph-check-circle" />
+                      </div>
+                      <div class="feature-content">
+                        <h3 class="feature-title">{feature.title}</h3>
+                        <p class="feature-desc">{feature.description}</p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <ul class="plain-list">
+                  {(service.deliverables || []).map((d: string) => (
+                    <li>
+                      <i class="ph-bold ph-check" /> {d}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </section>
 
             {/* 4. Alcance: qué entra y qué no */}
-            {
-              service.notIncluded && service.notIncluded.length > 0 && (
-                <section class="section-block">
-                  <div class="block-header">
-                    <h2>Alcance</h2>
-                    <p>Para que no haya sorpresas: qué entra y qué no.</p>
-                  </div>
-                  <div class="scope-grid">
-                    {service.deliverables &&
-                      service.deliverables.length > 0 && (
-                        <div class="scope-col">
-                          <h3>Entra</h3>
-                          <ul class="plain-list">
-                            {service.deliverables.map((d: string) => (
-                              <li>
-                                <i class="ph-bold ph-check" /> {d}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    <div class="scope-col scope-col--out">
-                      <h3>No entra</h3>
+            {service.notIncluded && service.notIncluded.length > 0 && (
+              <section class="section-block">
+                <div class="block-header">
+                  <h2>Alcance</h2>
+                  <p>Para que no haya sorpresas: qué entra y qué no.</p>
+                </div>
+                <div class="scope-grid">
+                  {service.deliverables && service.deliverables.length > 0 && (
+                    <div class="scope-col">
+                      <h3>Entra</h3>
                       <ul class="plain-list">
-                        {service.notIncluded.map((d: string) => (
+                        {service.deliverables.map((d: string) => (
                           <li>
-                            <i class="ph-bold ph-x" /> {d}
+                            <i class="ph-bold ph-check" /> {d}
                           </li>
                         ))}
                       </ul>
                     </div>
+                  )}
+                  <div class="scope-col scope-col--out">
+                    <h3>No entra</h3>
+                    <ul class="plain-list">
+                      {service.notIncluded.map((d: string) => (
+                        <li>
+                          <i class="ph-bold ph-x" /> {d}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                </section>
-              )
-            }
+                </div>
+              </section>
+            )}
 
             {/* 5. Proceso y plazos */}
-            {
-              service.process && service.process.length > 0 && (
-                <section class="section-block">
-                  <div class="block-header">
-                    <h2>Proceso y plazos</h2>
-                  </div>
-                  <ol class="process-list">
-                    {service.process.map((step) => (
-                      <li>
-                        <div class="process-head">
-                          <h3>{step.title}</h3>
-                          <span class="process-time">{step.time}</span>
-                        </div>
-                        <p>{step.text}</p>
-                      </li>
-                    ))}
-                  </ol>
-                </section>
-              )
-            }
+            {service.process && service.process.length > 0 && (
+              <section class="section-block">
+                <div class="block-header">
+                  <h2>Proceso y plazos</h2>
+                </div>
+                <ol class="process-list">
+                  {service.process.map((step) => (
+                    <li>
+                      <div class="process-head">
+                        <h3>{step.title}</h3>
+                        <span class="process-time">{step.time}</span>
+                      </div>
+                      <p>{step.text}</p>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            )}
 
             {/* 6. Qué necesitamos de ti */}
-            {
-              service.needs && service.needs.length > 0 && (
-                <section class="section-block">
-                  <div class="block-header">
-                    <h2>Qué necesitamos de ti</h2>
-                  </div>
-                  <ul class="plain-list">
-                    {service.needs.map((n: string) => (
-                      <li>
-                        <i class="ph-bold ph-arrow-right" /> {n}
-                      </li>
-                    ))}
-                  </ul>
-                </section>
-              )
-            }
+            {service.needs && service.needs.length > 0 && (
+              <section class="section-block">
+                <div class="block-header">
+                  <h2>Qué necesitamos de ti</h2>
+                </div>
+                <ul class="plain-list">
+                  {service.needs.map((n: string) => (
+                    <li>
+                      <i class="ph-bold ph-arrow-right" /> {n}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
 
             {/* 7. Casos relacionados */}
-            {
-              service.relatedCases && service.relatedCases.length > 0 && (
-                <section class="section-block">
-                  <div class="block-header">
-                    <h2>Así se ve en la práctica</h2>
-                  </div>
-                  <div class="related-grid">
-                    {service.relatedCases.map((c) => (
-                      <a href={`/portfolio/${c.slug}`} class="related-card">
-                        {c.image && <img src={c.image} alt="" loading="lazy" />}
-                        <span class="related-title">{c.title}</span>
-                        {c.industry && (
-                          <span class="related-industry">{c.industry}</span>
-                        )}
-                      </a>
-                    ))}
-                  </div>
-                </section>
-              )
-            }
+            {service.relatedCases && service.relatedCases.length > 0 && (
+              <section class="section-block">
+                <div class="block-header">
+                  <h2>Así se ve en la práctica</h2>
+                </div>
+                <div class="related-grid">
+                  {service.relatedCases.map((c) => (
+                    <a href={`/portfolio/${c.slug}`} class="related-card">
+                      {c.image && <img src={c.image} alt="" loading="lazy" />}
+                      <span class="related-title">{c.title}</span>
+                      {c.industry && (
+                        <span class="related-industry">{c.industry}</span>
+                      )}
+                    </a>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* 8. FAQ propias */}
-            {
-              service.faqs && service.faqs.length > 0 && (
-                <section class="section-block">
-                  <div class="block-header">
-                    <h2>Preguntas frecuentes</h2>
-                  </div>
-                  <div class="faq-list">
-                    {service.faqs.map((f) => (
-                      <details class="faq-item">
-                        <summary>{f.question}</summary>
-                        <p>{f.answer}</p>
-                      </details>
-                    ))}
-                  </div>
-                </section>
-              )
-            }
+            {service.faqs && service.faqs.length > 0 && (
+              <section class="section-block">
+                <div class="block-header">
+                  <h2>Preguntas frecuentes</h2>
+                </div>
+                <div class="faq-list">
+                  {service.faqs.map((f) => (
+                    <details class="faq-item">
+                      <summary>{f.question}</summary>
+                      <p>{f.answer}</p>
+                    </details>
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
 
           {/* COLUMNA DERECHA: Sticky Sidebar (La Venta) */}
@@ -340,31 +301,29 @@ const contactHref = optionValue
 
                   <div class="price-block">
                     <div class="price-value">A tu medida</div>
-                    <span class="price-meta"
-                      >Lo definimos juntos en el diagnóstico gratuito</span
-                    >
+                    <span class="price-meta">
+                      Lo definimos juntos en el diagnóstico gratuito
+                    </span>
                   </div>
 
-                  {
-                    service.result && (
-                      <div class="promise-box">
-                        <i class="ph-duotone ph-trophy" />
-                        <p>{service.result}</p>
-                      </div>
-                    )
-                  }
+                  {service.result && (
+                    <div class="promise-box">
+                      <i class="ph-duotone ph-trophy" />
+                      <p>{service.result}</p>
+                    </div>
+                  )}
 
                   <div class="cta-wrapper">
                     <a
                       href={contactHref}
                       class="button button--primary button--full"
                     >
-                      Diagnóstico gratuito <i class="ph-bold ph-arrow-right"
-                      ></i>
+                      Diagnóstico gratuito{' '}
+                      <i class="ph-bold ph-arrow-right"></i>
                     </a>
                     <p class="microcopy">
-                      <span class="dot-live"></span> Te respondemos en menos de 24
-                      h hábiles
+                      <span class="dot-live"></span> Te respondemos en menos de
+                      24 h hábiles
                     </p>
                   </div>
                 </div>
@@ -383,7 +342,8 @@ const contactHref = optionValue
             <div class="cta-narrative">
               <span class="cta-tag">¿Siguiente paso?</span>
               <h2 class="cta-heading">
-                ¿Conversamos?<br />
+                ¿Conversamos?
+                <br />
                 <span class="text-accent">30 minutos, sin costo.</span>
               </h2>
               <p class="cta-sub">

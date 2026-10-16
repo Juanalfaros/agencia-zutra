@@ -4,33 +4,15 @@ import Layout from "@/layouts/Layout.astro";
 import BlogCard from "@/components/blog/BlogCard.astro";
 import BreadcrumbSchema from "@/components/common/BreadcrumbSchema.astro";
 import { Image } from "astro:assets";
-export const prerender = true;
 
 import { getSanityClient, groq } from "@/lib/sanity";
 import { POST_FIELDS } from "@/lib/sanity-queries";
 import { adaptBlogPost } from "@/lib/sanity-adapters";
 import type { Post } from "@/types/blog-types";
 
-export async function getStaticPaths() {
-    try {
-        const client = await getSanityClient();
-        const posts = await client.fetch(groq`*[_type == "post"] | order(publishDate desc) { ${POST_FIELDS} }`);
-        const blogPosts: Post[] = posts.map(adaptBlogPost);
-
-        if (blogPosts.length === 0) return [];
-
-        return blogPosts.map((post: Post) => ({
-            params: { slug: post.slug },
-            props: { post, allPosts: blogPosts },
-        }));
-    } catch (error) {
-        console.error("Error fetching blog posts for static paths:", error);
-        return [];
-    }
-}
-
 const isPreview = Astro.url.searchParams.get('preview') === 'true';
-let { post, allPosts } = Astro.props;
+let post: any = undefined;
+let allPosts: any[] = [];
 const { slug } = Astro.params;
 
 const client = await getSanityClient(isPreview);

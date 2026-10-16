@@ -6,23 +6,8 @@ import { getSanityClient, groq } from '@/lib/sanity';
 import { POST_FIELDS } from '@/lib/sanity-queries';
 import { adaptBlogPost } from '@/lib/sanity-adapters';
 
-export const prerender = true;
-
-export async function getStaticPaths() {
-  const client = await getSanityClient();
-  const docs = await client.fetch(
-    groq`*[_type == "post" && defined(category)] { category }`
-  );
-  const allCategories: string[] = [
-    ...new Set<string>(docs.map((d: any) => d.category as string)),
-  ];
-  return allCategories.map((cat: string) => ({
-    params: { categoria: encodeURIComponent(cat) },
-    props: { category: { id: cat, label: cat } },
-  }));
-}
-
-const { category } = Astro.props as { category: { id: string; label: string } };
+const rawCat = decodeURIComponent(Astro.params.categoria ?? '');
+const category = { id: rawCat, label: rawCat };
 
 // Fetch posts for this category from Sanity
 const client = await getSanityClient();
@@ -43,9 +28,8 @@ const description = `Explora todos los artículos sobre ${category.label} en el 
         <span class="section-label">Categoría</span>
         <h1 class="blog-hero__title">{category.label}</h1>
         <p class="blog-hero__subtitle">
-          Artículos y estrategias enfocados en el mundo de {
-            category.label.toLowerCase()
-          }.
+          Artículos y estrategias enfocados en el mundo de{' '}
+          {category.label.toLowerCase()}.
         </p>
       </div>
     </section>
@@ -55,19 +39,17 @@ const description = `Explora todos los artículos sobre ${category.label} en el 
         <BlogSearch />
 
         <div class="posts-grid">
-          {
-            posts.length > 0 ? (
-              posts.map((post: any) => <BlogCard post={post} />)
-            ) : (
-              <div class="no-posts">
-                <i class="ph-duotone ph-ghost" />
-                <p>Próximamente más contenido valiente en esta categoría.</p>
-                <a href="/blog" class="button button--primary">
-                  Ver todos los posts
-                </a>
-              </div>
-            )
-          }
+          {posts.length > 0 ? (
+            posts.map((post: any) => <BlogCard post={post} />)
+          ) : (
+            <div class="no-posts">
+              <i class="ph-duotone ph-ghost" />
+              <p>Próximamente más contenido valiente en esta categoría.</p>
+              <a href="/blog" class="button button--primary">
+                Ver todos los posts
+              </a>
+            </div>
+          )}
         </div>
       </div>
     </section>

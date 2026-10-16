@@ -6,20 +6,13 @@ import icon from 'astro-icon';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
-import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   site: 'https://zutra.cl',
-  integrations: [
-    icon(),
-    mdx(),
-    sitemap({
-      filter: (page) => !page.includes('/consultoria/'),
-    }),
-  ],
+  integrations: [icon(), mdx()],
   image: {
     remotePatterns: [
       {
@@ -35,6 +28,8 @@ export default defineConfig({
   output: 'server',
   // Slugs antiguos de servicios (unificados en Marca, Web y Partner)
   redirects: {
+    '/sitemap-0.xml': { status: 301, destination: '/sitemap-index.xml' },
+    '/sitemap.xml': { status: 301, destination: '/sitemap-index.xml' },
     '/servicios/identidad-corporativa': {
       status: 301,
       destination: '/servicios/marca',

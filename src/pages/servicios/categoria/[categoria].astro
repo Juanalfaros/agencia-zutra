@@ -5,26 +5,15 @@ import { CATEGORY_FIELDS, SERVICE_FIELDS } from '@/lib/sanity-queries';
 import { adaptCategory, adaptService } from '@/lib/sanity-adapters';
 import type { Service } from '@/types/service-types';
 
-export const prerender = true;
-
-export async function getStaticPaths() {
-  const client = await getSanityClient();
-  const docs = await client.fetch(
-    groq`*[_type == "category"] { ${CATEGORY_FIELDS} }`
-  );
-  return docs.map((doc: any) => {
-    const category = adaptCategory(doc);
-    return {
-      params: { categoria: category.id },
-      props: { category },
-    };
-  });
-}
-
-const { category } = Astro.props as { category: any };
+const client = await getSanityClient();
+const categoryDoc = await client.fetch(
+  groq`*[_type == "category" && slug.current == $slug][0] { ${CATEGORY_FIELDS} }`,
+  { slug: Astro.params.categoria }
+);
+if (!categoryDoc) return Astro.redirect('/404');
+const category = adaptCategory(categoryDoc);
 
 // Fetch services for this category from Sanity
-const client = await getSanityClient();
 const docs = await client.fetch(
   groq`*[_type == "service" && category->slug.current == $categorySlug] | order(order asc) { ${SERVICE_FIELDS} }`,
   { categorySlug: category.id }
@@ -47,33 +36,31 @@ const categoryServices = docs.map(adaptService);
 
     <div class="container container--wide mt-5">
       <div class="services-grid">
-        {
-          categoryServices.map((service: any) => (
-            <a href={`/servicios/${service.slug}`} class="service-card-link">
-              <article class="service-card">
-                <div class="card-top">
-                  <div class="card-meta">
-                    <span class="card-badge">{service.badge}</span>
-                  </div>
-                  <h3 class="card-title">{service.title}</h3>
-                  <p class="card-desc">{service.description}</p>
+        {categoryServices.map((service: any) => (
+          <a href={`/servicios/${service.slug}`} class="service-card-link">
+            <article class="service-card">
+              <div class="card-top">
+                <div class="card-meta">
+                  <span class="card-badge">{service.badge}</span>
                 </div>
-                <div class="card-bottom">
-                  <span class="btn-text">
-                    Ver solución <i class="ph-duotone ph-arrow-right" />
-                  </span>
-                </div>
-              </article>
-            </a>
-          ))
-        }
+                <h3 class="card-title">{service.title}</h3>
+                <p class="card-desc">{service.description}</p>
+              </div>
+              <div class="card-bottom">
+                <span class="btn-text">
+                  Ver solución <i class="ph-duotone ph-arrow-right" />
+                </span>
+              </div>
+            </article>
+          </a>
+        ))}
       </div>
     </div>
 
     <div class="container text-center mt-5">
-      <a href="/servicios" class="back-link"
-        ><i class="ph-duotone ph-arrow-left"></i> Ver todos los servicios</a
-      >
+      <a href="/servicios" class="back-link">
+        <i class="ph-duotone ph-arrow-left"></i> Ver todos los servicios
+      </a>
     </div>
   </main>
 </Layout>
