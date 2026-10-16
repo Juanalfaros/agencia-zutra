@@ -1,5 +1,5 @@
 ---
-import { founders } from '@/data/quienes-somos';
+import { founders } from '@/data/founders';
 
 const resumen = [
   {
@@ -24,28 +24,30 @@ const resumen = [
     </div>
 
     <div class="nosotros-grid">
-      {
-        founders.map((f, i) => (
-          <article class="nosotros-card">
-            <img
-              src={f.image.src}
-              alt={f.name}
-              class="nosotros-card__photo"
-              loading="lazy"
-              decoding="async"
-            />
-            <div>
-              <h3 class="nosotros-card__name">{f.name}</h3>
-              <p class="nosotros-card__role">{resumen[i].role}</p>
-              <p class="nosotros-card__line">{resumen[i].line}</p>
-            </div>
-          </article>
-        ))
-      }
+      {founders.map((f, i) => (
+        <article class="nosotros-card">
+          <img
+            src={f.avatar.src}
+            alt={f.name}
+            width="112"
+            height="112"
+            class="nosotros-card__photo"
+            loading="lazy"
+            decoding="async"
+          />
+          <div>
+            <h3 class="nosotros-card__name">{f.name}</h3>
+            <p class="nosotros-card__role">{resumen[i].role}</p>
+            <p class="nosotros-card__line">{resumen[i].line}</p>
+          </div>
+        </article>
+      ))}
     </div>
 
     <p class="nosotros-more">
-      <a href="/nosotros" class="button button--secondary">Conocer al equipo</a>
+      <a href="/nosotros" class="button button--secondary">
+        Conocer al equipo
+      </a>
     </p>
   </div>
 </section>
@@ -69,11 +71,14 @@ const resumen = [
   }
 
   .nosotros-card__photo {
-    width: 96px;
-    height: 96px;
+    width: 112px;
+    height: 112px;
     border-radius: 50%;
     object-fit: cover;
+    object-position: center 20%;
     flex-shrink: 0;
+    background: #fff;
+    border: 2px solid var(--color-line);
   }
 
   .nosotros-card__name {
