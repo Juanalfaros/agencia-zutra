@@ -21,7 +21,6 @@ export const stackAbout: string[] = [
   'Cal.com API',
 
   // Marketing & Automation
-  'Brevo CRM',
   'Google Tag Manager',
   'Google Analytics',
 

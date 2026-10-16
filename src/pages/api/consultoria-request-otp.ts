@@ -9,6 +9,7 @@ import { adaptAuditReport } from '@/lib/sanity-adapters';
 // in Cloudflare Pages SSR (import.meta.env is build-time only for non-PUBLIC vars).
 // .dev.vars provides these values locally; CF Pages dashboard provides them in production.
 import { env as cfEnv } from 'cloudflare:workers';
+import { sendEmail } from '@/lib/email';
 
 // Maps each accent palette to its logo filename and button text color.
 // Must stay in sync with the palettes array in Layout.astro.
@@ -27,9 +28,9 @@ const DEFAULT_ACCENT = {
 
 export const POST = async ({ request }: any) => {
   try {
-    const BREVO_API_KEY = (
-      String((cfEnv as any).BREVO_API_KEY || '') ||
-      String((import.meta.env as any).BREVO_API_KEY || '')
+    const RESEND_API_KEY = (
+      String((cfEnv as any).RESEND_API_KEY || '') ||
+      String((import.meta.env as any).RESEND_API_KEY || '')
     ).trim();
     const OTP_SECRET = (
       String((cfEnv as any).OTP_SECRET || '') ||
@@ -90,9 +91,9 @@ export const POST = async ({ request }: any) => {
       }
     }
 
-    if (!BREVO_API_KEY) {
+    if (!RESEND_API_KEY) {
       console.error(
-        '[OTP] BREVO_API_KEY no definida — configura .dev.vars (local) o CF Pages dashboard (producción)'
+        '[OTP] RESEND_API_KEY no definida — configura .dev.vars (local) o CF Pages dashboard (producción)'
       );
       return new Response(
         JSON.stringify({ error: 'Server misconfiguration' }),
@@ -115,18 +116,11 @@ export const POST = async ({ request }: any) => {
     const verifyLink = `${origin}/consultoria/verify?t=${encodeURIComponent(token)}&s=${encodeURIComponent(slug)}`;
     const logoUrl = `${origin}/logos-png/${accent.logo}`;
 
-    const emailRes = await fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: {
-        'api-key': BREVO_API_KEY,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        sender: { name: 'Agencia Zutra', email: 'hola@zutra.cl' },
-        to: [{ email }],
-        subject: 'Tu acceso al reporte — Zutra',
-        htmlContent: `<!DOCTYPE html>
+    const emailRes = await sendEmail({
+      from: 'Agencia Zutra <hola@zutra.cl>',
+      to: email,
+      subject: 'Tu acceso al reporte — Zutra',
+      html: `<!DOCTYPE html>
 <html lang="es">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background-color:#09090b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
@@ -199,12 +193,10 @@ export const POST = async ({ request }: any) => {
   </table>
 </body>
 </html>`,
-      }),
     });
 
     if (!emailRes.ok) {
-      const errBody = await emailRes.text().catch(() => '');
-      console.error('[OTP] Brevo error:', emailRes.status, errBody);
+      console.error('[OTP] Resend error:', emailRes.status, emailRes.error);
       return new Response(JSON.stringify({ error: 'Email delivery failed' }), {
         status: 502,
       });

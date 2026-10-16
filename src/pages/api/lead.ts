@@ -5,6 +5,9 @@ export const prerender = false;
 import { sanitizeInput } from '@/lib/utils/sanitize';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getRuntimeEnv, getEnvVar } from '@/lib/runtime-env';
+import { sendEmail } from '@/lib/email';
+import { saveLead } from '@/lib/leads';
+import { adminLeadEmail } from '@/lib/lead-emails';
 
 export const POST: APIRoute = async ({ request }) => {
   // Rate limiting: 10 requests per 15 minutes per IP
@@ -64,86 +67,35 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    // --- VARIABLES DE ENTORNO ---
-    const getEnv = getEnvVar;
-
-    const BREVO_API_KEY = (await getEnv('BREVO_API_KEY')).trim();
-    // Lista opcional específica para leads del bot de WhatsApp
-    const BREVO_LIST_WHATSAPP = await getEnv('BREVO_LIST_WHATSAPP');
-
-    if (!BREVO_API_KEY) {
-      console.error('Missing Brevo Configuration');
-      return new Response(
-        JSON.stringify({ error: 'Server Configuration Error' }),
-        {
-          status: 500,
-        }
-      );
-    }
-
-    // 1. Guardar/Actualizar Contacto en Brevo
-    // Usamos el endpoint de crear/actualizar para manejar emails existentes
-
-    const listIds = [];
-    if (BREVO_LIST_WHATSAPP && !isNaN(parseInt(BREVO_LIST_WHATSAPP))) {
-      listIds.push(parseInt(BREVO_LIST_WHATSAPP));
-    }
-
-    const [firstName, ...lastNameArr] = sanitizedName.trim().split(' ');
-    const lastName = lastNameArr.join(' ');
-
-    const brevoPayload: any = {
+    // --- GUARDAR EL LEAD (Sanity) Y AVISAR POR CORREO (Resend) ---
+    const ADMIN_EMAIL = (await getEnvVar('ADMIN_EMAIL')) || 'hola@zutra.cl';
+    const lead = {
+      name: sanitizedName,
       email: sanitizedEmail,
-      attributes: {
-        NOMBRE: firstName,
-        APELLIDO: lastName || '-', // Brevo a veces requiere apellido
-        SERVICE: sanitizedService,
-        URGENCY: sanitizedUrgency,
-      },
-      updateEnabled: true,
+      service: sanitizedService,
+      timeline: sanitizedUrgency,
+      source: 'bot' as const,
     };
+    const adminMail = adminLeadEmail(lead);
 
-    if (listIds.length > 0) {
-      brevoPayload.listIds = listIds;
-    }
-
-    const response = await fetch('https://api.brevo.com/v3/contacts', {
-      method: 'POST',
-      headers: {
-        'api-key': BREVO_API_KEY,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify(brevoPayload),
-    });
-
-    // Si el contacto ya existe, Brevo puede devolver 204 o 200 si lo actualiza
-    if (!response.ok && response.status !== 400) {
-      // 400 bad request occurs if contact exists and updateEnabled is false, which we handle
-      const errorData = await response.json();
-      console.error('Error capturando lead en Brevo:', errorData);
-
-      // Intentamos continuar de todos modos para que el usuario pueda ir al WhatsApp
-      return new Response(
-        JSON.stringify({
-          success: true,
-          warning: 'Lead saved locally but email sync failed',
-        }),
-        {
-          status: 200,
-        }
-      );
-    }
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-        message: 'Lead capturado silenciosamente',
+    const [saved, mailed] = await Promise.all([
+      saveLead(lead),
+      sendEmail({
+        to: ADMIN_EMAIL,
+        subject: adminMail.subject,
+        html: adminMail.html,
+        replyTo: sanitizedEmail,
       }),
-      {
-        status: 200,
-      }
-    );
+    ]);
+
+    if (!saved.ok) console.error('Error guardando lead del bot:', saved.error);
+    if (!mailed.ok)
+      console.error('Error aviso del bot (Resend):', mailed.error);
+
+    // Aunque falle el guardado, el usuario ya siguió por WhatsApp: no se le muestra error.
+    return new Response(JSON.stringify({ success: saved.ok || mailed.ok }), {
+      status: saved.ok || mailed.ok ? 200 : 502,
+    });
   } catch (error) {
     console.error('Unhandled Error in API Route:', error);
     return new Response(JSON.stringify({ error: 'Internal Server Error' }), {

@@ -6,6 +6,7 @@ import { adaptAuditReport } from '@/lib/sanity-adapters';
 import { CONSULTORIA_ADMIN_EMAILS } from '@/data/consultoria-admins';
 import { signToken, verifyOTP } from '@/lib/report-auth';
 import { env as cfEnv } from 'cloudflare:workers';
+import { sendEmail } from '@/lib/email';
 export const prerender = false;
 
 const t = Astro.url.searchParams.get('t') ?? '';
@@ -113,12 +114,12 @@ if (t && s && OTP_SECRET) {
 
           // Notificar a admins si el acceso fue de un usuario (no de un admin)
           if (!isAdmin) {
-            const BREVO_API_KEY = (
-              String((cfEnv as any).BREVO_API_KEY || '') ||
-              String((import.meta.env as any).BREVO_API_KEY || '')
+            const RESEND_API_KEY = (
+              String((cfEnv as any).RESEND_API_KEY || '') ||
+              String((import.meta.env as any).RESEND_API_KEY || '')
             ).trim();
 
-            if (BREVO_API_KEY) {
+            if (RESEND_API_KEY) {
               const accessedAt = new Date().toLocaleString('es-CL', {
                 timeZone: 'America/Santiago',
                 dateStyle: 'long',
@@ -126,18 +127,11 @@ if (t && s && OTP_SECRET) {
               });
               const reportUrl = `${new URL(Astro.request.url).origin}/consultoria/${s}`;
 
-              fetch('https://api.brevo.com/v3/smtp/email', {
-                method: 'POST',
-                headers: {
-                  'api-key': BREVO_API_KEY,
-                  'Content-Type': 'application/json',
-                  Accept: 'application/json',
-                },
-                body: JSON.stringify({
-                  sender: { name: 'Zutra Sistema', email: 'hola@zutra.cl' },
-                  to: CONSULTORIA_ADMIN_EMAILS.map((e) => ({ email: e })),
-                  subject: `[Acceso] ${email} abrió "${entry.title}"`,
-                  htmlContent: `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"></head>
+              sendEmail({
+                from: 'Zutra Sistema <hola@zutra.cl>',
+                to: CONSULTORIA_ADMIN_EMAILS,
+                subject: `[Acceso] ${email} abrió "${entry.title}"`,
+                html: `<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"></head>
 <body style="margin:0;padding:32px 16px;background:#09090b;font-family:sans-serif;color:#e4e4e7;">
   <table width="100%" style="max-width:480px;margin:0 auto;background:#111113;border:1px solid #27272a;border-radius:12px;padding:32px;">
     <tr><td>
@@ -163,10 +157,10 @@ if (t && s && OTP_SECRET) {
     </td></tr>
   </table>
 </body></html>`,
-                }),
-              }).catch((err) =>
-                console.error('[verify] Admin notify error:', err)
-              );
+              }).then((r) => {
+                if (!r.ok)
+                  console.error('[verify] Admin notify error:', r.error);
+              });
             }
           }
         } else {
@@ -230,14 +224,14 @@ const error = errorMessages[errorReason];
       <h1 class="verify-title">{error.title}</h1>
       <p class="verify-body">{error.body}</p>
       <div class="verify-actions">
-        {
-          error.canRetry && s && (
-            <a href={`/consultoria/${s}`} class="btn-primary">
-              Solicitar nuevo enlace
-            </a>
-          )
-        }
-        <a href="/consultoria" class="btn-ghost">Volver</a>
+        {error.canRetry && s && (
+          <a href={`/consultoria/${s}`} class="btn-primary">
+            Solicitar nuevo enlace
+          </a>
+        )}
+        <a href="/consultoria" class="btn-ghost">
+          Volver
+        </a>
       </div>
     </div>
   </div>

@@ -28,6 +28,7 @@ import {
 } from './consultoria'
 import { invoiceType } from './invoice'
 import { planType } from './plan'
+import { leadType } from './lead'
 
 export const schemaTypes = [
   // Core
@@ -63,4 +64,7 @@ export const schemaTypes = [
 
   // Planes de precios
   planType,
+
+  // Leads del sitio
+  leadType,
 ]

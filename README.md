@@ -13,7 +13,7 @@ Sitio web oficial de **Zutra**, agencia de Growth Marketing & Tecnología con ba
 | **Framework** | [Astro 6.0](https://astro.build/) (SSR + Prerendering híbrido)                          |
 | **Deploy**    | [Cloudflare Pages](https://pages.cloudflare.com/) (Edge SSR con `nodejs_compat`)        |
 | **CMS**       | [Sanity](https://www.sanity.io/) (Headless CMS + Studio embebido en `/studio`)          |
-| **Email**     | [Brevo](https://www.brevo.com/) (SMTP Transactional API)                                |
+| **Email**     | [Resend](https://resend.com/) (correos transaccionales, dominio zutra.cl verificado)    |
 | **Seguridad** | [Cloudflare Turnstile](https://www.cloudflare.com/products/turnstile/) (Bot protection) |
 | **Testing**   | [Vitest](https://vitest.dev/)                                                           |
 | **CI/CD**     | GitHub Actions + Cloudflare Pages auto-deploy                                           |
@@ -76,14 +76,14 @@ agencia-zutra/
 
 Bot conversacional flotante que califica leads antes de derivarlos a WhatsApp.
 
-**Flujo**: Nombre → Email → Servicio → Urgencia → Redirect a WhatsApp + captura silenciosa en Brevo.
+**Flujo**: Nombre → Email → Servicio → Urgencia → Redirect a WhatsApp + el lead se guarda en Sanity y avisa por correo (Resend).
 
 | Archivo                                   | Rol                      |
 | ----------------------------------------- | ------------------------ |
 | `src/components/common/WhatsAppBot.astro` | Widget UI                |
 | `src/components/common/whatsapp-bot.ts`   | Motor de conversación    |
 | `src/data/bot-content.ts`                 | Pasos, easter eggs, tono |
-| `src/pages/api/lead.ts`                   | Captura en Brevo         |
+| `src/pages/api/lead.ts`                   | Guarda lead y avisa      |
 
 ### 📊 Plataforma de Consultoría
 
@@ -110,10 +110,13 @@ Catálogo de productos digitales propios (templates Astro, UI kits, auditorías 
 
 ### 📨 Formulario de Contacto
 
-Formulario con Turnstile (anti-bot) y envío dual vía Brevo SMTP:
+Formulario con Turnstile (anti-bot). Cada envío:
 
-1. **Notificación admin** → `hola@zutra.cl` con datos del lead
-2. **Confirmación usuario** → Email de bienvenida personalizado
+1. **Se guarda en Sanity** como documento `lead` (Studio → Leads, con estado y notas)
+2. **Aviso al admin** → `hola@zutra.cl` (Resend), con _reply-to_ al correo del cliente
+3. **Confirmación al cliente** → correo con el plazo de respuesta (menos de 24 h hábiles)
+
+Si falla el guardado o el aviso, el lead se considera recibido mientras llegue por uno de los dos.
 
 ### 🗺️ Sanity Preview
 
@@ -189,23 +192,21 @@ El sitio se despliega automáticamente en **Cloudflare Pages** al hacer push a `
 
 Configurar en Cloudflare Dashboard → Pages → Settings → Environment Variables:
 
-| Variable                      | Propósito                                                              |
-| ----------------------------- | ---------------------------------------------------------------------- |
-| `SANITY_API_TOKEN`            | Token de Sanity con permisos de lectura (viewer)                       |
-| `SANITY_PREVIEW_TOKEN`        | Token de Sanity para vista previa de drafts                            |
-| `PUBLIC_SANITY_PROJECT_ID`    | ID del proyecto Sanity (público)                                       |
-| `PUBLIC_SANITY_DATASET`       | Dataset de Sanity (`production` por defecto)                           |
-| `BREVO_API_KEY`               | Key de Brevo para emails transaccionales                               |
-| `BREVO_LIST_ID`               | Lista de contactos por defecto                                         |
-| `BREVO_LIST_WHATSAPP`         | Lista para leads del bot                                               |
-| `BREVO_TEMPLATE_CONFIRMATION` | ID template confirmación usuario                                       |
-| `BREVO_TEMPLATE_ADMIN`        | ID template notificación admin                                         |
-| `TURNSTILE_SECRET_KEY`        | Validación server-side de Turnstile                                    |
-| `PUBLIC_GTM_ID`               | Google Tag Manager ID                                                  |
-| `SENTRY_DSN`                  | Error tracking (opcional)                                              |
-| `OTP_SECRET`                  | Secreto HMAC para firmar tokens OTP y cookies de sesión de consultoría |
-| `REPORT_LOGS`                 | Binding de Cloudflare KV para logs de acceso a reportes                |
-| `ZUTRA_KV`                    | Binding de Cloudflare KV para rate limiting distribuido                |
+| Variable                   | Propósito                                                               |
+| -------------------------- | ----------------------------------------------------------------------- |
+| `SANITY_API_TOKEN`         | Token de Sanity con permisos de lectura (viewer)                        |
+| `SANITY_PREVIEW_TOKEN`     | Token de Sanity para vista previa de drafts                             |
+| `PUBLIC_SANITY_PROJECT_ID` | ID del proyecto Sanity (público)                                        |
+| `PUBLIC_SANITY_DATASET`    | Dataset de Sanity (`production` por defecto)                            |
+| `RESEND_API_KEY`           | Key de Resend (correos del formulario, del bot y del acceso a reportes) |
+| `ADMIN_EMAIL`              | Correo que recibe los avisos de leads (por defecto `hola@zutra.cl`)     |
+| `SANITY_AUTH_TOKEN`        | Token de Sanity con permiso de **escritura** (guarda los leads)         |
+| `TURNSTILE_SECRET_KEY`     | Validación server-side de Turnstile                                     |
+| `PUBLIC_GTM_ID`            | Google Tag Manager ID                                                   |
+| `SENTRY_DSN`               | Error tracking (opcional)                                               |
+| `OTP_SECRET`               | Secreto HMAC para firmar tokens OTP y cookies de sesión de consultoría  |
+| `REPORT_LOGS`              | Binding de Cloudflare KV para logs de acceso a reportes                 |
+| `ZUTRA_KV`                 | Binding de Cloudflare KV para rate limiting distribuido                 |
 
 ## 📊 SEO & Accesibilidad
 

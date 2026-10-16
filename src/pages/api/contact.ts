@@ -3,6 +3,9 @@ export const prerender = false;
 import { sanitizeInput } from '@/lib/utils/sanitize';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getRuntimeEnv } from '@/lib/runtime-env';
+import { sendEmail } from '@/lib/email';
+import { saveLead } from '@/lib/leads';
+import { adminLeadEmail, confirmationEmail } from '@/lib/lead-emails';
 
 export const POST = async ({ request }: { request: Request }) => {
   // Rate limiting: 5 requests per 15 minutes per IP
@@ -76,12 +79,7 @@ export const POST = async ({ request }: { request: Request }) => {
       '';
 
     const TURNSTILE_SECRET_KEY = getEnv('TURNSTILE_SECRET_KEY');
-    const BREVO_API_KEY = getEnv('BREVO_API_KEY').trim();
     const ADMIN_EMAIL = getEnv('ADMIN_EMAIL') || 'hola@zutra.cl';
-    const TEMPLATE_CONFIRMATION = parseInt(
-      getEnv('BREVO_TEMPLATE_CONFIRMATION') || '2'
-    );
-    const TEMPLATE_ADMIN = parseInt(getEnv('BREVO_TEMPLATE_ADMIN') || '1');
 
     // --- VERIFICACIÓN TURNSTILE ---
     const userIP = request.headers.get('cf-connecting-ip') || '';
@@ -135,107 +133,50 @@ export const POST = async ({ request }: { request: Request }) => {
       );
     }
 
-    // --- ENVÍO A BREVO (Transactional) ---
-    if (!BREVO_API_KEY || BREVO_API_KEY === 'undefined') {
-      console.error('BREVO_API_KEY no definida o inválida.');
-      return new Response(
-        JSON.stringify({
-          message: 'Error de configuración de mensajería (API Key faltante)',
-        }),
-        {
-          status: 500,
-        }
-      );
-    }
+    // --- GUARDAR EL LEAD (Sanity) Y ENVIAR CORREOS (Resend) ---
+    const lead = {
+      name,
+      email,
+      phone: phone || undefined,
+      service: service || undefined,
+      timeline: timeline || undefined,
+      budget: budget || undefined,
+      message,
+      source: 'formulario' as const,
+    };
+    const adminMail = adminLeadEmail(lead);
+    const userMail = confirmationEmail(lead);
 
-    // Procesar nombre para los parámetros
-    const nameParts = name.trim().split(/\s+/);
-    const firstName = nameParts[0] || '';
-    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
-    const phoneRaw = phone?.replace(/[^0-9]/g, '') || '';
-    // La plantilla de Brevo no conoce los campos nuevos: van también al final del mensaje.
-    const extras = [
-      timeline && `Plazo deseado: ${timeline}`,
-      budget && `Presupuesto: ${budget}`,
-    ].filter(Boolean);
-    const adminMessage = extras.length
-      ? `${message}\n\n${extras.join(' · ')}`
-      : message;
-
-    const sender = { name: 'Agencia Zutra', email: 'hola@zutra.cl' };
-
-    // 1. Notificación para el Admin
-    const adminEmailPromise = fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'api-key': BREVO_API_KEY,
-      },
-      body: JSON.stringify({
-        sender,
-        to: [{ email: ADMIN_EMAIL, name: 'Zutra Admin' }],
-        templateId: TEMPLATE_ADMIN,
-        subject: `Nuevo Lead: ${firstName} ${lastName}`,
-        params: {
-          first_name: firstName,
-          last_name: lastName,
-          email: email,
-          phone: phone || 'No proporcionado',
-          phone_raw: phoneRaw,
-          service_interest: service || 'No especificado',
-          message: adminMessage,
-          timeline: timeline || 'No indicado',
-          budget: budget || 'No indicado',
-        },
+    const [saved, adminRes, userRes] = await Promise.all([
+      saveLead(lead),
+      sendEmail({
+        to: ADMIN_EMAIL,
+        subject: adminMail.subject,
+        html: adminMail.html,
+        replyTo: email,
       }),
-    });
-
-    // 2. Confirmación para el Usuario
-    const userEmailPromise = fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'api-key': BREVO_API_KEY,
-      },
-      body: JSON.stringify({
-        sender,
-        to: [{ email: email, name: name }],
-        templateId: TEMPLATE_CONFIRMATION,
-        subject: `¡Hola ${firstName}! Hemos recibido tu mensaje`,
-        params: {
-          first_name: firstName,
-        },
+      sendEmail({
+        to: email,
+        subject: userMail.subject,
+        html: userMail.html,
+        replyTo: ADMIN_EMAIL,
       }),
-    });
-
-    const [adminRes, userRes] = await Promise.all([
-      adminEmailPromise,
-      userEmailPromise,
     ]);
 
-    if (!adminRes.ok || !userRes.ok) {
-      const adminStatus = adminRes.status;
-      const userStatus = userRes.status;
+    if (!saved.ok)
+      console.error('Error guardando lead en Sanity:', saved.error);
+    if (!adminRes.ok)
+      console.error('Error correo al admin (Resend):', adminRes.error);
+    if (!userRes.ok)
+      console.error('Error correo de confirmación (Resend):', userRes.error);
 
-      // Log full errors internally but don't expose to client
-      if (!adminRes.ok) {
-        const adminError = await adminRes.json();
-        console.error('Error Brevo SMTP Admin:', adminError);
-      }
-      if (!userRes.ok) {
-        const userError = await userRes.json();
-        console.error('Error Brevo SMTP User:', userError);
-      }
-
+    // El lead se considera recibido si quedó guardado o si el aviso llegó al admin.
+    if (!saved.ok && !adminRes.ok) {
       return new Response(
         JSON.stringify({
-          message: 'Error al enviar correos. Inténtalo más tarde.',
+          message: 'No pudimos enviar tu mensaje. Inténtalo más tarde.',
         }),
-        {
-          status: 500,
-        }
+        { status: 500 }
       );
     }
 

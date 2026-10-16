@@ -57,6 +57,18 @@ const structure = (S: StructureBuilder) =>
   S.list()
     .title('Zutra Studio')
     .items([
+      // ─── LEADS ────────────────────────────────────────────────────
+      S.listItem()
+        .title('Leads')
+        .icon(StableIcons.UserCircle)
+        .child(
+          S.documentTypeList('lead')
+            .title('Leads')
+            .defaultOrdering([{field: 'receivedAt', direction: 'desc'}]),
+        ),
+
+      S.divider(),
+
       // ─── CONSULTORÍA ──────────────────────────────────────────────
       S.listItem()
         .title('Consultoría')
