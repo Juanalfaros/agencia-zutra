@@ -23,7 +23,8 @@ export interface Step {
 }
 
 export const bossEasterEggs = {
-  keywords: ['juan', 'camilo'],
+  // Solo con nombre y apellido: "Juan" o "Camilo" a secas son nombres de clientes.
+  keywords: ['juan alfaro', 'camilo bustamante'],
   responses: [
     '¡Chuta! ¿Jefe, es usted? 😅 Me pongo firme de inmediato.',
     '¡Identidad validada! Mis respetos, jefe. ¿Qué misión ejecutamos? ⚡',
@@ -37,22 +38,24 @@ export const easterEggs = {
     keywords: [
       'precio',
       'cuanto vale',
-      'valor',
+      'cuánto vale',
+      'cuanto cuesta',
+      'cuánto cuesta',
+      'cuanto sale',
+      'cuánto sale',
       'costo',
-      'barato',
-      'lucas',
       'cotizar',
+      'presupuesto',
     ],
     responses: [
-      '¡Oye, qué ansioso/a! 😂 Primero invítame a un café digital (cuéntame tu idea) y ahí vemos si tienes que romper el chanchito o si estamos conversando en serio.',
-      '¿Precio? Depende... ¿Buscas un gasto de 20 lucas que no sirve para nada o una inversión que te haga ganar plata? Sigamos y te cuento.',
-      'Tranquilo/a, no soy de los que se venden a la primera. Déjame conocer tu ambición y te aseguro que el valor te va a gustar más que el precio. 😉',
+      'El valor depende del alcance y no te lo voy a inventar. Lo definimos juntos en el diagnóstico gratuito de 30 minutos: si no te llevas claridad y próximos pasos, no seguimos.',
+      'Cada proyecto es distinto, así que no tengo una tabla de precios. Cuéntame qué necesitas y, en el diagnóstico gratuito, te damos un valor claro antes de que decidas.',
     ],
   },
   competencia: {
-    keywords: ['demas', 'agencia', 'barata'],
+    keywords: ['otras agencias', 'otra agencia', 'mas barato', 'más barato'],
     responses: [
-      'Sé lo que estás pensando... pero recuerda: lo barato sale caro y lo genérico no vende. Aquí hacemos **ejecución de autor**.',
+      'Es normal comparar. Nosotros no competimos por precio: hablas directo con quienes diseñan y programan, y partes con un diagnóstico gratuito.',
     ],
   },
 };
@@ -66,7 +69,7 @@ export const getSteps = (botState: BotState): Step[] => [
       if (hour < 12) greeting = '¡Buenos días!';
       else if (hour < 20) greeting = '¡Buenas tardes!';
 
-      return `${greeting} Soy **El Zutro**. ¿Cómo te llamas para que no nos tratemos de 'usted'?`;
+      return `${greeting} Soy **El Zutro**, el asistente de Zutra. ¿Cómo te llamas?`;
     },
     reiteration: '¿Cómo era tu nombre entonces?',
     type: 'text',
@@ -76,50 +79,48 @@ export const getSteps = (botState: BotState): Step[] => [
     id: 'email',
     question: (state: BotState) =>
       state.isBoss
-        ? `Ya Jefe, suélteme su mejor correo. Prometo que no es para spam, es por si el sistema se pone mañoso. ✉️`
-        : `¡Buena onda, ${state.data.name.split(' ')[0]}! Suéltame tu mejor correo. Prometo que no es para spam, es por si el sistema se pone mañoso. ✉️`,
+        ? `Ya Jefe, ¿su mejor correo? ✉️`
+        : `¡Mucho gusto, ${state.data.name.split(' ')[0]}! ¿Cuál es tu correo? Lo usamos solo para responderte, nada de spam. ✉️`,
     reiteration:
-      'Suéltame tu mejor correo. De verdad no es para spam, es por si el sistema se pone mañoso. ✉️',
+      '¿Cuál es tu correo? Lo usamos solo para responderte, nada de spam. ✉️',
     type: 'email',
     placeholder: 'tu@email.com',
   },
   {
     id: 'service',
-    question: () =>
-      'Ya directo al grano. ¿En qué módulo de crecimiento te interesa que le metamos mano hoy?',
-    reiteration:
-      '¿En qué módulo de crecimiento te interesa que trabajemos hoy?',
+    question: () => '¿Qué necesitas? Elige lo que más se parezca.',
+    reiteration: '¿Qué necesitas? Elige una opción.',
     type: 'chips',
     options: [
-      'Arquitectura Web',
-      'Identidad Visual',
-      'Partner Digital',
-      'Email Revenue',
-      'Otro',
+      'Marca',
+      'Web',
+      'Marca + Web',
+      'Partner',
+      'Complemento',
+      'No estoy seguro',
     ],
   },
   {
     id: 'custom_service',
-    condition: (state: BotState) => state.data.service === 'Otro',
+    condition: (state: BotState) => state.data.service === 'No estoy seguro',
     question: () =>
-      '¿Qué traes en mente? Cuéntame la firme para ver si te podemos ayudar.',
-    reiteration: 'Cuéntame la firme, ¿qué traes en mente para tu proyecto?',
+      'No hay problema, para eso es el diagnóstico gratuito. Cuéntame en una línea qué quieres lograr.',
+    reiteration: 'Cuéntame en una línea qué quieres lograr.',
     type: 'text',
-    placeholder: 'Ej: Una App, SEO, un milagro...',
+    placeholder: 'Ej: una web nueva, mejorar mi logo...',
   },
   {
     id: 'urgency',
-    question: () =>
-      'Dime la verdad: ¿Es uno de esos incendios que debemos apagar de inmediato o nos tomamos el tiempo de construir un imperio que no se queme?',
-    reiteration: '¿Qué tan rápido necesitamos movernos con esto?',
+    question: () => '¿Para cuándo lo necesitas?',
+    reiteration: '¿Para cuándo lo necesitas?',
     type: 'chips',
-    options: ['¡Es para ayer!', 'Este mes', 'Sin apuro'],
+    options: ['Lo antes posible', 'En 1 a 2 meses', 'Sin apuro'],
   },
   {
     id: 'final',
     question: () =>
-      '¡Estamos! Dale al botón de abajo y nos vemos en WhatsApp. Yo ya le pasé el chisme a los humanos para que te esperen con el café listo.',
+      '¡Listo! Toca el botón y seguimos por WhatsApp con los fundadores. Te respondemos en menos de 24 h hábiles.',
     type: 'cta',
-    buttonText: 'Hablar con los jefes →',
+    buttonText: 'Seguir por WhatsApp →',
   },
 ];

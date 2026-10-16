@@ -142,7 +142,7 @@ export function initWhatsAppBot() {
       renderInput(currentStepConfig);
     } else {
       await addMessage(
-        'Parece que ya recabamos todos tus datos. Haz clic abajo para ir a WhatsApp.',
+        'Ya tengo lo que necesitaba. Haz clic abajo para seguir por WhatsApp.',
         'bot',
         immediate
       );
@@ -199,11 +199,11 @@ export function initWhatsAppBot() {
 
   const finishAndRedirect = async () => {
     inputArea.innerHTML =
-      '<span style="color:var(--color-muted); font-size:0.875rem; text-align:center; display:block; width:100%; padding: 0.5rem 0;">Conectando con un embajador...</span>';
+      '<span style="color:var(--color-muted); font-size:0.875rem; text-align:center; display:block; width:100%; padding: 0.5rem 0;">Abriendo WhatsApp...</span>';
 
     // 1. Abrir WA inmediatamente (sincrónico al click para evitar popup blocker)
     const currentUrl = window.location.href;
-    const msg = `Hola 👋 Soy *${botState.data.name}* (${botState.data.email}).\n\nMe interesa ayuda con: *${botState.data.service}*.\nDisponibilidad para arrancar: *${botState.data.urgency}*.\n\n_(Vengo desde: ${currentUrl})_`;
+    const msg = `Hola 👋 Soy *${botState.data.name}* (${botState.data.email}).\n\nMe interesa: *${botState.data.service}*.\nPlazo: *${botState.data.urgency}*.\n\n_(Vengo desde: ${currentUrl})_`;
     const cleanedPhone = phone.replace(/[^0-9+]/g, '');
     const waUrl = `https://wa.me/${cleanedPhone}?text=${encodeURIComponent(msg)}`;
 

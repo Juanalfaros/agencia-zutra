@@ -2,17 +2,13 @@ export const prerender = false;
 
 import { sanitizeInput } from '@/lib/utils/sanitize';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { getRuntimeEnv } from '@/lib/runtime-env';
 
-export const POST = async ({
-  request,
-  locals,
-}: {
-  request: Request;
-  locals: any;
-}) => {
+export const POST = async ({ request }: { request: Request }) => {
   // Rate limiting: 5 requests per 15 minutes per IP
   const clientIP = request.headers.get('cf-connecting-ip') ?? 'unknown';
-  const kv = locals?.env?.ZUTRA_KV;
+  const runtimeEnv = await getRuntimeEnv();
+  const kv = runtimeEnv.ZUTRA_KV;
   const rateLimit = await checkRateLimit(
     `contact:${clientIP}`,
     5,
@@ -73,8 +69,6 @@ export const POST = async ({
     }
 
     // --- GESTIÓN DE VARIABLES DE ENTORNO (Astro 6 / Cloudflare v13) ---
-    // En Cloudflare Pages, las variables de entorno están en locals.env
-    const runtimeEnv = (locals?.env as any) || {};
     const getEnv = (key: string) =>
       runtimeEnv[key] ||
       (import.meta.env as any)[key] ||

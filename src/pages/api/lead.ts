@@ -4,11 +4,12 @@ export const prerender = false;
 
 import { sanitizeInput } from '@/lib/utils/sanitize';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { getRuntimeEnv, getEnvVar } from '@/lib/runtime-env';
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   // Rate limiting: 10 requests per 15 minutes per IP
   const clientIP = request.headers.get('cf-connecting-ip') ?? 'unknown';
-  const kv = locals?.runtime?.env?.ZUTRA_KV;
+  const kv = (await getRuntimeEnv()).ZUTRA_KV;
   const rateLimit = await checkRateLimit(
     `lead:${clientIP}`,
     10,
@@ -63,17 +64,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
       });
     }
 
-    // --- GESTIÓN DE VARIABLES DE ENTORNO (Astro 6 / Cloudflare v13) ---
-    const runtimeEnv = (locals?.runtime as any)?.env || {};
-    const getEnv = (key: string) =>
-      runtimeEnv[key] ||
-      (import.meta.env as any)[key] ||
-      (process.env as any)[key] ||
-      '';
+    // --- VARIABLES DE ENTORNO ---
+    const getEnv = getEnvVar;
 
-    const BREVO_API_KEY = getEnv('BREVO_API_KEY').trim();
+    const BREVO_API_KEY = (await getEnv('BREVO_API_KEY')).trim();
     // Lista opcional específica para leads del bot de WhatsApp
-    const BREVO_LIST_WHATSAPP = getEnv('BREVO_LIST_WHATSAPP');
+    const BREVO_LIST_WHATSAPP = await getEnv('BREVO_LIST_WHATSAPP');
 
     if (!BREVO_API_KEY) {
       console.error('Missing Brevo Configuration');
