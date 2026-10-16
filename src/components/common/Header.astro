@@ -13,21 +13,19 @@ import Logo from '@/components/common/Logo.astro';
       </a>
 
       <nav class="header__nav--desktop" aria-label="Principal">
-        {
-          navLinks.map((link) => {
-            // Activo en la página y en sus subrutas (/servicios/..., /portfolio/...)
-            const isActive =
-              !link.href.includes('#') &&
-              (Astro.url.pathname === link.href ||
-                Astro.url.pathname.startsWith(`${link.href}/`));
-            return (
-              <a href={link.href} class={isActive ? 'active' : ''}>
-                <span class="nav-text">{link.text}</span>
-                <span class="nav-indicator" />
-              </a>
-            );
-          })
-        }
+        {navLinks.map((link) => {
+          // Activo en la página y en sus subrutas (/servicios/..., /portfolio/...)
+          const isActive =
+            !link.href.includes('#') &&
+            (Astro.url.pathname === link.href ||
+              Astro.url.pathname.startsWith(`${link.href}/`));
+          return (
+            <a href={link.href} class={isActive ? 'active' : ''}>
+              <span class="nav-text">{link.text}</span>
+              <span class="nav-indicator" />
+            </a>
+          );
+        })}
       </nav>
 
       <div class="header__right">
@@ -71,18 +69,16 @@ import Logo from '@/components/common/Logo.astro';
         <i class="ph-bold ph-x"></i>
       </button>
       <nav class="mobile-menu__nav">
-        {
-          navLinks.map((link, index) => (
-            <a
-              href={link.href}
-              class="mobile-menu__link"
-              style={`animation-delay: ${0.1 * index}s`}
-            >
-              <span class="link-number">0{index + 1}</span>
-              <span class="link-label">{link.text}</span>
-            </a>
-          ))
-        }
+        {navLinks.map((link, index) => (
+          <a
+            href={link.href}
+            class="mobile-menu__link"
+            style={`animation-delay: ${0.1 * index}s`}
+          >
+            <span class="link-number">0{index + 1}</span>
+            <span class="link-label">{link.text}</span>
+          </a>
+        ))}
       </nav>
       <div class="mobile-menu__footer">
         <a href="/#contacto" class="button button--primary full-width">
@@ -118,6 +114,60 @@ import Logo from '@/components/common/Logo.astro';
 
   document.addEventListener('astro:page-load', syncHeader);
   syncHeader();
+
+  // Menú móvil. Se delega en `document` porque ClientRouter puede reemplazar el header.
+  const DESKTOP_MIN = 768;
+
+  function isMenuOpen() {
+    return (
+      document.getElementById('m-nav')?.classList.contains('active') ?? false
+    );
+  }
+
+  function setMenu(open: boolean) {
+    const menu = document.getElementById('m-nav');
+    const btn = document.getElementById('menu-btn');
+    if (!menu || !btn) return;
+    const wasOpen = menu.classList.contains('active');
+    menu.classList.toggle('active', open);
+    menu.setAttribute('aria-hidden', String(!open));
+    btn.setAttribute('aria-expanded', String(open));
+    btn.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+    document.body.classList.toggle('menu-open', open);
+    if (open) document.getElementById('menu-close-btn')?.focus();
+    else if (wasOpen) btn.focus();
+  }
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as Element | null;
+    if (!target) return;
+    if (target.closest('#menu-btn')) {
+      setMenu(!isMenuOpen());
+      return;
+    }
+    if (
+      isMenuOpen() &&
+      target.closest(
+        '#menu-close-btn, .mobile-menu__overlay, .mobile-menu__link, .mobile-menu__footer a'
+      )
+    ) {
+      setMenu(false);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isMenuOpen()) setMenu(false);
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= DESKTOP_MIN && isMenuOpen()) setMenu(false);
+  });
+
+  // Al navegar con ClientRouter el menú no debe quedar abierto.
+  document.addEventListener('astro:before-swap', () => {
+    document.body.classList.remove('menu-open');
+  });
+  document.addEventListener('astro:page-load', () => setMenu(false));
 </script>
 
 <style>
