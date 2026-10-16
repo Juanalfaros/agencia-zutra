@@ -13,8 +13,8 @@ import { socialMedia } from '@/data/socialmedia';
           ¿Listos para <br /><span class="text-accent">ir a todas?</span>
         </h2>
         <p class="contacto-subtitle">
-          Agenda tu auditoría gratuita. Si no te entregamos claridad y próximos
-          pasos accionables, no seguimos. <strong>Así de simple</strong>.
+          Agenda tu diagnóstico gratuito. Si en 30 minutos no te llevas claridad
+          y próximos pasos, no seguimos. <strong>Así de simple</strong>.
         </p>
 
         <div class="contacto-details">
@@ -34,7 +34,7 @@ import { socialMedia } from '@/data/socialmedia';
             </div>
             <div class="detail-text">
               <span class="detail-label">Operación</span>
-              <span class="detail-value">Remoto / Global</span>
+              <span class="detail-value">Santiago, Chile · Remoto</span>
             </div>
           </div>
         </div>
@@ -134,19 +134,12 @@ import { socialMedia } from '@/data/socialmedia';
                   <option value="" disabled selected
                     >Selecciona un servicio</option
                   >
-                  <option value="Diseño Web Premium">Diseño Web Premium</option>
-                  <option value="Desarrollo a Medida"
-                    >Desarrollo a Medida</option
-                  >
-                  <option value="E-commerce Pro">E-commerce Pro</option>
-                  <option value="Automatizaciones">Automatizaciones</option>
-                  <option value="Mantenimiento Digital"
-                    >Mantenimiento Digital</option
-                  >
-                  <option value="Sprint de Leads">Sprint de Leads</option>
-                  <option value="Partner Digital">Partner Digital</option>
-                  <option value="Email Revenue">Email Revenue</option>
-                  <option value="Consultoría / Otro">Consultoría / Otro</option>
+                  <option value="Marca">Marca</option>
+                  <option value="Web">Web</option>
+                  <option value="Marca + Web">Marca + Web</option>
+                  <option value="Partner">Partner</option>
+                  <option value="Complemento">Complemento</option>
+                  <option value="No estoy seguro">No estoy seguro</option>
                 </select>
               </div>
               <p id="err-service" class="form-error hidden">
@@ -261,7 +254,12 @@ import { socialMedia } from '@/data/socialmedia';
     const message = source?.dataset.message ?? '';
 
     if (service || message) {
-      if (service) serviceSelect.value = service;
+      // Solo preselecciona si la opción existe; un valor inexistente deja el select vacío.
+      if (
+        service &&
+        Array.from(serviceSelect.options).some((o) => o.value === service)
+      )
+        serviceSelect.value = service;
       if (message) messageTextarea.value = message;
 
       const wrapper = serviceSelect.closest('.form-wrapper');

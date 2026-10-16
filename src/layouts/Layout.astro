@@ -9,6 +9,7 @@ interface Props {
   showFooter?: boolean;
   showCTA?: boolean;
   showFAQ?: boolean;
+  noindex?: boolean;
   publishDate?: Date;
   updatedDate?: Date;
 }
@@ -37,6 +38,7 @@ const {
   showFooter = true,
   showCTA = true,
   showFAQ = false,
+  noindex = false,
   publishDate,
   updatedDate,
 } = Astro.props;
@@ -53,6 +55,7 @@ const GTM_ID = import.meta.env.PUBLIC_GTM_ID;
       image={image}
       type={type}
       keywords={keywords}
+      noindex={noindex}
       publishDate={publishDate}
       updatedDate={updatedDate}
     />

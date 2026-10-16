@@ -45,7 +45,7 @@ export const founders: Founder[] = [
   {
     id: 'juan',
     name: 'Juan Alfaro S.',
-    role: 'Co-fundador · Tech Lead',
+    role: 'Co-fundador · Web y Tecnología',
     bio: 'Juan une el diseño con la precisión técnica. Su misión es eliminar la fricción digital: sitios rápidos, correos que llegan a la bandeja de entrada y automatizaciones que ahorran horas de trabajo manual.',
     image: juanImg,
     avatar: juanAvatar,
