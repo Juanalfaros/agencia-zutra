@@ -10,27 +10,31 @@ const { project } = Astro.props;
 
 <section class="case-features">
   <div class="container">
-    {
-      project.keyFeatures && project.keyFeatures.length > 0 && (
-        <div class="features-box">
-          <h2 class="section-title">Features Clave</h2>
-          <div class="features-grid">
-            {project.keyFeatures.map((feature: any) => (
-              <div class="feature-card">
-                <h4 class="feature-title">{feature.title}</h4>
-                <p class="feature-desc">{feature.description}</p>
-                {feature.impact && (
-                  <span class="feature-impact">
-                    <i class={`ph-duotone ph-${feature.icon || 'lightning'}`} />{' '}
-                    {feature.impact}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
+    {project.keyFeatures && project.keyFeatures.length > 0 && (
+      <div class="features-box">
+        <h2 class="section-title">Features Clave</h2>
+        <div class="features-grid">
+          {project.keyFeatures.map((feature: any) => (
+            <div class="feature-card">
+              {feature.icon && (
+                <i
+                  class={`ph-duotone ph-${feature.icon} feature-icon`}
+                  aria-hidden="true"
+                />
+              )}
+              <h4 class="feature-title">{feature.title}</h4>
+              <p class="feature-desc">{feature.description}</p>
+              {feature.impact && (
+                <span class="feature-impact">
+                  <i class={`ph-duotone ph-${feature.icon || 'lightning'}`} />{' '}
+                  {feature.impact}
+                </span>
+              )}
+            </div>
+          ))}
         </div>
-      )
-    }
+      </div>
+    )}
   </div>
 </section>
 
@@ -96,6 +100,13 @@ const { project } = Astro.props;
     align-items: flex-start;
     gap: 0.75rem;
     text-transform: uppercase;
+  }
+
+  .feature-icon {
+    display: block;
+    font-size: 2rem;
+    color: var(--color-accent);
+    margin-bottom: 0.75rem;
   }
 
   .feature-impact i {

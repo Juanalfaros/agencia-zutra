@@ -8,7 +8,7 @@ export interface Perfil {
 
 export const perfiles: Perfil[] = [
   {
-    icon: 'ph-duotone ph-seedling',
+    icon: 'ph-duotone ph-plant',
     who: 'Tu negocio está partiendo',
     pain: 'Necesitas nombre, marca y web, y no sabes por dónde empezar.',
     offer: 'Marca + Web',
