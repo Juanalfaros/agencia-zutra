@@ -60,8 +60,7 @@ export async function getSanityClient(usePreview = false) {
     apiVersion: '2024-04-28',
     token: usePreview ? token : undefined,
     perspective: (usePreview ? 'previewDrafts' : 'published') as
-      | 'previewDrafts'
-      | 'published',
+      'previewDrafts' | 'published',
   };
 
   if (usePreview) {

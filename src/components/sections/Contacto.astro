@@ -10,7 +10,8 @@ import { socialMedia } from '@/data/socialmedia';
       <div class="contacto-info">
         <div class="section-badge">Contacto</div>
         <h2 class="contacto-title">
-          ¿Listos para <br /><span class="text-accent">ir a todas?</span>
+          ¿Listos para <br />
+          <span class="text-accent">ir a todas?</span>
         </h2>
         <p class="contacto-subtitle">
           Agenda tu diagnóstico gratuito. Si en 30 minutos no te llevas claridad
@@ -58,19 +59,17 @@ import { socialMedia } from '@/data/socialmedia';
         <div class="social-links-container">
           <p class="social-label">Síguenos</p>
           <div class="social-links">
-            {
-              socialMedia.map((social) => (
-                <a
-                  href={social.url}
-                  class="social-link"
-                  aria-label={social.ariaLabel}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <i class={social.icon} />
-                </a>
-              ))
-            }
+            {socialMedia.map((social) => (
+              <a
+                href={social.url}
+                class="social-link"
+                aria-label={social.ariaLabel}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class={social.icon} />
+              </a>
+            ))}
           </div>
         </div>
       </div>
@@ -79,7 +78,9 @@ import { socialMedia } from '@/data/socialmedia';
         <form id="contact-form" class="contact-form" novalidate>
           <div class="form-grid">
             <div class="form-group">
-              <label for="name" class="form-label">Nombre completo</label>
+              <label for="name" class="form-label">
+                Nombre completo
+              </label>
               <div class="input-wrapper">
                 <i class="ph-duotone ph-user"></i>
                 <input
@@ -93,11 +94,15 @@ import { socialMedia } from '@/data/socialmedia';
                   aria-describedby="err-name"
                 />
               </div>
-              <p id="err-name" class="form-error hidden">Ingresa tu nombre.</p>
+              <p id="err-name" class="form-error hidden">
+                Ingresa tu nombre.
+              </p>
             </div>
 
             <div class="form-group">
-              <label for="email" class="form-label">Correo electrónico</label>
+              <label for="email" class="form-label">
+                Correo electrónico
+              </label>
               <div class="input-wrapper">
                 <i class="ph-duotone ph-envelope"></i>
                 <input
@@ -118,7 +123,9 @@ import { socialMedia } from '@/data/socialmedia';
             </div>
 
             <div class="form-group">
-              <label for="phone" class="form-label">WhatsApp / Teléfono</label>
+              <label for="phone" class="form-label">
+                WhatsApp / Teléfono
+              </label>
               <div class="input-wrapper">
                 <i class="ph-duotone ph-whatsapp-logo"></i>
                 <input
@@ -132,12 +139,15 @@ import { socialMedia } from '@/data/socialmedia';
                   class="form-input"
                 />
               </div>
-              <p id="err-phone" class="form-error hidden">Ingresa tu número.</p>
+              <p id="err-phone" class="form-error hidden">
+                Ingresa tu número.
+              </p>
             </div>
 
             <div class="form-group">
-              <label for="service" class="form-label">Servicio de interés</label
-              >
+              <label for="service" class="form-label">
+                Servicio de interés
+              </label>
               <div class="input-wrapper">
                 <i class="ph-duotone ph-sparkle"></i>
                 <select
@@ -147,9 +157,9 @@ import { socialMedia } from '@/data/socialmedia';
                   class="form-input select-input"
                   aria-describedby="err-service"
                 >
-                  <option value="" disabled selected
-                    >Selecciona un servicio</option
-                  >
+                  <option value="" disabled selected>
+                    Selecciona un servicio
+                  </option>
                   <option value="Marca">Marca</option>
                   <option value="Web">Web</option>
                   <option value="Marca + Web">Marca + Web</option>
@@ -164,10 +174,9 @@ import { socialMedia } from '@/data/socialmedia';
             </div>
 
             <div class="form-group">
-              <label for="timeline" class="form-label"
-                >Plazo deseado <span class="form-optional">(opcional)</span
-                ></label
-              >
+              <label for="timeline" class="form-label">
+                Plazo deseado <span class="form-optional">(opcional)</span>
+              </label>
               <div class="input-wrapper">
                 <i class="ph-duotone ph-calendar-blank"></i>
                 <select
@@ -175,7 +184,9 @@ import { socialMedia } from '@/data/socialmedia';
                   name="timeline"
                   class="form-input select-input"
                 >
-                  <option value="" selected>Sin apuro</option>
+                  <option value="" selected>
+                    Sin apuro
+                  </option>
                   <option value="Lo antes posible">Lo antes posible</option>
                   <option value="En 1 a 2 meses">En 1 a 2 meses</option>
                   <option value="En 3 meses o más">En 3 meses o más</option>
@@ -184,11 +195,10 @@ import { socialMedia } from '@/data/socialmedia';
             </div>
 
             <div class="form-group">
-              <label for="budget" class="form-label"
-                >Presupuesto aproximado <span class="form-optional"
-                  >(opcional)</span
-                ></label
-              >
+              <label for="budget" class="form-label">
+                Presupuesto aproximado{' '}
+                <span class="form-optional">(opcional)</span>
+              </label>
               <div class="input-wrapper">
                 <i class="ph-duotone ph-coins"></i>
                 <select
@@ -196,11 +206,13 @@ import { socialMedia } from '@/data/socialmedia';
                   name="budget"
                   class="form-input select-input"
                 >
-                  <option value="" selected>Prefiero conversarlo</option>
+                  <option value="" selected>
+                    Prefiero conversarlo
+                  </option>
                   <option value="Hasta $500.000">Hasta $500.000</option>
-                  <option value="$500.000 a $1.000.000"
-                    >$500.000 a $1.000.000</option
-                  >
+                  <option value="$500.000 a $1.000.000">
+                    $500.000 a $1.000.000
+                  </option>
                   <option value="Más de $1.000.000">Más de $1.000.000</option>
                 </select>
               </div>
@@ -208,7 +220,9 @@ import { socialMedia } from '@/data/socialmedia';
           </div>
 
           <div class="form-group">
-            <label for="message" class="form-label">¿En qué te ayudamos?</label>
+            <label for="message" class="form-label">
+              ¿En qué te ayudamos?
+            </label>
             <textarea
               id="message"
               name="message"
@@ -216,7 +230,8 @@ import { socialMedia } from '@/data/socialmedia';
               placeholder="Cuéntanos brevemente qué necesitas. (Ej: 'Necesito una web nueva', 'Quiero mejorar mis correos', 'Busco soporte mensual'...)"
               required
               class="form-input"
-              aria-describedby="err-message"></textarea>
+              aria-describedby="err-message"
+            ></textarea>
             <p id="err-message" class="form-error hidden">
               Cuéntanos brevemente qué necesitas.
             </p>
@@ -232,8 +247,8 @@ import { socialMedia } from '@/data/socialmedia';
                 aria-describedby="err-consent"
               />
               <span class="checkmark"></span>
-              <span class="form-consent-label"
-                >Acepto ser contactad@ por el equipo de Zutra.
+              <span class="form-consent-label">
+                Acepto ser contactad@ por el equipo de Zutra.
               </span>
             </label>
             <p id="err-consent" class="form-error hidden">
@@ -244,8 +259,7 @@ import { socialMedia } from '@/data/socialmedia';
           <div
             id="turnstile-widget"
             data-sitekey={import.meta.env.PUBLIC_TURNSTILE_SITE_KEY}
-          >
-          </div>
+          ></div>
 
           <button
             id="submit-button"
@@ -450,6 +464,12 @@ import { socialMedia } from '@/data/socialmedia';
 
         try {
           const formData = new FormData(form);
+          formData.append(
+            'accent',
+            getComputedStyle(document.documentElement)
+              .getPropertyValue('--accent-main')
+              .trim()
+          );
 
           // Capturar datos para Enhanced Conversions (GA4) antes del envío
           const email = formData.get('email') as string;

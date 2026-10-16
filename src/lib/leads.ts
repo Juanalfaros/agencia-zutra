@@ -15,7 +15,7 @@ export interface Lead {
 // Requiere SANITY_AUTH_TOKEN con permiso de escritura.
 export async function saveLead(
   lead: Lead
-): Promise<{ ok: boolean; error?: string }> {
+): Promise<{ ok: boolean; id?: string; error?: string }> {
   const [projectId, dataset, token] = await Promise.all([
     getEnvVar('SANITY_PROJECT_ID'),
     getEnvVar('SANITY_DATASET'),
@@ -26,7 +26,7 @@ export async function saveLead(
 
   try {
     const res = await fetch(
-      `https://${projectId}.api.sanity.io/v2025-08-15/data/mutate/${dataset || 'production'}`,
+      `https://${projectId}.api.sanity.io/v2025-08-15/data/mutate/${dataset || 'production'}?returnIds=true`,
       {
         method: 'POST',
         headers: {
@@ -51,7 +51,10 @@ export async function saveLead(
       const body = await res.text().catch(() => '');
       return { ok: false, error: `${res.status} ${body.slice(0, 200)}` };
     }
-    return { ok: true };
+    const json = (await res.json().catch(() => ({}))) as {
+      results?: { id?: string }[];
+    };
+    return { ok: true, id: json.results?.[0]?.id };
   } catch (err: any) {
     return { ok: false, error: err?.message ?? 'fetch failed' };
   }

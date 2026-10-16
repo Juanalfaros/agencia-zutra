@@ -10,21 +10,7 @@ import { adaptAuditReport } from '@/lib/sanity-adapters';
 // .dev.vars provides these values locally; CF Pages dashboard provides them in production.
 import { env as cfEnv } from 'cloudflare:workers';
 import { sendEmail } from '@/lib/email';
-
-// Maps each accent palette to its logo filename and button text color.
-// Must stay in sync with the palettes array in Layout.astro.
-const ACCENT_MAP: Record<string, { logo: string; textColor: string }> = {
-  '#EFD319': { logo: 'logo-zutra_amarillo.png', textColor: '#080501' },
-  '#19EFB5': { logo: 'logo-zutra_verde-menta.png', textColor: '#080501' },
-  '#FF0055': { logo: 'logo-zutra_magenta.png', textColor: '#ffffff' },
-  '#811DBC': { logo: 'logo-zutra_purpura.png', textColor: '#ffffff' },
-};
-
-const DEFAULT_ACCENT = {
-  color: '#EFD319',
-  logo: 'logo-zutra_amarillo.png',
-  textColor: '#080501',
-};
+import { resolveAccent } from '@/lib/brand';
 
 export const POST = async ({ request }: any) => {
   try {
@@ -102,13 +88,7 @@ export const POST = async ({ request }: any) => {
     }
 
     // Resolve accent → logo + button text color
-    const normalizedColor = (accentColor ?? '').trim().toUpperCase();
-    const accentEntry = Object.entries(ACCENT_MAP).find(
-      ([key]) => key.toUpperCase() === normalizedColor
-    );
-    const accent = accentEntry
-      ? { color: accentEntry[0], ...accentEntry[1] }
-      : DEFAULT_ACCENT;
+    const accent = resolveAccent(accentColor);
 
     const timestamp = Date.now();
     const token = await signToken(`${email}|${slug}|${timestamp}`, OTP_SECRET);

@@ -218,7 +218,12 @@ export function initWhatsAppBot() {
     fetch('/api/lead', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(botState.data),
+      body: JSON.stringify({
+        ...botState.data,
+        accent: getComputedStyle(document.documentElement)
+          .getPropertyValue('--accent-main')
+          .trim(),
+      }),
       signal: controller.signal,
     })
       .catch((e) => console.error('Non-blocking lead capture error', e))

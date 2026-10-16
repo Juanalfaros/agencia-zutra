@@ -8,6 +8,7 @@ import { getRuntimeEnv, getEnvVar } from '@/lib/runtime-env';
 import { sendEmail } from '@/lib/email';
 import { saveLead } from '@/lib/leads';
 import { adminLeadEmail } from '@/lib/lead-emails';
+import { resolveAccent } from '@/lib/brand';
 
 export const POST: APIRoute = async ({ request }) => {
   // Rate limiting: 10 requests per 15 minutes per IP
@@ -38,6 +39,7 @@ export const POST: APIRoute = async ({ request }) => {
       email: string;
       service: string;
       urgency: string;
+      accent?: string;
     };
     const { name, email, service, urgency } = data;
 
@@ -76,17 +78,16 @@ export const POST: APIRoute = async ({ request }) => {
       timeline: sanitizedUrgency,
       source: 'bot' as const,
     };
-    const adminMail = adminLeadEmail(lead);
-
-    const [saved, mailed] = await Promise.all([
-      saveLead(lead),
-      sendEmail({
-        to: ADMIN_EMAIL,
-        subject: adminMail.subject,
-        html: adminMail.html,
-        replyTo: sanitizedEmail,
-      }),
-    ]);
+    const accent = resolveAccent(data.accent);
+    const saved = await saveLead(lead);
+    const adminMail = adminLeadEmail(lead, { accent, leadId: saved.id });
+    const mailed = await sendEmail({
+      to: ADMIN_EMAIL,
+      subject: adminMail.subject,
+      html: adminMail.html,
+      text: adminMail.text,
+      replyTo: sanitizedEmail,
+    });
 
     if (!saved.ok) console.error('Error guardando lead del bot:', saved.error);
     if (!mailed.ok)

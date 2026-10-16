@@ -6,6 +6,7 @@ import { getRuntimeEnv } from '@/lib/runtime-env';
 import { sendEmail } from '@/lib/email';
 import { saveLead } from '@/lib/leads';
 import { adminLeadEmail, confirmationEmail } from '@/lib/lead-emails';
+import { resolveAccent } from '@/lib/brand';
 
 export const POST = async ({ request }: { request: Request }) => {
   // Rate limiting: 5 requests per 15 minutes per IP
@@ -29,7 +30,15 @@ export const POST = async ({ request }: { request: Request }) => {
   const contentType = request.headers.get('Content-Type') || '';
 
   try {
-    let name, email, message, phone, service, timeline, budget, turnstileToken;
+    let name,
+      email,
+      message,
+      phone,
+      service,
+      timeline,
+      budget,
+      accentRaw,
+      turnstileToken;
 
     if (contentType.includes('multipart/form-data')) {
       const formData = await request.formData();
@@ -39,6 +48,7 @@ export const POST = async ({ request }: { request: Request }) => {
       phone = formData.get('phone')?.toString();
       service = formData.get('service')?.toString();
       timeline = formData.get('timeline')?.toString();
+      accentRaw = formData.get('accent')?.toString();
       budget = formData.get('budget')?.toString();
       turnstileToken = formData.get('cf-turnstile-response')?.toString();
     } else {
@@ -49,6 +59,7 @@ export const POST = async ({ request }: { request: Request }) => {
       phone = data.phone;
       service = data.service;
       timeline = data.timeline;
+      accentRaw = data.accent;
       budget = data.budget;
       turnstileToken = data.turnstileToken;
     }
@@ -144,21 +155,27 @@ export const POST = async ({ request }: { request: Request }) => {
       message,
       source: 'formulario' as const,
     };
-    const adminMail = adminLeadEmail(lead);
-    const userMail = confirmationEmail(lead);
+    // El color de acento que vio el visitante personaliza ambos correos.
+    const accent = resolveAccent(accentRaw);
 
-    const [saved, adminRes, userRes] = await Promise.all([
-      saveLead(lead),
+    // Primero se guarda, para que el aviso al admin pueda enlazar al lead en el Studio.
+    const saved = await saveLead(lead);
+    const adminMail = adminLeadEmail(lead, { accent, leadId: saved.id });
+    const userMail = confirmationEmail(lead, { accent });
+
+    const [adminRes, userRes] = await Promise.all([
       sendEmail({
         to: ADMIN_EMAIL,
         subject: adminMail.subject,
         html: adminMail.html,
+        text: adminMail.text,
         replyTo: email,
       }),
       sendEmail({
         to: email,
         subject: userMail.subject,
         html: userMail.html,
+        text: userMail.text,
         replyTo: ADMIN_EMAIL,
       }),
     ]);
