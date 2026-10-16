@@ -51,6 +51,20 @@ const categoriesDocs = await client.fetch(
 const categoryLabel =
   categoriesDocs.find((c: any) => c.slug === service.category)?.name ||
   service.category;
+
+const SERVICE_OPTION: Record<string, string> = {
+  marca: 'Marca',
+  web: 'Web',
+  'marca-web': 'Marca + Web',
+  partner: 'Partner',
+  'kits-redes-sociales': 'Complemento',
+  'diseno-presentaciones-pitch-decks': 'Complemento',
+  'email-marketing-newsletters': 'Complemento',
+};
+const optionValue = SERVICE_OPTION[service.slug];
+const contactHref = optionValue
+  ? `/?servicio=${encodeURIComponent(optionValue)}#contacto`
+  : '/#contacto';
 ---
 
 <Layout
@@ -114,39 +128,206 @@ const categoryLabel =
         <div class="service-grid">
           {/* COLUMNA IZQUIERDA: La "Carne" del servicio */}
           <div class="content-column animate-fade-up delay-1">
-            {/* 1. Descripción Larga (Prose) */}
+            {/* 1. El problema */}
             <section class="section-block">
-              <h3 class="block-label">El Problema & La Solución</h3>
+              <h2 class="block-label">
+                {service.problem ? 'El problema' : 'De qué se trata'}
+              </h2>
               <div class="prose-wrapper">
-                <div class="prose" set:html={service.longDescription} />
-              </div>
-            </section>
-
-            <hr class="divider" />
-
-            {/* 2. Scope of Work (Features) */}
-            <section class="section-block">
-              <div class="block-header">
-                <h2>Scope of Work</h2>
-                <p>Desglose operativo de la ejecución.</p>
-              </div>
-
-              <div class="features-list">
                 {
-                  service.features.map((feature: any) => (
-                    <article class="feature-row">
-                      <div class="feature-icon-box">
-                        <i class="ph-duotone ph-check-circle" />
-                      </div>
-                      <div class="feature-content">
-                        <h3 class="feature-title">{feature.title}</h3>
-                        <p class="feature-desc">{feature.description}</p>
-                      </div>
-                    </article>
-                  ))
+                  service.problem ? (
+                    <p class="prose">{service.problem}</p>
+                  ) : (
+                    <div class="prose" set:html={service.longDescription} />
+                  )
                 }
               </div>
             </section>
+
+            {/* 2. Variantes */}
+            {
+              service.variants && service.variants.length > 0 && (
+                <>
+                  <hr class="divider" />
+                  <section class="section-block">
+                    <div class="block-header">
+                      <h2>Elige tu versión</h2>
+                      <p>
+                        El mismo método, con el alcance que tu negocio necesita.
+                      </p>
+                    </div>
+                    <div class="variant-grid">
+                      {service.variants.map((v) => (
+                        <article class="variant-card">
+                          <h3>{v.title}</h3>
+                          <p>{v.text}</p>
+                          <ul>
+                            {(v.items || []).map((item) => (
+                              <li>
+                                <i class="ph-bold ph-check" /> {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </article>
+                      ))}
+                    </div>
+                  </section>
+                </>
+              )
+            }
+
+            <hr class="divider" />
+
+            {/* 3. Qué incluye */}
+            <section class="section-block">
+              <div class="block-header">
+                <h2>Qué incluye</h2>
+              </div>
+
+              {
+                service.features.length > 0 ? (
+                  <div class="features-list">
+                    {service.features.map((feature: any) => (
+                      <article class="feature-row">
+                        <div class="feature-icon-box">
+                          <i class="ph-duotone ph-check-circle" />
+                        </div>
+                        <div class="feature-content">
+                          <h3 class="feature-title">{feature.title}</h3>
+                          <p class="feature-desc">{feature.description}</p>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                ) : (
+                  <ul class="plain-list">
+                    {(service.deliverables || []).map((d: string) => (
+                      <li>
+                        <i class="ph-bold ph-check" /> {d}
+                      </li>
+                    ))}
+                  </ul>
+                )
+              }
+            </section>
+
+            {/* 4. Alcance: qué entra y qué no */}
+            {
+              service.notIncluded && service.notIncluded.length > 0 && (
+                <section class="section-block">
+                  <div class="block-header">
+                    <h2>Alcance</h2>
+                    <p>Para que no haya sorpresas: qué entra y qué no.</p>
+                  </div>
+                  <div class="scope-grid">
+                    {service.deliverables &&
+                      service.deliverables.length > 0 && (
+                        <div class="scope-col">
+                          <h3>Entra</h3>
+                          <ul class="plain-list">
+                            {service.deliverables.map((d: string) => (
+                              <li>
+                                <i class="ph-bold ph-check" /> {d}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    <div class="scope-col scope-col--out">
+                      <h3>No entra</h3>
+                      <ul class="plain-list">
+                        {service.notIncluded.map((d: string) => (
+                          <li>
+                            <i class="ph-bold ph-x" /> {d}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </section>
+              )
+            }
+
+            {/* 5. Proceso y plazos */}
+            {
+              service.process && service.process.length > 0 && (
+                <section class="section-block">
+                  <div class="block-header">
+                    <h2>Proceso y plazos</h2>
+                  </div>
+                  <ol class="process-list">
+                    {service.process.map((step) => (
+                      <li>
+                        <div class="process-head">
+                          <h3>{step.title}</h3>
+                          <span class="process-time">{step.time}</span>
+                        </div>
+                        <p>{step.text}</p>
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+              )
+            }
+
+            {/* 6. Qué necesitamos de ti */}
+            {
+              service.needs && service.needs.length > 0 && (
+                <section class="section-block">
+                  <div class="block-header">
+                    <h2>Qué necesitamos de ti</h2>
+                  </div>
+                  <ul class="plain-list">
+                    {service.needs.map((n: string) => (
+                      <li>
+                        <i class="ph-bold ph-arrow-right" /> {n}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )
+            }
+
+            {/* 7. Casos relacionados */}
+            {
+              service.relatedCases && service.relatedCases.length > 0 && (
+                <section class="section-block">
+                  <div class="block-header">
+                    <h2>Así se ve en la práctica</h2>
+                  </div>
+                  <div class="related-grid">
+                    {service.relatedCases.map((c) => (
+                      <a href={`/portfolio/${c.slug}`} class="related-card">
+                        {c.image && <img src={c.image} alt="" loading="lazy" />}
+                        <span class="related-title">{c.title}</span>
+                        {c.industry && (
+                          <span class="related-industry">{c.industry}</span>
+                        )}
+                      </a>
+                    ))}
+                  </div>
+                </section>
+              )
+            }
+
+            {/* 8. FAQ propias */}
+            {
+              service.faqs && service.faqs.length > 0 && (
+                <section class="section-block">
+                  <div class="block-header">
+                    <h2>Preguntas frecuentes</h2>
+                  </div>
+                  <div class="faq-list">
+                    {service.faqs.map((f) => (
+                      <details class="faq-item">
+                        <summary>{f.question}</summary>
+                        <p>{f.answer}</p>
+                      </details>
+                    ))}
+                  </div>
+                </section>
+              )
+            }
           </div>
 
           {/* COLUMNA DERECHA: Sticky Sidebar (La Venta) */}
@@ -175,35 +356,17 @@ const categoryLabel =
 
                   <div class="cta-wrapper">
                     <a
-                      href="/#contacto"
+                      href={contactHref}
                       class="button button--primary button--full"
                     >
-                      Solicitar Cotización <i class="ph-bold ph-arrow-right"
+                      Diagnóstico gratuito <i class="ph-bold ph-arrow-right"
                       ></i>
                     </a>
                     <p class="microcopy">
-                      <span class="dot-live"></span> Disponibilidad inmediata
+                      <span class="dot-live"></span> Te respondemos en menos de 24
+                      h hábiles
                     </p>
                   </div>
-                </div>
-              </div>
-
-              {/* Impact Box V2 (Estilo Técnico) */}
-              <div class="impact-box-v2">
-                <div class="impact-header">
-                  <i class="ph-duotone ph-chart-line-up"></i>
-                  <h3 class="sidebar-subtitle">Impacto Directo</h3>
-                </div>
-                <div class="impact-grid">
-                  {
-                    service.benefits.map((benefit: string, index: number) => (
-                      <div class="impact-item">
-                        <div class="impact-number">0{index + 1}</div>
-                        <p class="impact-text">{benefit}</p>
-                        <i class="ph-bold ph-check check-icon" />
-                      </div>
-                    ))
-                  }
                 </div>
               </div>
             </div>
@@ -220,24 +383,24 @@ const categoryLabel =
             <div class="cta-narrative">
               <span class="cta-tag">¿Siguiente paso?</span>
               <h2 class="cta-heading">
-                Deja de competir.<br />
-                <span class="text-accent">Empieza a dominar.</span>
+                ¿Conversamos?<br />
+                <span class="text-accent">30 minutos, sin costo.</span>
               </h2>
               <p class="cta-sub">
-                Tienes la visión. Nosotros tenemos la ejecución técnica y
-                creativa para construirla. Sin intermediarios, sin burocracia.
+                Cuéntanos qué necesitas. Si en 30 minutos no te llevas claridad
+                y próximos pasos, no seguimos.
               </p>
             </div>
             <div class="cta-action-area">
               <a
-                href="/#contacto"
+                href={contactHref}
                 class="button button--accent-outline button--xl"
               >
-                Iniciar Proyecto <i class="ph-bold ph-arrow-up-right"></i>
+                Diagnóstico gratuito <i class="ph-bold ph-arrow-up-right"></i>
               </a>
               <div class="tech-support-line">
                 <i class="ph-duotone ph-headset"></i>
-                <span>Soporte directo con ingeniería y diseño.</span>
+                <span>Hablas directo con quienes hacen el trabajo.</span>
               </div>
             </div>
           </div>
@@ -775,5 +938,176 @@ const categoryLabel =
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  /* ------------------------------
+       BLOQUES NUEVOS DE LA PLANTILLA
+    ------------------------------ */
+  .variant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .variant-card,
+  .scope-col,
+  .related-card {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    background: var(--color-surface, transparent);
+  }
+
+  .variant-card h3,
+  .scope-col h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .variant-card p {
+    color: var(--color-muted);
+    margin: 0 0 0.75rem;
+  }
+
+  .variant-card ul,
+  .plain-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .variant-card li i,
+  .plain-list li i {
+    color: var(--color-accent);
+    margin-right: 0.35rem;
+  }
+
+  .scope-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .scope-col--out li i {
+    color: var(--color-muted);
+  }
+
+  .process-list {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    counter-reset: paso;
+  }
+
+  .process-list li {
+    position: relative;
+    padding-left: 3rem;
+    counter-increment: paso;
+  }
+
+  .process-list li::before {
+    content: counter(paso);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+    color: var(--color-bg);
+    background: var(--color-accent);
+  }
+
+  .process-head {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    flex-wrap: wrap;
+  }
+
+  .process-head h3 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .process-time {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  .process-list p {
+    margin: 0.25rem 0 0;
+    color: var(--color-muted);
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .related-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    text-decoration: none;
+    color: inherit;
+    padding: 0.75rem;
+    transition: border-color 0.3s ease;
+  }
+
+  .related-card:hover {
+    border-color: var(--color-accent);
+  }
+
+  .related-card img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius-sm, 0.5rem);
+  }
+
+  .related-title {
+    font-weight: 700;
+  }
+
+  .related-industry {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .faq-item {
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1.1rem;
+  }
+
+  .faq-item summary {
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .faq-item p {
+    margin: 0.75rem 0 0;
+    color: var(--color-muted);
   }
 </style>

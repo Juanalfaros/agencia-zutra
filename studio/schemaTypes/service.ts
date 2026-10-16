@@ -52,6 +52,60 @@ export const serviceType = defineType({
         }),
       ],
     }),
+    defineField({ name: 'problem', title: 'El problema (en palabras del cliente)', type: 'text', group: 'content' }),
+    defineField({
+      name: 'variants',
+      title: 'Variantes (ej: Landing, Corporativa, Tienda)',
+      type: 'array',
+      group: 'content',
+      of: [
+        defineField({
+          name: 'variant',
+          type: 'object',
+          fields: [
+            defineField({ name: 'title', title: 'Nombre', type: 'string' }),
+            defineField({ name: 'text', title: 'Para quién y para qué', type: 'text' }),
+            defineField({ name: 'items', title: 'Incluye', type: 'array', of: [{ type: 'string' }] }),
+          ],
+        }),
+      ],
+    }),
+    defineField({ name: 'notIncluded', title: 'Qué no incluye', type: 'array', of: [{ type: 'string' }], group: 'content' }),
+    defineField({
+      name: 'process',
+      title: 'Proceso y plazos',
+      type: 'array',
+      group: 'content',
+      of: [
+        defineField({
+          name: 'step',
+          type: 'object',
+          fields: [
+            defineField({ name: 'title', title: 'Paso', type: 'string' }),
+            defineField({ name: 'time', title: 'Duración', type: 'string' }),
+            defineField({ name: 'text', title: 'Descripción', type: 'text' }),
+          ],
+        }),
+      ],
+    }),
+    defineField({ name: 'needs', title: 'Qué necesitamos de ti', type: 'array', of: [{ type: 'string' }], group: 'content' }),
+    defineField({
+      name: 'faqs',
+      title: 'Preguntas frecuentes del servicio',
+      type: 'array',
+      group: 'content',
+      of: [
+        defineField({
+          name: 'faq',
+          type: 'object',
+          fields: [
+            defineField({ name: 'question', title: 'Pregunta', type: 'string' }),
+            defineField({ name: 'answer', title: 'Respuesta', type: 'text' }),
+          ],
+        }),
+      ],
+    }),
+    defineField({ name: 'relatedCases', title: 'Casos relacionados', type: 'array', of: [{ type: 'reference', to: [{ type: 'caseStudy' }] }], group: 'content' }),
     defineField({ name: 'benefits', title: 'Beneficios', type: 'array', of: [{ type: 'string' }], group: 'content' }),
     defineField({ name: 'result', title: 'Resultado / Outcome', type: 'string', group: 'content' }),
 

@@ -21,7 +21,7 @@ export const ofertaNucleo: OfertaNucleo[] = [
       'Paleta y tipografías',
       'Manual de marca para usarla sin errores',
     ],
-    href: '/servicios/identidad-corporativa',
+    href: '/servicios/marca',
     cta: 'Ver Marca',
   },
   {
@@ -32,7 +32,7 @@ export const ofertaNucleo: OfertaNucleo[] = [
       'Diseño a medida, sin plantillas',
       'Posicionamiento en buscadores incluido',
     ],
-    href: '/servicios/desarrollo-web-corporativo',
+    href: '/servicios/web',
     cta: 'Ver Web',
   },
   {
@@ -43,8 +43,8 @@ export const ofertaNucleo: OfertaNucleo[] = [
       'Marca y sitio pensados juntos',
       'Una sola conversación, un solo plazo',
     ],
-    href: '/#contacto',
-    cta: 'Conversemos',
+    href: '/servicios/marca-web',
+    cta: 'Ver Marca + Web',
     featured: true,
   },
 ];
@@ -61,5 +61,5 @@ export const complementos: Complemento[] = [
 export const partner = {
   title: 'Partner',
   text: 'Después del lanzamiento: mantención, hosting y horas mensuales de diseño y código.',
-  href: '/servicios/partner-digital-mantenimiento',
+  href: '/servicios/partner',
 };

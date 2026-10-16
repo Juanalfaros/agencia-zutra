@@ -33,6 +33,33 @@ export default defineConfig({
     ],
   },
   output: 'server',
+  // Slugs antiguos de servicios (unificados en Marca, Web y Partner)
+  redirects: {
+    '/servicios/identidad-corporativa': {
+      status: 301,
+      destination: '/servicios/marca',
+    },
+    '/servicios/desarrollo-web-corporativo': {
+      status: 301,
+      destination: '/servicios/web',
+    },
+    '/servicios/landing-pages-conversion': {
+      status: 301,
+      destination: '/servicios/web',
+    },
+    '/servicios/ecommerce-tiendas-online': {
+      status: 301,
+      destination: '/servicios/web',
+    },
+    '/servicios/seo-posicionamiento-web': {
+      status: 301,
+      destination: '/servicios/web',
+    },
+    '/servicios/partner-digital-mantenimiento': {
+      status: 301,
+      destination: '/servicios/partner',
+    },
+  },
   devToolbar: {
     enabled: false,
   },

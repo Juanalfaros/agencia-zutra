@@ -498,6 +498,13 @@ export function adaptService(doc: any): Service {
         }
       : null,
     order: doc.order || 99,
+    problem: doc.problem || '',
+    variants: doc.variants || [],
+    notIncluded: doc.notIncluded || [],
+    process: doc.process || [],
+    needs: doc.needs || [],
+    faqs: doc.faqs || [],
+    relatedCases: (doc.relatedCases || []).filter(Boolean),
   } as any;
 }
 

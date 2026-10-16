@@ -108,7 +108,14 @@ export const SERVICE_FIELDS = groq`
   duration,
   icon,
   tags,
-  order
+  order,
+  problem,
+  variants,
+  notIncluded,
+  process,
+  needs,
+  faqs,
+  "relatedCases": relatedCases[]->{ _id, title, "slug": slug.current, industry, "image": featuredImage.asset->url }
 `;
 
 export const CASE_STUDY_FIELDS = groq`

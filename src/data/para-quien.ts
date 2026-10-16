@@ -12,7 +12,7 @@ export const perfiles: Perfil[] = [
     who: 'Tu negocio está partiendo',
     pain: 'Necesitas nombre, marca y web, y no sabes por dónde empezar.',
     offer: 'Marca + Web',
-    href: '/#contacto',
+    href: '/servicios/marca-web',
   },
   {
     icon: 'ph-duotone ph-storefront',
@@ -26,6 +26,6 @@ export const perfiles: Perfil[] = [
     who: 'Tu web es lenta o difícil de editar',
     pain: 'Cada cambio es un problema y depender de alguien te frena.',
     offer: 'Web + Partner',
-    href: '/servicios/partner-digital-mantenimiento',
+    href: '/servicios/partner',
   },
 ];

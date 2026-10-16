@@ -345,6 +345,18 @@ import { socialMedia } from '@/data/socialmedia';
     }
 
     if (planId) selectPlan(planId);
+
+    // ?servicio=Web preselecciona el servicio si la opción existe
+    const servicio = urlParams.get('servicio');
+    const serviceSelect = document.getElementById(
+      'service'
+    ) as HTMLSelectElement | null;
+    if (
+      servicio &&
+      serviceSelect &&
+      Array.from(serviceSelect.options).some((o) => o.value === servicio)
+    )
+      serviceSelect.value = servicio;
   }
 
   // Intercept clicks on plan buttons to sync before scrolling

@@ -23,6 +23,19 @@ export interface Service {
   priceAmount?: string | number;
   priceMeta?: string;
   order: number;
+  problem?: string;
+  variants?: { title: string; text: string; items: string[] }[];
+  notIncluded?: string[];
+  process?: { title: string; time: string; text: string }[];
+  needs?: string[];
+  faqs?: { question: string; answer: string }[];
+  relatedCases?: {
+    _id: string;
+    title: string;
+    slug: string;
+    industry?: string;
+    image?: string;
+  }[];
 }
 
 export interface ServiceCategory {
