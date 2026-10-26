@@ -40,6 +40,7 @@ export const resourceType = defineType({
           { title: 'UI Kit', value: 'ui-kit' },
           { title: 'Auditoría', value: 'auditoria' },
           { title: 'Guía', value: 'guia' },
+          { title: 'App', value: 'app' },
         ],
       },
       validation: (rule) => rule.required(),

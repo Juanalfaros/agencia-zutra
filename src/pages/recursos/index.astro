@@ -18,6 +18,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   'ui-kit': 'UI Kit',
   auditoria: 'Auditoría',
   guia: 'Guía',
+  app: 'App',
 };
 
 const itemListSchema = {
@@ -54,20 +55,20 @@ const itemListSchema = {
     type="application/ld+json"
     set:html={JSON.stringify(itemListSchema)}
   />
-
   <main class="page">
     <!-- Hero -->
     <section class="hero">
       <div class="container">
         <span class="hero__badge">Productos Digitales</span>
         <h1 class="hero__title">
-          Construye más rápido con<br /><span class="accent"
-            >recursos de Zutra</span
-          >
+          Construye más rápido con
+          <br />
+          <span class="accent">recursos de Zutra</span>
         </h1>
         <p class="hero__sub">
           Templates Astro, UI kits, auditorías empaquetadas y guías de
-          crecimiento.<br />
+          crecimiento.
+          <br />
           Creados por el equipo que los usa en producción.
         </p>
       </div>
@@ -76,112 +77,110 @@ const itemListSchema = {
     <!-- Grid -->
     <section class="grid-section">
       <div class="container">
-        {
-          recursos.length === 0 ? (
-            <p class="empty">
-              Próximamente — estamos preparando los primeros recursos.
-            </p>
-          ) : (
-            <div class="cards">
-              {recursos.map((r: ZutraRecurso) => {
-                const isSoon = r.status === 'coming-soon';
-                const catLabel = CATEGORY_LABELS[r.category] ?? r.category;
-                return (
-                  <article class:list={['card', isSoon && 'card--soon']}>
-                    {/* Imagen */}
-                    <a
-                      href={`/recursos/${r.slug}`}
-                      class="card__img-wrap"
-                      aria-label={`Ver ${r.title}`}
-                      tabindex={isSoon ? -1 : 0}
-                    >
-                      {r.featuredImage ? (
-                        <img
-                          src={r.featuredImage.src}
-                          alt={r.featuredImage.alt}
-                          class="card__img"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      ) : (
-                        <div class="card__img-empty">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="32"
-                            height="32"
-                            viewBox="0 0 256 256"
-                            aria-hidden="true"
-                          >
-                            <path
-                              fill="currentColor"
-                              d="M216 40H40a16 16 0 0 0-16 16v144a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16Zm0 16v102.75l-26.07-26.06a16 16 0 0 0-22.63 0l-20 20-44-44a16 16 0 0 0-22.62 0L40 149.37V56ZM40 216v-44l52-52 44 44a8 8 0 0 0 11.31 0l28.69-28.69 26.07 26.07.62.62V216Z"
-                            />
-                          </svg>
-                        </div>
-                      )}
-                      {isSoon && (
-                        <div class="card__soon">
-                          <span>Próximamente</span>
-                        </div>
-                      )}
-                      <div class="card__badge-wrap">
-                        {r.isFree ? (
-                          <span class="badge badge--free">Gratis</span>
-                        ) : (
-                          r.price && (
-                            <span class="badge badge--price">{r.price}</span>
-                          )
-                        )}
-                      </div>
-                    </a>
-
-                    {/* Contenido */}
-                    <div class="card__body">
-                      <div class="card__meta">
-                        <span class="cat-pill">{catLabel}</span>
-                        {r.techStack.slice(0, 3).map((tech) => (
-                          <span class="tech-chip">{tech}</span>
-                        ))}
-                      </div>
-
-                      <h2 class="card__title">
-                        <a href={`/recursos/${r.slug}`}>{r.title}</a>
-                      </h2>
-
-                      <p class="card__desc" set:html={r.description} />
-
-                      <div class="card__actions">
-                        {r.demoUrl && !isSoon && (
-                          <a
-                            href={r.demoUrl}
-                            class="btn-ghost"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Demo ↗
-                          </a>
-                        )}
-                        <a
-                          href={isSoon ? `/recursos/${r.slug}` : r.gumroadUrl}
-                          class:list={['btn-accent', isSoon && 'btn--disabled']}
-                          target={isSoon ? undefined : '_blank'}
-                          rel={isSoon ? undefined : 'noopener noreferrer'}
-                          aria-disabled={isSoon}
+        {recursos.length === 0 ? (
+          <p class="empty">
+            Próximamente — estamos preparando los primeros recursos.
+          </p>
+        ) : (
+          <div class="cards">
+            {recursos.map((r: ZutraRecurso) => {
+              const isSoon = r.status === 'coming-soon';
+              const catLabel = CATEGORY_LABELS[r.category] ?? r.category;
+              return (
+                <article class:list={['card', isSoon && 'card--soon']}>
+                  {/* Imagen */}
+                  <a
+                    href={`/recursos/${r.slug}`}
+                    class="card__img-wrap"
+                    aria-label={`Ver ${r.title}`}
+                    tabindex={isSoon ? -1 : 0}
+                  >
+                    {r.featuredImage ? (
+                      <img
+                        src={r.featuredImage.src}
+                        alt={r.featuredImage.alt}
+                        class="card__img"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div class="card__img-empty">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="32"
+                          height="32"
+                          viewBox="0 0 256 256"
+                          aria-hidden="true"
                         >
-                          {isSoon
-                            ? 'Próximamente'
-                            : r.isFree
-                              ? 'Descargar gratis →'
-                              : `Comprar ${r.price} →`}
-                        </a>
+                          <path
+                            fill="currentColor"
+                            d="M216 40H40a16 16 0 0 0-16 16v144a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16V56a16 16 0 0 0-16-16Zm0 16v102.75l-26.07-26.06a16 16 0 0 0-22.63 0l-20 20-44-44a16 16 0 0 0-22.62 0L40 149.37V56ZM40 216v-44l52-52 44 44a8 8 0 0 0 11.31 0l28.69-28.69 26.07 26.07.62.62V216Z"
+                          />
+                        </svg>
                       </div>
+                    )}
+                    {isSoon && (
+                      <div class="card__soon">
+                        <span>Próximamente</span>
+                      </div>
+                    )}
+                    <div class="card__badge-wrap">
+                      {r.isFree ? (
+                        <span class="badge badge--free">Gratis</span>
+                      ) : (
+                        r.price && (
+                          <span class="badge badge--price">{r.price}</span>
+                        )
+                      )}
                     </div>
-                  </article>
-                );
-              })}
-            </div>
-          )
-        }
+                  </a>
+
+                  {/* Contenido */}
+                  <div class="card__body">
+                    <div class="card__meta">
+                      <span class="cat-pill">{catLabel}</span>
+                      {r.techStack.slice(0, 3).map((tech) => (
+                        <span class="tech-chip">{tech}</span>
+                      ))}
+                    </div>
+
+                    <h2 class="card__title">
+                      <a href={`/recursos/${r.slug}`}>{r.title}</a>
+                    </h2>
+
+                    <p class="card__desc" set:html={r.description} />
+
+                    <div class="card__actions">
+                      {r.demoUrl && !isSoon && (
+                        <a
+                          href={r.demoUrl}
+                          class="btn-ghost"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Demo ↗
+                        </a>
+                      )}
+                      <a
+                        href={isSoon ? `/recursos/${r.slug}` : r.gumroadUrl}
+                        class:list={['btn-accent', isSoon && 'btn--disabled']}
+                        target={isSoon ? undefined : '_blank'}
+                        rel={isSoon ? undefined : 'noopener noreferrer'}
+                        aria-disabled={isSoon}
+                      >
+                        {isSoon
+                          ? 'Próximamente'
+                          : r.isFree
+                            ? 'Descargar gratis →'
+                            : `Comprar ${r.price} →`}
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
 
@@ -198,9 +197,9 @@ const itemListSchema = {
               solución personalizada, el equipo de Zutra está listo.
             </p>
           </div>
-          <a href="/#contacto" class="cta-banner__btn"
-            >Hablemos de tu proyecto →</a
-          >
+          <a href="/#contacto" class="cta-banner__btn">
+            Hablemos de tu proyecto →
+          </a>
         </div>
       </div>
     </section>
