@@ -1,3 +1,7 @@
+# El sitio oficial ahora es zutra.cl (proyecto zutra-emdash). Esta copia, en *.pages.dev, queda como respaldo y no debe indexarse.
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex, nofollow
+
 # Allow Contentful Live Preview to embed the site in its iframe
 /preview/*
   X-Frame-Options: ALLOWALL
